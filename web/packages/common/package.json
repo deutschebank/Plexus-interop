@@ -26,6 +26,9 @@
     "tslib": "^2.3.1",
     "typescript-collections": "1.2.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "jest": {
     "testEnvironment": "node",
     "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine.js",

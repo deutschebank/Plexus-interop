@@ -10,7 +10,7 @@
 		"build": "run-s build-only",
 		"build-only": "lerna run build --stream --concurrency 1",
 		"prepublish-all": "node ./scripts/replace-auth-vars.js --publish && lerna exec -- cross-var shx cp $LERNA_ROOT_PATH/.npmrc .npmrc",
-		"publish-all": "lerna publish from-package --yes --scope {@plexus-interop/broker,@plexus-interop/cli,@plexus-interop/client,@plexus-interop/client-api,@plexus-interop/common,@plexus-interop/protocol,@plexus-interop/transport-common,@plexus-interop/websocket-transport,@plexus-interop/io,@plexus-interop/metadata,@plexus-interop/remote,@plexus-interop/common-api-impl,@plexus-interop/studio}",
+		"publish-all": "lerna publish from-package --loglevel=verbose",
 		"postpublish-all": "shx rm -rf .npmrc && lerna exec -- shx rm -rf .npmrc",
 		"e2e-native": "cd ./packages/e2e && yarn e2e-native",
 		"poste2e-native": "yarn coverage",
@@ -21,7 +21,7 @@
 		"ci-build": "run-s build",
 		"ci-build-e2e": "run-s build e2e-native e2e-web",
 		"ci-publish": "run-s bump-version build publish-all",
-		"bump-version": "cross-var lerna publish --repo-version $PLEXUS_BUILD_NPM_PACKAGE_VERSION --no-git-tag-version --no-push --exact --skip-npm --yes --loglevel=silly --force-publish=*",
+		"bump-version": "cross-var lerna version $PLEXUS_BUILD_NPM_PACKAGE_VERSION --force-publish=* --loglevel=verbose",
 		"benchmarks": "cd ./packages/e2e && yarn native-broker-benchmarks && yarn web-broker-benchmarks"
 	},
 	"workspaces": [

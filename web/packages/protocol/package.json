@@ -27,6 +27,9 @@
   "peerDependencies": {
     "protobufjs": "6.11.2"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "jest": {
     "testEnvironment": "node",
     "moduleFileExtensions": [

@@ -49,6 +49,9 @@
     "typescript-collections": "1.2.3",
     "zone.js": "^0.8.14"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "jest": {
     "preset": "jest-preset-angular",
     "roots": [
