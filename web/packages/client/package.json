@@ -18,7 +18,7 @@
     "gen-client-protocol": "npm run gen-client-js && npm run gen-client-ts"
   },
   "dependencies": {
-    "rxjs": "^5.5.2",
+    "rxjs": "^7.5.2",
     "protobufjs": "6.11.2",
     "@types/loglevel": "^1.4.29",
     "@types/long": "^4.0.0",

@@ -20,11 +20,11 @@
     "tslib": "^1.10.0"
   },
   "peerDependencies": {
-    "rxjs": "^5.5.2"
+    "rxjs": "^7.5.2"
   },
   "main": "dist/main/src/index.js",
   "devDependencies": {
-    "rxjs": "^5.5.2",
+    "rxjs": "^7.5.2",
     "@types/loglevel": "^1.4.29",
     "@types/long": "^4.0.0",
     "@types/jest": "^23.1.3",
