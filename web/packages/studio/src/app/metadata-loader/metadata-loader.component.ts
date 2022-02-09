@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../services/ui/RootReducers';
 import { FormGroup, FormControl, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-
+import 'rxjs/add/operator/first';
 import { TransportType, ConnectionDetails, transportTypes as types } from '../services/ui/AppModel';
 
 @Component({

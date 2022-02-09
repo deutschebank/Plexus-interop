@@ -18,14 +18,14 @@ import { SubscriptionsRegistry } from './../services/ui/SubscriptionsRegistry';
 import { OnDestroy } from '@angular/core';
 import { LoggerFactory } from '@plexus-interop/common';
 import { Application } from '@plexus-interop/metadata';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { AppActions } from '../services/ui/AppActions';
 import { Component, OnInit } from '@angular/core';
 import * as fromRoot from '../services/ui/RootReducers';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { FormControl } from '@angular/forms';
-
+import 'rxjs/add/operator/debounceTime';
 import { containsFilter } from '../services/ui/filters';
 
 interface AppUiInfo extends Application {

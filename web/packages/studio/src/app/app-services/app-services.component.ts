@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { StudioState } from '../services/ui/AppModel';
 import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
 import { InteropClientFactory } from '../services/core/InteropClientFactory';
@@ -24,8 +24,8 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '../services/ui/RootReducers';
 import { App, ConsumedService, ProvidedService, ConsumedMethod, InteropRegistryService } from '@plexus-interop/metadata';
-
-
+import 'rxjs/add/operator/concat';
+import 'rxjs/add/observable/of';
 import { FormControl } from '@angular/forms';
 import { containsFilter } from '../services/ui/filters';
 

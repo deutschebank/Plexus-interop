@@ -17,12 +17,13 @@
 import { SubscriptionsRegistry } from './../services/ui/SubscriptionsRegistry';
 import { InteropServiceFactory } from '../services/core/InteropServiceFactory';
 import { Application } from '@plexus-interop/metadata';
-import { Subscription ,  Observable } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { AppActions } from '../services/ui/AppActions';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
-
-
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/filter';
 import { Router } from '@angular/router';
 import { ViewChild, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
