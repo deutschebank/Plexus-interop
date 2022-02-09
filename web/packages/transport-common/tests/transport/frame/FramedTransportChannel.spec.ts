@@ -23,7 +23,7 @@ import { Observer } from '@plexus-interop/common';
 import { LogObserver } from '../../LogObserver';
 import { TestBufferedInMemoryFramedTransport } from '../TestBufferedInMemoryFramedTransport';
 import { Frame } from '../../../src/transport/frame/model/Frame';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
 import { default as Queue } from 'typescript-collections/dist/lib/Queue';
 

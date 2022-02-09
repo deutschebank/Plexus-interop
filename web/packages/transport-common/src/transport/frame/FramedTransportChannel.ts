@@ -20,7 +20,7 @@ import { TransportChannel } from '../TransportChannel';
 import { FramedTransport } from './FramedTransport';
 import { UniqueId } from '@plexus-interop/protocol';
 import { Observer, ReadWriteCancellationToken, AsyncHelper } from '@plexus-interop/common';
-import { AnonymousSubscription, Subscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
 import { StateMaschineBase, CancellationToken, LoggerFactory, Logger, StateMaschine, SequencedExecutor } from '@plexus-interop/common';
 import { clientProtocol as plexus, SuccessCompletion, ClientProtocolUtils, ClientError, ErrorCompletion } from '@plexus-interop/protocol';
 import { Frame } from './model/Frame';
@@ -122,7 +122,7 @@ export class FramedTransportChannel implements TransportChannel {
         return new Promise<plexus.ICompletion>((resolve, reject) => {
             try {
                 // handler called when remote side also sent its completion
-                this.onCloseHandler = (summarizedCompletion?: plexus.ICompletion) => {
+                this.onCloseHandler = (summarizedCompletion: plexus.ICompletion) => {
                     resolve(summarizedCompletion);
                 };
                 if (this.stateMachine.is(ChannelState.OPEN)) {
