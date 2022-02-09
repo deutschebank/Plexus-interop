@@ -21,7 +21,7 @@ import { RequestedInvocation } from '../../src/client/generic/RequestedInvocatio
 import { Observer } from '@plexus-interop/common';
 import { createRemoteInvocationInfo, MockMarshallerProvider } from './client-mocks';
 import { clientProtocol as plexus, Completion, SuccessCompletion } from '@plexus-interop/protocol';
-import { Subscription, AnonymousSubscription } from 'rxjs/Subscription';
+import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { ChannelObserver } from '@plexus-interop/transport-common';
 import { InvocationHandlersRegistry} from '../../src';
 import { Arrays } from '@plexus-interop/common';

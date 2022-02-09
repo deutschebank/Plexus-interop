@@ -18,7 +18,7 @@ import { GenericClient } from './GenericClient';
 import { Invocation } from '../../client/generic/Invocation';
 import { GenericInvocation } from './GenericInvocation';
 import { TransportChannel, TransportConnection } from '@plexus-interop/transport-common';
-import { AnonymousSubscription, Subscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
 import { RequestedInvocation } from './RequestedInvocation';
 import { StateMaschine, StateMaschineBase, CancellationToken, Logger, LoggerFactory } from '@plexus-interop/common';
 import { AcceptedInvocation } from './AcceptedInvocation';

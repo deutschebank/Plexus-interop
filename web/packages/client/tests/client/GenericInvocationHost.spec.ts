@@ -22,7 +22,7 @@ import { when, mock, instance, anything, verify } from 'ts-mockito';
 import { GenericClientImpl } from '../../src/client/generic/GenericClientImpl';
 import { Observer } from '@plexus-interop/common';
 import { clientProtocol as plexus, SuccessCompletion } from '@plexus-interop/protocol';
-import { Subscription, AnonymousSubscription } from 'rxjs/Subscription';
+import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { ChannelObserver } from '@plexus-interop/transport-common';
 import { MethodInvocationContext } from '@plexus-interop/client-api';
 import { InvocationObserver, UnaryHandlerConverter } from '../../src/client';

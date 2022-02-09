@@ -19,7 +19,7 @@ import { UniqueId, TransportChannel, ChannelObserver } from '@plexus-interop/tra
 import { RemoteInvocationInfo } from '@plexus-interop/client-api';
 import { BinaryMarshallerProvider, BinaryMarshaller } from '@plexus-interop/io';
 import { Observer } from '@plexus-interop/common';
-import { Subscription, AnonymousSubscription } from 'rxjs/Subscription';
+import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { clientProtocol as plexus, SuccessCompletion } from '@plexus-interop/protocol';
 import { Logger, LoggerFactory, BlockingQueue, BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
 
