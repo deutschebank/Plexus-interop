@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 import { AppRegistryProvider } from '../AppRegistryProvider';
-import { Observable } from 'rxjs/Observable';
+import { map, Observable, of } from 'rxjs';
 import { AppRegistry } from '../model/AppRegistry';
 import { Application } from '../model/Application';
 import { toMap } from '@plexus-interop/common';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
 
 export class JsonAppRegistryProvider implements AppRegistryProvider {
 
@@ -29,8 +27,8 @@ export class JsonAppRegistryProvider implements AppRegistryProvider {
 
     public constructor(jsonMetadata: string, $jsonMetadata?: Observable<string>) {
         this.current = this.parseRegistry(jsonMetadata);
-        this.$registry = ($jsonMetadata || Observable.of(jsonMetadata))
-            .map(this.parseRegistry.bind(this));
+        this.$registry = ($jsonMetadata || of(jsonMetadata))
+            .pipe(map(this.parseRegistry.bind(this)));
         this.$registry.subscribe({
             next: update => this.current = update
         });

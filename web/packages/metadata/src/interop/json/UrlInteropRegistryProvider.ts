@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 import { InteropRegistryProvider } from '../InteropRegistryProvider';
-import { Observable } from 'rxjs/Observable';
+import { Observable, throttleTime, throwError } from 'rxjs';
 import { InteropRegistry } from '../model/InteropRegistry';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { HttpDataLoader } from '@plexus-interop/remote';
 import { JsonInteropRegistryProvider } from './JsonInteropRegistryProvider';
 import { WebSocketDataProvider } from '@plexus-interop/remote';
-import 'rxjs/add/operator/throttleTime';
+
 
 export class UrlInteropRegistryProvider implements InteropRegistryProvider {
 
@@ -39,7 +39,7 @@ export class UrlInteropRegistryProvider implements InteropRegistryProvider {
         private webSocketDataProvider: WebSocketDataProvider = new WebSocketDataProvider()) { }
 
     public getRegistry(): Observable<InteropRegistry> {
-        return this.started ? this.jsonInteropRegistryProvider.getRegistry() : Observable.throw(new Error('Not started'));
+        return this.started ? this.jsonInteropRegistryProvider.getRegistry() : throwError(() => new Error('Not started'));
     }
 
     public getCurrent(): InteropRegistry {
@@ -75,7 +75,7 @@ export class UrlInteropRegistryProvider implements InteropRegistryProvider {
     private async startWithWebSocket(): Promise<void> {
         const response = await this.webSocketDataProvider.getSingleMessage(this.url);
         if (this.interval > 0) {
-            this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response, this.webSocketDataProvider.getData(this.url).throttleTime(this.interval));
+            this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response, this.webSocketDataProvider.getData(this.url).pipe(throttleTime(this.interval)));
         } else {
             this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response);
         }

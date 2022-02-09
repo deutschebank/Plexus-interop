@@ -16,9 +16,9 @@
  */
 import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { InteropRegistry } from '../model/InteropRegistry';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+import { map, Observable, of } from 'rxjs';
+
+
 import { RegistryDto } from './RegistryDto';
 import { ExtendedArray, Logger, LoggerFactory, ExtendedMap, toMap } from '@plexus-interop/common';
 import { Message } from '../model/Message';
@@ -51,8 +51,8 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
     public constructor(jsonMetadata: string, $jsonMetadata?: Observable<string>) {
         this.log = LoggerFactory.getLogger('JsonInteropRegistryProvider');
         this.current = this.parseRegistry(jsonMetadata);
-        this.$registry = ($jsonMetadata || Observable.of(jsonMetadata))
-            .map(this.parseRegistry.bind(this));
+        this.$registry = ($jsonMetadata || of(jsonMetadata))
+            .pipe(map(this.parseRegistry.bind(this)));
         this.$registry.subscribe({
             next: update => this.current = update
         });

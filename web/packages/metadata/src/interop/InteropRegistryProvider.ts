@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { InteropRegistry } from './model/InteropRegistry';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export interface InteropRegistryProvider {
 
