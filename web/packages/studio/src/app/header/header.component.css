@@ -1,0 +1,14 @@
+.connection-statuses {
+  flex-direction: column;
+
+}
+
+.connection-statuses .connection-status {
+  justify-content: flex-end;
+}
+
+a {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
