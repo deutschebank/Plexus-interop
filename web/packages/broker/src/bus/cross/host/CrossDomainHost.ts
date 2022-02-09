@@ -17,10 +17,10 @@
 import { EventBus } from '../../EventBus';
 import { Event } from '../../Event';
 import { StateMaschine, StateMaschineBase, LoggerFactory, Logger } from '@plexus-interop/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
+import { filter, fromEvent, map, Observable } from 'rxjs';
+
+
+
 import { IFrameHostMessage } from '../model/IFrameHostMessage';
 import { CrossDomainHostConfig } from './CrossDomainHostConfig';
 import { MessageType } from '../model/MessageType';
@@ -63,9 +63,9 @@ export class CrossDomainHost {
 
     private initCommunicationWithParent(): void {
         this.log.info('Subscribing to parent messages');
-        Observable.fromEvent<MessageEvent>(window, 'message')
-            .filter(event => this.whiteListed(event))
-            .map(event => {
+        fromEvent<MessageEvent>(window, 'message')
+            .pipe(filter(event => this.whiteListed(event)),
+            map(event => {
                 if (this.log.isTraceEnabled()) {
                     this.log.trace(`Received event from ${event.origin}`);
                 }
@@ -74,11 +74,11 @@ export class CrossDomainHost {
                     sourceWindow: event.source,
                     sourceOrigin: event.origin
                 };
-            })
-            .filter((parsed) =>
+            }),
+            filter((parsed) =>
                 parsed.message.type !== undefined
                 && parsed.message.requestPayload !== undefined
-                && !parsed.message.responsePayload)
+                && !parsed.message.responsePayload))
             .subscribe({
                 next: msg => this.handleParentMessage({
                     ...msg,

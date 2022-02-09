@@ -17,16 +17,12 @@
 import { Event } from '../Event';
 import { EventBus } from '../EventBus';
 import { Subscription, Logger, LoggerFactory, Observer, GUID, StateMaschine, StateMaschineBase } from '@plexus-interop/common';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/publish';
+import { filter, fromEvent, map, Observable ,  PartialObserver } from 'rxjs';
+
 import { IFrameHostMessage } from './model/IFrameHostMessage';
 import { SubscribeRequest } from './model/SubscribeRequest';
 import { ResponseType } from './model/ResponseType';
 import { MessageType } from './model/MessageType';
-import { PartialObserver } from 'rxjs/Observer';
 
 enum State {
     CREATED = 'CREATED',
@@ -191,14 +187,14 @@ export class CrossDomainEventBus implements EventBus {
 
     private createHostMessagesSubscription(): void {
         this.log.info('Creating subscription to Host iFrame');
-        this.hostIframeEventsSubscription = Observable.fromEvent<MessageEvent>(window, 'message')
-            .filter(event => {
+        this.hostIframeEventsSubscription = fromEvent<MessageEvent>(window, 'message')
+            .pipe(filter(event => {
                 this.log.trace(`Received message from ${event.origin}`);
                 return event.origin === this.hostOrigin;
-            })
-            .map(event => event.data)
-            .filter(parsed => (parsed as IFrameHostMessage<any, any>).type !== undefined)
-            .map(parsed => parsed as IFrameHostMessage<any, any>)
+            }),
+            map(event => event.data),
+            filter(parsed => (parsed as IFrameHostMessage<any, any>).type !== undefined),
+            map(parsed => parsed as IFrameHostMessage<any, any>))
             .subscribe((m) => { this.handleHostMessage(m); });
     }
 

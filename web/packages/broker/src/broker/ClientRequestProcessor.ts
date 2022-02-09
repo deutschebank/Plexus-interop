@@ -62,7 +62,7 @@ export class ClientRequestProcessor {
                         } else if (clientToBrokerRequest.methodDiscoveryRequest) {
                             try {
                                 await this.discoveryRequestHandler.handleMethodDiscovery(clientToBrokerRequest.methodDiscoveryRequest, channel, sourceConnection);
-                                resolve();
+                                resolve({} as Completion);
                             } catch (error) {
                                 reject(error);
                             }
