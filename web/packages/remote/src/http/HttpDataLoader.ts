@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/throw';
+import { Observable, throwError } from 'rxjs';
+
 import 'superagent';
 import * as request from 'superagent';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
@@ -33,7 +33,7 @@ export class HttpDataLoader {
 
     public fetchWithInterval(url: string, interval: number): Observable<string> {
         if (interval <= 0) {
-            return Observable.throw(new Error('Interval must be positive'));
+            return throwError(() => new Error('Interval must be positive'));
         }
         this.log.trace(`Starting to fetch data from [${url}] using ${interval} interval`);
         return new Observable(observer => {

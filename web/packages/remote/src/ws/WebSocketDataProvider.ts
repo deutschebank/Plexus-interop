@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
-import { webSocket } from 'rxjs/observable/dom/webSocket';
-import { WebSocketSubjectConfig } from 'rxjs/observable/dom/WebSocketSubject';
+import { Observable } from 'rxjs';
+import { webSocket, WebSocketSubjectConfig } from 'rxjs/websocket';
 
 export class WebSocketDataProvider {
 
@@ -44,12 +43,12 @@ export class WebSocketDataProvider {
         });
     }
 
-    private config(url: string): WebSocketSubjectConfig {
+    private config(url: string): WebSocketSubjectConfig<string> {
         return {
             url,
             WebSocketCtor: this.wsCtor,
             // override default behavior, which invokes JSON.parse
-            resultSelector: e => e.data
+            resultSelector: (e: MessageEvent) => e.data
         };
     }
 
