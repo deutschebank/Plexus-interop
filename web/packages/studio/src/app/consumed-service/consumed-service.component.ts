@@ -59,7 +59,7 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   public title: string;
 
   private activeInvocationsMap: Map<string, InvocationProfile> = new Map();
-  private selectedDiscoveredMethod: DiscoveredMethod;
+  public selectedDiscoveredMethod: DiscoveredMethod;
 
   messageContent: string;
   messageContentControl: FormControl = new FormControl("{}");

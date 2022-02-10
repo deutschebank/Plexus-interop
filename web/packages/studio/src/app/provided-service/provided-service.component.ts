@@ -44,8 +44,8 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
   );
   private readonly maxPrintedContent: number = 1024;
   private providedMethod: ProvidedMethod;
-  private messageContentControl: FormControl = new FormControl("{}");
-  private messageContent: string = "{}";
+  public messageContentControl: FormControl = new FormControl("{}");
+  public messageContent: string = "{}";
 
   private interopClient: InteropClient;
 

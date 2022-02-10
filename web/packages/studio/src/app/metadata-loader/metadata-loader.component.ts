@@ -131,7 +131,7 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
     return valid ? null : { required: true };
   }
 
-  connect(metadataUrl: string) {
+  connect(metadataUrl?: string) {
     const wsConfig = !!this.wsUrl.value ? { wsUrl: this.wsUrl.value } : null;
     const webConfig =
       this.appsUrl.value || this.proxyHostUrl.value
