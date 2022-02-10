@@ -1,3 +1,4 @@
+import { filter, map, mergeMap, withLatestFrom } from "rxjs/operators";
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -38,7 +39,7 @@ import "rxjs/add/operator/combineLatest";
 import "rxjs/add/operator/withLatestFrom";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import { Action, Store } from "@ngrx/store";
 import { Actions, Effect } from "@ngrx/effects";
 import { Router } from "@angular/router";
@@ -57,137 +58,163 @@ export class Effects {
 
   @Effect() autoConnectToPlexus$: Observable<Action> = this.actions$
     .ofType(AppActions.AUTO_CONNECT)
-    .withLatestFrom(this.store.select((state) => state.plexus))
-    .mergeMap(async ([action, state]) => autoConnectEffect(state));
+    .pipe(
+      withLatestFrom(this.store.select((state) => state.plexus)),
+      mergeMap(async ([action, state]) => autoConnectEffect(state))
+    );
 
   @Effect() connectToPlexus$: Observable<Action> = this.actions$
     .ofType<TypedAction<ConnectionSetupActionParams>>(
       AppActions.CONNECTION_SETUP_START
     )
-    .mergeMap(async (action) =>
-      connectionSetupEffect(
-        action.payload,
-        this.transportConnectionFactory,
-        this.interopServiceFactory
+    .pipe(
+      mergeMap(async (action) =>
+        connectionSetupEffect(
+          action.payload,
+          this.transportConnectionFactory,
+          this.interopServiceFactory
+        )
       )
     );
 
   @Effect() plexusConnected$: Observable<Action> = this.actions$
     .ofType(AppActions.CONNECTION_SETUP_SUCCESS)
-    .map((_) => {
-      this.router.navigate(["/apps"], { queryParamsHandling: "merge" });
-      return { type: AppActions.DO_NOTHING };
-    });
+    .pipe(
+      map((_) => {
+        this.router.navigate(["/apps"], { queryParamsHandling: "merge" });
+        return { type: AppActions.DO_NOTHING };
+      })
+    );
 
   @Effect() disconnectMetadata = this.actions$
     .ofType(AppActions.DISCONNECT_FROM_PLEXUS)
-    .withLatestFrom(
-      this.store
-        .select((state) => state.plexus.services)
-        .filter((services) => !!services)
-    )
-    .mergeMap(async ([action, services]) => {
-      if (services.interopClient) {
-        await services.interopClient.disconnect();
-      }
+    .pipe(
+      withLatestFrom(
+        this.store
+          .select((state) => state.plexus.services)
+          .pipe(filter((services) => !!services))
+      ),
+      mergeMap(async ([action, services]) => {
+        if (services.interopClient) {
+          await services.interopClient.disconnect();
+        }
 
-      this.log.info(`Disconnected from Plexus`);
+        this.log.info(`Disconnected from Plexus`);
 
-      this.router.navigate(["/"]);
+        this.router.navigate(["/"]);
 
-      return { type: AppActions.DISCONNECT_FROM_PLEXUS_SUCCESS };
-    });
+        return { type: AppActions.DISCONNECT_FROM_PLEXUS_SUCCESS };
+      })
+    );
 
   @Effect() connectToApp$: Observable<TypedAction<AppConnectedActionParams>> =
     this.actions$
       .ofType<TypedAction<Application>>(AppActions.CONNECT_TO_APP_START)
-      .withLatestFrom(
-        this.store
-          .select((state) => state.plexus.services)
-          .filter((services) => !!services)
-      )
-      .mergeMap(async ([action, services]) => {
-        const application = action.payload;
-        const appId = application.id;
+      .pipe(
+        withLatestFrom(
+          this.store
+            .select((state) => state.plexus.services)
+            .pipe(filter((services) => !!services))
+        ),
+        mergeMap(async ([action, services]) => {
+          const application = action.payload;
+          const appId = application.id;
 
-        const interopClient = await this.interopClientFactory.connect(
-          appId,
-          services.interopRegistryService,
-          services.connectionProvider
-        );
+          const interopClient = await this.interopClientFactory.connect(
+            appId,
+            services.interopRegistryService,
+            services.connectionProvider
+          );
 
-        return {
-          type: AppActions.CONNECT_TO_APP_SUCCESS,
-          payload: { interopClient, application },
-        };
-      });
+          return {
+            type: AppActions.CONNECT_TO_APP_SUCCESS,
+            payload: { interopClient, application },
+          };
+        })
+      );
 
   @Effect() loadConsumedMethod$: Observable<TypedAction<any>> = this.actions$
     .ofType<TypedAction<ConsumedMethod>>(AppActions.SELECT_CONSUMED_METHOD)
-    .withLatestFrom(
-      this.store
-        .select((state) => state.plexus.services)
-        .filter((services) => !!services)
-    )
-    .mergeMap(async ([action, services]) => {
-      const method = action.payload;
-      const interopClient = services.interopClient;
-      const discoveredMethods = await interopClient.discoverAllMethods(method);
-      return {
-        type: AppActions.CONSUMED_METHOD_SUCCESS,
-        payload: {
-          method,
-          discoveredMethods,
-        },
-      };
-    });
+    .pipe(
+      withLatestFrom(
+        this.store
+          .select((state) => state.plexus.services)
+          .pipe(filter((services) => !!services))
+      ),
+      mergeMap(async ([action, services]) => {
+        const method = action.payload;
+        const interopClient = services.interopClient;
+        const discoveredMethods = await interopClient.discoverAllMethods(
+          method
+        );
+        return {
+          type: AppActions.CONSUMED_METHOD_SUCCESS,
+          payload: {
+            method,
+            discoveredMethods,
+          },
+        };
+      })
+    );
 
   @Effect() appConnected$: Observable<Action> = this.actions$
     .ofType(AppActions.CONNECT_TO_APP_SUCCESS)
-    .map((_) => {
-      return { type: AppActions.NAVIGATE_TO_APP };
-    });
+    .pipe(
+      map((_) => {
+        return { type: AppActions.NAVIGATE_TO_APP };
+      })
+    );
 
   @Effect() consumedActionLoaded$: Observable<Action> = this.actions$
     .ofType(AppActions.CONSUMED_METHOD_SUCCESS)
-    .map((_) => {
-      this.router.navigate(["/consumed"], { queryParamsHandling: "merge" });
-      return { type: AppActions.DO_NOTHING };
-    });
+    .pipe(
+      map((_) => {
+        this.router.navigate(["/consumed"], { queryParamsHandling: "merge" });
+        return { type: AppActions.DO_NOTHING };
+      })
+    );
 
   @Effect() appConnectionFailed$: Observable<Action> = this.actions$
     .ofType(AppActions.CONNECT_TO_APP_FAILED)
-    .map((_) => {
-      this.router.navigate(["/apps"]);
-      return { type: AppActions.DO_NOTHING };
-    });
+    .pipe(
+      map((_) => {
+        this.router.navigate(["/apps"]);
+        return { type: AppActions.DO_NOTHING };
+      })
+    );
 
   @Effect() navigateToApp$: Observable<Action> = this.actions$
     .ofType(AppActions.NAVIGATE_TO_APP)
-    .withLatestFrom(this.store.select((state) => state.plexus.services))
-    .mergeMap(async ([action, services]) => {
-      services.interopClient.resetInvocationHandlers();
-      this.router.navigate(["/app"], { queryParamsHandling: "merge" });
-      return { type: AppActions.DO_NOTHING };
-    });
+    .pipe(
+      withLatestFrom(this.store.select((state) => state.plexus.services)),
+      mergeMap(async ([action, services]) => {
+        services.interopClient.resetInvocationHandlers();
+        this.router.navigate(["/app"], { queryParamsHandling: "merge" });
+        return { type: AppActions.DO_NOTHING };
+      })
+    );
 
   @Effect() disconnectFromApp$: Observable<Action> = this.actions$
     .ofType(AppActions.DISCONNECT_FROM_APP)
-    .withLatestFrom(this.store.select((state) => state.plexus.services))
-    .mergeMap(async ([action, services]) => {
-      const disconnected = await services.interopClient.disconnect();
-      return { type: AppActions.DISCONNECT_FROM_APP_SUCCESS };
-    });
+    .pipe(
+      withLatestFrom(this.store.select((state) => state.plexus.services)),
+      mergeMap(async ([action, services]) => {
+        const disconnected = await services.interopClient.disconnect();
+        return { type: AppActions.DISCONNECT_FROM_APP_SUCCESS };
+      })
+    );
 
   @Effect() disconnectedFromApp$: Observable<Action> = this.actions$
     .ofType(AppActions.DISCONNECT_FROM_APP_SUCCESS)
-    .withLatestFrom(this.store.select((state) => state.plexus.services))
-    .map((_) => {
-      this.log.info(`Disconnected from app - success!`);
-      this.router.navigate(["/apps"]);
+    .pipe(
+      withLatestFrom(this.store.select((state) => state.plexus.services)),
+      map((_) => {
+        this.log.info(`Disconnected from app - success!`);
+        this.router.navigate(["/apps"]);
 
-      return { type: AppActions.DO_NOTHING };
-    });
+        return { type: AppActions.DO_NOTHING };
+      })
+    );
 
   constructor(
     private http: HttpClient,

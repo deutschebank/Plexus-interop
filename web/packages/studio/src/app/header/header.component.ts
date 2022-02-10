@@ -1,3 +1,4 @@
+import { map } from "rxjs/operators";
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,28 +15,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SubscriptionsRegistry } from './../services/ui/SubscriptionsRegistry';
-import { InteropServiceFactory } from '../services/core/InteropServiceFactory';
-import { Application } from '@plexus-interop/metadata';
-import { Subscription } from 'rxjs/Subscription';
-import { AppActions } from '../services/ui/AppActions';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/operator/filter';
-import { Router } from '@angular/router';
-import { ViewChild, ElementRef } from '@angular/core';
-import { Store } from '@ngrx/store';
-import * as fromRoot from '../services/ui/RootReducers';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { ConnectionDetails, transportTypes as types, transportTypes } from '../services/ui/AppModel';
+import { SubscriptionsRegistry } from "./../services/ui/SubscriptionsRegistry";
+import { InteropServiceFactory } from "../services/core/InteropServiceFactory";
+import { Application } from "@plexus-interop/metadata";
+import { Subscription, Observable } from "rxjs";
+import { AppActions } from "../services/ui/AppActions";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+
+import { Router } from "@angular/router";
+import { ViewChild, ElementRef } from "@angular/core";
+import { Store } from "@ngrx/store";
+import * as fromRoot from "../services/ui/RootReducers";
+import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
+import {
+  ConnectionDetails,
+  transportTypes as types,
+  transportTypes,
+} from "../services/ui/AppModel";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
-  providers: [SubscriptionsRegistry]
+  selector: "app-header",
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.css"],
+  providers: [SubscriptionsRegistry],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   metadataUrl$: Observable<string>;
@@ -53,22 +55,38 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private router: Router,
     private interopServiceFactory: InteropServiceFactory,
     private subscriptions: SubscriptionsRegistry,
-    private modalService: NgbModal) {
-  }
+    private modalService: NgbModal
+  ) {}
 
   ngOnInit() {
-    this.metadataUrl$ = this.store.select(state => state.plexus.connectionDetails.generalConfig.metadataUrl);
-    this.application$ = this.store.select(state => state.plexus.connectedApp);
-    this.connected$ = this.store.select(state => state.plexus.connectionDetails.connected);
-    this.connectionDetails$ = this.store.select(state => state.plexus.connectionDetails);
-    this.transportLabel$ = this.connectionDetails$.map(details => this.findLabel(details.generalConfig.transportType));
-    this.connectionId$ = this.store.select(state => state.plexus.services.interopClient).map(client => client ? client.getConnectionStrId() : 'NOT CONNECTED');
-    this.subscriptions.add(this.application$.subscribe(app => this.currentApp = app));
+    this.metadataUrl$ = this.store.select(
+      (state) => state.plexus.connectionDetails.generalConfig.metadataUrl
+    );
+    this.application$ = this.store.select((state) => state.plexus.connectedApp);
+    this.connected$ = this.store.select(
+      (state) => state.plexus.connectionDetails.connected
+    );
+    this.connectionDetails$ = this.store.select(
+      (state) => state.plexus.connectionDetails
+    );
+    this.transportLabel$ = this.connectionDetails$.pipe(
+      map((details) => this.findLabel(details.generalConfig.transportType))
+    );
+    this.connectionId$ = this.store
+      .select((state) => state.plexus.services.interopClient)
+      .pipe(
+        map((client) =>
+          client ? client.getConnectionStrId() : "NOT CONNECTED"
+        )
+      );
+    this.subscriptions.add(
+      this.application$.subscribe((app) => (this.currentApp = app))
+    );
   }
 
   findLabel(typeKey) {
-    const type = transportTypes.find(v => v.key == typeKey);
-    return type ? type.label : 'NOT_FOUND';
+    const type = transportTypes.find((v) => v.key == typeKey);
+    return type ? type.label : "NOT_FOUND";
   }
 
   ngOnDestroy() {
@@ -90,6 +108,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   openModal(content) {
-    this.modalService.open(content, { size: 'lg' });
+    this.modalService.open(content, { size: "lg" });
   }
 }
