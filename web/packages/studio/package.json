@@ -22,7 +22,7 @@
     "@angular/platform-browser": "^7.2.16",
     "@angular/platform-browser-dynamic": "^7.2.16",
     "@angular/router": "^7.2.16",
-    "@ng-bootstrap/ng-bootstrap": "^1.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^4.2.2",
     "@ngrx/effects": "^7.4.0",
     "@ngrx/router-store": "^7.4.0",
     "@ngrx/store": "^7.4.0",
