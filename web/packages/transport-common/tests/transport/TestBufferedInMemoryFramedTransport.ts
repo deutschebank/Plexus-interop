@@ -46,7 +46,7 @@ export class TestBufferedInMemoryFramedTransport extends BufferedReadFramedTrans
 
     public async open(framesObserver: Observer<Frame>): Promise<void> {
         await super.open(framesObserver);
-        this.listenForInbox().catch(e => this.log.error('Stopped to listed for inbox with error', e));
+        this.listenForInbox().catch(e => this.log.error('Stopped listening for inbox with error', e));
     }
 
     private async listenForInbox(): Promise<void> {

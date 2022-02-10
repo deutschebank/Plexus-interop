@@ -36,11 +36,13 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine.js",
+    "testRunner": "jest-jasmine2",
+    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
     "moduleFileExtensions": [
       "ts",
       "js"
     ],
+    "timers": "legacy",
     "testRegex": ".+/dist/main/tests/.+.spec.js$",
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
