@@ -19,7 +19,7 @@ import { DefaultConnectionDetailsService } from '../../src/client/api/container/
 
 describe('DefaultConnectionDetailsService', () => {
 
-    it('getConnectionDetails returns correct result', async (done) => {
+    it('getConnectionDetails returns correct result', (done) => {
         const service = new DefaultConnectionDetailsService(getConnectionDetails);
         service.getConnectionDetails().then(r => {
             expect(r.ws.port).toBe(42);
@@ -29,7 +29,7 @@ describe('DefaultConnectionDetailsService', () => {
         });
     });
 
-    it('getMetadataUrl returns correct result', async (done) => {
+    it('getMetadataUrl returns correct result', (done) => {
         const service = new DefaultConnectionDetailsService(getConnectionDetails);
         service.getMetadataUrl().then(r => {
             expect(r).toBe('wss://127.0.0.1:24/metadata/interop');
