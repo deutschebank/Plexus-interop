@@ -70,10 +70,10 @@
     "http-server": "^0.11.1",
     "if-env": "1.0.0",
     "is-electron-renderer": "^2.0.1",
-    "jasmine-core": "~3.6.0",
-    "jasmine-spec-reporter": "~5.0.0",
+    "jasmine-core": "~2.6.2",
+    "jasmine-reporters": "^2.2.0",
+    "jasmine-spec-reporter": "~4.1.0",
     "jest": "^27.5.1",
-    "jest-cli": "^23.0.0",
     "jest-preset-angular": "^11.1.0",
     "karma": "~6.3.15",
     "karma-chrome-launcher": "~3.1.0",
@@ -101,6 +101,7 @@
     "tree-kill": "^1.1.0",
     "ts-mockito": "2.0.2",
     "ts-node": "~3.2.0",
+    "tslint": "5.8.0",
     "typescript": "~4.4.4",
     "watchify": "^3.9.0",
     "yarn": "^1.17.3"
@@ -123,6 +124,7 @@
     "@plexus-interop/studio": "file:packages/studio",
     "@plexus-interop/transport-common": "file:packages/transport-common",
     "@plexus-interop/web-app-example": "file:packages/web-example",
-    "@plexus-interop/websocket-transport": "file:packages/websocket-transport"
+    "@plexus-interop/websocket-transport": "file:packages/websocket-transport",
+    "jest-jasmine2": "^27.5.1"
   }
 }
