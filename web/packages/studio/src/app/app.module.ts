@@ -62,7 +62,7 @@ import { LocationStrategy, HashLocationStrategy } from "@angular/common";
   ],
   imports: [
     BrowserModule,
-    NgbModule.forRoot(),
+    NgbModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(AppRoutes),
