@@ -65,7 +65,7 @@ import { LocationStrategy, HashLocationStrategy } from "@angular/common";
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(AppRoutes),
+    RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot([Effects]),
     HttpClientModule,
