@@ -12,7 +12,7 @@
     "build:watch": "tsc -w",
     "build:main": "tsc -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
-    "test": "jest --coverage --runInBand"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@plexus-interop/common": "file:../common",
@@ -42,7 +42,6 @@
       "ts",
       "js"
     ],
-    "timers": "legacy",
     "testRegex": ".+/dist/main/tests/.+.spec.js$",
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [

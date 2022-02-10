@@ -78,7 +78,7 @@ describe('FramedTransportChannel', () => {
 
     });
 
-    it('Rejects request if already opened', async (done) => {
+    it('Rejects request if already opened', (done) => {
 
         const mockFrameTransport = new TestBufferedInMemoryFramedTransport();
 
@@ -98,15 +98,16 @@ describe('FramedTransportChannel', () => {
             error: () => { }
         };
         
-        await new Promise<AnonymousSubscription>(
-            (resolve, reject) => sut.open(new DelegateChannelObserver(observer, (s) => resolve(s))));
+        new Promise<AnonymousSubscription>(
+            (resolve, reject) => sut.open(new DelegateChannelObserver(observer, (s) => resolve(s)))).then(() => {
 
         new Promise<AnonymousSubscription>(
             (resolve, reject) => sut.open(new DelegateChannelObserver(observer, (s) => resolve(s))))
             .catch(() => done());
+        });
     });
 
-    it('Sends big message by frames', async (done) => {
+    it('Sends big message by frames', (done) => {
 
         const mockFrameTransport = new TestBufferedInMemoryFramedTransport(UniqueId.generateNew(), new Queue<Frame>(), new Queue<Frame>(), 3);
         const dataArray = [1, 2, 3, 4, 5];
@@ -115,8 +116,8 @@ describe('FramedTransportChannel', () => {
         const cancellationToken = new CancellationToken();
 
         const sut = new FramedTransportChannel(channelId, mockFrameTransport, async () => { }, cancellationToken);
-        await new Promise<AnonymousSubscription>(
-            (resolve, reject) => sut.open(new DelegateChannelObserver(new LogObserver(), (s) => resolve(s))));
+        new Promise<AnonymousSubscription>(
+            (resolve, reject) => sut.open(new DelegateChannelObserver(new LogObserver(), (s) => resolve(s)))).then(() => {
                    
         sut.sendMessage(dataToSend.buffer).then(async () => {
             await AsyncHelper.waitFor(() => mockFrameTransport.outBuffer.size() > 0);
@@ -132,6 +133,7 @@ describe('FramedTransportChannel', () => {
             cancellationToken.cancel();
             done();
         });
+    });
     });
 
 });

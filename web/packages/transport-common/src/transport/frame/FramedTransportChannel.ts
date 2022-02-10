@@ -106,10 +106,9 @@ export class FramedTransportChannel implements TransportChannel {
             this.close();
         });
         this.stateMachine.goAsync(ChannelState.OPEN)
-            .then(() => {
-                this.subscribeToMessages(channelObserver);
-                channelObserver.started(subscription);
-            });
+        .then(() => {
+            return this.subscribeToMessages(channelObserver).then(() => channelObserver.started(subscription)).catch((e) => channelObserver.error(e));                
+        }).catch((e) => channelObserver.error(e));
     }
 
     public uuid(): UniqueId {
