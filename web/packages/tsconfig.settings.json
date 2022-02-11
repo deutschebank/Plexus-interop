@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+      // Always include these settings
+      "composite": true,
+      "declaration": true,
+      "declarationMap": true,
+      "sourceMap": true,
+      // These settings are totally up to you
+      "target": "es5",
+      "moduleResolution": "node",
+      "module": "commonjs",
+      "importHelpers": true,
+      "strictNullChecks": true,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "noUnusedLocals": true,
+      "noImplicitThis": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "removeComments": false,
+      "pretty": true,
+      "lib": [
+          "es6", "dom"
+      ],
+      "types": [
+          "jest",
+          "node"
+      ],
+  }
+}

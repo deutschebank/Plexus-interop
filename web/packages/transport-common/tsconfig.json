@@ -1,44 +1,22 @@
 {
+    "extends": "../tsconfig.settings.json",
     "compilerOptions": {
-        "target": "es5",
         "outDir": "dist/main",
         "rootDir": ".",
-        "moduleResolution": "node",
-        "module": "commonjs",
-        "declaration": true,
-        "importHelpers": true,
-        "listFiles": false,
-        "strictNullChecks": true,
-        "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noUnusedLocals": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "removeComments": false,
-        "sourceMap": true,
-        "pretty": true,
-        "lib": [
-            "es6", "dom"
-        ],
-        "types": [
-            "jest",
-            "long",
-            "node"
-        ],
         "baseUrl": ".",
         "paths": {
             "plexus-transport-common": ["src/index.ts"]
         }
     },
+    "references": [
+        { "path": "../common" },
+        { "path": "../protocol" }
+    ],
     "include": [
         "src/**/*.ts",
         "tests/**/*.ts"
     ],
     "exclude": [
         "node_modules/**"
-    ],
-    "compileOnSave": false
+    ]
 }

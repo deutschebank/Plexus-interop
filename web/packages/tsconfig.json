@@ -1,0 +1,22 @@
+{
+  "files": [],
+  "references": [
+    { "path": "broker" },
+    { "path": "ccy-pair-rate-provider" },
+    { "path": "ccy-pair-rate-viewer" },
+    { "path": "cli" },
+    { "path": "client" },
+    { "path": "client-api" },
+    { "path": "common" },
+    { "path": "common-api-impl" },
+    { "path": "e2e" },
+    { "path": "electron-launcher" },
+    { "path": "io" },
+    { "path": "metadata" },
+    { "path": "protocol" },
+    { "path": "remote" },
+    { "path": "transport-common" },
+    { "path": "web-example" },
+    { "path": "websocket-transport" }
+  ]
+}

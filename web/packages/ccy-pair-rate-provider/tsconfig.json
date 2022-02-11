@@ -1,20 +1,15 @@
 {
+  "extends": "../tsconfig.settings.json",
   "compilerOptions": {
-    "target": "es5",
     "outDir": "dist/main",
-    "rootDir": ".",
-    "moduleResolution": "node",
-    "module": "commonjs",
-    "declaration": true,
-    "pretty": true,
-    "lib": [
-      "es6",
-      "dom"
-    ],
-    "types": [
-      "long", "node"
-    ]
+    "rootDir": "."
   },
+  "references": [
+    { "path": "../client" },
+    { "path": "../common" },
+    { "path": "../transport-common" },
+    { "path": "../websocket-transport" }
+  ],
   "include": [
     "src/**/*.ts",
     "tests/**/*.ts"

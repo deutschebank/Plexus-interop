@@ -7,8 +7,10 @@
   "scripts": {
     "preinstall": "node ./scripts/replace-lock-registry.js && node ./scripts/replace-auth-vars.js --install",
     "postinstall": "node ./scripts/replace-lock-registry.js --backward && link-parent-bin",
-    "build": "run-s build-only",
-    "build-only": "lerna run build --stream --concurrency 1",
+    "build": "run-s build-only -- --force build-bundles",
+    "build-only": "tsc -b packages",
+    "build-bundles": "lerna run build:bundle --stream",
+    "watch": "tsc -b -w packages --preserveWatchOutput",
     "prepublish-all": "node ./scripts/replace-auth-vars.js --publish && lerna exec -- cross-var shx cp $LERNA_ROOT_PATH/.npmrc .npmrc",
     "publish-all": "lerna publish from-package --loglevel=verbose",
     "postpublish-all": "shx rm -rf .npmrc && lerna exec -- shx rm -rf .npmrc",
