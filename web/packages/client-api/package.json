@@ -6,8 +6,8 @@
   "description": "Client contracts, shared between client and broker",
   "license": "Apache-2.0",
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main",
+    "prebuild": "npm run lint && trash dist",
+    "build": "npm run build:main",
     "build:main": "tsc -p tsconfig.json",
     "lint": "tslint src/**/*.ts"
   },

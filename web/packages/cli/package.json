@@ -9,19 +9,19 @@
     "plexus": "./plexus.js"
   },
   "scripts": {
-    "prebuild": "yarn lint && trash dist/main && trash dist/lib && npm run copy-assets && npm run rename-lib",
+    "prebuild": "npm run lint && trash dist/main && trash dist/lib && npm run copy-assets && npm run rename-lib",
     "copy-assets": "copyfiles -f ../../../dsl/gen/cli/build/libs/cli-*-all.jar dist/lib",
     "rename-lib": "renamer --find cli-.*-all.jar --regex --replace plexusgen.jar dist/lib/* && trash dist/lib/cli-.*-all.jar",
-    "build": "yarn build:main",
+    "build": "npm run build:main",
     "postinstall": "node ./install.js",
-    "postbuild": "yarn test",
+    "postbuild": "npm run test",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
     "unit": "jest --coverage",
     "pretest": "trash dist/gen",
     "test": "if-env PLEXUS_CLI_TESTS_ENABLED=true && npm run cli-test || echo 'CLI tests disabled'",
-    "cli-test": "node ./install.js && yarn unit"
+    "cli-test": "node ./install.js && npm run unit"
   },
   "dependencies": {
     "adm-zip": "0.4.11",

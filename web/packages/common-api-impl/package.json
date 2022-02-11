@@ -5,14 +5,14 @@
   "license": "Apache-2.0",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main && yarn build:bundle",
+    "prebuild": "npm run lint && trash dist",
+    "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc -p tsconfig.json",
-    "build:bundle": "yarn create-bundle",
+    "build:bundle": "npm run create-bundle",
     "create-bundle": "browserify dist/main/src/api/InteropPlatformFactory.js -x websocket -s PlexusPlatformFactory -o dist/main/src/platform-factory.bundle.js",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
-    "pretest": "yarn lint",
+    "pretest": "npm run lint",
     "test": "jest --coverage"
   },
   "dependencies": {

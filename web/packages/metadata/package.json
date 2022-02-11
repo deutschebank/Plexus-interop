@@ -5,15 +5,15 @@
   "license": "Apache-2.0",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main",
-    "postbuild": "yarn test",
+    "prebuild": "npm run lint && trash dist",
+    "build": "npm run build:main",
+    "postbuild": "npm run test",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
     "unit": "jest --coverage",
-    "pretest": "yarn lint",
-    "test": "yarn unit"
+    "pretest": "npm run lint",
+    "test": "npm run unit"
   },
   "dependencies": {
     "@plexus-interop/common": "file:../common",

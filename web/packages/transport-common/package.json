@@ -6,9 +6,9 @@
   "description": "General Transport for Plexus Web Interop",
   "license": "Apache-2.0",
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main",
-    "postbuild": "yarn test",
+    "prebuild": "npm run lint && trash dist",
+    "build": "npm run build:main",
+    "postbuild": "npm run test",
     "build:watch": "tsc -w",
     "build:main": "tsc -p tsconfig.json",
     "lint": "tslint src/**/*.ts",

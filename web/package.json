@@ -12,17 +12,17 @@
     "prepublish-all": "node ./scripts/replace-auth-vars.js --publish && lerna exec -- cross-var shx cp $LERNA_ROOT_PATH/.npmrc .npmrc",
     "publish-all": "lerna publish from-package --loglevel=verbose",
     "postpublish-all": "shx rm -rf .npmrc && lerna exec -- shx rm -rf .npmrc",
-    "e2e-native": "cd ./packages/e2e && yarn e2e-native",
-    "poste2e-native": "yarn coverage",
-    "e2e-web": "cd ./packages/e2e && yarn e2e-web-electron",
-    "poste2e-web": "yarn coverage",
+    "e2e-native": "cd ./packages/e2e && npm run e2e-native",
+    "poste2e-native": "npm run coverage",
+    "e2e-web": "cd ./packages/e2e && npm run e2e-web-electron",
+    "poste2e-web": "npm run coverage",
     "coverage": "nyc report --reporter=text --reporter=html",
     "build-e2e": "run-s build e2e-native e2e-web",
     "ci-build": "run-s build",
     "ci-build-e2e": "run-s build e2e-native e2e-web",
     "ci-publish": "run-s bump-version build publish-all",
     "bump-version": "cross-var lerna version $PLEXUS_BUILD_NPM_PACKAGE_VERSION --force-publish=* --loglevel=verbose",
-    "benchmarks": "cd ./packages/e2e && yarn native-broker-benchmarks && yarn web-broker-benchmarks"
+    "benchmarks": "cd ./packages/e2e && npm run native-broker-benchmarks && npm run web-broker-benchmarks"
   },
   "workspaces": [
     "packages/*"
@@ -106,8 +106,7 @@
     "tslib": "^2.3.1",
     "tslint": "5.8.0",
     "typescript": "~4.4.4",
-    "watchify": "^3.9.0",
-    "yarn": "^1.17.3"
+    "watchify": "^3.9.0"
   },
   "dependencies": {
     "@plexus-interop/broker": "file:packages/broker",

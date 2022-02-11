@@ -5,13 +5,13 @@
   "license": "Apache-2.0",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main && yarn build:host",
+    "prebuild": "npm run lint && trash dist",
+    "build": "npm run build:main && npm run build:host",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "build:host": "browserify dist/main/src/api/CrossDomainHostEntryPoint.js -s proxyHost -o dist/main/src/CrossDomainHostBuilder.bundle.js",
     "lint": "tslint src/**/*.ts",
-    "pretest": "yarn lint",
+    "pretest": "npm run lint",
     "test": "jest --coverage"
   },
   "dependencies": {

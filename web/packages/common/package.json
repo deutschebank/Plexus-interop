@@ -7,14 +7,14 @@
   "description": "Common functionality for Plexus Interop Web",
   "license": "Apache-2.0",
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main",
-    "postbuild": "yarn test",
+    "prebuild": "npm run lint && trash dist",
+    "build": "npm run build:main",
+    "postbuild": "npm run test",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
     "unit": "jest --coverage",
-    "test": "yarn unit"
+    "test": "npm run unit"
   },
   "dependencies": {
     "@types/loglevel": "^1.4.29",
