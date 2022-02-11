@@ -24,7 +24,7 @@ export class DynamicBinaryMarshallerProvider implements BinaryMarshallerProvider
     private internalProvider: DynamicProtoMarshallerFactory;
 
     public constructor(private readonly registry: InteropRegistry) {
-        this.internalProvider = new DynamicProtoMarshallerFactory(registry);
+        this.internalProvider = new DynamicProtoMarshallerFactory(this.registry);
     }
 
     public getMarshaller(messageType: any): BinaryMarshaller {

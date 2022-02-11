@@ -17,9 +17,7 @@
 import { EventBus } from '../../EventBus';
 import { Event } from '../../Event';
 import { StateMaschine, StateMaschineBase, LoggerFactory, Logger } from '@plexus-interop/common';
-import { filter, fromEvent, map, Observable } from 'rxjs';
-
-
+import { filter, fromEvent, map } from 'rxjs';
 
 import { IFrameHostMessage } from '../model/IFrameHostMessage';
 import { CrossDomainHostConfig } from './CrossDomainHostConfig';

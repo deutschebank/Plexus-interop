@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 import { BinaryMarshaller, Marshaller } from '../api';
-import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
 
 export class DynamicBinaryProtoMarshaller implements BinaryMarshaller {
     

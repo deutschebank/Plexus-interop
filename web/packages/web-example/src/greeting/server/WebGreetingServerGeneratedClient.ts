@@ -31,12 +31,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MethodInvocationContext, GenericClientApiBase, Completion, ClientConnectRequest, StreamingInvocationClient, GenericClientApi, InvocationRequestInfo, InvocationClient } from '@plexus-interop/client';
-import { ProvidedMethodReference, ServiceDiscoveryRequest, ServiceDiscoveryResponse, MethodDiscoveryRequest, MethodDiscoveryResponse, GenericClientApiBuilder, ValueHandler } from '@plexus-interop/client';
+import { ClientConnectRequest, GenericClientApi, GenericClientApiBase, GenericClientApiBuilder, MethodInvocationContext } from '@plexus-interop/client';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import { Arrays, Observer, ConversionObserver } from '@plexus-interop/common';
-
 import * as plexus from './gen/plexus-messages';
+
 
 /**
  * Main client API

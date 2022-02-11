@@ -7,7 +7,7 @@
   "scripts": {
     "preinstall": "node ./scripts/replace-lock-registry.js && node ./scripts/replace-auth-vars.js --install",
     "postinstall": "node ./scripts/replace-lock-registry.js --backward && link-parent-bin",
-    "build": "run-s build-only -- --force build-bundles",
+    "build": "npm run build-only -- --force && npm run build-bundles",
     "build-only": "tsc -b packages",
     "build-bundles": "lerna run build:bundle --stream",
     "watch": "tsc -b -w packages --preserveWatchOutput",

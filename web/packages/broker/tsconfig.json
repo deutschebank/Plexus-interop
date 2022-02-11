@@ -12,6 +12,12 @@
         { "path": "../protocol" },
         { "path": "../transport-common" }
     ],
+    "types": [
+        "node",
+        "jest",
+        "long",
+        "jstorage"
+    ],
     "include": [
         "src/**/*.ts",
         "tests/**/*.ts"

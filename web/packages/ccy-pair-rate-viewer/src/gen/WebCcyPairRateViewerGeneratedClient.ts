@@ -14,13 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MethodInvocationContext, Completion, ClientConnectRequest, StreamingInvocationClient, GenericClientApi, InvocationRequestInfo, InvocationClient, GenericRequest, GenericClientApiBase } from "@plexus-interop/client";
-import { ProvidedMethodReference, ServiceDiscoveryRequest, ServiceDiscoveryResponse, MethodDiscoveryRequest, MethodDiscoveryResponse, GenericClientApiBuilder, ValueHandler } from "@plexus-interop/client";
+import { ClientConnectRequest, ContainerAwareClientAPIBuilder, GenericClientApi, GenericClientApiBase, InvocationRequestInfo } from "@plexus-interop/client";
 import { TransportConnection, UniqueId } from "@plexus-interop/transport-common";
-import { Arrays, Observer } from "@plexus-interop/common";
-import { InvocationObserver, InvocationObserverConverter, ContainerAwareClientAPIBuilder } from "@plexus-interop/client";
-
 import * as plexus from "./plexus-messages";
+
 
 /**
  *  Proxy interface of CcyPairRateService service, to be consumed by Client API

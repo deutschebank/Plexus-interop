@@ -43,7 +43,7 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-const outEl = document.getElementById('out');
+const outEl = document.getElementById('out')!;
 const log = (msg: string) => {
     console.log(msg);
     outEl.innerText = outEl.innerText + '\n' + msg;
@@ -60,7 +60,7 @@ new WebCcyPairRateProviderClientBuilder()
     .withCcyPairRateServiceInvocationsHandler({
         onGetRate: async (context, ccyPair: plexus.fx.ICcyPair) => {
             log(`Received request for ${ccyPair.ccyPairName}'s Rate`);
-            return rateService.getRate(ccyPair.ccyPairName);
+            return rateService.getRate(ccyPair.ccyPairName!);
         }
     })
     .connect()

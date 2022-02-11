@@ -29,7 +29,7 @@ export async function downloadProtoc(): Promise<string> {
     if (url.endsWith('.exe')) {
         // direct file link to exe file, move it to bin/proto.exe
         const downloadedExe = await new Promise<string>((resolve, reject) => {
-            let temp = null;
+            let temp: string | null = null;
             iterateFiles(downloadDir, /protoc.*\.exe/g, f => temp = f, false);
             if (temp) {
                 resolve(temp);

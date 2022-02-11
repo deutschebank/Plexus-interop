@@ -38,7 +38,7 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-const outEl = document.getElementById('out');
+const outEl = document.getElementById('out')!;
 
 const log = (msg: string) => {
     console.log(msg);
