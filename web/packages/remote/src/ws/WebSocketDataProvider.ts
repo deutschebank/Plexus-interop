@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Observable } from 'rxjs';
-import { webSocket, WebSocketSubjectConfig } from 'rxjs/websocket';
+import { webSocket, WebSocketSubjectConfig } from 'rxjs/webSocket';
 
 export class WebSocketDataProvider {
 
