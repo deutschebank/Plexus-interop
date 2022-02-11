@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "../../node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -18,8 +18,8 @@
             "polyfills": "src/polyfills.ts",
             "assets": ["src/assets", "src/favicon.ico"],
             "styles": [
-              "node_modules/bootswatch/dist/yeti/bootstrap.min.css",
-              "node_modules/font-awesome/css/font-awesome.min.css",
+              "bootswatch/dist/yeti/bootstrap.min.css",
+              "font-awesome/css/font-awesome.min.css",
               "src/styles.css"
             ],
             "scripts": [],
@@ -81,8 +81,8 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-              "node_modules/bootswatch/dist/yeti/bootstrap.min.css",
-              "node_modules/font-awesome/css/font-awesome.min.css",
+              "bootswatch/dist/yeti/bootstrap.min.css",
+              "font-awesome/css/font-awesome.min.css",
               "src/styles.css"
             ],
             "assets": ["src/assets", "src/favicon.ico"]
