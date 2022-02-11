@@ -30,7 +30,7 @@
   "main": "dist/main/src/index.js",
   "peerDependencies": {
     "protobufjs": "6.11.2",
-    "rxjs": "^7.5.2"
+    "rxjs": "^7.5.4"
   },
   "publishConfig": {
     "access": "public"

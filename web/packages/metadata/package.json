@@ -18,11 +18,10 @@
   "dependencies": {
     "@plexus-interop/common": "file:../common",
     "@plexus-interop/protocol": "file:../protocol",
-    "@plexus-interop/remote": "file:../remote",
-    "rxjs": "^7.5.2"
+    "@plexus-interop/remote": "file:../remote"
   },
   "peerDependencies": {
-    "rxjs": "^7.5.2"
+    "rxjs": "^7.5.4"
   },
   "main": "dist/main/src/index.js",
   "jest": {
