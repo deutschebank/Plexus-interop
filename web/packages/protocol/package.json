@@ -6,7 +6,6 @@
   "description": "Plexus Internal Protocol",
   "license": "Apache-2.0",
   "scripts": {
-    "prebuild": "trash dist",
     "build": "npm run gen-transport-protocol && npm run gen-client-protocol && npm run build:main",
     "copy-gen-folder": "copyfiles src/gen/* dist/main",
     "build:main": "tsc -p tsconfig.json && npm run copy-gen-folder",
@@ -32,18 +31,9 @@
     "access": "public"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "testRegex": ".+/dist/main/tests/.+.spec.js$",
-    "coverageDirectory": "coverage",
-    "collectCoverageFrom": [
-      "dist/main/src/**/*.js",
-      "!src/*.d.ts",
-      "!src/**/*.d.ts",
-      "!src/**/*.spec.ts"
-    ]
+    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
+    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
   }
 }
