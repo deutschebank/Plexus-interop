@@ -8,9 +8,10 @@
   "private": true,
   "scripts": {
     "prebuild": "trash dist",
-    "build": "npm run build:main && npm run copy-assets && npm run build-host-proxy",
+    "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
+    "build:bundle": "npm run copy-assets && npm run build-host-proxy",
     "lint": "tslint src/**/*.ts",
     "unit": "npm run build && jest --coverage",
     "pretest": "npm run lint",
