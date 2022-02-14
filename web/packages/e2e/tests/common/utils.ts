@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import isElectronRenderer from 'is-electron-renderer';
+
 const globalObj: any = global || window;
 
 export function readEncodedConfig(): any {
@@ -25,7 +27,7 @@ export function readEncodedConfig(): any {
     }
 
     let env: any;
-    if (globalObj.require('is-electron-renderer')) {
+    if (isElectronRenderer) {
         env = globalObj.require('electron').remote.process.env;
     } else {
         env = process.env;
