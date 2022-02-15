@@ -16,7 +16,7 @@
     "build:main": "tsc -p tsconfig.json",
     "copy-assets": "copyfiles src/gen/* dist/main && copyfiles -f src/views/* dist",
     "prebuild:bundle": "npm run copy-assets",
-    "build:bundle": "webpack ./dist/main/src/index.js --output-filename app.bundle.js --mode production --no-performance-hints",
+    "build:bundle": "webpack",
     "build": "npm run build:main && npm run copy-assets && npm run build:bundle",
     "postbuild:bundle": "copyfiles ./dist/* -f ../../../bin/win-x86/samples/quick-start/apps/WebCcyPairRateProvider"
   }
