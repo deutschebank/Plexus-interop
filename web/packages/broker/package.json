@@ -4,6 +4,7 @@
   "description": "Plexus Interop Broker",
   "license": "Apache-2.0",
   "version": "0.1.0",
+  "sideEffects": false,
   "scripts": {
     "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc -p tsconfig.json",

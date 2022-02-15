@@ -8,6 +8,7 @@
   "bin": {
     "plexus": "./plexus.js"
   },
+  "sideEffects": false,
   "scripts": {
     "prebuild": "npm run lint && trash dist/main && trash dist/lib && npm run copy-assets && npm run rename-lib",
     "copy-assets": "copyfiles -f ../../../dsl/gen/cli/build/libs/cli-*-all.jar dist/lib",

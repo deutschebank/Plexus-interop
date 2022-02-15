@@ -5,6 +5,7 @@
   "main": "dist/main/src/index.js",
   "description": "General Transport for Plexus Web Interop",
   "license": "Apache-2.0",
+  "sideEffects": false,
   "scripts": {
     "build": "npm run build:main",
     "build:watch": "tsc -w",

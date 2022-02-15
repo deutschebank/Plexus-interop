@@ -4,6 +4,7 @@
   "description": "Plexus Interop Utilities for accessing remote Services",
   "license": "Apache-2.0",
   "version": "0.1.0",
+  "sideEffects": false,
   "scripts": {
     "build": "npm run build:main",
     "build:main": "tsc -p tsconfig.json",

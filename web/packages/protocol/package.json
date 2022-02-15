@@ -5,6 +5,7 @@
   "main": "dist/main/src/index.js",
   "description": "Plexus Internal Protocol",
   "license": "Apache-2.0",
+  "sideEffects": true,
   "scripts": {
     "build": "npm run gen-transport-protocol && npm run gen-client-protocol && npm run build:main",
     "copy-gen-folder": "copyfiles src/gen/* dist/main",
