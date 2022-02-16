@@ -5,7 +5,6 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "prebuild": "trash dist",
     "build:main": "tsc -p tsconfig.json",
     "package": "webpack",
     "copy-assets": "copyfiles -f src/greeting/views/* ./dist && copyfiles -f ./dist/greetingServer* ../../../bin/win-x86/samples/greeting/apps/WebGreetingServer",

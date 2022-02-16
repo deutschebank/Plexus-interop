@@ -5,7 +5,6 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "prebuild": "npm run test",
     "build": "npm run build:bundle",
     "build:bundle": "ng build && npm run copy-to-bin",
     "test": "jest",

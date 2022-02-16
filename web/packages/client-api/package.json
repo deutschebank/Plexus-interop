@@ -7,7 +7,6 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "scripts": {
-    "prebuild": "npm run lint && trash dist",
     "build": "npm run build:main",
     "build:main": "tsc -p tsconfig.json",
     "lint": "tslint src/**/*.ts"
