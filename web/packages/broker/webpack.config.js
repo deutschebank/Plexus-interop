@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  target: ['web', 'es5'],
   mode: 'production',
   entry: './dist/main/src/api/CrossDomainHostEntryPoint.js',
   output: {
