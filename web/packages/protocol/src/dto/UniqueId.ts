@@ -56,7 +56,7 @@ export class UniqueId {
 }
 
 function longToString(x: number | Long | undefined): string {
-    if (!x)
+    if (x == null)
         return 'undefined';
 
     let s = x.toString(16).toUpperCase();
