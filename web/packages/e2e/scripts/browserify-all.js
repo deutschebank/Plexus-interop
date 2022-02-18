@@ -14,13 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const fs = require("fs");
 const path = require("path");
 const glob = require('glob');
-const browserify = require("browserify");
-const istanbul = require('browserify-istanbul');
 const argv = require('minimist')(process.argv.slice(2));
 const webpack = require('webpack');
+const globToRegExp = require('glob-to-regexp');
 
 console.log('Passed arguments' + JSON.stringify(argv));
 const resultOutFile = path.join(process.cwd(), argv.outputFile);
@@ -33,12 +31,6 @@ if (argv.standalone) {
 const testFiles = glob.sync(resultInputGlob);
 
 console.log('Processing files: ' + JSON.stringify(testFiles));
-
-// const browserifyBundle = browserify({ 
-//     entries: testFiles, 
-//     standalone: argv.standalone
-// })
-// .external('websocket');
 
 
 const coverageIgnorePatterns =  [
@@ -59,15 +51,11 @@ if (argv.clientCoverage) {
     coverageIgnorePatterns.push('**/broker/**');
 }
 
-// if (argv.clientCoverage || argv.brokerCoverage) {
-//     console.log('Coverage enabled, instrumenting sources');
-//     bundle = browserifyBundle.transform(istanbul({
-//         ignore: coverageIgnorePatterns,
-//         defaultIgnore: true
-//     }), { global: true });
-// } else if (argv.broker) {
-//     coverageIgnorePatterns.push('**/broker/**');
-// }
+let excludePaths = /node_modules/;
+if (argv.clientCoverage || argv.brokerCoverage) {
+    excludePaths = coverageIgnorePatterns.map(pattern => globToRegExp(pattern));
+}
+
 
 const compiler = webpack({
     entry: testFiles,
@@ -80,9 +68,7 @@ const compiler = webpack({
                 rules: [
                     {
                         test: /\.js/,
-                        // include: /src/,
-                        // exclude: coverageIgnorePatterns,
-                        exclude: /node_modules/,
+                        exclude: excludePaths,
                         use: {
                             loader: "@jsdevtools/coverage-istanbul-loader",
                             options: {
@@ -95,6 +81,7 @@ const compiler = webpack({
             }
         } : {}),
     output: {
+        path: path.resolve(__dirname, 'dist', 'main', 'tests'),
         filename: argv.outputFile,
         ...(argv.standalone ? {
             library: {
@@ -104,10 +91,6 @@ const compiler = webpack({
         } : {})
     }
 })
-
-
-// browserifyBundle.bundle()
-//     .pipe(fs.createWriteStream(argv.outputFile));
 
 compiler.run((err, stats) => { // [Stats Object](#stats-object)
     if (err) throw new Error(err);

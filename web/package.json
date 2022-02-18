@@ -74,6 +74,7 @@
     "espree": "^3.4.3",
     "find-port": "^2.0.1",
     "glob": "^7.2.0",
+    "glob-to-regexp": "^0.4.1",
     "http-server": "^0.11.1",
     "if-env": "1.0.0",
     "is-electron-renderer": "^2.0.1",
