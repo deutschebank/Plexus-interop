@@ -20,7 +20,8 @@
 module.exports = function (config) {
   config.set({
 
-    client: { 
+    client: {
+        mocha: {},
         // pass dynamic param to test
         hostPath: config.hostPath,
         runInParent: true,
@@ -31,7 +32,15 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'browserify'],
+    frameworks: ['mocha', 'webpack'],
+
+    plugins: [
+      'karma-mocha',
+      'karma-mocha-reporter',
+      'karma-webpack',
+      'karma-ie-launcher',
+      'karma-chrome-launcher',
+    ],
 
 
     // list of files / patterns to load in the browser
@@ -50,13 +59,13 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'dist/main/tests/web/*.spec.js': ['browserify'],
-      'scripts/karma-*.js': ['browserify'],
-      'dist/main/src/polyfills.js': ['browserify']
+      'dist/main/tests/web/*.spec.js': ['webpack'],
+      'scripts/karma-*.js': ['webpack'],
+      'dist/main/src/polyfills.js': ['webpack']
     },
 
-    browserify: {
-      debug: true
+    webpack: {
+      // debug: true
     },
 
     // test results reporter to use

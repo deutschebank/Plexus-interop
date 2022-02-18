@@ -14,30 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var fs = require("fs");
-var path = require("path");
-var glob = require('glob');
-var browserify = require("browserify");
-var istanbul = require('browserify-istanbul');
-var argv = require('minimist')(process.argv.slice(2));
+const fs = require("fs");
+const path = require("path");
+const glob = require('glob');
+const browserify = require("browserify");
+const istanbul = require('browserify-istanbul');
+const argv = require('minimist')(process.argv.slice(2));
+const webpack = require('webpack');
 
 console.log('Passed arguments' + JSON.stringify(argv));
-var resultOutFile = path.join(process.cwd(), argv.outputFile);
+const resultOutFile = path.join(process.cwd(), argv.outputFile);
 console.log('Output file:' + resultOutFile);
-var resultInputGlob = path.join(process.cwd(), argv.inputGlob);
+const resultInputGlob = path.join(process.cwd(), argv.inputGlob);
 console.log('Input files pattern:' + resultInputGlob);
 if (argv.standalone) {
     console.log(`Building UMD module [${argv.standalone}]`);
 }
-var testFiles = glob.sync(resultInputGlob);
+const testFiles = glob.sync(resultInputGlob);
 
 console.log('Processing files: ' + JSON.stringify(testFiles));
 
-let browserifyBundle = browserify({ 
-    entries: testFiles, 
-    standalone: argv.standalone
-})
-.external('websocket');
+// const browserifyBundle = browserify({ 
+//     entries: testFiles, 
+//     standalone: argv.standalone
+// })
+// .external('websocket');
+
 
 const coverageIgnorePatterns =  [
     // skip all node modules, except our
@@ -57,16 +59,61 @@ if (argv.clientCoverage) {
     coverageIgnorePatterns.push('**/broker/**');
 }
 
-if (argv.clientCoverage || argv.brokerCoverage) {
-    console.log('Coverage enabled, instrumenting sources');
-    bundle = browserifyBundle.transform(istanbul({
-        ignore: coverageIgnorePatterns,
-        defaultIgnore: true
-    }), { global: true });
-} else if (argv.broker) {
-    coverageIgnorePatterns.push('**/broker/**');
+// if (argv.clientCoverage || argv.brokerCoverage) {
+//     console.log('Coverage enabled, instrumenting sources');
+//     bundle = browserifyBundle.transform(istanbul({
+//         ignore: coverageIgnorePatterns,
+//         defaultIgnore: true
+//     }), { global: true });
+// } else if (argv.broker) {
+//     coverageIgnorePatterns.push('**/broker/**');
+// }
 
-}
+const compiler = webpack({
+    entry: testFiles,
+    mode: 'production',
+    externals: ['websocket'],
+    devtool: 'source-map',
+    ...(argv.clientCoverage || argv.brokerCoverage ? 
+        {
+            module: {
+                rules: [
+                    {
+                        test: /\.js/,
+                        // include: /src/,
+                        // exclude: coverageIgnorePatterns,
+                        exclude: /node_modules/,
+                        use: {
+                            loader: "@jsdevtools/coverage-istanbul-loader",
+                            options: {
+                                compact: true,
+                                esModules: true
+                            }
+                        }
+                    }
+                ]
+            }
+        } : {}),
+    output: {
+        filename: argv.outputFile,
+        ...(argv.standalone ? {
+            library: {
+                name: argv.standalone,
+                type: 'umd'
+            }
+        } : {})
+    }
+})
 
-browserifyBundle.bundle()
-    .pipe(fs.createWriteStream(argv.outputFile));
+
+// browserifyBundle.bundle()
+//     .pipe(fs.createWriteStream(argv.outputFile));
+
+compiler.run((err, stats) => { // [Stats Object](#stats-object)
+    if (err) throw new Error(err);
+    console.log('...done');
+
+    compiler.close((closeErr) => {
+        if (closeErr) throw new Error(closeErr);
+    });
+});
