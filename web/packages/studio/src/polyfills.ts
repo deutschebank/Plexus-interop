@@ -1,7 +1,7 @@
 /***************************************************************************************************
  * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
  */
-import '@angular/localize/init';
+import "@angular/localize/init";
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -50,3 +50,5 @@ import "zone.js"; // Included with Angular CLI.
  * APPLICATION IMPORTS
  */
 import "arraybuffer-slice";
+
+(window as any)["global"] = window;
