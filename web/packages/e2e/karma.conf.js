@@ -37,10 +37,10 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'dist/main/src/polyfills.js',
       '../../node_modules/long/dist/long.js',
       'scripts/karma-*.js',
       'dist/main/tests/web/*.spec.js',
-      'dist/main/src/polyfills.js',
     ],
 
     // list of files to exclude
