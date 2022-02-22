@@ -219,7 +219,7 @@ export class DiscoveryTests extends BaseEchoTest {
             const method = discoveryResponse.methods[0];
             this.assertDiscoveredMethodValid(method);
             // invoke discovered
-            await new Promise((invocationResolve, invocationReject) => {
+            await new Promise<void>((invocationResolve, invocationReject) => {
                 client.sendRawUnaryRequest(
                     method.providedMethod as ProvidedMethodReference,
                     this.encodeRequestDto(echoRequest), {
@@ -254,7 +254,7 @@ export class DiscoveryTests extends BaseEchoTest {
             const method = discoveryResponse.methods[0];
             this.assertDiscoveredMethodValid(method);
             // invoke discovered
-            await new Promise((invocationResolve, invocationReject) => {
+            await new Promise<void>((invocationResolve, invocationReject) => {
                 client.sendUnaryRequest(
                     method.providedMethod as ProvidedMethodReference,
                     echoRequest, {

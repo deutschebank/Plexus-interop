@@ -16,10 +16,9 @@
  */
 import { AppConnectionHeartBit } from './events/AppConnectionHeartBit';
 import { Subscription, Logger, LoggerFactory } from '@plexus-interop/common';
-import { PartialObserver } from 'rxjs/Observer';
-import { Observable } from 'rxjs/Observable';
+import { PartialObserver,  Observable, share } from 'rxjs';
 import { EventType } from './events/EventType';
-import 'rxjs/add/operator/share';
+
 import { RemoteBrokerService } from './remote/RemoteBrokerService';
 
 export class PeerConnectionsService {
@@ -48,9 +47,9 @@ export class PeerConnectionsService {
                 this.log.debug('Unsubscribing from app hearbits');
                 sourceSubscription.unsubscribe();
             };
-        })
+        }).pipe(
             // important, make observable shared between multiple subscriptions
-            .share();
+            share());
     }
 
 }

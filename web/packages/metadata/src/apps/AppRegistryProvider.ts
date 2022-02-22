@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { AppRegistry } from './model/AppRegistry';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 export interface AppRegistryProvider {
 

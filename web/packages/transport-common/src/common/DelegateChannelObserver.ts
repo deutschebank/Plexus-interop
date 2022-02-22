@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { ChannelObserver } from './ChannelObserver';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { Observer } from '@plexus-interop/common';
 
 export class DelegateChannelObserver<T> implements ChannelObserver<AnonymousSubscription, T> {

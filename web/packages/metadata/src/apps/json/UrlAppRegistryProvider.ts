@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
+import { Observable, throwError } from 'rxjs';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { HttpDataLoader } from '@plexus-interop/remote';
 import { JsonAppRegistryProvider } from './JsonAppRegistryProvider';
@@ -36,7 +36,7 @@ export class UrlAppRegistryProvider implements AppRegistryProvider {
         private readonly interval: number = -1) { }
 
     public getAppRegistry(): Observable<AppRegistry> {
-        return this.started ? this.jsonAppRegistryProvider.getAppRegistry() : Observable.throw(new Error('Not started'));
+        return this.started ? this.jsonAppRegistryProvider.getAppRegistry() : throwError(() => new Error('Not started'));
     }
 
     public getCurrent(): AppRegistry {

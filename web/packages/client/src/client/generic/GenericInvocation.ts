@@ -18,7 +18,7 @@ import { UniqueId, Channel } from '@plexus-interop/transport-common';
 import { clientProtocol as plexus, SuccessCompletion, ErrorCompletion, ClientError, ClientProtocolUtils, InvocationMetaInfo } from '@plexus-interop/protocol';
 import { ClientProtocolHelper as modelHelper, ClientProtocolHelper } from '@plexus-interop/protocol';
 import { InvocationState } from './InvocationState';
-import { Subscription, AnonymousSubscription } from 'rxjs/Subscription';
+import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { StateMaschine, CancellationToken, Logger, LoggerFactory, StateMaschineBase, once } from '@plexus-interop/common';
 import { ProvidedMethodReference } from '@plexus-interop/client-api';
 import { ClientDtoUtils } from '../ClientDtoUtils';

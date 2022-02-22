@@ -22,7 +22,7 @@ import { when, mock, instance, anything, verify } from 'ts-mockito';
 import { GenericClientImpl } from '../../src/client/generic/GenericClientImpl';
 import { Observer } from '@plexus-interop/common';
 import { clientProtocol as plexus, SuccessCompletion } from '@plexus-interop/protocol';
-import { Subscription, AnonymousSubscription } from 'rxjs/Subscription';
+import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { ChannelObserver } from '@plexus-interop/transport-common';
 import { MethodInvocationContext } from '@plexus-interop/client-api';
 import { InvocationObserver, UnaryHandlerConverter } from '../../src/client';
@@ -41,7 +41,7 @@ process.on('unhandledRejection', (reason: any, p: any) => {
 
 describe('GenericInvocationHost', () => {
 
-    it('Can handle invocoming invocation and send response back', async (done) => {
+    it('Can handle invocoming invocation and send response back', (done) => {
 
         const responsePayload = new Uint8Array([1, 2, 3]).buffer;
         const requestPayload = new Uint8Array([3, 2, 1]).buffer;
@@ -59,7 +59,7 @@ describe('GenericInvocationHost', () => {
 
     });
 
-    it('Closes invocation with error on if execution rejected', async (done) => {
+    it('Closes invocation with error on if execution rejected', (done) => {
 
         const requestPayload = new Uint8Array([3, 2, 1]).buffer;
 
@@ -73,7 +73,7 @@ describe('GenericInvocationHost', () => {
 
     });
 
-    it('Closes invocation with error on if execution failed', async (done) => {
+    it('Closes invocation with error on if execution failed', (done) => {
 
         const requestPayload = new Uint8Array([3, 2, 1]).buffer;
 
@@ -87,7 +87,7 @@ describe('GenericInvocationHost', () => {
 
     });
 
-    it('Can receive multiple messages, send multiple responses back and complete invocation', async (done) => {
+    it('Can receive multiple messages, send multiple responses back and complete invocation', (done) => {
         const requestPayload = new Uint8Array([3, 2, 1]).buffer;
         const responsePayload = new Uint8Array([1, 2, 3]).buffer;
         setupHostedInvocation(requestPayload, async (completion: plexus.ICompletion) => {

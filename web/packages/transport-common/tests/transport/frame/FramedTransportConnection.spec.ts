@@ -18,7 +18,7 @@ import { FramedTransportConnection } from '../../../src/transport/frame';
 import { TestUtils } from './util';
 import { BufferedObserver } from '../../BufferedObserver';
 import { TestBufferedInMemoryFramedTransport } from '../TestBufferedInMemoryFramedTransport';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
 import { UniqueId } from '@plexus-interop/protocol';
 import { ChannelOpenFrame } from '../../../src/transport/frame/model/ChannelOpenFrame';

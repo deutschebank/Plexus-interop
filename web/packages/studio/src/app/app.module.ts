@@ -14,41 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CustomRouterStateSerializer } from './services/AppUtils';
-import { TransportConnectionFactory } from './services/core/TransportConnectionFactory';
-import { InteropClientFactory } from './services/core/InteropClientFactory';
-import { InteropServiceFactory } from './services/core/InteropServiceFactory';
-import { metaReducers } from './services/ui/RootReducers';
-import { AppActions } from './services/ui/AppActions';
-import { AppRoutes } from './app.routing';
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CustomRouterStateSerializer } from "./services/AppUtils";
+import { TransportConnectionFactory } from "./services/core/TransportConnectionFactory";
+import { InteropClientFactory } from "./services/core/InteropClientFactory";
+import { InteropServiceFactory } from "./services/core/InteropServiceFactory";
+import { metaReducers } from "./services/ui/RootReducers";
+import { AppActions } from "./services/ui/AppActions";
+import { AppRoutes } from "./app.routing";
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { AppComponent } from './app.component';
-import { MetadataLoaderComponent } from './metadata-loader/metadata-loader.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { RouterModule } from '@angular/router';
-import { AppListComponent } from './app-list/app-list.component';
-import { HeaderComponent } from './header/header.component';
+import { AppComponent } from "./app.component";
+import { MetadataLoaderComponent } from "./metadata-loader/metadata-loader.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { RouterModule } from "@angular/router";
+import { AppListComponent } from "./app-list/app-list.component";
+import { HeaderComponent } from "./header/header.component";
 
-import { reducers } from './services/ui/RootReducers';
-import { AppServicesComponent } from './app-services/app-services.component';
-import { ConsumedServiceComponent } from './consumed-service/consumed-service.component';
-import { ProvidedServiceComponent } from './provided-service/provided-service.component';
+import { reducers } from "./services/ui/RootReducers";
+import { AppServicesComponent } from "./app-services/app-services.component";
+import { ConsumedServiceComponent } from "./consumed-service/consumed-service.component";
+import { ProvidedServiceComponent } from "./provided-service/provided-service.component";
 
-import { StoreModule } from '@ngrx/store';
+import { StoreModule } from "@ngrx/store";
 
-import { EffectsModule } from '@ngrx/effects';
-import { Effects } from './services/ui/AppEffects';
-import { HttpModule } from '@angular/http';
+import { EffectsModule } from "@ngrx/effects";
+import { Effects } from "./services/ui/AppEffects";
+import { HttpClientModule } from "@angular/common/http";
 
 import {
   StoreRouterConnectingModule,
   RouterStateSerializer,
-} from '@ngrx/router-store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+} from "@ngrx/router-store";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { LocationStrategy, HashLocationStrategy } from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -58,17 +58,17 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     HeaderComponent,
     AppServicesComponent,
     ConsumedServiceComponent,
-    ProvidedServiceComponent
+    ProvidedServiceComponent,
   ],
   imports: [
     BrowserModule,
-    NgbModule.forRoot(),
+    NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(AppRoutes),
+    RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot([Effects]),
-    HttpModule
+    HttpClientModule,
   ],
   providers: [
     AppActions,
@@ -77,10 +77,9 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     TransportConnectionFactory,
     {
       provide: LocationStrategy,
-      useClass: HashLocationStrategy
-    }
+      useClass: HashLocationStrategy,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

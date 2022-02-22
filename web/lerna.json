@@ -10,6 +10,17 @@
     },
     "bootstrap": {
       "hoist": false
+    },
+    "version": {
+      "exact": true,
+      "yes": true,
+      "push": false,
+      "changelog": false,
+      "gitTagVersion": false
+    },
+    "publish": {
+      "yes": true,
+      "fromPackage": true
     }
   }
 }

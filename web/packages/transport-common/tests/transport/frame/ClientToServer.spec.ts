@@ -20,7 +20,7 @@ import { randomPayload } from '../../utils';
 import { BufferedObserver } from '../../BufferedObserver';
 import { LogObserver } from '../../LogObserver';
 import { setupConnections, disconnect } from '../transport-mocks';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
 
 describe('Framed Transport Connection: Client to Server communication', () => {
@@ -138,7 +138,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
         const serverChannel = await serverChannelsObserver.pullData();
 
         const observer = new BufferedObserver<ArrayBuffer>();
-        await new Promise((resolve, _) => serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve())));
+        await new Promise<void>((resolve, _) => serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve())));
 
         for (let payload of payloads) {
             const received = await observer.pullData();

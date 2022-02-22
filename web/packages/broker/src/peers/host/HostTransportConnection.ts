@@ -20,7 +20,7 @@ import { UniqueId, clientProtocol } from '@plexus-interop/protocol';
 import { RemoteBrokerService } from '../remote/RemoteBrokerService';
 import { RemoteActions } from '../actions/RemoteActions';
 import { CreateChannelResponse } from '../actions/CreateChannelResponse';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { ChannelRequest } from '../actions/ChannelRequest';
 import { SendMessageRequest } from '../actions/SendMessageRequest';
 import { CloseChannelRequest } from '../actions/CloseChannelRequest';

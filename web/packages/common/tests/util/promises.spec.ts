@@ -41,7 +41,7 @@ describe('Retriable invocation', () => {
         const result = await retriableAction();
         expect(result).toBe(expectedResult);
         expect(actionMock.mock.calls.length).toBe(retriesNum);
-        expect(actionMock.mock.results.filter(r => r.isThrow).length).toBe(retriesNum - 1);
+        expect(actionMock.mock.results.filter(r => r.type === 'throw').length).toBe(retriesNum - 1);
     });
 
     it('Should fail if all retries failed', async () => {

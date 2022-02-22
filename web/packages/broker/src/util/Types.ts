@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { isString } from '@plexus-interop/common';
 import { ProvidedMethodReference } from '@plexus-interop/metadata';
 import { ConsumedMethodReference } from '@plexus-interop/metadata';

@@ -19,7 +19,7 @@ import { ActionType } from '../../peers/ActionType';
 import { EventType } from '../events/EventType';
 import { Subscription, Observer, Logger, LoggerFactory } from '@plexus-interop/common';
 import { RemoteBrokerService } from './RemoteBrokerService';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { RemoteActionResult, isFailed, isCompleted, successResult, errorResult, completedResult } from './RemoteActionResult';
 import { EventBasedRequest } from './EventBasedRequest';
 import { PlexusPartialObserver, PlexusObserver } from '@plexus-interop/transport-common';

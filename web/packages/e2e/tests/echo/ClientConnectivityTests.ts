@@ -66,7 +66,7 @@ export class ClientConnectivityTests extends BaseEchoTest {
             let handler: ServerStreamingHandler | null = null;
             let clientInvocationErrorReceived: Promise<void> | null = null;
 
-            const serverRequestReceived = new Promise(async (serverRequestResolve) => {
+            const serverRequestReceived = new Promise<void>(async (serverRequestResolve) => {
                 handler = new ServerStreamingHandler(async context => {
                     serverInvocationContext = context;
                     serverRequestResolve();
@@ -127,7 +127,7 @@ export class ClientConnectivityTests extends BaseEchoTest {
             let handler: ServerStreamingHandler | null = null;
             let clientInvocationErrorReceived: Promise<void> | null = null;
 
-            const serverRequestReceived = new Promise(async (serverRequestResolve) => {
+            const serverRequestReceived = new Promise<void>(async (serverRequestResolve) => {
                 handler = new ServerStreamingHandler(async () => {
                     serverRequestResolve();
                 });
