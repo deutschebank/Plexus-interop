@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ClientError } from '@plexus-interop/protocol';
+import { expect } from 'chai';
+import { MethodInvocationContext } from '@plexus-interop/client-api';
+import { AsyncHelper } from '@plexus-interop/common';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ServerStreamingHandler } from './ServerStreamingHandler';
 import { BaseEchoTest } from './BaseEchoTest';
 import * as plexus from '../../src/echo/gen/plexus-messages';
-import { ClientError } from '@plexus-interop/protocol';
-import { expect } from 'chai';
-import { MethodInvocationContext } from '@plexus-interop/client-api';
-import { AsyncHelper } from '@plexus-interop/common';
 
 export class ServerStreamingInvocationTests extends BaseEchoTest {
 

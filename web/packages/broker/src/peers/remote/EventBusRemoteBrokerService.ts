@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../../bus/EventBus';
-import { ActionType } from '../../peers/ActionType';
-import { EventType } from '../events/EventType';
 import { Subscription, Observer, Logger, LoggerFactory } from '@plexus-interop/common';
-import { RemoteBrokerService } from './RemoteBrokerService';
 import { Observable } from 'rxjs';
+import { PlexusPartialObserver, PlexusObserver } from '@plexus-interop/transport-common';
+import { EventBus } from '../../bus/EventBus';
+import { ActionType } from "../ActionType";
+import { EventType } from '../events/EventType';
+import { RemoteBrokerService } from './RemoteBrokerService';
 import { RemoteActionResult, isFailed, isCompleted, successResult, errorResult, completedResult } from './RemoteActionResult';
 import { EventBasedRequest } from './EventBasedRequest';
-import { PlexusPartialObserver, PlexusObserver } from '@plexus-interop/transport-common';
 
 export class EventBusRemoteBrokerService implements RemoteBrokerService {
 
@@ -58,7 +58,7 @@ export class EventBusRemoteBrokerService implements RemoteBrokerService {
 
         this.eventBus.subscribe(requestTopic, event => {
             const requestEvent = event.payload as EventBasedRequest;
-            const senderId = requestEvent.senderId;
+            const {senderId} = requestEvent;
             if (this.log.isTraceEnabled()) {
                 this.log.trace(`Received [${actionType.id}.${requestEvent.requestId}] request from [${senderId}]`);
             }
@@ -142,7 +142,7 @@ export class EventBusRemoteBrokerService implements RemoteBrokerService {
     }
 
     private eventTopic(eventType: EventType<any>, remoteId?: string): string {
-        return `event.${eventType.id}${remoteId ? '.' + remoteId : ''}`;
+        return `event.${eventType.id}${remoteId ? `.${  remoteId}` : ''}`;
     }
 
     private requestTopic(remoteId: string, actionType: ActionType<any, any>): string {

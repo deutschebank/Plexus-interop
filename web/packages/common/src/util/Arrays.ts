@@ -37,8 +37,8 @@ export class Arrays {
 
 export function arrayBufferToString(buf: ArrayBuffer): string {
     let binaryString = '';
-    let bytes = new Uint8Array(buf);
-    const length = bytes.length;
+    const bytes = new Uint8Array(buf);
+    const {length} = bytes;
     for (let i = 0; i < length; i++) {
         binaryString += String.fromCharCode(bytes[i]);
     }

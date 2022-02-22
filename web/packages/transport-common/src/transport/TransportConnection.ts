@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TransportChannel } from './TransportChannel';
-import { UniqueId } from '@plexus-interop/protocol';
+import { UniqueId , clientProtocol } from '@plexus-interop/protocol';
 import { Observer, Subscription } from '@plexus-interop/common';
-import { clientProtocol } from '@plexus-interop/protocol'; 
+import { TransportChannel } from './TransportChannel';
+ 
 
 export interface TransportConnection {
 

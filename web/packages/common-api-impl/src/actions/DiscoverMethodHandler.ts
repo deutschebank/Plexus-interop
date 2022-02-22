@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { isMethod } from '../types';
-import { Method } from '../api';
 import { GenericRequest } from '@plexus-interop/client-api';
-import { getProvidedMethodByAlias, toConsumedMethodRef } from '../metadata';
 import { Application, InteropRegistryService } from '@plexus-interop/metadata';
 import { GenericClientApi, DiscoveryMode, UniqueId, ProvidedMethodReference } from '@plexus-interop/client';
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
+import { getProvidedMethodByAlias, toConsumedMethodRef } from '../metadata';
+import { Method } from '../api';
+import { isMethod } from '../types';
 
 export class DiscoverMethodHandler {
 
@@ -52,12 +52,12 @@ export class DiscoverMethodHandler {
             methods = methods.filter(m => {
                 if (m.providedMethod && m.providedMethod.providedService) {
                     const id = m.providedMethod.providedService.applicationId;
-                    const connectionId = m.providedMethod.providedService.connectionId;
+                    const {connectionId} = m.providedMethod.providedService;
                     const connectionIdString = UniqueId.fromProperties(connectionId as plexus.IUniqueId).toString();
                     return id === providerAppRef.id && connectionIdString === method.peer.id;
-                } else {
+                } 
                     return false;
-                }
+                
             });
         }
         if (methods.length > 0) {

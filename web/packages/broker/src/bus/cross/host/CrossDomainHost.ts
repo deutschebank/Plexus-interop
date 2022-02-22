@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../../EventBus';
-import { Event } from '../../Event';
 import { StateMaschine, StateMaschineBase, LoggerFactory, Logger } from '@plexus-interop/common';
 import { filter, fromEvent, map } from 'rxjs';
+import { EventBus } from '../../EventBus';
+import { Event } from '../../Event';
 
 import { IFrameHostMessage } from '../model/IFrameHostMessage';
 import { CrossDomainHostConfig } from './CrossDomainHostConfig';
@@ -91,7 +91,7 @@ export class CrossDomainHost {
     }
 
     private handleParentMessage(parsedEvent: HostMessageEvent): void {
-        const message = parsedEvent.message;
+        const {message} = parsedEvent;
         switch (message.type.id) {
             case MessageType.Ping.id:
                 this.log.trace('Received ping request');
@@ -136,7 +136,7 @@ export class CrossDomainHost {
     }
 
     private isLastRemoteMessage(event: Event): boolean {
-        const payload = event.payload;
+        const {payload} = event;
         return payload && (payload.status === RemoteActionStatus.COMPLETED || payload.status === RemoteActionStatus.FAILURE);
     }
 

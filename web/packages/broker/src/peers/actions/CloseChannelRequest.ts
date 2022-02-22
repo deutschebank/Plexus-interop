@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelRequest } from './ChannelRequest';
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
+import { ChannelRequest } from './ChannelRequest';
 
 export interface CloseChannelRequest extends ChannelRequest {
     completion: plexus.ICompletion;

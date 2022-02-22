@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GenericClientApi, Feature } from './GenericClientApi';
 import { UniqueId, InvocationRequestInfo, Completion } from '@plexus-interop/protocol';
 import { GenericRequest, ServiceDiscoveryRequest, MethodDiscoveryRequest, MethodDiscoveryResponse, ServiceDiscoveryResponse } from '@plexus-interop/client-api';
-import { ValueHandler, InvocationClient } from '../';
+import { GenericClientApi, Feature } from './GenericClientApi';
+import { ValueHandler, InvocationClient } from "..";
 import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
 import { InvocationObserver } from '../../generic';
 

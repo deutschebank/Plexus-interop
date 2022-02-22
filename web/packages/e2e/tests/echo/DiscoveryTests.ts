@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { expect } from 'chai';
+import { DiscoveredMethod, ProvidedMethodReference, DiscoveredServiceMethod, DiscoveredService } from '@plexus-interop/client-api';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { NopServiceHandler } from './NopServiceHandler';
-import { expect } from 'chai';
-import { DiscoveredMethod, ProvidedMethodReference, DiscoveredServiceMethod, DiscoveredService } from '@plexus-interop/client-api';
 import { UnaryServiceHandler } from './UnaryServiceHandler';
 import { ServerStreamingHandler } from './ServerStreamingHandler';
 import { ClientStreamingHandler } from './ClientStreamingHandler';
@@ -48,21 +48,15 @@ export class DiscoveryTests extends BaseEchoTest {
                             throw 'Empty response';
                         }
                     })
-                    .then(() => {
-                        return this.clientsSetup.disconnect(clients[0], clients[1]);
-                    });
+                    .then(() => this.clientsSetup.disconnect(clients[0], clients[1]));
             });
     }
 
-    public methodWithAlias = (m: DiscoveredMethod) => {
-        return !!m.providedMethod 
+    public methodWithAlias = (m: DiscoveredMethod) => !!m.providedMethod 
                     && !!m.providedMethod.providedService 
-                    && !!m.providedMethod.providedService.serviceAlias;        
-    }
+                    && !!m.providedMethod.providedService.serviceAlias
     
-    public serviceWithAlias = (s: DiscoveredService) => {
-        return !!s && !!s.providedService && !!s.providedService.serviceAlias;
-    }
+    public serviceWithAlias = (s: DiscoveredService) => !!s && !!s.providedService && !!s.providedService.serviceAlias
 
     public async testServiceDiscoveredById(): Promise<void> {
         const serviceId = 'plexus.interop.testing.EchoService';
@@ -151,22 +145,20 @@ export class DiscoveryTests extends BaseEchoTest {
                 });
             });
 
-        } else {
+        } 
             throw 'Empty response';
-        }
+        
     }
 
     public async testClientCanInvokeDiscoveredBidiStreamingRequest(): Promise<void> {
         const echoRequest = this.clientsSetup.createRequestDto();
-        const handler = new ClientStreamingHandler((context, hostClient) => {
-                return {
+        const handler = new ClientStreamingHandler((context, hostClient) => ({
                     next: clientRequest => hostClient.complete(),
                     complete: () => {},
                     // tslint:disable-next-line:no-console
                     error: (e) => console.error('Error received by server', e),
                     streamCompleted: () => {}
-                };
-            });
+                }));
         const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
         const discoveryResponse = await client.discoverMethod({
             consumedMethod: {
@@ -197,9 +189,9 @@ export class DiscoveryTests extends BaseEchoTest {
                 streamingClient.next(this.encodeRequestDto(echoRequest));
                 streamingClient.complete();
             });
-        } else {
+        } 
             throw 'Empty response';
-        }
+        
     }
 
     public async testClientCanInvokeDiscoveredMethodPassingRawData(): Promise<void> {
@@ -311,7 +303,7 @@ export class DiscoveryTests extends BaseEchoTest {
         expect(discoveredMethod.inputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
         expect(discoveredMethod.outputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
         expect(discoveredMethod.options).to.not.be.undefined;
-        let options = discoveredMethod.options || [];
+        const options = discoveredMethod.options || [];
         expect(options.length).to.be.greaterThan(0);
         expect(options[0].id).to.be.eq('interop.ProvidedMethodOptions.title');
         expect(options[0].value).to.be.eq(discoveredMethod.methodTitle);
@@ -322,7 +314,7 @@ export class DiscoveryTests extends BaseEchoTest {
         expect(discoveredMethod.methodTitle).to.not.be.undefined;
         expect(discoveredMethod.inputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
         expect(discoveredMethod.outputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
-        let options = discoveredMethod.options || [];
+        const options = discoveredMethod.options || [];
         expect(options.length).to.be.greaterThan(0);
         expect(options[0].id).to.be.eq('interop.ProvidedMethodOptions.title');
         expect(options[0].value).to.be.eq(discoveredMethod.methodTitle);

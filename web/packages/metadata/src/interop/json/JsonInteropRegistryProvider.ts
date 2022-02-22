@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { map, Observable, of } from 'rxjs';
+import { ExtendedArray, Logger, LoggerFactory, ExtendedMap, toMap } from '@plexus-interop/common';
 import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { InteropRegistry } from '../model/InteropRegistry';
-import { map, Observable, of } from 'rxjs';
 
 
 import { RegistryDto } from './RegistryDto';
-import { ExtendedArray, Logger, LoggerFactory, ExtendedMap, toMap } from '@plexus-interop/common';
 import { Message } from '../model/Message';
 import { ServiceDto } from './ServiceDto';
 import { Service } from '../model/Service';
@@ -100,12 +100,12 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
         messagesMap: ExtendedMap<string, Message>,
         enumsMap: ExtendedMap<string, Enum>): void {
 
-        const nested = rawEnries.nested;
+        const {nested} = rawEnries;
         if (!nested) {
             return;
         }
 
-        for (let key in nested) {
+        for (const key in nested) {
             const namespaceEntry = nested[key];
             const id = namespaceId ? `${namespaceId}.${key}` : key;
             if (isMessage(namespaceEntry)) {
@@ -137,9 +137,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             providedServices.push(this.convertProvidedService(providedDto, application, services.get(providedDto.service) as Service));
         });
         if (appDto.options) {
-            application.options = appDto.options.map(optDto => {
-                return { id: optDto.id, value: optDto.value };
-            });
+            application.options = appDto.options.map(optDto => ({ id: optDto.id, value: optDto.value }));
         }
         return application;
     }
@@ -155,12 +153,10 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
         };
         serviceDto.methods = serviceDto.methods || [];
         serviceDto.methods
-            .map(m => {
-                return {
+            .map(m => ({
                     method: service.methods.get(m.name) as Method,
                     consumedService
-                } as ConsumedMethod;
-            })
+                } as ConsumedMethod))
             .forEach(cm => methods.set(cm.method.name, cm));
         return consumedService;
     }
@@ -177,14 +173,12 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             methods
         };
 
-        serviceDto.methods.map(pm => {
-            return {
+        serviceDto.methods.map(pm => ({
                 method: service.methods.get(pm.name) as Method,
                 providedService,
                 title: this.getOptionValueOrDefault(pm.options, 'interop.ProvidedMethodOptions.title', null),
                 options: pm.options
-            } as ProvidedMethod;
-        })
+            } as ProvidedMethod))
             .forEach(pm => methods.set(pm.method.name, pm));
 
         return providedService;
@@ -192,7 +186,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
     private getOptionValueOrDefault(options: OptionDto[], id: string, defaultValue: string | null): string | null {
         if (options) {
-            for (let o of options) {
+            for (const o of options) {
                 if (o.id === id) {
                     return o.value;
                 }
@@ -207,15 +201,13 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             methods: ExtendedMap.create<string, Method>()
         };
         service.methods = toMap(
-            serviceDto.methods.map(methodDto => {
-                return {
+            serviceDto.methods.map(methodDto => ({
                     name: methodDto.name,
                     type: this.convertMethodType(methodDto.type),
                     requestMessage: messagesMap.get(methodDto.request) as Message,
                     responseMessage: messagesMap.get(methodDto.response) as Message,
                     service
-                } as Method;
-            }), m => m.name, m => m);
+                } as Method)), m => m.name, m => m);
         return service;
     }
 
@@ -230,7 +222,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             case MethodTypeDto.DuplexStreaming:
                 return MethodType.DuplexStreaming;
             default:
-                throw new Error('Unsupported method type: ' + methodTypeDto);
+                throw new Error(`Unsupported method type: ${  methodTypeDto}`);
         }
     }
 

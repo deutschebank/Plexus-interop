@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BinaryMarshallerProvider, BinaryMarshaller } from '../api';
 import { InteropRegistry } from '@plexus-interop/metadata';
+import { BinaryMarshallerProvider, BinaryMarshaller } from '../api';
 import { DynamicProtoMarshallerFactory } from './DynamicProtoMarshallerFactory';
 import { DynamicBinaryProtoMarshaller } from './DynamicBinaryProtoMarshaller';
 

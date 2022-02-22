@@ -16,10 +16,10 @@
  */
 import { InteropRegistryService, Application } from '@plexus-interop/metadata';
 import { GenericClientApi } from '@plexus-interop/client';
+import { GenericRequest } from '@plexus-interop/client-api';
 import { Method, StreamObserver, StreamSubscription } from '../api/client-api';
 import { isMethod } from '../types';
 import { getProvidedMethodByAlias, toMethodDefinition } from '../metadata';
-import { GenericRequest } from '@plexus-interop/client-api';
 import { DiscoverMethodHandler } from './DiscoverMethodHandler';
 
 export class SubscribeHandler {

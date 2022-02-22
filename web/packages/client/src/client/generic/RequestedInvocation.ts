@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Invocation } from '../../client/generic/Invocation';
-import { GenericInvocation } from './GenericInvocation';
 import { UniqueId } from '@plexus-interop/transport-common';
-import { AnonymousSubscription } from '../../client/api/AnonymousSubscription';
 import { clientProtocol as plexus, InvocationMetaInfo } from '@plexus-interop/protocol';
+import { Invocation } from "./Invocation";
+import { GenericInvocation } from './GenericInvocation';
+import { AnonymousSubscription } from "../api/AnonymousSubscription";
 import { InvocationChannelObserver } from './InvocationChannelObserver';
 
 export class RequestedInvocation implements Invocation {

@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Event } from './Event';
 import { Subscription } from '@plexus-interop/common';
+import { Event } from './Event';
 
 export interface EventBus {
 

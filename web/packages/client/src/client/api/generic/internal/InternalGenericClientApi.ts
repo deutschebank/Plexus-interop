@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { InternalActionInvoker } from './InternalActionInvoker';
 import { GenericClientApi } from '..';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
 
 /**
  * Extends public client with additioanal features

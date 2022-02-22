@@ -22,7 +22,7 @@ import { ProvidedMethodReference } from '@plexus-interop/client-api';
 export class ClientDtoUtils {
 
     public static targetInvocationHash(metaInfo: InvocationRequestInfo): string {
-        const alias = !!metaInfo.serviceAlias ? metaInfo.serviceAlias : 'default';
+        const alias = metaInfo.serviceAlias ? metaInfo.serviceAlias : 'default';
         return `${metaInfo.serviceId}.${alias}.${metaInfo.methodId}`;
     }
 
@@ -36,11 +36,11 @@ export class ClientDtoUtils {
                 connectionId: providedMethod.providedService.connectionId as UniqueId,
                 applicationInstanceId: providedMethod.providedService.applicationInstanceId as UniqueId
             };
-        } else {
+        } 
             return {
                 methodId: providedMethod.methodId || undefined
             };
-        }
+        
     }
 
     public static toError(error: any): ClientError {

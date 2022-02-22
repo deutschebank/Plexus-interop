@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/protocol';
-import { Frame } from './model';
-import { FramedTransport } from './FramedTransport';
 import { Observer, Logger, LimitedBufferQueue } from '@plexus-interop/common';
 import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import { Frame } from './model';
+import { FramedTransport } from './FramedTransport';
 import { Defaults } from '../../common/Defaults';
 
 /**

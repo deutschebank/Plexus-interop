@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GenericClient } from '../../../client/generic/GenericClient';
-import { Invocation } from '../../../client/generic/Invocation';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
+import { GenericClient } from "../../generic/GenericClient";
+import { Invocation } from "../../generic/Invocation";
 import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
 import { InvocationExecutor } from './InvocationExecutor';
 

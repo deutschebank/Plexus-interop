@@ -22,9 +22,7 @@ import { simpleSpawn } from '../common/process';
 
 export class ListMetaFilesCommand extends BaseJavaGenCommand {
 
-    public plexusGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=list-meta', ...this.optionArgs(opts, '=', name => name === 'out' ? 'outFile' : name)];
-    }
+    public plexusGenArgs: (opts: any) => string[] = opts => ['--type=list-meta', ...this.optionArgs(opts, '=', name => name === 'out' ? 'outFile' : name)]
 
     public generalDescription = () => 'list metadata files';
 

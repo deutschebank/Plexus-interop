@@ -34,7 +34,7 @@ function _proto_supported(): boolean {
 }
 
 function copyProperties(obj: any, proto: any): any {
-    for (let prop in proto) {
+    for (const prop in proto) {
         if (!obj.hasOwnProperty(prop)) {
             obj[prop] = proto[prop];
         }

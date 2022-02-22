@@ -14,26 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare var window: any;
-import { WebCcyPairRateProviderClientBuilder } from './gen/WebCcyPairRateProviderGeneratedClient';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
-import * as plexus from './gen/plexus-messages';
 import { LoggerFactory, LogLevel } from '@plexus-interop/common';
+import { WebCcyPairRateProviderClientBuilder } from './gen/WebCcyPairRateProviderGeneratedClient';
+import * as plexus from './gen/plexus-messages';
 import { RateService } from './RateService';
+declare var window: any;
 
 LoggerFactory.setLogLevel(LogLevel.TRACE);
 
 // Read launch arguments, provided by Electron Launcher
 declare var window: any;
 const electron = window.require('electron');
-const remote = electron.remote;
+const {remote} = electron;
 const electronWindow: any = remote.getCurrentWindow();
 
 const webSocketUrl = remote.getCurrentWindow().plexusBrokerWsUrl;
 const instanceId = remote.getCurrentWindow().plexusAppInstanceId;
 
 // enable dev tools
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', (e) => {
     if (e.which === 123) {
         // F12
         electronWindow.toggleDevTools();
@@ -46,7 +46,7 @@ document.addEventListener('keydown', function (e) {
 const outEl = document.getElementById('out')!;
 const log = (msg: string) => {
     console.log(msg);
-    outEl.innerText = outEl.innerText + '\n' + msg;
+    outEl.innerText = `${outEl.innerText  }\n${  msg}`;
 };
 
 const rateService = new RateService();

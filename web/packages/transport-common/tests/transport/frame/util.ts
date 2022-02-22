@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Frame, MessageFrame } from '../../../src/transport/frame/model';
 import { UniqueId } from '@plexus-interop/protocol';
+import { Frame, MessageFrame } from '../../../src/transport/frame/model';
 
 export class TestUtils {
 

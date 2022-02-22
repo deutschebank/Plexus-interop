@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { Observable, throttleTime, throwError } from 'rxjs';
-import { InteropRegistry } from '../model/InteropRegistry';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { HttpDataLoader } from '@plexus-interop/remote';
+import { HttpDataLoader , WebSocketDataProvider } from '@plexus-interop/remote';
+import { InteropRegistry } from '../model/InteropRegistry';
+import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { JsonInteropRegistryProvider } from './JsonInteropRegistryProvider';
-import { WebSocketDataProvider } from '@plexus-interop/remote';
 
 
 export class UrlInteropRegistryProvider implements InteropRegistryProvider {

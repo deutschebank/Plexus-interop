@@ -21,7 +21,7 @@ export class TimeUtils {
     }
 
     public static format(date: Date): string {
-        return `${date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1')}.${('000' + date.getMilliseconds()).slice(-3)}`;
+        return `${date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1')}.${(`000${  date.getMilliseconds()}`).slice(-3)}`;
     }
 
 }

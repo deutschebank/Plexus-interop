@@ -53,7 +53,7 @@ export class LoggerBase implements Logger, LoggerDelegate {
 
     public log(logLevel: LogLevel, msg: string, args: any[]): void {
 
-        let actualMessage = `${this.name} ${msg}`;
+        const actualMessage = `${this.name} ${msg}`;
 
         switch (logLevel) {
             case LogLevel.TRACE: 

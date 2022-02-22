@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Subscription, Logger, LoggerFactory } from '@plexus-interop/common';
 import { EventBus } from './EventBus';
 import { Event } from './Event';
-import { Subscription, Logger, LoggerFactory } from '@plexus-interop/common';
 
 export class FallbackEventBus implements EventBus {
 
@@ -40,9 +40,9 @@ export class FallbackEventBus implements EventBus {
         }
         if (this.baseEventBus) {
             return this.baseEventBus;
-        } else {
+        } 
             throw new Error('All source Event Bus providers failed');
-        }
+        
     }
 
     public publish(key: string, event: Event): void {
@@ -56,8 +56,8 @@ export class FallbackEventBus implements EventBus {
     public subscribe(key: string, handler: (event: Event) => void): Subscription {
         if (this.baseEventBus) {
             return this.baseEventBus.subscribe(key, handler);
-        } else {
+        } 
             throw new Error('Not initialyzed');
-        }
+        
     }
 }

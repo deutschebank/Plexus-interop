@@ -16,15 +16,15 @@
  */
 import { ServiceDiscoveryRequest } from '@plexus-interop/client-api';
 import { ServiceDiscoveryResponse } from '@plexus-interop/client-api';
-import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
-import { InvocationClient } from './../InvocationClient';
-import { ValueHandler } from './../ValueHandler';
 import { InvocationRequestInfo } from '@plexus-interop/protocol';
 import { Completion } from '@plexus-interop/client-api';
 import { MethodDiscoveryRequest } from '@plexus-interop/client-api';
 import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
 import { GenericRequest } from '@plexus-interop/client-api';
 import { UniqueId } from '@plexus-interop/transport-common';
+import { ValueHandler } from "../ValueHandler";
+import { InvocationClient } from "../InvocationClient";
+import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
 import { InvocationObserver } from '../../generic';
 
 export enum Feature {

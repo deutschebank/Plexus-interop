@@ -14,19 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPlatform } from './api';
-import { InteropFeature, MethodImplementation, StreamImplementation, InteropPeer, InteropPeerDefinition } from './api/client-api';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { TransportConnection } from '@plexus-interop/transport-common';
 import { GenericClientApiBuilder } from '@plexus-interop/client';
-import { PlexusInteropPeer } from './PlexusInteropPeer';
-import { registerMethod, registerStream } from './registration';
-import { InteropPlatformConfig } from './api/InteropPlatformFactory';
 import { webSocketCtor } from '@plexus-interop/common/dist/main/src/ws/detect';
 import { WebSocketDataProvider } from '@plexus-interop/remote';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 import { UrlInteropRegistryProvider, InteropRegistryService, Application, Option } from '@plexus-interop/metadata';
 import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io/dist/main/src/dynamic';
+import { InteropPlatformConfig } from './api/InteropPlatformFactory';
+import { registerMethod, registerStream } from './registration';
+import { PlexusInteropPeer } from './PlexusInteropPeer';
+import { InteropFeature, MethodImplementation, StreamImplementation, InteropPeer, InteropPeerDefinition } from './api/client-api';
+import { InteropPlatform } from './api';
 
 export class PlexusInteropPlatform implements InteropPlatform {
 
@@ -91,11 +91,9 @@ export class PlexusInteropPlatform implements InteropPlatform {
             .applications.valuesArray()
             .map(aliasFinder)
             .filter(alias => !!alias)
-            .map(alias => {
-                return {
+            .map(alias => ({
                     applicationName: (alias as Option).value
-                };
-            });
+                }));
     }
 
     private async finishInitialization(): Promise<void> {

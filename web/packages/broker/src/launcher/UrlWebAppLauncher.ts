@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { UniqueId } from '@plexus-interop/protocol';
+import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { AppLauncher } from './AppLauncher';
 import { AppLaunchRequest } from './AppLaunchRequest';
 import { AppLaunchResponse } from './AppLaunchResponse';
-import { UniqueId } from '@plexus-interop/protocol';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { LaunchInvocationContext } from './LaunchInvocationContext';
 
 export class UrlWebAppLauncher implements AppLauncher {

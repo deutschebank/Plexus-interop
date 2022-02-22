@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { removeSync, mkdirsSync, unzipSync } from './files';
-import { printProgress } from './progress';
 import * as zlib from 'zlib';
 import * as tar from 'tar-fs';
 import * as request from 'request';
 import * as path from 'path';
 import * as fs from 'fs';
+import { printProgress } from './progress';
+import { removeSync, mkdirsSync, unzipSync } from './files';
 
 export function downloadPackage(url: string, downloadDir: string, title: string = 'Package', headers: any = {}): Promise<string> {
     return new Promise<string>((resolve, reject) => {

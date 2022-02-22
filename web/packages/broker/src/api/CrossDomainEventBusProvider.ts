@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../bus/EventBus';
 import { Logger, LoggerFactory, DomUtils } from '@plexus-interop/common';
+import { EventBus } from '../bus/EventBus';
 import { CrossDomainEventBus } from '../bus/cross/CrossDomainEventBus';
 
 export class CrossDomainEventBusProvider {

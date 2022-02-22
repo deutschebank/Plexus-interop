@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare var window: Window;
+declare let window: Window;
 
 export class UrlParamsProvider {
 
@@ -29,13 +29,13 @@ export class UrlParamsProvider {
     public static parseUrlParams(query: string): any {
         const queryString: any = {};
         query = query.startsWith('?') ? query.substring(1) : query;
-        let vars = query.split('&');
+        const vars = query.split('&');
         for (let i = 0; i < vars.length; i++) {
-            let pair = vars[i].split('=');
+            const pair = vars[i].split('=');
             if (typeof queryString[pair[0]] === 'undefined') {
                 queryString[pair[0]] = decodeURIComponent(pair[1]);
             } else if (typeof queryString[pair[0]] === 'string') {
-                let arr = [queryString[pair[0]], decodeURIComponent(pair[1])];
+                const arr = [queryString[pair[0]], decodeURIComponent(pair[1])];
                 queryString[pair[0]] = arr;
             } else {
                 queryString[pair[0]].push(decodeURIComponent(pair[1]));

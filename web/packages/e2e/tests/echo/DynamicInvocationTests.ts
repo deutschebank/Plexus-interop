@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { expect } from 'chai';
 import { BaseEchoTest } from './BaseEchoTest';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { UnaryServiceHandler } from './UnaryServiceHandler';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientStreamingHandler } from './ClientStreamingHandler';
-import { expect } from 'chai';
 
 export class DynamicInvocationTests extends BaseEchoTest {
 
@@ -51,8 +51,7 @@ export class DynamicInvocationTests extends BaseEchoTest {
 
     public async testClientCanSendDynamicStreamingRequest(): Promise<void> {
         const echoRequest = this.clientsSetup.createRequestDto();
-        const handler = new ClientStreamingHandler((context, hostClient) => {
-            return {
+        const handler = new ClientStreamingHandler((context, hostClient) => ({
                 next: async clientRequest => {
                     this.assertEqual(echoRequest, clientRequest);
                     hostClient.next(clientRequest);
@@ -61,8 +60,7 @@ export class DynamicInvocationTests extends BaseEchoTest {
                 complete: () => { },
                 error: (e) => { },
                 streamCompleted: () => { }
-            };
-        });
+            }));
         const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
         return new Promise<void>(async (resolve, reject) => {
             let remoteCompleted = false;

@@ -25,7 +25,7 @@ export interface Option {
 }
 
 export function getFlags(o: Option): string {
-    return !!o.isRequired ? `-${o.shortName}, --${o.longName} <${o.longName}>`
-            : !!o.isFlag ? `-${o.shortName}, --${o.longName}` 
+    return o.isRequired ? `-${o.shortName}, --${o.longName} <${o.longName}>`
+            : o.isFlag ? `-${o.shortName}, --${o.longName}` 
                 : `-${o.shortName}, --${o.longName} [${o.longName}]`;
 }

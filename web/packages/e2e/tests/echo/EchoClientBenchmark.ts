@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { MethodInvocationContext, MethodType } from '@plexus-interop/client';
+import { CancellationToken } from '@plexus-interop/common';
 import { BaseEchoTest } from './BaseEchoTest';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { BenchmarkResult } from '../common/BenchmarkResult';
 import { UnaryServiceHandler } from './UnaryServiceHandler';
-import { MethodInvocationContext, MethodType } from '@plexus-interop/client';
 import { ServerStreamingHandler } from './ServerStreamingHandler';
-import { CancellationToken } from '@plexus-interop/common';
 
 export class EchoClientBenchmark extends BaseEchoTest {
 

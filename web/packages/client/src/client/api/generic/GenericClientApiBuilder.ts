@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GenericClientApi } from './GenericClientApi';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import { GenericClientFactory } from '../../generic/GenericClientFactory';
 import { ClientConnectRequest } from '@plexus-interop/client-api';
+import { Logger, LoggerFactory, retriable, defaultPromiseRetryConfig } from '@plexus-interop/common';
+import { BinaryMarshallerProvider } from '@plexus-interop/io';
+import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
+import { GenericClientApi } from './GenericClientApi';
+import { GenericClientFactory } from '../../generic/GenericClientFactory';
 import { GenericClientApiImpl } from './GenericClientApiImpl';
 import { GenericInvocationsHost } from './GenericInvocationsHost';
-import { Logger, LoggerFactory, retriable, defaultPromiseRetryConfig } from '@plexus-interop/common';
 import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
 import { BidiStreamingInvocationHandler } from './handlers/streaming/BidiStreamingInvocationHandler';
 import { ServerStreamingInvocationHandler } from './handlers/streaming/ServerStreamingInvocationHandler';
 import { UnaryInvocationHandler } from './handlers/unary/UnaryInvocationHandler';
 import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
 
 
 // tslint:disable:member-ordering

@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ExtendedMap } from '@plexus-interop/common';
 import { Application } from './Application';
 import { Message } from './Message';
 import { Service } from './Service';
-import { ExtendedMap } from '@plexus-interop/common';
 import { MessagesNamespace } from '../json/MessagesNamespace';
 import { Enum } from './Enum';
 

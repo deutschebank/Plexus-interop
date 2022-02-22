@@ -16,12 +16,11 @@
  */
 import { ProvidedMethodReference, InteropRegistryService } from '@plexus-interop/metadata';
 import { GenericClientApi } from '@plexus-interop/client';
-import { Method } from '../api';
 import { DiscoveryMode, ProvidedServiceReference, DiscoveredMethod, MethodType } from '@plexus-interop/client-api';
+import { clientProtocol as plexus , UniqueId } from '@plexus-interop/protocol';
+import { Method } from '../api';
 import { getAlias, getAppAliasById } from '../metadata';
 import { PartialPeerDescriptor } from '../PartialPeerDescriptor';
-import { clientProtocol as plexus } from '@plexus-interop/protocol';
-import { UniqueId } from '@plexus-interop/protocol';
 
 export class DiscoverMethodsHandler {
 

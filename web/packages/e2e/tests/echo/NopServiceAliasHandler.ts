@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
 import { MethodInvocationContext } from '@plexus-interop/client';
 import { Observer } from '@plexus-interop/common';
+import { ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
 
 import * as plexus from '../../src/echo/gen/plexus-messages';
 

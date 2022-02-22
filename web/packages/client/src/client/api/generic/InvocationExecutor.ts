@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Invocation } from '../../../client/generic/Invocation';
 import { Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
-import { StreamingInvocationHost } from './handlers/streaming/StreamingInvocationHost';
-import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
-import { BaseInvocation } from '../../generic/BaseInvocation';
 import { UniqueId } from '@plexus-interop/transport-common';
 import { ActionReference, MethodInvocationContext } from '@plexus-interop/client-api';
 import { SuccessCompletion, ClientProtocolHelper, ErrorCompletion, InvocationMetaInfo } from '@plexus-interop/protocol';
+import { Invocation } from "../../generic/Invocation";
+import { StreamingInvocationHost } from './handlers/streaming/StreamingInvocationHost';
+import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
+import { BaseInvocation } from '../../generic/BaseInvocation';
 
 export class InvocationExecutor {
 
@@ -71,9 +71,9 @@ export class InvocationExecutor {
                     if (!ClientProtocolHelper.isSuccessCompletion(completion || new SuccessCompletion())) {
                         reject(completion);
                         return new ErrorCompletion();
-                    } else {
+                    } 
                         return new SuccessCompletion();
-                    }
+                    
                 }
             };
             isTyped ? this.handleInvocation(invocation) : this.handleGenericInvocation(invocation);

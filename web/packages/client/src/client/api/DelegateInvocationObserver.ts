@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import { DelegateChannelObserver } from '@plexus-interop/transport-common';
-import { InvocationObserver, InvocationChannelObserver } from '../generic';
 import { AnonymousSubscription } from '@plexus-interop/common';
+import { InvocationObserver, InvocationChannelObserver } from '../generic';
 
 export class DelegateInvocationObserver<T> extends DelegateChannelObserver<T> implements InvocationChannelObserver<AnonymousSubscription, T> {
     

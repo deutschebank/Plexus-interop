@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MethodImplementation, StreamImplementation } from './api/client-api';
 import { InteropRegistryService } from '@plexus-interop/metadata';
 import { GenericClientApiBuilder, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
+import { ClientError } from '@plexus-interop/protocol';
+import { MethodImplementation, StreamImplementation } from './api/client-api';
 import { getProvidedMethodByAlias, getAppAliasById } from './metadata';
 import { PartialPeerDescriptor } from './PartialPeerDescriptor';
-import { ClientError } from '@plexus-interop/protocol';
 
 export function registerMethod(commonApiMethod: MethodImplementation, clientBuilder: GenericClientApiBuilder, registryService: InteropRegistryService): void {
     const providedMethod = getProvidedMethodByAlias(commonApiMethod.name, registryService);

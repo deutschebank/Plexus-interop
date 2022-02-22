@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/protocol';
+import { Logger, CancellationToken } from '@plexus-interop/common';
 import { Frame } from './model';
 import { FramedTransport } from './FramedTransport';
-import { Logger, CancellationToken } from '@plexus-interop/common';
 import { BufferedReadFramedTransport } from './BufferedReadFramedTransport';
 
 /**

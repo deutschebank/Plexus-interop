@@ -23,9 +23,7 @@ import { getProtocExecPath } from '../common/protoc';
 
 export class GenCSharpCommand extends BaseCommand {
     
-    public clientGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=csharp', ...this.optionArgs(opts)];
-    }
+    public clientGenArgs: (opts: any) => string[] = opts => ['--type=csharp', ...this.optionArgs(opts)]
 
     public name = () => 'gen-csharp';
 

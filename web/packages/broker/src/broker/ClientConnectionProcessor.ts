@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AsyncHandler } from '../AsyncHandler';
 import { TransportConnection } from '@plexus-interop/transport-common';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { Completion, ErrorCompletion, ClientError } from '@plexus-interop/protocol';
+import { AsyncHandler } from '../AsyncHandler';
 import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 import { ClientRequestProcessor } from './ClientRequestProcessor';
 import { ApplicationConnection } from '../lifecycle/ApplicationConnection';

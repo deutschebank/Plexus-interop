@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { UniqueId } from '@plexus-interop/transport-common';
+import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 import { GenericClientApiBuilder, GenericClientApi } from '../generic';
 import { ConnectionDetailsService } from './ConnectionDetailsService';
 import { getBaseWsUrl } from './WsConnectionDetails';
 import { DefaultConnectionDetailsService } from './DefaultConnectionDetailsService';
-import { UniqueId } from '@plexus-interop/transport-common';
-import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 
 export class ContainerAwareClientAPIBuilder extends GenericClientApiBuilder {
 

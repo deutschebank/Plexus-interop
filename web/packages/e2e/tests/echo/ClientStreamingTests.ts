@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { BaseEchoTest } from './BaseEchoTest';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientStreamingHandler } from './ClientStreamingHandler';
-import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
 
 export class ClientStreamingTests extends BaseEchoTest {
 
@@ -31,8 +31,7 @@ export class ClientStreamingTests extends BaseEchoTest {
 
     public testClientCanSendStreamToServer(): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
-            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => {
-                return {
+            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => ({
                     next: async clientRequest => {
                         hostClient.next(clientRequest);
                         hostClient.complete();
@@ -42,8 +41,7 @@ export class ClientStreamingTests extends BaseEchoTest {
                         reject(e);
                     },
                     streamCompleted: () => { }
-                };
-            });
+                }));
             const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
             let remoteCompleted = false;
             const streamingClient = await client.getEchoServiceProxy().clientStreaming({

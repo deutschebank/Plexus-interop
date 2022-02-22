@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppConnectionHeartBit } from './events/AppConnectionHeartBit';
 import { Subscription, Logger, LoggerFactory } from '@plexus-interop/common';
 import { PartialObserver,  Observable, share } from 'rxjs';
+import { AppConnectionHeartBit } from './events/AppConnectionHeartBit';
 import { EventType } from './events/EventType';
 
 import { RemoteBrokerService } from './remote/RemoteBrokerService';

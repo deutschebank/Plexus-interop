@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 import { clientProtocol as plexus, SuccessCompletion, ClientProtocolHelper, ErrorCompletion, Completion, UniqueId, ClientProtocolUtils } from '@plexus-interop/protocol';
-import { ApplicationConnectionDescriptor } from '../lifecycle/ApplicationConnectionDescriptor';
-import { InteropRegistryService } from '@plexus-interop/metadata';
-import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
+import { InteropRegistryService , ConsumedMethodReference , ProvidedMethodReference } from '@plexus-interop/metadata';
 import { TransportChannel, Defaults, BufferedObserver, PlexusObserver } from '@plexus-interop/transport-common';
 import { LoggerFactory, Logger } from '@plexus-interop/common';
-import { ConsumedMethodReference } from '@plexus-interop/metadata';
-import { ProvidedMethodReference } from '@plexus-interop/metadata';
+import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
+import { ApplicationConnectionDescriptor } from '../lifecycle/ApplicationConnectionDescriptor';
 import { ApplicationConnection } from '../lifecycle/ApplicationConnection';
 import { Types } from '../util/Types';
 
@@ -120,8 +118,7 @@ export class InvocationRequestHandler {
         const targetChannelId = targetChannel.uuid().toString();
         const sourceChannelId = sourceChannel.uuid().toString();
 
-        const sourceObserver: (resolve: any, reject: any) => PlexusObserver<ArrayBuffer> = (resolve, reject) => {
-            return {
+        const sourceObserver: (resolve: any, reject: any) => PlexusObserver<ArrayBuffer> = (resolve, reject) => ({
                 next: async messagePayload => {
                     if (this.log.isTraceEnabled()) {
                         this.log.trace(`[${sourceChannelId}]->[${targetChannelId}] Transferring message of ${messagePayload.byteLength} bytes`);
@@ -145,8 +142,7 @@ export class InvocationRequestHandler {
                     this.log.error(`Received error from source channel [${sourceChannelId}]`, e);
                     reject(e);
                 }
-            };
-        };
+            });
 
         return new Promise<void>((resolve, reject) => {
             source.setObserver(sourceObserver(resolve, reject));
@@ -202,7 +198,7 @@ export class InvocationRequestHandler {
                 throw new Error('Requested application is not online');
             }
             return appConnection;
-        } else {
+        } 
             const targetMethods = this.registryService.getMatchingProvidedMethods(sourceConnection.applicationId, methodReference);
             if (
                 targetMethods.length === 1 && targetMethods[0].options !== undefined &&
@@ -210,12 +206,12 @@ export class InvocationRequestHandler {
             ) {
                 const appConnection = await this.appLifeCycleManager.spawnConnection(targetMethods[0].providedService.application.id);
                 return appConnection;
-            } else {
+            } 
                 const targetAppIds = targetMethods
                     .map(method => method.providedService.application.id);
                 const appConnection = await this.appLifeCycleManager.getOrSpawnConnectionForOneOf(targetAppIds, sourceConnection.instanceId);
                 return appConnection;
-            }
-        }
+            
+        
     }
 }

@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ConnectionStatus, Subscription } from './api/client-api';
 import { LoggerFactory, Logger } from '@plexus-interop/common';
+import { ConnectionStatus, Subscription } from './api/client-api';
 
 const logger: Logger = LoggerFactory.getLogger('PeerListener');
 

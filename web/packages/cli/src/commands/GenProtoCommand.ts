@@ -20,9 +20,7 @@ import { Option } from './Option';
 
 export class GenProtoCommand extends BaseJavaGenCommand {
     
-    public plexusGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=proto', '--descriptors', ...this.optionArgs(opts)];
-    }
+    public plexusGenArgs: (opts: any) => string[] = opts => ['--type=proto', '--descriptors', ...this.optionArgs(opts)]
 
     public generalDescription = () => 'generate proto definitions for specified entry point';
 

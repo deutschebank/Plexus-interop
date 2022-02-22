@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger } from '@plexus-interop/common';
 import { Frame, MessageFrame, ConnectionCloseFrame, ChannelOpenFrame, ChannelCloseFrame } from './model';
 import { ConnectionOpenFrame } from './model/ConnectionOpenFrame';
-import { Logger } from '@plexus-interop/common';
 import { TransportFrameListener } from './TransportFrameListener';
 
 export class TransportFrameHandler {

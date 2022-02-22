@@ -17,10 +17,10 @@
 import { TransportConnection, TransportChannel } from '@plexus-interop/transport-common';
 import { Observer, Logger, LoggerFactory, Subscription, stringToArrayBuffer, arrayBufferToString } from '@plexus-interop/common';
 import { UniqueId, clientProtocol } from '@plexus-interop/protocol';
+import { Observable } from 'rxjs';
 import { RemoteBrokerService } from '../remote/RemoteBrokerService';
 import { RemoteActions } from '../actions/RemoteActions';
 import { CreateChannelResponse } from '../actions/CreateChannelResponse';
-import { Observable } from 'rxjs';
 import { ChannelRequest } from '../actions/ChannelRequest';
 import { SendMessageRequest } from '../actions/SendMessageRequest';
 import { CloseChannelRequest } from '../actions/CloseChannelRequest';
@@ -88,8 +88,7 @@ export class HostTransportConnection implements TransportConnection {
 
         this.log.info('Binding to remote actions');
 
-        this.remoteBrokerService.host<{}, CreateChannelResponse>(RemoteActions.CREATE_CHANNEL, (request, responseObserver) => {
-            return new Observable(observer => {
+        this.remoteBrokerService.host<{}, CreateChannelResponse>(RemoteActions.CREATE_CHANNEL, (request, responseObserver) => new Observable(observer => {
                 this.log.trace('Create channel request received');
                 this.createChannel()
                     .then(channel => {
@@ -97,8 +96,7 @@ export class HostTransportConnection implements TransportConnection {
                         observer.complete();
                     })
                     .catch(e => observer.error(Types.toClientError(e)));
-            }).subscribe(responseObserver);
-        }, this.stringUuid);
+            }).subscribe(responseObserver), this.stringUuid);
 
         this.remoteBrokerService.host<ChannelRequest, string>(RemoteActions.OPEN_CHANNEL, (request: ChannelRequest, responseObserver) => {
             const channel = this.getManagedChannel(request.channelId);
@@ -119,8 +117,7 @@ export class HostTransportConnection implements TransportConnection {
             };
         }, this.stringUuid);
 
-        this.remoteBrokerService.host<SendMessageRequest, {}>(RemoteActions.SEND_MESSAGE, (request: SendMessageRequest, responseObserver) => {
-            return new Observable(observer => {
+        this.remoteBrokerService.host<SendMessageRequest, {}>(RemoteActions.SEND_MESSAGE, (request: SendMessageRequest, responseObserver) => new Observable(observer => {
                 if (this.log.isTraceEnabled()) {
                     this.log.trace(`Send Message of [${request.messagePayload.length}] length for [${request.channelId}] channel received`);
                 }
@@ -132,11 +129,9 @@ export class HostTransportConnection implements TransportConnection {
                 } else {
                     observer.error(`No channel with id [${request.channelId}]`);
                 }
-            }).subscribe(responseObserver);
-        }, this.stringUuid);
+            }).subscribe(responseObserver), this.stringUuid);
 
-        this.remoteBrokerService.host<CloseChannelRequest, CloseChannelResponse>(RemoteActions.CLOSE_CHANNEL, (request: CloseChannelRequest, responseObserver) => {
-            return new Observable(observer => {
+        this.remoteBrokerService.host<CloseChannelRequest, CloseChannelResponse>(RemoteActions.CLOSE_CHANNEL, (request: CloseChannelRequest, responseObserver) => new Observable(observer => {
                 this.log.trace(`Close channel [${request.channelId}] received`);
                 const channel = this.getManagedChannel(request.channelId);
                 if (channel) {
@@ -149,9 +144,7 @@ export class HostTransportConnection implements TransportConnection {
                 } else {
                     observer.error(`No channel with id [${request.channelId}]`);
                 }
-            }).subscribe(responseObserver);
-
-        }, this.stringUuid);
+            }).subscribe(responseObserver), this.stringUuid);
 
     }
 }

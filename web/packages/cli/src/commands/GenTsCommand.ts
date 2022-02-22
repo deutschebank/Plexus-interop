@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as path from 'path';
 import { baseDir, out, plexusEntryPoint, namespace, verbose, excludePattern } from './DefaultOptions';
 import { Option } from './Option';
 import { getJavaExecPath, getJavaGenLibPath } from '../common/java';
 import { BaseCommand } from './BaseCommand';
 import { simpleSpawn } from '../common/process';
 import { genJsStaticModule, genTsStaticModule } from '../common/protoJs';
-import * as path from 'path';
 import { removeSync, mkdirsSync, listFiles } from '../common/files';
 import { GenProtoCommand } from './GenProtoCommand';
 
@@ -29,9 +29,7 @@ export class GenTsCommand extends BaseCommand {
     public readonly protoRegexp: RegExp = /.+\.proto$/;
     public readonly descriptorPathRegexp: RegExp = /.*google[\/\\]+protobuf[\/\\]+descriptor.proto|.*interop[\/\\]+options.proto$/;
     
-    public clientGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=ts', ...this.optionArgs(opts)];
-    }
+    public clientGenArgs: (opts: any) => string[] = opts => ['--type=ts', ...this.optionArgs(opts)]
 
     public name = () => 'gen-ts';
 

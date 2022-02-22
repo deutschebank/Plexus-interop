@@ -21,11 +21,9 @@ export class ClientProtocolUtils {
     public static createSummarizedCompletion(...completions: plexus.ICompletion[]): plexus.ICompletion {
         const errors: string[] = completions
             .filter(completion => !!completion && completion.status === plexus.Completion.Status.Failed)
-            .map(completion => {
-                return completion.error || {
+            .map(completion => completion.error || {
                     message: `Unknown error, completion status ${status}`
-                };
-            })
+                })
             .map(error => error.message || 'Unknown error');
         if (errors.length > 0) {
             return {
@@ -34,9 +32,9 @@ export class ClientProtocolUtils {
                     message: errors.join('\n')
                 }
             };
-        } else {
+        } 
             return { status: plexus.Completion.Status.Completed };
-        }
+        
     }
 
     public static isSuccessCompletion(completion: plexus.ICompletion): boolean {

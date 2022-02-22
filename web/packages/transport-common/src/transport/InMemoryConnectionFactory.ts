@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DuplexConnectionFactory } from './DuplexConnectionFactory';
 import { Observer, Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
-import { TransportConnection, Defaults, Frame, FramedTransportConnection } from '../.';
+import { DuplexConnectionFactory } from './DuplexConnectionFactory';
+import { TransportConnection, Defaults, Frame, FramedTransportConnection } from "..";
 import { InMemoryFramedTransport } from './InMemoryFramedTransport';
 import { BufferedObserver } from '../common';
 

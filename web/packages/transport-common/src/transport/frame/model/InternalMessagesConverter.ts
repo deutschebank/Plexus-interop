@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Frame } from './Frame';
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+import { Arrays } from '@plexus-interop/common';
+import { Frame } from './Frame';
 import { ChannelOpenFrame, ChannelCloseFrame, ConnectionCloseFrame, MessageFrame } from '.';
 import { ConnectionOpenFrame } from './ConnectionOpenFrame';
-import { Arrays } from '@plexus-interop/common';
 
 export class InternalMessagesConverter {
 
@@ -27,17 +27,17 @@ export class InternalMessagesConverter {
         const plainData = plexus.interop.transport.protocol.Header.toObject(protoFrame) as plexus.interop.transport.protocol.IHeader;
         if (plainData.channelClose) {
             return new ChannelCloseFrame(plainData);
-        } else if (plainData.channelOpen) {
+        } if (plainData.channelOpen) {
             return new ChannelOpenFrame(plainData);
-        } else if (plainData.close) {
+        } if (plainData.close) {
             return new ConnectionCloseFrame(plainData);
-        } else if (plainData.messageFrame) {
+        } if (plainData.messageFrame) {
             return new MessageFrame(plainData);
-        } else if (plainData.open) {
+        } if (plainData.open) {
             return new ConnectionOpenFrame(plainData);
-        } else {
+        } 
             throw new Error('Unsupported frame type');
-        }
+        
     }
 
     public serialize(frame: Frame): ArrayBuffer {

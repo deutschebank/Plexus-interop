@@ -14,15 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { UniqueId , clientProtocol as plexus, SuccessCompletion, ClientProtocolUtils, ClientError, ErrorCompletion } from '@plexus-interop/protocol';
+import { Observer, ReadWriteCancellationToken, AsyncHelper , StateMaschineBase, CancellationToken, LoggerFactory, Logger, StateMaschine, SequencedExecutor } from '@plexus-interop/common';
+import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
 import { MessageFrame, ChannelCloseFrame } from './model';
 import { FrameHeader } from './FrameHeader';
 import { TransportChannel } from '../TransportChannel';
 import { FramedTransport } from './FramedTransport';
-import { UniqueId } from '@plexus-interop/protocol';
-import { Observer, ReadWriteCancellationToken, AsyncHelper } from '@plexus-interop/common';
-import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
-import { StateMaschineBase, CancellationToken, LoggerFactory, Logger, StateMaschine, SequencedExecutor } from '@plexus-interop/common';
-import { clientProtocol as plexus, SuccessCompletion, ClientProtocolUtils, ClientError, ErrorCompletion } from '@plexus-interop/protocol';
 import { Frame } from './model/Frame';
 import { ChannelObserver } from '../../common/ChannelObserver';
 import { SafeMessageBuffer } from './SafeMessageBuffer';
@@ -106,9 +104,7 @@ export class FramedTransportChannel implements TransportChannel {
             this.close();
         });
         this.stateMachine.goAsync(ChannelState.OPEN)
-        .then(() => {
-            return this.subscribeToMessages(channelObserver).then(() => channelObserver.started(subscription)).catch((e) => channelObserver.error(e));                
-        }).catch((e) => channelObserver.error(e));
+        .then(() => this.subscribeToMessages(channelObserver).then(() => channelObserver.started(subscription)).catch((e) => channelObserver.error(e))).catch((e) => channelObserver.error(e));
     }
 
     public uuid(): UniqueId {
@@ -195,14 +191,12 @@ export class FramedTransportChannel implements TransportChannel {
 
     public sendLastMessage(data: ArrayBuffer): Promise<plexus.ICompletion> {
         this.stateMachine.throwIfNot(ChannelState.OPEN, ChannelState.CLOSE_RECEIVED);
-        return this.sendMessage(data).then(() => {
-            return this.close();
-        });
+        return this.sendMessage(data).then(() => this.close());
     }
 
     public async sendMessage(data: ArrayBuffer): Promise<void> {
         this.stateMachine.throwIfNot(ChannelState.OPEN, ChannelState.CLOSE_RECEIVED, ChannelState.CLOSE_REQUESTED);
-        let currentMessageIndex = ++this.messageId;
+        const currentMessageIndex = ++this.messageId;
         /* istanbul ignore if */
         if (this.log.isTraceEnabled()) {
             this.log.trace(`Scheduling sending [${currentMessageIndex}] message of ${data.byteLength} bytes`);
@@ -280,9 +274,9 @@ export class FramedTransportChannel implements TransportChannel {
     private remoteCompletionToError(completion: plexus.ICompletion): plexus.IError {
         if (completion) {
             return completion.error || new ClientError(`Remote completed with status ${this.remoteCompletion.status}`);
-        } else {
+        } 
             return new ClientError('Channel closed unexpectedly');
-        }
+        
     }
 
     private async handleConnectionError(channelObserver: Observer<ArrayBuffer>, error: any): Promise<void> {

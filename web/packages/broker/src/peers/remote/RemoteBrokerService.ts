@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionType } from '../ActionType';
-import { EventType } from '../events/EventType';
 import { Subscription } from '@plexus-interop/common';
 import { PlexusObserver } from '@plexus-interop/transport-common';
+import { ActionType } from '../ActionType';
+import { EventType } from '../events/EventType';
 
 /**
  * All action calls passed from Proxy Channels/Connections to remote connection

@@ -47,7 +47,7 @@ export class DomLogger implements Logger {
     private appendString(text: string) {
         const domEl = document.getElementById(this.domElId);
         if (domEl) {
-            domEl.innerText = domEl.innerText + '\n' + text;
+            domEl.innerText = `${domEl.innerText  }\n${  text}`;
         }
     }
 

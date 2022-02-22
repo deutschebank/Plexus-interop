@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { AppRegistryProvider } from './AppRegistryProvider';
 import { Application } from './model/Application';
 import { AppRegistry } from './model/AppRegistry';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
 
 export class AppRegistryService {
 

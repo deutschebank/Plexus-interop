@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppRegistry } from './model/AppRegistry';
 import { Observable } from 'rxjs';
+import { AppRegistry } from './model/AppRegistry';
 
 export interface AppRegistryProvider {
 

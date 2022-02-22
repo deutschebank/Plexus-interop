@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AsyncHandler } from '../AsyncHandler';
 import { TransportChannel, TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 import { ClientProtocolHelper, clientProtocol as plexus, ErrorCompletion, ClientError } from '@plexus-interop/protocol';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { ApplicationDescriptor } from '../lifecycle/ApplicationDescriptor';
 import { AppRegistryService } from '@plexus-interop/metadata';
+import { ApplicationDescriptor } from '../lifecycle/ApplicationDescriptor';
+import { AsyncHandler } from '../AsyncHandler';
 
 /**
  * Responsible for handling of first channel with Authentication Details

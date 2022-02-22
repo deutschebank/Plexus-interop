@@ -21,9 +21,9 @@ const globalObj: any = global || window;
 export function readEncodedConfig(): any {
 
     // tslint:disable-next-line:no-string-literal
-    if (globalObj['__karma__']) {
+    if (globalObj.__karma__) {
         // tslint:disable-next-line:no-string-literal        
-        return globalObj['__karma__'].config;
+        return globalObj.__karma__.config;
     }
 
     let env: any;
@@ -39,19 +39,19 @@ export function readEncodedConfig(): any {
 }
 
 export function readWsUrl(): string {
-    const wsUrl = readEncodedConfig().wsUrl;
+    const {wsUrl} = readEncodedConfig();
     if (wsUrl) {
         return wsUrl;
-    } else {
+    } 
         throw Error('wsUrl is undefined');
-    }
+    
 }
 
 export function readHostUrl(): string {
     const hostUrl = readEncodedConfig().hostPath;
     if (hostUrl) {
         return hostUrl;
-    } else {
+    } 
         throw Error('hostUrl is undefined');
-    }
+    
 }

@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerDelegate } from './index';
 import * as log from 'loglevel';
+import { LoggerDelegate } from './index';
 import { Logger } from './Logger';
 import { LoggerBase } from './LoggerBase';
 import { TimeUtils } from '../util/time/TimeUtils';
@@ -35,8 +35,8 @@ export class LoggerFactory {
   private static additionalRecipients: LoggerDelegate[] = [];
 
   public static registerDelegate(logger: LoggerDelegate): { unregister: () => void } {
-    let newRecipientsLen = LoggerFactory.additionalRecipients.push(logger);
-    let registeredRecipientIndex = newRecipientsLen - 1;
+    const newRecipientsLen = LoggerFactory.additionalRecipients.push(logger);
+    const registeredRecipientIndex = newRecipientsLen - 1;
 
     return {
       unregister: () => LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1)

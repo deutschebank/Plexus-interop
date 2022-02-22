@@ -16,13 +16,13 @@
  */
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { BrowserWindow } from 'electron';
-import { ElectronAppLauncherClientBuilder, ElectronAppLauncherClient } from './client/ElectronAppLauncherGeneratedClient';
-import * as plexus from './gen/plexus-messages';
 import { UniqueId } from '@plexus-interop/transport-common';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 import * as fs from 'fs';
 import * as log from 'loglevel';
 import { MethodInvocationContext } from '@plexus-interop/client';
+import * as plexus from './gen/plexus-messages';
+import { ElectronAppLauncherClientBuilder, ElectronAppLauncherClient } from './client/ElectronAppLauncherGeneratedClient';
 const stripBom = require('strip-bom');
 const path = require('path');
 
@@ -75,8 +75,8 @@ export class ElectronAppLauncher {
             })
             .withAppLauncherServiceInvocationsHandler({
                 onLaunch: async (methodInvocationContext: MethodInvocationContext, request: plexus.interop.IAppLaunchRequest) => {
-                    this.log.info('Received launch request: ' + JSON.stringify(request));
-                    let launchPath = this.readPath(request);
+                    this.log.info(`Received launch request: ${  JSON.stringify(request)}`);
+                    const launchPath = this.readPath(request);
                     return this.launchApp(launchPath);
                 }
             })
@@ -93,7 +93,7 @@ export class ElectronAppLauncher {
                 });
             })
             .catch(e => {
-                log.error('Error connecting to broker' + e);
+                log.error(`Error connecting to broker${  e}`);
                 throw e;
             });
 
@@ -113,11 +113,11 @@ export class ElectronAppLauncher {
     }
 
     private launchApp(launchPath: string): Promise<plexus.interop.IAppLaunchResponse> {
-        this.log.info('Launching app for path: ' + launchPath);
+        this.log.info(`Launching app for path: ${  launchPath}`);
         if (!this.isCompleteUri(launchPath)) {
             // relative file path
             launchPath = this.toFileUri(launchPath);
-            this.log.info('Launch path resolved to absolute path: ' + launchPath);
+            this.log.info(`Launch path resolved to absolute path: ${  launchPath}`);
         }
         const appInstanceId = UniqueId.generateNew();
         this.log.info(`Launching instance [${appInstanceId.toString()}] with URL [${launchPath}]`);
@@ -146,9 +146,9 @@ export class ElectronAppLauncher {
         // tslint:disable-next-line:quotemark
         if (filePath[0] !== '/') {
             // tslint:disable-next-line:quotemark
-            filePath = '/' + filePath;
+            filePath = `/${  filePath}`;
         }
-        return encodeURI('file://' + filePath);
+        return encodeURI(`file://${  filePath}`);
     }
 
     private readPath(request: plexus.interop.IAppLaunchRequest): string {

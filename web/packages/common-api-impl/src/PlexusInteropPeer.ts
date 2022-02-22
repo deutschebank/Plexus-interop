@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPeer, ConnectionStatus, Subscription, Method, InvokeResult, StreamObserver, StreamSubscription, InteropPeerDescriptor, MethodImplementation, RegisteredMethod, StreamImplementation } from './api/client-api';
 import { GenericClientApi, MethodType } from '@plexus-interop/client';
-import { ConnectionStatusListeners } from './listeners';
 import { InteropRegistryService, Application } from '@plexus-interop/metadata';
+import { InteropPeer, ConnectionStatus, Subscription, Method, InvokeResult, StreamObserver, StreamSubscription, InteropPeerDescriptor, MethodImplementation, RegisteredMethod, StreamImplementation } from './api/client-api';
+import { ConnectionStatusListeners } from './listeners';
 import { InvokeHandler } from './actions/InvokeHandler';
 import { SubscribeHandler } from './actions/SubscribeHandler';
 import { DiscoverMethodsHandler } from './actions/DiscoverMethodsHandler';

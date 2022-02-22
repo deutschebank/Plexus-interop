@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppRegistryProvider } from '../AppRegistryProvider';
 import { map, Observable, of } from 'rxjs';
+import { toMap } from '@plexus-interop/common';
+import { AppRegistryProvider } from '../AppRegistryProvider';
 import { AppRegistry } from '../model/AppRegistry';
 import { Application } from '../model/Application';
-import { toMap } from '@plexus-interop/common';
 
 export class JsonAppRegistryProvider implements AppRegistryProvider {
 

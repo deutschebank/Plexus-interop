@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 import { TransportConnection } from '@plexus-interop/transport-common';
+import { Cache, InMemoryCache, Logger, LoggerFactory, CacheEntry , CancellationToken , AsyncHelper } from '@plexus-interop/common';
+import { AppRegistryService } from '@plexus-interop/metadata';
+import { UniqueId } from '@plexus-interop/protocol';
+import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 import { ApplicationConnection } from '../lifecycle/ApplicationConnection';
-import { Cache, InMemoryCache, Logger, LoggerFactory, CacheEntry } from '@plexus-interop/common';
 import { ApplicationDescriptor } from '../lifecycle/ApplicationDescriptor';
-import { PeerProxyConnection } from '../peers/PeerProxyConnection';
+import { PeerProxyConnection } from "./PeerProxyConnection";
 import { PeerConnectionsService } from './PeerConnectionsService';
 import { AppConnectionHeartBit } from './events/AppConnectionHeartBit';
-import { AppRegistryService } from '@plexus-interop/metadata';
 import { AppLauncherRegistry } from '../launcher/AppLauncherRegistry';
-import { CancellationToken } from '@plexus-interop/common';
-import { UniqueId } from '@plexus-interop/protocol';
-import { AsyncHelper } from '@plexus-interop/common';
 import { HostTransportConnection } from './host/HostTransportConnection';
 
 /**

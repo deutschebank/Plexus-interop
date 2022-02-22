@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StreamingInvocationClientInternal } from './StreamingInvocationClientInternal';
 import { ClientError, SuccessCompletion, ClientProtocolHelper } from '@plexus-interop/protocol';
+import { Logger } from '@plexus-interop/common';
+import { StreamingInvocationClientInternal } from './StreamingInvocationClientInternal';
 import { Invocation } from '../../../../generic/Invocation';
 import { BaseInvocationClientImpl } from '../../../BaseInvocationClientImpl';
-import { Logger } from '@plexus-interop/common';
 
 export class StreamingInvocationClientImpl extends BaseInvocationClientImpl implements StreamingInvocationClientInternal<ArrayBuffer> {
 

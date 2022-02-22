@@ -17,7 +17,7 @@
 import { TransportConnection, ServerConnectionFactory } from '@plexus-interop/transport-common';
 import { Subscription, Observer } from '@plexus-interop/common';
 import { HostTransportConnection } from './HostTransportConnection';
-import { RemoteBrokerService } from '../../peers/remote/RemoteBrokerService';
+import { RemoteBrokerService } from "../remote/RemoteBrokerService";
 
 export class HostConnectionFactory implements ServerConnectionFactory {
 

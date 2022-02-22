@@ -14,22 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare var global: any;
+import { app } from 'electron';
+import { LoggerFactory, LogLevel, PrefixedLogger } from '@plexus-interop/common';
+import { FileLogger } from './logger/FileLogger';
+
+import { ElectronAppLauncher } from './ElectronAppLauncher';
+
+declare let global: any;
 // tslint:disable-next-line:no-unused-variable
 global.WebSocket = global.WebSocket || require('ws');
 const argv = require('minimist')(process.argv.slice(1));
 
-import { app } from 'electron';
-import { FileLogger } from './logger/FileLogger';
-import { LoggerFactory, LogLevel, PrefixedLogger } from '@plexus-interop/common';
-
 LoggerFactory.setLogLevel(LogLevel.TRACE);
-let log = new FileLogger(LoggerFactory.getLogger('ElectronLauncherMain'));
+const log = new FileLogger(LoggerFactory.getLogger('ElectronLauncherMain'));
 
 // substitute logger implementation with simple file logger
 LoggerFactory.getLogger = (name: string) => new PrefixedLogger(log, name);
-
-import { ElectronAppLauncher } from './ElectronAppLauncher';
 
 log.info('Started');
 

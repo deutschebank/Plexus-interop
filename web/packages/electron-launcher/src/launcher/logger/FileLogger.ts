@@ -40,17 +40,17 @@ export class FileLogger implements Logger {
 
     public error(msg: string, ...args: any[]): void {
         this.baseLogger.error(msg, args);
-        this.log('[ERROR] | ' + msg);
+        this.log(`[ERROR] | ${  msg}`);
     }
 
     public warn(msg: string, ...args: any[]): void {
-        this.baseLogger.warn('[WARN] |' + msg, args);
+        this.baseLogger.warn(`[WARN] |${  msg}`, args);
         this.log(msg);
     }
 
     public trace(msg: string, ...args: any[]): void {
         this.baseLogger.trace(msg, args);
-        this.log('[TRACE] | ' + msg);
+        this.log(`[TRACE] | ${  msg}`);
     }
 
     public getLogLevel(): LogLevel {

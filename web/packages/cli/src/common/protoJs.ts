@@ -17,7 +17,7 @@
 import { pbjs, pbts } from 'protobufjs/cli';
 import * as os from 'os';
 import * as path from 'path';
-import { getBaseDir } from '../common/files';
+import { getBaseDir } from "./files";
 
 export function genJsStaticModule(outFilePath: string, protoFiles: string[], namespace: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {

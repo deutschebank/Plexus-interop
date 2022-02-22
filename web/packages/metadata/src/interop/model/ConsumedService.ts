@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ExtendedMap } from '@plexus-interop/common';
 import { Service } from './Service';
 import { Application } from './Application';
 import { MatchPattern } from './MatchPattern';
-import { ExtendedMap } from '@plexus-interop/common';
 import { ConsumedMethod } from './ConsumedMethod';
 
 export interface ConsumedService {

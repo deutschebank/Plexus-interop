@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { clientProtocol as plexus, ClientProtocolUtils } from '../.';
-import { InvocationMetaInfo } from '../dto/InvocationMetaInfo';
-import { UniqueId } from '../dto/UniqueId';
 import * as Long from 'long';
 import { Arrays } from '@plexus-interop/common';
+import { clientProtocol as plexus, ClientProtocolUtils } from "..";
+import { InvocationMetaInfo } from '../dto/InvocationMetaInfo';
+import { UniqueId } from '../dto/UniqueId';
 
-const protocol = plexus.interop.protocol;
+const {protocol} = plexus.interop;
 
 export class ClientProtocolHelper {
 

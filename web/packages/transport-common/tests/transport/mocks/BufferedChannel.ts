@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/protocol';
-import { Observer } from '@plexus-interop/common';
+import { Observer , Logger, LoggerFactory, BlockingQueue, BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
 import { Subscription } from 'rxjs';
-import { TransportChannel } from '../../../src/transport/TransportChannel';
 import { clientProtocol as plexus, SuccessCompletion} from '@plexus-interop/protocol';
-import { Logger, LoggerFactory, BlockingQueue, BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
+import { TransportChannel } from '../../../src/transport/TransportChannel';
 
 export class BufferedChannel implements TransportChannel {
 

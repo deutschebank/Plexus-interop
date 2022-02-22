@@ -20,7 +20,7 @@ import 'ya-js-storage';
 import { Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
 
 const globalObj: any = global || window;
-const yaJsStorage = globalObj.$.yaJsStorage;
+const {yaJsStorage} = globalObj.$;
 
 export class JStorageEventBus implements EventBus {
 

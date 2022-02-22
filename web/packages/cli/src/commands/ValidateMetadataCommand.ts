@@ -22,9 +22,7 @@ import { simpleSpawn } from '../common/process';
 
 export class ValidateMetadataCommand extends BaseJavaGenCommand {
 
-    public plexusGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=validate', ...this.optionArgs(opts, '=', name => name === 'out' ? 'outFile' : name)];
-    }
+    public plexusGenArgs: (opts: any) => string[] = opts => ['--type=validate', ...this.optionArgs(opts, '=', name => name === 'out' ? 'outFile' : name)]
 
     public generalDescription = () => 'validate metadata';
 

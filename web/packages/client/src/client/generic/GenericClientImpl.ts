@@ -14,23 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GenericClient } from './GenericClient';
-import { Invocation } from '../../client/generic/Invocation';
-import { GenericInvocation } from './GenericInvocation';
 import { TransportChannel, TransportConnection } from '@plexus-interop/transport-common';
 import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
+import { StateMaschine, StateMaschineBase, CancellationToken, Logger, LoggerFactory , Observer } from '@plexus-interop/common';
+import { ClientConnectRequest, ServiceDiscoveryRequest , ServiceDiscoveryResponse , MethodDiscoveryRequest , MethodDiscoveryResponse , ProvidedMethodReference } from '@plexus-interop/client-api';
+import { ClientProtocolHelper as modelHelper, UniqueId , clientProtocol as plexus, SuccessCompletion, InvocationRequestInfo } from '@plexus-interop/protocol';
+import { GenericClient } from './GenericClient';
+import { Invocation } from "./Invocation";
+import { GenericInvocation } from './GenericInvocation';
 import { RequestedInvocation } from './RequestedInvocation';
-import { StateMaschine, StateMaschineBase, CancellationToken, Logger, LoggerFactory } from '@plexus-interop/common';
 import { AcceptedInvocation } from './AcceptedInvocation';
-import { Observer } from '@plexus-interop/common';
-import { ClientConnectRequest, ServiceDiscoveryRequest } from '@plexus-interop/client-api';
-import { ServiceDiscoveryResponse } from '@plexus-interop/client-api';
 import { SingleMessageRequest } from './SingleMessageRequst';
-import { ClientProtocolHelper as modelHelper, UniqueId } from '@plexus-interop/protocol';
-import { clientProtocol as plexus, SuccessCompletion, InvocationRequestInfo } from '@plexus-interop/protocol';
-import { MethodDiscoveryRequest } from '@plexus-interop/client-api';
-import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
-import { ProvidedMethodReference } from '@plexus-interop/client-api';
 import { RequestedDiscoveredInvocation } from './RequestedDiscoveredInvocation';
 
 enum ClientState {

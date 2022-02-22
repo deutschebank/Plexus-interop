@@ -67,9 +67,9 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
         const descriptor = this.stateDescriptorsMap.get(this.getCurrent());
         if (descriptor) {
             return descriptor.hasOutTransition(state);
-        } else {
+        } 
             return false;
-        }
+        
     }
 
     public go(to: T): void {
@@ -123,11 +123,11 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
                 Promise.all(preHandlePromises)
                     .then(preHandlePassed.bind(this), reject);
             });
-        } else {
+        } 
             const error = `Transition ${this.getCurrent()} -> ${to} does not exist`;
             this.logError(error);
             return Promise.reject(error);
-        }
+        
     }
 
     public throwIfNot(...states: T[]): void {

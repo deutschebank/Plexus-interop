@@ -16,21 +16,21 @@
  */
 // tslint:disable
 /**
-* Copyright © 2014-2018 Tick42 BG OOD, Deutsche Bank AG
-* SPDX-License-Identifier: Apache-2.0
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright © 2014-2018 Tick42 BG OOD, Deutsche Bank AG
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // tslint:disable
 /**
  * Used to instantiate an InteropPeer.
@@ -273,8 +273,8 @@ export interface InteropServer {
  */
 export interface Subscription {
     /**
-    * @return {Promise<void>} Promise that resolves when the subscription successfully closed.
-    */
+     * @return {Promise<void>} Promise that resolves when the subscription successfully closed.
+     */
     unsubscribe(): Promise<void>;
 }
 
@@ -401,7 +401,7 @@ export interface StreamObserver {
      *                                      Server receives promise which will be resolved as soon as interop platform 
      *                                      accepted the new item (doesn't mean it was received by subscriber!).
      *                                      
-    */
+     */
     next: (data: any) => Promise<void>;
 
     /** 
@@ -415,7 +415,7 @@ export interface StreamObserver {
      *                                      Server receives promise which will be resolved as soon as all the items 
      *                                      are sent to the caller and stream completed.
      *                                      
-    */
+     */
     completed: () => Promise<void>;
 
     /** 
@@ -432,7 +432,7 @@ export interface StreamObserver {
      *                                      Server receives promise which will be resolved as soon as all the items 
      *                                      are sent to the caller and stream completed.
      *                                      
-    */
+     */
     error: (error: Error) => Promise<void>;
 }
 

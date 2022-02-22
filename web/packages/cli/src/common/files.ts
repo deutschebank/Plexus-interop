@@ -94,9 +94,9 @@ function isDirectory(path: string, failOnPermissonError: boolean = true): boolea
     } catch (error) {
         if (!failOnPermissonError && error.code === 'EPERM') {
             return false;
-        } else {
+        } 
             throw error;
-        }
+        
     }
 }
 
