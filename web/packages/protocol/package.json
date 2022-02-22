@@ -10,7 +10,7 @@
     "prebuild": "npm run gen-transport-protocol && npm run gen-client-protocol && npm run copy-gen-folder",
     "build": "npm run build:main",
     "copy-gen-folder": "copyfiles src/gen/* dist/main",
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc",
     "gen-client-js": "pbjs --force-long --no-delimited --no-beautify --no-verify --no-create -t static-module -r plexusClient -w commonjs -o src/gen/internal-client-protocol.js ../../../protocol/plexus.interop.proto",
     "gen-client-ts": "pbts --force-long -o src/gen/internal-client-protocol.d.ts src/gen/internal-client-protocol.js",
     "gen-transport-js": "pbjs --force-long --no-delimited --no-beautify --no-verify --no-create -t static-module -r plexusTransport -w commonjs -o src/gen/internal-transport-protocol.js ../../../protocol/plexus.interop.transport.proto",

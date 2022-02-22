@@ -1,0 +1,6 @@
+node_modules
+dist
+*.spec.ts
+webpack.config.js
+*.js
+gen
