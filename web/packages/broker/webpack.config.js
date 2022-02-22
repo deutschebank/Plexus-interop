@@ -1,7 +1,7 @@
 const path = require('path');
+const OptimizePlugin = require('optimize-plugin');
 
 module.exports = {
-  target: ['web', 'es5'],
   mode: 'production',
   entry: './dist/main/src/api/CrossDomainHostEntryPoint.js',
   output: {
@@ -9,8 +9,13 @@ module.exports = {
     filename: 'CrossDomainHostBuilder.bundle.js',
     library: {
       name: 'proxyHost',
-      type: 'umd'
+      type: 'umd',
     },
   },
-  stats: 'minimal'
+  stats: 'minimal',
+  plugins: [
+    new OptimizePlugin({
+      modernize: false,
+    }),
+  ],
 };

@@ -1,4 +1,5 @@
 const path = require('path');
+const OptimizePlugin = require('optimize-plugin');
 
 module.exports = {
   mode: 'production',
@@ -8,9 +9,14 @@ module.exports = {
     filename: 'platform-factory.bundle.js',
     library: {
       name: 'PlexusPlatformFactor',
-      type: 'umd'
+      type: 'umd',
     },
   },
   stats: 'minimal',
-  externals: ['websocket']
+  externals: ['websocket'],
+  plugins: [
+    new OptimizePlugin({
+      modernize: false,
+    }),
+  ],
 };
