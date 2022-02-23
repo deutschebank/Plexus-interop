@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { GenericClientApi, GenericClientApiBuilder } from '@plexus-interop/client';
 import { TimeUtils } from '@plexus-interop/common';
-import * as Long from 'long';
-import { GenericClientApi, ContainerAwareClientAPIBuilder, GenericClientApiBuilder } from '@plexus-interop/client';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
+import * as Long from 'long';
 import { EchoClientClient, EchoClientClientBuilder } from '../../src/echo/client/EchoClientGeneratedClient';
-import { EchoServerClient, EchoServerClientBuilder, EchoServiceInvocationHandler, ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
-import { ConnectionProvider } from './ConnectionProvider';
 import * as plexus from '../../src/echo/gen/plexus-messages';
-import { ConnectionSetup } from './ConnectionSetup';
+import { EchoServerClient, EchoServerClientBuilder, EchoServiceInvocationHandler, ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
 import { NopServiceAliasHandler } from '../echo/NopServiceAliasHandler';
+import { ConnectionProvider } from './ConnectionProvider';
+import { ConnectionSetup } from './ConnectionSetup';
 
 export class ClientsSetup {
 

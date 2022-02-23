@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect } from 'chai';
 import { MethodInvocationContext } from '@plexus-interop/client';
+import { Arrays, AsyncHelper } from '@plexus-interop/common';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
-import { Arrays, LoggerFactory, LogLevel, AsyncHelper } from '@plexus-interop/common';
+import { expect } from 'chai';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 

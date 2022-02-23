@@ -16,17 +16,18 @@
  */
 export function webSocketCtor(): any {
     if (typeof window !== 'undefined') {
-        const _window: any = window;
-        if (_window && _window.WebSocket) {
-            return _window.WebSocket;
+        const anyWindow: any = window;
+        if (anyWindow && anyWindow.WebSocket) {
+            return anyWindow.WebSocket;
         }    
     }
     const isNode = typeof global !== 'undefined' && ({}).toString.call(global) === '[object global]';    
     if (isNode) {
-        const _global: any = global;
-        if (_global && _global.WebSocket) {
-            return _global.WebSocket;
+        const anyGlobal: any = global;
+        if (anyGlobal && anyGlobal.WebSocket) {
+            return anyGlobal.WebSocket;
         }
+        // eslint-disable-next-line global-require
         return require('websocket').w3cwebsocket;          
     }
     throw new Error('WebSocket API is not found');

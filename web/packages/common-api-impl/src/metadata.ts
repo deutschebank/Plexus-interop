@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Application, InteropRegistryService, ProvidedMethod, ConsumedMethodReference } from '@plexus-interop/metadata';
-import { Option } from '@plexus-interop/metadata';
+import { Application, ConsumedMethodReference, InteropRegistryService, Option, ProvidedMethod } from '@plexus-interop/metadata';
 import { Method } from './api/client-api';
 import { PartialPeerDescriptor } from './PartialPeerDescriptor';
 

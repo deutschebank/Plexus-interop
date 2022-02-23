@@ -31,7 +31,7 @@ module.exports = {
         "prefer-template": "warn",
         "no-param-reassign": "warn",
         "no-await-in-loop": "warn",
-        "@typescript-eslint/explicit-member-accessibility": "warn",
+        "@typescript-eslint/explicit-member-accessibility": ["warn", { overrides: { constructors: 'off' } } ],
         "arrow-body-style": "warn",
         "prefer-destructuring": "warn"
     }

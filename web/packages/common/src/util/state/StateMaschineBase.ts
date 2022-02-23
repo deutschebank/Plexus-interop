@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -40,7 +41,7 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
             this.putIfAbsent(transition.to);
             const fromDescriptor = this.lookup(transition.from);
             if (fromDescriptor.hasOutTransition(transition.to)) {
-                throw `Transition ${transition.from} -> ${transition.to} already exists`;
+                throw new Error(`Transition ${transition.from} -> ${transition.to} already exists`);
             }
             fromDescriptor.outTransitions.push(transition);
         });
@@ -51,12 +52,7 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
     }
 
     public isOneOf(...states: T[]): boolean {
-        for (const state of states) {
-            if (this.is(state)) {
-                return true;
-            }
-        }
-        return false;
+        return states.some(state => this.is(state));
     }
 
     public getCurrent(): T {
@@ -77,7 +73,7 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
             throw new Error(`Transition ${this.getCurrent()} -> ${to} does not exist`);
         }
         const descriptor = this.lookup(this.getCurrent());        
-        const transition = descriptor.outTransitions.find(transition => transition.to === to) as Transition<T>;
+        const transition = descriptor.outTransitions.find(trans => trans.to === to) as Transition<T>;
         const old = this.getCurrent();
         if (transition.preHandler) {
             transition.preHandler()
@@ -105,7 +101,7 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
     public goAsync(to: T, dynamicHandlers?: Handlers): Promise<void> {
         if (this.canGo(to)) {
             const descriptor = this.lookup(this.getCurrent());                    
-            const transition = descriptor.outTransitions.find(transition => transition.to === to) as Transition<T>;
+            const transition = descriptor.outTransitions.find(trans => trans.to === to) as Transition<T>;
             return new Promise<void>((resolve, reject) => {
                 const preHandlePassed = () => {
                     this.switchInternal(transition.to);
@@ -131,12 +127,7 @@ export class StateMaschineBase<T> implements StateMaschine<T> {
     }
 
     public throwIfNot(...states: T[]): void {
-        let result = false;
-        for (const state of states) {
-            if (this.is(state)) {
-                result = true;
-            }
-        }
+        const result = states.some(state => this.is(state));
         if (!result) {
             const error = `Current state is ${this.current} not one of [${states.join(',')}]`;
             this.logError(error);

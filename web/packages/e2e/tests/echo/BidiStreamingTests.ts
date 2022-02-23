@@ -39,8 +39,12 @@ export class BidiStreamingInvocationTests extends BaseEchoTest {
         let serverReceivedMessage = false;
         return new Promise<void>((resolve, reject) => {
             const serverHandler = new ClientStreamingHandler(() => ({
-                    next: () => serverReceivedMessage = true,
-                    complete: () => invocationCompletedReceivedByServer = true,
+                    next: () => {
+                        serverReceivedMessage = true;
+                    },
+                    complete: () => {
+                        invocationCompletedReceivedByServer = true;
+                    },
                     error: () => {},
                     streamCompleted: () => {}
                 }));
@@ -50,7 +54,9 @@ export class BidiStreamingInvocationTests extends BaseEchoTest {
                     const streamingClient = await client.getEchoServiceProxy().duplexStreaming({
                         next: () => {},
                         error: () => {},
-                        complete: () => clientReceivedCompletion = true,
+                        complete: () => {
+                            clientReceivedCompletion = true;
+                        },
                         streamCompleted: () => { }
                     });
                     streamingClient.next(this.clientsSetup.createRequestDto());

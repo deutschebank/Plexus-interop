@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import Queue from 'typescript-collections/dist/lib/Queue';
 import { CancellationToken } from '../async/CancellationToken';
 import { AsyncHelper } from '../async/AsyncHelper';
 

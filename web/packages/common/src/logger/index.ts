@@ -16,4 +16,5 @@
  */
 export * from './Logger';
 export * from './LoggerFactory';
+export * from './LogLevel';
 export * from './PrefixedLogger';

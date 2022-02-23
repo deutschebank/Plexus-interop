@@ -1,3 +1,8 @@
+/* eslint-disable no-proto */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,6 +19,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// TODO update these methods
 export class ObjectUtils {
 
     public static setPrototypeOf: (object: any, prototype: any) => any = setProtoImpl();

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import Queue from 'typescript-collections/dist/lib/Queue';
 import { Logger } from '../../logger/Logger';
 import { AsyncHelper } from './AsyncHelper';
 import { LoggerFactory } from '../../logger/LoggerFactory';

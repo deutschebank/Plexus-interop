@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0

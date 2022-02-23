@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LogLevel } from './LoggerFactory';
+import { LogLevel } from "./LogLevel";
 import { Logger } from './Logger';
 
 export class DelegatingLogger implements Logger {

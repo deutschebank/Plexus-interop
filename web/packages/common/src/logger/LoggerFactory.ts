@@ -15,20 +15,12 @@
  * limitations under the License.
  */
 import * as log from 'loglevel';
-import { LoggerDelegate } from './index';
-import { Logger } from './Logger';
-import { LoggerBase } from './LoggerBase';
 import { TimeUtils } from '../util/time/TimeUtils';
-const logPrefixer: any = require('loglevel-plugin-prefix');
+import { Logger, LoggerDelegate } from './Logger';
+import { LoggerBase } from './LoggerBase';
+import { LogLevel } from './LogLevel';
 
-export enum LogLevel {
-  TRACE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  SILENT
-}
+const logPrefixer: any = require('loglevel-plugin-prefix');
 
 export class LoggerFactory {
   
@@ -39,7 +31,9 @@ export class LoggerFactory {
     const registeredRecipientIndex = newRecipientsLen - 1;
 
     return {
-      unregister: () => LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1)
+      unregister: () => {
+        LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1);
+      }
     };
   }
 
