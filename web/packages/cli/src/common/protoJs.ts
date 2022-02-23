@@ -21,7 +21,7 @@ import { getBaseDir } from "./files";
 
 export function genJsStaticModule(outFilePath: string, protoFiles: string[], namespace: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-        pbjs.main(['--force-long', '--no-delimited', '--sparse', '-t', 'static-module', '-r', namespace, '-w', 'commonjs', '-o', outFilePath, ...protoFiles], (error, output) => {
+        pbjs.main(['--force-long', '--no-delimited', '--sparse', '-t', 'static-module', '-r', namespace, '-w', 'commonjs', '-o', outFilePath, ...protoFiles], (error) => {
             if (error) {
                 reject(error);
             } else {
@@ -38,7 +38,7 @@ export function getPbJsExecPath(): string {
 
 export function genTsStaticModule(outFilePath: string, jsGeneratedFilePath: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-        pbts.main(['--force-long', '-o', outFilePath, jsGeneratedFilePath], (error, output) => {
+        pbts.main(['--force-long', '-o', outFilePath, jsGeneratedFilePath], (error) => {
             if (error) {
                 reject(error);
             } else {

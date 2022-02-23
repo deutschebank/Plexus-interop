@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-console */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -22,25 +24,21 @@ export class LogInvocationObserver<T> implements Observer<T> {
     constructor(private _next?: (data: T) => void, private id: UniqueId = UniqueId.generateNew()) { }
 
     public streamCompleted(): void {
-        // tslint:disable-next-line:no-console
         console.log('Stream completed');
     }
 
     public complete(): void {
-        // tslint:disable-next-line:no-console
         console.log(`${this.id.toString()} - Complete`);
     }
 
     public next(data: T): void {
-        // tslint:disable-next-line:no-console
         console.log(`${this.id.toString()} - Next`, data);
         if (this._next) {
             this._next(data);
         }
     }
 
-    public error(error: any): void {
-        // tslint:disable-next-line:no-console
+    public error(): void {
         console.log(`${this.id.toString()} - Error`);
     }
 

@@ -83,7 +83,6 @@
     "glob-to-regexp": "^0.4.1",
     "http-server": "^0.11.1",
     "if-env": "1.0.0",
-    "is-electron-renderer": "^2.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "~4.1.0",

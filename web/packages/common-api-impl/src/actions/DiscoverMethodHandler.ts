@@ -19,7 +19,7 @@ import { Application, InteropRegistryService } from '@plexus-interop/metadata';
 import { GenericClientApi, DiscoveryMode, UniqueId, ProvidedMethodReference } from '@plexus-interop/client';
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
 import { getProvidedMethodByAlias, toConsumedMethodRef } from '../metadata';
-import { Method } from '../api';
+import { Method } from '../api/client-api';
 import { isMethod } from '../types';
 
 export class DiscoverMethodHandler {

@@ -27,7 +27,7 @@ import { GenProtoCommand } from './GenProtoCommand';
 export class GenTsCommand extends BaseCommand {
 
     public readonly protoRegexp: RegExp = /.+\.proto$/;
-    public readonly descriptorPathRegexp: RegExp = /.*google[/\\]+protobuf[\/\\]+descriptor.proto|.*interop[/\\]+options.proto$/;
+    public readonly descriptorPathRegexp: RegExp = /.*google[/\\]+protobuf[/\\]+descriptor.proto|.*interop[/\\]+options.proto$/;
     
     public clientGenArgs: (opts: any) => string[] = opts => ['--type=ts', ...this.optionArgs(opts)]
 

@@ -34,7 +34,7 @@ export function simpleSpawn(execPath: string, args: string[] = [], printOutput: 
                 errorsBuffer.push(`${data}`);
             }
         });
-        child.on('exit', (code, signal) => {
+        child.on('exit', (code) => {
             if (code !== 0) {
                 if (errorsBuffer.length > 0) {
                     console.error(errorsBuffer.join('\n'));

@@ -40,14 +40,14 @@ export function mkdirsSync(dir: string): void {
     fs.mkdirsSync(dir);
 }
 
-export function existsSync(path: string): boolean {
-    return fs.existsSync(path);
+export function existsSync(testPath: string): boolean {
+    return fs.existsSync(testPath);
 }
 
-export function exists(path: string): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-        fs.exists(path, exists => {
-            resolve(exists);
+export function exists(testPath: string): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+        fs.exists(testPath, doesExist => {
+            resolve(doesExist);
         });
     });
 }
@@ -62,7 +62,7 @@ export function readTextFile(filePath: string): Promise<string> {
     return fs.readFile(filePath, 'utf8');
 }
 
-export function iterateFiles(baseDir: string, pattern: RegExp, callback: (file: string) => void, recursive: boolean = true): void {
+export function iterateFiles(baseDir: string, pattern: RegExp, callback: (file: string) => void): void {
     if (!fs.existsSync(baseDir)) {
         return;
     }
@@ -88,9 +88,9 @@ export function unzipSync(zipPath: string, dir: string, removeZip: boolean = tru
     }
 }
 
-function isDirectory(path: string, failOnPermissonError: boolean = true): boolean {
+function isDirectory(testPath: string, failOnPermissonError: boolean = true): boolean {
     try {
-        return fs.lstatSync(path).isDirectory();
+        return fs.lstatSync(testPath).isDirectory();
     } catch (error) {
         if (!failOnPermissonError && error.code === 'EPERM') {
             return false;

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -20,9 +21,7 @@ const globalObj: any = global || window;
 
 export function readEncodedConfig(): any {
 
-    // tslint:disable-next-line:no-string-literal
     if (globalObj.__karma__) {
-        // tslint:disable-next-line:no-string-literal        
         return globalObj.__karma__.config;
     }
 

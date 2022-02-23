@@ -15,16 +15,11 @@
  * limitations under the License.
  */
 import { ClientError, SuccessCompletion, ClientProtocolHelper } from '@plexus-interop/protocol';
-import { Logger } from '@plexus-interop/common';
 import { StreamingInvocationClientInternal } from './StreamingInvocationClientInternal';
-import { Invocation } from '../../../../generic/Invocation';
 import { BaseInvocationClientImpl } from '../../../BaseInvocationClientImpl';
 
 export class StreamingInvocationClientImpl extends BaseInvocationClientImpl implements StreamingInvocationClientInternal<ArrayBuffer> {
 
-    constructor(invocation: Invocation, log: Logger) {
-        super(invocation, log);
-    }
 
     public next(value: ArrayBuffer): Promise<void> {
         this.log.trace(`Sending new message of ${value.byteLength} bytes`);
@@ -36,7 +31,8 @@ export class StreamingInvocationClientImpl extends BaseInvocationClientImpl impl
         const completion = await this.invocation.close(new SuccessCompletion());
         if (!ClientProtocolHelper.isSuccessCompletion(completion)) {
             this.log.error(`Completed with errors`, completion ? completion.error : 'Completion is empty');
-            throw completion && completion.error ? completion.error : new ClientError('Completed with errors');
+            const error = completion && completion.error ? completion.error : new ClientError('Completed with errors');
+            throw error as Error;
         }
     }
 

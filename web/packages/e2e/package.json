@@ -46,6 +46,7 @@
     "@plexus-interop/transport-common": "file:../transport-common",
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
     "@types/long": "^4.0.0",
+    "is-electron-renderer": "^2.0.1",
     "long": "^4.0.0",
     "protobufjs": "6.11.2"
   },

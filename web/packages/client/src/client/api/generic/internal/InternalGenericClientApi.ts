@@ -16,7 +16,7 @@
  */
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { InternalActionInvoker } from './InternalActionInvoker';
-import { GenericClientApi } from '..';
+import { GenericClientApi } from '../GenericClientApi';
 
 /**
  * Extends public client with additioanal features

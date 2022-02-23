@@ -17,10 +17,11 @@
 import { ActionReference } from '@plexus-interop/client-api';
 import { LoggerFactory, Logger } from '@plexus-interop/common';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { BidiStreamingInvocationHandler, ServerStreamingInvocationHandler } from './streaming';
 import { UnaryHandlerConverter, toGenericUnaryHandler } from './unary/converters';
 import { UnaryInvocationHandler } from './unary/UnaryInvocationHandler';
 import { ServerStreamingConverter, toGenericStreamingHandler, toGenericBidiStreamingHandler } from './streaming/converters';
+import { BidiStreamingInvocationHandler } from './streaming/BidiStreamingInvocationHandler';
+import { ServerStreamingInvocationHandler } from './streaming/ServerStreamingInvocationHandler';
 
 type HandlerActionRef = {
     serviceInfo: {

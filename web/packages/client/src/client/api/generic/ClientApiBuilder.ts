@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import { InternalGenericClientApi } from './internal';
+import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
 import { GenericClientApi } from './GenericClientApi';
 
 export interface ClientApiBuilder<ClientType, BuilderType extends ClientApiBuilder<ClientType, any>> {

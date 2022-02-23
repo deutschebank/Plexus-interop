@@ -76,7 +76,12 @@ export class InvocationExecutor {
                     
                 }
             };
-            isTyped ? this.handleInvocation(invocation) : this.handleGenericInvocation(invocation);
+
+            if (isTyped) {
+                this.handleInvocation(invocation);
+            } else {
+                this.handleGenericInvocation(invocation);
+            }
         });
     }
 

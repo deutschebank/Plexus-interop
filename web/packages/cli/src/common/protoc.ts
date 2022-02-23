@@ -30,7 +30,9 @@ export async function downloadProtoc(): Promise<string> {
         // direct file link to exe file, move it to bin/proto.exe
         const downloadedExe = await new Promise<string>((resolve, reject) => {
             let temp: string | null = null;
-            iterateFiles(downloadDir, /protoc.*\.exe/g, f => temp = f, false);
+            iterateFiles(downloadDir, /protoc.*\.exe/g, f => {
+                temp = f;
+            });
             if (temp) {
                 resolve(temp);
             } else {

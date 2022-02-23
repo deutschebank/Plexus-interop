@@ -43,7 +43,7 @@ export class DefaultConnectionDetailsService implements ConnectionDetailsService
         if (this.connectionDetailsFactory) {
             return this.connectionDetailsFactory;
         }
-        const globalObj = self as any;
+        const globalObj = window.self as any;
         if (globalObj.plexus && globalObj.plexus.getConnectionDetails) {
             this.log.info('Detected connection details service, provided by container');
             return globalObj.plexus.getConnectionDetails;

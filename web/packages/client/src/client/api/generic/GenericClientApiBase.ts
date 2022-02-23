@@ -17,7 +17,8 @@
 import { UniqueId, InvocationRequestInfo, Completion } from '@plexus-interop/protocol';
 import { GenericRequest, ServiceDiscoveryRequest, MethodDiscoveryRequest, MethodDiscoveryResponse, ServiceDiscoveryResponse } from '@plexus-interop/client-api';
 import { GenericClientApi, Feature } from './GenericClientApi';
-import { ValueHandler, InvocationClient } from "..";
+import { ValueHandler } from '../ValueHandler';
+import { InvocationClient } from '../InvocationClient';
 import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
 import { InvocationObserver } from '../../generic';
 

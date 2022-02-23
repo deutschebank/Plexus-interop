@@ -18,8 +18,6 @@ export * from './GenericClientFactory';
 export * from './GenericClient';
 export * from './Invocation';
 export { InvocationMetaInfo } from '@plexus-interop/protocol';
-export * from './GenericClientFactory';
-export * from './GenericClient';
 export * from './InvocationObserver';
 export * from './BaseInvocation';
 export * from './InvocationChannelObserver';

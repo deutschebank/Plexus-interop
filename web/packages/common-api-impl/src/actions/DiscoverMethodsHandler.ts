@@ -18,7 +18,7 @@ import { ProvidedMethodReference, InteropRegistryService } from '@plexus-interop
 import { GenericClientApi } from '@plexus-interop/client';
 import { DiscoveryMode, ProvidedServiceReference, DiscoveredMethod, MethodType } from '@plexus-interop/client-api';
 import { clientProtocol as plexus , UniqueId } from '@plexus-interop/protocol';
-import { Method } from '../api';
+import { Method } from '../api/client-api';
 import { getAlias, getAppAliasById } from '../metadata';
 import { PartialPeerDescriptor } from '../PartialPeerDescriptor';
 
