@@ -75,7 +75,7 @@ export class CrossDomainEventBus implements EventBus {
       this.log.info('Unsubsribing from Host iFrame');
       this.hostIframeEventsSubscription.unsubscribe();
     }
-    this.emitters.forEach((v, k) => v.error('Disconnected from Host iFrame'));
+    this.emitters.forEach((v) => v.error('Disconnected from Host iFrame'));
     this.emitters.clear();
     this.observables.clear();
   }
@@ -94,7 +94,7 @@ export class CrossDomainEventBus implements EventBus {
     this.stateMaschine.throwIfNot(State.CONNECTED);
     const message = this.hostMessage({ topic }, MessageType.Subscribe, ResponseType.Stream);
     return this.sendAndSubscribe<SubscribeRequest, Event>(message, {
-      next: (message) => handler(message.responsePayload as Event),
+      next: (newMessage) => handler(newMessage.responsePayload as Event),
     });
   }
 
@@ -167,7 +167,7 @@ export class CrossDomainEventBus implements EventBus {
       this.sendAndSubscribe(
         message,
         {
-          next: (m) => {
+          next: () => {
             this.log.info('Success ping response received');
             this.stateMaschine.go(State.CONNECTED);
             resolve();
@@ -234,19 +234,19 @@ export class CrossDomainEventBus implements EventBus {
   private hostMessage<T, R>(
     requestPayload: T,
     type: MessageType<T, R>,
-    responseType?: ResponseType
+    responseType : ResponseType = ResponseType.None
   ): IFrameHostMessage<T, R> {
-    responseType = responseType || ResponseType.None;
     return { id: GUID.getNewGUIDString(), type, requestPayload, responseType };
   }
 
   private subscriptionKey(hostMessage: IFrameHostMessage<any, any>): string {
     switch (hostMessage.type.id) {
-      case MessageType.Subscribe.id:
+      case MessageType.Subscribe.id: {
         const message = hostMessage as IFrameHostMessage<SubscribeRequest, any>;
         return (
           `${message.type.id  }.${  message.requestPayload ? message.requestPayload.topic : message.responsePayload.key}`
         );
+      }
       default:
         return hostMessage.id;
     }

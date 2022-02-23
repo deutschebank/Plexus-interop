@@ -19,12 +19,12 @@ import { LoggerFactory, LogLevel } from '@plexus-interop/common';
 import { WebCcyPairRateProviderClientBuilder } from './gen/WebCcyPairRateProviderGeneratedClient';
 import * as plexus from './gen/plexus-messages';
 import { RateService } from './RateService';
-declare var window: any;
+
 
 LoggerFactory.setLogLevel(LogLevel.TRACE);
 
 // Read launch arguments, provided by Electron Launcher
-declare var window: any;
+declare let window: any;
 const electron = window.require('electron');
 const {remote} = electron;
 const electronWindow: any = remote.getCurrentWindow();
@@ -39,7 +39,7 @@ document.addEventListener('keydown', (e) => {
         electronWindow.toggleDevTools();
     } else if (e.which === 116) {
         // F5
-        location.reload();
+        window.location.reload();
     }
 });
 

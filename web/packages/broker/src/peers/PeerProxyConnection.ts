@@ -59,11 +59,11 @@ export class PeerProxyConnection implements TransportConnection {
     }
 
     public getManagedChannel(): TransportChannel | undefined {
-        throw 'getManagedChannel Not implemented';
+        throw new Error('getManagedChannel Not implemented');
     }
 
     public getManagedChannels(): TransportChannel[] {
-        throw 'getManagedChannels Not implemented';
+        throw new Error('getManagedChannels Not implemented');
     }
 
     public isConnected(): boolean {

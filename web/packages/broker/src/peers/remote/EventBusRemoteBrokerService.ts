@@ -126,9 +126,9 @@ export class EventBusRemoteBrokerService implements RemoteBrokerService {
     public subscribe<T>(eventType: EventType<T>, observer: PlexusPartialObserver<T>, remoteBrokerId?: string): Subscription {
         const requestTopic = this.eventTopic(eventType, remoteBrokerId);
         this.log.trace(`Subscribing to ${requestTopic}`);
-        return new Observable((observer: Observer<T>) => {
+        return new Observable((newObserver: Observer<T>) => {
             this.eventBus.subscribe(requestTopic, event => {
-                observer.next(event.payload);
+                newObserver.next(event.payload);
             });
         }).subscribe(observer);
     }

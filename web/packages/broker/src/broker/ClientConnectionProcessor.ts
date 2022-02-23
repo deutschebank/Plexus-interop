@@ -52,7 +52,7 @@ export class ClientConnectionProcessor implements AsyncHandler<TransportConnecti
                             const appConnection = await this.appLifeCycleManager.acceptConnection(connection, {
                                 applicationId: appDescriptor.applicationId as string,
                                 instanceId: appDescriptor.instanceId
-                            }, c => {
+                            }, () => {
                                 log.error('Connection dropped');
                             });
                             sourceConnection = appConnection;
@@ -88,7 +88,7 @@ export class ClientConnectionProcessor implements AsyncHandler<TransportConnecti
                 error: e => {
                     log.error(`Error received from source connection`, e);
                     this.completeAndDisconnect(connection, requestsTracker, log)
-                        .catch(completeErr => log.error('Failed to complete pending requests', e))
+                        .catch(() => log.error('Failed to complete pending requests', e))
                         .then(() => log.debug('Pending requests completed'));
                     reject(new ErrorCompletion(e));
                 }

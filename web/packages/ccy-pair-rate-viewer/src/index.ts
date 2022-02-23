@@ -34,7 +34,7 @@ document.addEventListener('keydown', (e) => {
         electronWindow.toggleDevTools();
     } else if (e.which === 116) {
         // F5
-        location.reload();
+        window.location.reload();
     }
 });
 

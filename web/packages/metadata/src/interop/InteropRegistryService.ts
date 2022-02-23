@@ -144,7 +144,7 @@ export class InteropRegistryService {
     private getMatchingProvidedMethodsForAppInternal(app: Application): ProvidedMethod[] {
 
         const allProvidedServices: ProvidedService[] = flatMap<Application, ProvidedService>(
-            app => app.providedServices, this.registry.applications.valuesArray());
+            application => application.providedServices, this.registry.applications.valuesArray());
 
         const consumedProvidedPairs = join(
             app.consumedServices,

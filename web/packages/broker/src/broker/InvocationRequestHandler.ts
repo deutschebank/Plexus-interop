@@ -178,7 +178,7 @@ export class InvocationRequestHandler {
                 let connections = onlineApps.filter(a => appInstanceId === a.descriptor.instanceId);
                 if (methodReference.providedService.applicationId) {
                     const appId = methodReference.providedService.applicationId;
-                    connections = connections.filter(a => appId === appId);
+                    connections = connections.filter(() => appId === appId);
                 }
                 if (connections.length === 0) {
                     appConnection = null;

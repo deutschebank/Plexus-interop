@@ -101,7 +101,7 @@ export class CrossDomainHost {
                     parsedEvent.sourceWindow,
                     parsedEvent.sourceOrigin);
                 break;
-            case MessageType.Publish.id:
+            case MessageType.Publish.id: {
                 const pubMsg = message as IFrameHostMessage<PublishRequest, {}>;
                 const requestPayload = pubMsg.requestPayload as PublishRequest;
                 if (this.log.isTraceEnabled()) {
@@ -109,7 +109,8 @@ export class CrossDomainHost {
                 }
                 this.internalBus.publish(requestPayload.topic, { payload: requestPayload.payload });
                 break;
-            case MessageType.Subscribe.id:
+            }
+            case MessageType.Subscribe.id: {
                 const subMsg = message as IFrameHostMessage<SubscribeRequest, Event>;
                 const request = subMsg.requestPayload as SubscribeRequest;
                 this.log.trace(`Received subscribe request, [${request.topic}]`);
@@ -129,6 +130,7 @@ export class CrossDomainHost {
                         parsedEvent.sourceOrigin);
                     });
                 break;
+            }
             default:
                 this.log.error(`Unsupported message type ${message.type.id}`);
                 break;
