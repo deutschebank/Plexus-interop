@@ -25,7 +25,7 @@ describe('UniqueId', () => {
     it('Converts id to 32 lengh string', () => {
         const id = UniqueId.generateNew();
         const strId = id.toString();
-        expect(id.toString().length).toBe(32);
+        expect(strId.length).toBe(32);
     });
     it('fromString and toString compatible for small numbers', () => {
         const s = "00000000000000000000000000000001";

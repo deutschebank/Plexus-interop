@@ -6,9 +6,7 @@
   "description": "Client for Plexus Interop",
   "license": "Apache-2.0",
   "scripts": {
-    "prebuild": "npm run lint && trash dist",
     "build": "npm run build:main",
-    "postbuild": "npm run test",
     "build:main": "tsc -p tsconfig.json",
     "watch": "tsc -w",
     "lint": "tslint src/**/*.ts",
@@ -24,7 +22,6 @@
     "@plexus-interop/protocol": "file:../protocol",
     "@plexus-interop/transport-common": "file:../transport-common",
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
-    "@types/loglevel": "^1.4.29",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",
@@ -38,21 +35,11 @@
     "access": "public"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
     "testRunner": "jest-jasmine2",
     "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "testRegex": ".+/dist/main/tests/.+spec.js$",
-    "coverageDirectory": "coverage",
-    "collectCoverageFrom": [
-      "dist/main/src/**/*.js",
-      "!dist/main/src/gen/**/*.js",
-      "!src/*.d.ts",
-      "!src/**/*.d.ts",
-      "!src/**/*.spec.ts"
-    ]
+    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
+    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
   }
 }

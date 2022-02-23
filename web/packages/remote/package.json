@@ -5,13 +5,11 @@
   "license": "Apache-2.0",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "npm run lint && trash dist",
     "build": "npm run build:main",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
-    "unit": "jest --coverage",
-    "pretest": "npm run lint",
+    "unit": "jest --coverage --passWithNoTests",
     "test": "npm run unit"
   },
   "dependencies": {
@@ -27,20 +25,10 @@
     "access": "public"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine.js",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "testRegex": ".+/dist/main/tests/.+.spec.js$",
-    "coverageDirectory": "coverage",
-    "collectCoverageFrom": [
-      "dist/main/src/**/*.js",
-      "!dist/main/src/gen/**/*.js",
-      "!src/*.d.ts",
-      "!src/**/*.d.ts",
-      "!src/**/*.spec.ts"
-    ]
+    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
+    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
+    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
   }
 }

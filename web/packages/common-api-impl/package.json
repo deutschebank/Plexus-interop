@@ -5,15 +5,13 @@
   "license": "Apache-2.0",
   "version": "0.1.0",
   "scripts": {
-    "prebuild": "npm run lint && trash dist",
     "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc -p tsconfig.json",
     "build:bundle": "npm run create-bundle",
     "create-bundle": "browserify dist/main/src/api/InteropPlatformFactory.js -x websocket -s PlexusPlatformFactory -o dist/main/src/platform-factory.bundle.js",
     "build:watch": "tsc -w -p tsconfig.json",
     "lint": "tslint src/**/*.ts",
-    "pretest": "npm run lint",
-    "test": "jest --coverage"
+    "test": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
     "@plexus-interop/client": "file:../client",
@@ -35,20 +33,11 @@
     "access": "public"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine.js",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "testRegex": ".+/dist/main/tests/.+.spec.js$",
-    "coverageDirectory": "coverage",
-    "collectCoverageFrom": [
-      "dist/main/src/**/*.js",
-      "!dist/main/src/gen/**/*.js",
-      "!src/*.d.ts",
-      "!src/**/*.d.ts",
-      "!src/**/*.spec.ts"
-    ]
+    "testRunner": "jest-jasmine2",
+    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
+    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
+    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
   }
 }

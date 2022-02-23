@@ -15,7 +15,6 @@
     "@plexus-interop/common": "file:../common",
     "@plexus-interop/protocol": "file:../protocol",
     "@plexus-interop/transport-common": "file:../transport-common",
-    "@types/loglevel": "^1.4.29",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",

@@ -39,7 +39,6 @@ import { ApplicationDto } from './ApplicationDto';
 import { OptionDto } from './OptionDto';
 import { MessagesNamespace, isMessage, isEnum } from './MessagesNamespace';
 import { Enum } from '../model/Enum';
-import { Option } from '../model/Option';
 
 export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 

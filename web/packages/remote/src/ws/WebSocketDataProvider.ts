@@ -28,7 +28,7 @@ export class WebSocketDataProvider {
     public getSingleMessage(url: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             let resolved = false;
-            let subscription = this.getData(url).subscribe({
+            this.getData(url).subscribe({
                 next: (message: string) => {
                     resolved = true;
                     resolve(message);
