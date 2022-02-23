@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/protocol';
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import Queue from 'typescript-collections/dist/lib/Queue';
 import { LoggerFactory, Observer } from '@plexus-interop/common';
 import { TransportConnection } from '../../src/transport/TransportConnection';
 import { TransportChannel } from '../../src/transport/TransportChannel';

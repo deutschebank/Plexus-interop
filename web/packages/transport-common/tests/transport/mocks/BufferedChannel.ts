@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UniqueId } from '@plexus-interop/protocol';
-import { Observer , Logger, LoggerFactory, BlockingQueue, BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
+import { BlockingQueue, BlockingQueueBase, CancellationToken, Logger, LoggerFactory, Observer } from '@plexus-interop/common';
+import { clientProtocol as plexus, SuccessCompletion, UniqueId } from '@plexus-interop/protocol';
 import { Subscription } from 'rxjs';
-import { clientProtocol as plexus, SuccessCompletion} from '@plexus-interop/protocol';
 import { TransportChannel } from '../../../src/transport/TransportChannel';
 
 export class BufferedChannel implements TransportChannel {

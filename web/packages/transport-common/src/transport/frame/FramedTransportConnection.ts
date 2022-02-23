@@ -212,7 +212,7 @@ export class FramedTransportConnection implements TransportConnection, Transport
         }
     }
 
-    public handleConnectionOpenFrame(frame: ConnectionOpenFrame): void {
+    public handleConnectionOpenFrame(): void {
         this.log.trace('Received connection open frame');
         if (this.stateMachine.is(ConnectionState.OPEN)) {
             this.log.debug(`Received connection open confimation`);
@@ -341,7 +341,7 @@ export class FramedTransportConnection implements TransportConnection, Transport
     }
 
     private reportErrorToChannels(error: any): void {
-        this.channelsHolder.forEach((value, key: string) => {
+        this.channelsHolder.forEach((value) => {
             value.channelTransportProxy.error(error);
         });
     }

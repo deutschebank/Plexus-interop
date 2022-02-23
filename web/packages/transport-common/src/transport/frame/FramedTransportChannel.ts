@@ -167,7 +167,7 @@ export class FramedTransportChannel implements TransportChannel {
     public async closeInternal(reason: string = 'Channel closed', error?: any): Promise<void> {
         if (this.stateMachine.is(ChannelState.CLOSED)) {
             this.log.error('Channel already closed');
-            return Promise.reject('Channel already closed');
+            return Promise.reject(new Error('Channel already closed'));
         }
         this.log.debug(`Closing channel resources, reason - ${reason}`);
         this.channelCancellationToken.cancel(reason);
@@ -187,6 +187,7 @@ export class FramedTransportChannel implements TransportChannel {
             this.log.debug('Close not requested, reporting forced close');
             this.channelObserver.error(error || new ClientError(reason));
         }
+        return undefined;
     }
 
     public sendLastMessage(data: ArrayBuffer): Promise<plexus.ICompletion> {

@@ -16,7 +16,7 @@
  */
 export function randomPayload(length?: number): ArrayBuffer {
     length = length || 10;
-    const array = new Array(length).fill('').map(_ => randomInt(1, 10));
+    const array = new Array(length).fill('').map(() => randomInt(1, 10));
     return new Uint8Array(array).buffer;
 }
 

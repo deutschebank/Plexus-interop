@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UniqueId } from '@plexus-interop/protocol';
-import { clientProtocol as plexus } from '@plexus-interop/protocol';
+import { clientProtocol as plexus, UniqueId } from '@plexus-interop/protocol';
 
 export interface BaseChannel<ObserverType> {
 

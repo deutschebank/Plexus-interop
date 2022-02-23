@@ -129,7 +129,7 @@ export class WebSocketFramedTransport implements ConnectableFramedTransport {
             };
             this.socket.addEventListener('error', (e) => {
                 if (!opened) {
-                    reject('Connection error');
+                    reject(new Error('Connection error'));
                 } else {
                     this.log.warn('Connection error', e);
                 }

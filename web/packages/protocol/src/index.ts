@@ -20,7 +20,7 @@ import { util, configure } from 'protobufjs/minimal';
 // https://github.com/dcodeIO/protobuf.js/issues/730
 util.Long = Long;
 configure();
-export {plexus as transportProtocol} from './gen/internal-transport-protocol';
-export {plexus as clientProtocol} from './gen/internal-client-protocol';
+
+export * from './protocols';
 export * from './util/ClientProtocolHelper';
 export * from './dto';;

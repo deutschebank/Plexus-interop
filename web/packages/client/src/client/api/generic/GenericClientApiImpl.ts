@@ -19,7 +19,6 @@ import { ClientError , InvocationRequestInfo } from '@plexus-interop/protocol';
 import { Logger, LoggerFactory, Arrays, onceVoid } from '@plexus-interop/common';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { UniqueId } from '@plexus-interop/transport-common';
-import { Feature } from './GenericClientApi';
 import { GenericClient } from "../../generic/GenericClient";
 import { ClientDtoUtils } from "../../ClientDtoUtils";
 import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
@@ -45,7 +44,7 @@ export class GenericClientApiImpl implements InternalGenericClientApi {
         protected readonly handlersRegistry: InvocationHandlersRegistry
     ) { }
 
-    public supported(feature: Feature): boolean {
+    public supported(): boolean {
         return true;
     }
 

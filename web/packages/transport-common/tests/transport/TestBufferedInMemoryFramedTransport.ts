@@ -16,7 +16,7 @@
  */
 import { UniqueId } from '@plexus-interop/protocol';
 import { LoggerFactory, Observer, Logger , AsyncHelper, CancellationToken } from '@plexus-interop/common';
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import Queue from 'typescript-collections/dist/lib/Queue';
 import { Frame } from '../../src/transport/frame/model/Frame';
 import { ConnectableFramedTransport } from '../../src/transport/frame/ConnectableFramedTransport';
 import { BufferedReadFramedTransport } from '../../src/transport/frame/BufferedReadFramedTransport';

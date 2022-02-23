@@ -16,6 +16,7 @@
  */
 import { AppConnectionHeartBit } from './AppConnectionHeartBit';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class EventType<PayloadType> {
     
     // tslint:disable-next-line:variable-name

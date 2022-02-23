@@ -63,7 +63,7 @@ new WebGreetingServerClientBuilder()
     .withTransportConnectionProvider(() => new WebSocketConnectionFactory(new WebSocket(wsUrl)).connect())
     .connect()
     .then(() => log.info('Connected to Broker'))
-    .catch(e => {
+    .catch(() => {
         log.error('Failed to connect');
     });
 

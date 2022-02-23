@@ -16,7 +16,8 @@
  */
 import * as Long from 'long';
 import { Arrays } from '@plexus-interop/common';
-import { clientProtocol as plexus, ClientProtocolUtils } from "..";
+import { clientProtocol as plexus } from '../protocols';
+import { ClientProtocolUtils } from "../dto/ClientProtocolUtils";
 import { InvocationMetaInfo } from '../dto/InvocationMetaInfo';
 import { UniqueId } from '../dto/UniqueId';
 

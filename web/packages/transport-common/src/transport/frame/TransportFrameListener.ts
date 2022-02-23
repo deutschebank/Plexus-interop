@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ConnectionCloseFrame, ChannelCloseFrame, MessageFrame } from '.';
-import { ConnectionOpenFrame } from '.';
-import { ChannelOpenFrame } from '.';
+
+import { ChannelCloseFrame } from './model/ChannelCloseFrame';
+import { ChannelOpenFrame } from './model/ChannelOpenFrame';
+import { ConnectionCloseFrame } from './model/ConnectionCloseFrame';
+import { ConnectionOpenFrame } from './model/ConnectionOpenFrame';
+import { MessageFrame } from './model/MessageFrame';
 
 export interface TransportFrameListener {
     

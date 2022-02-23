@@ -18,6 +18,7 @@ import { PublishRequest } from './PublishRequest';
 import { Event } from '../../Event';
 import { SubscribeRequest } from './SubscribeRequest';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class MessageType<Req, Res> {
 
     // tslint:disable-next-line:variable-name

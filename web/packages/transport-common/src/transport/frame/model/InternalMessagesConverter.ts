@@ -17,8 +17,11 @@
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
 import { Arrays } from '@plexus-interop/common';
 import { Frame } from './Frame';
-import { ChannelOpenFrame, ChannelCloseFrame, ConnectionCloseFrame, MessageFrame } from '.';
 import { ConnectionOpenFrame } from './ConnectionOpenFrame';
+import { ChannelCloseFrame } from './ChannelCloseFrame';
+import { ChannelOpenFrame } from './ChannelOpenFrame';
+import { ConnectionCloseFrame } from './ConnectionCloseFrame';
+import { MessageFrame } from './MessageFrame';
 
 export class InternalMessagesConverter {
 
