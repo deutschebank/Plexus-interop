@@ -16,7 +16,6 @@
  */
 import { Observable, throwError } from 'rxjs';
 
-import 'superagent';
 import * as request from 'superagent';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 
