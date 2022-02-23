@@ -73,13 +73,14 @@ export class EchoClientBenchmark extends BaseEchoTest {
             sendMessages();
         });              
         const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<BenchmarkResult>(async (resolve, reject) => {
             const start = Date.now();
             const finish = start + periodInMillis;
             let sentMessagesCount = 0;
             let lastReceived = 0;      
             client.getEchoServiceProxy().serverStreaming(echoRequest, {
-                next: response => {
+                next: () => {
                     if (cancellationToken.isCancelled()) {
                         return;
                     }

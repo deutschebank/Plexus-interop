@@ -14,9 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Fields } from './Fields';
 import { Options } from './Options';
-import { MessageDto } from './MessageDto';
 import { EnumDto } from './EnumDto';
+
+export interface MessageDto {
+    fields: Fields;
+    options?: Options;
+    nested?: MessagesNamespaceContent;
+}
 
 export type MessagesNamespace = {
     options?: Options;

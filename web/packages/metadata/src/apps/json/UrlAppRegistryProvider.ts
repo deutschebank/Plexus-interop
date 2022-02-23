@@ -48,7 +48,7 @@ export class UrlAppRegistryProvider implements AppRegistryProvider {
 
     public async start(): Promise<void> {
         if (this.started) {
-            return Promise.reject('Already started');
+            return Promise.reject(new Error('Already started'));
         }
         this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
         const response = await this.urlDataLoader.fetchData(this.url);
@@ -58,6 +58,7 @@ export class UrlAppRegistryProvider implements AppRegistryProvider {
             this.jsonAppRegistryProvider = new JsonAppRegistryProvider(response);
         }
         this.started = true;
+        return undefined;
     }
 
 }

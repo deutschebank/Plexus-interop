@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 import { Logger, LoggerFactory } from '@plexus-interop/common';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { BrowserWindow } from 'electron';
 import { UniqueId } from '@plexus-interop/transport-common';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 import * as fs from 'fs';
-import * as log from 'loglevel';
+import * as loglevel from 'loglevel';
 import { MethodInvocationContext } from '@plexus-interop/client';
 import * as plexus from './gen/plexus-messages';
 import { ElectronAppLauncherClientBuilder, ElectronAppLauncherClient } from './client/ElectronAppLauncherGeneratedClient';
@@ -49,6 +50,7 @@ export class ElectronAppLauncher {
     private webSocketAddress: string;
     
     public constructor(
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         private log: Logger = LoggerFactory.getLogger('ElectronAppLauncher'),
         private launchOnStartup: string[],
         private defaultBrokerWorkingDir: string) {}
@@ -85,15 +87,15 @@ export class ElectronAppLauncher {
             .then((client) => {
                 this.plexusClient = client;
                 this.connected = true;
-                log.info('Launcher client connected to Broker');
+                loglevel.info('Launcher client connected to Broker');
                 this.launchOnStartup.forEach(launchPath => {
                     this.launchApp(launchPath)
-                        .then(() => log.info(`App Launched for ${launchPath} path`))
-                        .catch(() => log.error(`Could not launch app for ${launchPath} path`));
+                        .then(() => loglevel.info(`App Launched for ${launchPath} path`))
+                        .catch(() => loglevel.error(`Could not launch app for ${launchPath} path`));
                 });
             })
             .catch(e => {
-                log.error(`Error connecting to broker${  e}`);
+                loglevel.error(`Error connecting to broker${  e}`);
                 throw e;
             });
 
@@ -121,7 +123,7 @@ export class ElectronAppLauncher {
         }
         const appInstanceId = UniqueId.generateNew();
         this.log.info(`Launching instance [${appInstanceId.toString()}] with URL [${launchPath}]`);
-        return new Promise<plexus.interop.IAppLaunchResponse>((resolve, reject) => {
+        return new Promise<plexus.interop.IAppLaunchResponse>((resolve) => {
             const window = new BrowserWindow();
             // pass url and instance id to App's window
             const windowAny: any = window;
@@ -193,10 +195,10 @@ export class ElectronAppLauncher {
     }
 
     private readWebSocketUrl(workingDir: string, serverName: string): Promise<string> {
-        const path = `${workingDir}/servers/${serverName}/address`;
-        this.log.info(`Reading WS URL from ${path}`);
+        const newPath = `${workingDir}/servers/${serverName}/address`;
+        this.log.info(`Reading WS URL from ${newPath}`);
         return new Promise((resolve, reject) => {
-            fs.readFile(path, 'utf8', (err, data) => {
+            fs.readFile(newPath, 'utf8', (err, data) => {
                 if (err) {
                     this.log.error('Unable to read file', err);
                     reject(err);

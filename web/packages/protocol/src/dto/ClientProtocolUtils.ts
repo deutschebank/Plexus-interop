@@ -22,7 +22,7 @@ export class ClientProtocolUtils {
         const errors: string[] = completions
             .filter(completion => !!completion && completion.status === plexus.Completion.Status.Failed)
             .map(completion => completion.error || {
-                    message: `Unknown error, completion status ${status}`
+                    message: `Unknown error, completion status ${completion.status}`
                 })
             .map(error => error.message || 'Unknown error');
         if (errors.length > 0) {

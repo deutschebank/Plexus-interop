@@ -50,7 +50,7 @@ export class UrlInteropRegistryProvider implements InteropRegistryProvider {
 
     public async start(): Promise<void> {
         if (this.started) {
-            return Promise.reject('Already started');
+            return Promise.reject(new Error('Already started'));
         }
         this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
         const isWebSocket = this.url.startsWith('ws');
@@ -59,6 +59,7 @@ export class UrlInteropRegistryProvider implements InteropRegistryProvider {
         } else {
             await this.startWithHttp();
         }
+        return undefined;
     }
 
     private async startWithHttp(): Promise<void> {

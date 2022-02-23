@@ -15,17 +15,12 @@
  * limitations under the License.
  */
 import { join, distinct, Logger, LoggerFactory, flatMap, ExtendedMap } from '@plexus-interop/common';
-import { Application } from './model/Application';
-import { ConsumedService } from './model/ConsumedService';
+import { Application, ConsumedMethod, ConsumedService, Method, ProvidedMethod, ProvidedService } from './model/ServiceTypes';
 import { ConsumedMethodReference } from './model/ConsumedMethodReference';
-import { ConsumedMethod } from './model/ConsumedMethod';
-import { ProvidedMethod } from './model/ProvidedMethod';
 import { ProvidedServiceReference } from './model/ProvidedServiceReference';
 import { InteropRegistryProvider } from './InteropRegistryProvider';
 import { InteropRegistry } from './model/InteropRegistry';
 import { ConsumedServiceReference } from './model/ConsumedServiceReference';
-import { ProvidedService } from './model/ProvidedService';
-import { Method } from './model/Method';
 import { Option } from './model/Option';
 
 export class InteropRegistryService {

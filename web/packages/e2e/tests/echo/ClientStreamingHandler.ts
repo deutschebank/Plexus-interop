@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observer } from '@plexus-interop/common';
-import { StreamingInvocationClient, MethodInvocationContext, InvocationObserver } from '@plexus-interop/client';
-import { NopServiceHandler } from './NopServiceHandler';
+import { InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 import * as plexus from '../../src/echo/gen/plexus-messages';
+import { NopServiceHandler } from './NopServiceHandler';
 
 export class ClientStreamingHandler extends NopServiceHandler {
 

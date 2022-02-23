@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -61,7 +62,7 @@ export class ServerStreamingInvocationTests extends BaseEchoTest {
                     responses.forEach(r => this.assertEqual(r, echoRequest));
                     await this.clientsSetup.disconnect(client, server);
                     if (serverInvocationContext && serverInvocationContext.cancellationToken.isCancelled()) {
-                        reject('Server should not receive cancel for success completion');
+                        reject(new Error('Server should not receive cancel for success completion'));
                     } else {
                         resolve();
                     }
@@ -90,9 +91,9 @@ export class ServerStreamingInvocationTests extends BaseEchoTest {
             client.getEchoServiceProxy().serverStreaming(echoRequest, {
                 next: () => { },
                 complete: async () => {
-                    reject('Not expected to be completed');
+                    reject(new Error('Not expected to be completed'));
                 },
-                error: async e => {
+                error: async () => {
                     await this.clientsSetup.disconnect(client, server);
                     resolve();
                 },
@@ -131,10 +132,10 @@ export class ServerStreamingInvocationTests extends BaseEchoTest {
             const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
             client.getEchoServiceProxy().serverStreaming(this.clientsSetup.createRequestDto(), {
                 next: () => {
-                    reject('Not expected to receive update');
+                    reject(new Error('Not expected to receive update'));
                 },
                 complete: async () => {
-                    reject('Not expected to be completed');
+                    reject(new Error('Not expected to be completed'));
                 },
                 error: async e => {
                     expect(e.message).to.eq(errorText);

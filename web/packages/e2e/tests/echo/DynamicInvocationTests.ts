@@ -34,7 +34,7 @@ export class DynamicInvocationTests extends BaseEchoTest {
         const echoRequest = this.clientsSetup.createRequestDto();
         const handler = new UnaryServiceHandler(async (context, request) => request);
         const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
-        return new Promise<void>(async (resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             client.sendUnaryRequest({
                 methodId: 'Unary',
                 serviceId: 'plexus.interop.testing.EchoService'
@@ -58,10 +58,11 @@ export class DynamicInvocationTests extends BaseEchoTest {
                     hostClient.complete();
                 },
                 complete: () => { },
-                error: (e) => { },
+                error: () => { },
                 streamCompleted: () => { }
             }));
         const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             let remoteCompleted = false;
             let remoteStreamCompleted = false;
@@ -77,13 +78,19 @@ export class DynamicInvocationTests extends BaseEchoTest {
                     }
                 },
                 error: e => reject(e),
-                complete: () => remoteCompleted = true,
-                streamCompleted: () => remoteStreamCompleted = true
+                complete: () => {
+                    remoteCompleted = true;
+                },
+                streamCompleted: () => {
+                    remoteStreamCompleted = true;
+                }
             }, plexus.plexus.interop.testing.EchoRequest, plexus.plexus.interop.testing.EchoRequest);
 
             invocationClient.next(echoRequest);
             await invocationClient.complete();
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(remoteCompleted).to.be.true;
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             expect(remoteStreamCompleted).to.be.true;
             await this.clientsSetup.disconnect(client, server);
             resolve();

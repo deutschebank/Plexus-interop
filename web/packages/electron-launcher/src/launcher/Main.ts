@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron';
 import { LoggerFactory, LogLevel, PrefixedLogger } from '@plexus-interop/common';
 import { FileLogger } from './logger/FileLogger';
@@ -21,7 +22,7 @@ import { FileLogger } from './logger/FileLogger';
 import { ElectronAppLauncher } from './ElectronAppLauncher';
 
 declare let global: any;
-// tslint:disable-next-line:no-unused-variable
+// eslint-disable-next-line global-require
 global.WebSocket = global.WebSocket || require('ws');
 const argv = require('minimist')(process.argv.slice(1));
 

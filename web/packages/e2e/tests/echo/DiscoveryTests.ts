@@ -45,7 +45,7 @@ export class DiscoveryTests extends BaseEchoTest {
                             expect(discoveryResponse.methods.filter(this.methodWithAlias).length).to.be.eq(1);
                             discoveryResponse.methods.forEach(method => this.assertDiscoveredMethodValid(method));
                         } else {
-                            throw 'Empty response';
+                            throw new Error('Empty response');
                         }
                     })
                     .then(() => this.clientsSetup.disconnect(clients[0], clients[1]));
@@ -73,24 +73,24 @@ export class DiscoveryTests extends BaseEchoTest {
             if (serviceRef.consumedService) {
                 expect(serviceRef.consumedService.serviceId).to.eq(serviceId);
             } else {
-                throw 'Empty consumed service';
+                throw new Error('Empty consumed service');
             }
             if (serviceRef.providedService) {
                 expect(serviceRef.providedService.applicationId).to.eq('plexus.interop.testing.EchoServer');
-                // tslint:disable-next-line:no-unused-expression
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 expect(serviceRef.providedService.connectionId).to.not.be.undefined;
                 expect(serviceRef.providedService.serviceId).to.eq(serviceId);
             } else {
-                throw 'Empty provided service';
+                throw new Error('Empty provided service');
             }
             if (serviceRef.methods) {
                 expect(serviceRef.methods.length).to.be.greaterThan(0);
                 serviceRef.methods.forEach(method => this.assertDiscoveredServiceMethodValid(method));
             } else {
-                throw 'Empty methods';
+                throw new Error('Empty methods');
             }
         } else {
-            throw 'Empty Response';
+            throw new Error('Empty Response');
         }
         await this.clientsSetup.disconnect(client, server);
     }
@@ -146,16 +146,16 @@ export class DiscoveryTests extends BaseEchoTest {
             });
 
         } 
-            throw 'Empty response';
+            throw new Error('Empty response');
         
     }
 
     public async testClientCanInvokeDiscoveredBidiStreamingRequest(): Promise<void> {
         const echoRequest = this.clientsSetup.createRequestDto();
         const handler = new ClientStreamingHandler((context, hostClient) => ({
-                    next: clientRequest => hostClient.complete(),
+                    next: () => hostClient.complete(),
                     complete: () => {},
-                    // tslint:disable-next-line:no-console
+                    // eslint-disable-next-line no-console
                     error: (e) => console.error('Error received by server', e),
                     streamCompleted: () => {}
                 }));
@@ -174,9 +174,10 @@ export class DiscoveryTests extends BaseEchoTest {
             if (!method.providedMethod) {
                 throw new Error('Provided method is empty');
             }
+            // eslint-disable-next-line no-async-promise-executor
             return new Promise<void>(async (resolve, reject) => {
                 const streamingClient = await client.sendRawBidirectionalStreamingRequest(method.providedMethod as ProvidedMethodReference, {
-                    next: serverResponse => {},
+                    next: () => {},
                     error: (e) => {
                         reject(e);
                     },
@@ -190,7 +191,7 @@ export class DiscoveryTests extends BaseEchoTest {
                 streamingClient.complete();
             });
         } 
-            throw 'Empty response';
+            throw new Error('Empty response');
         
     }
 
@@ -224,7 +225,7 @@ export class DiscoveryTests extends BaseEchoTest {
                     });
             });
         } else {
-            throw 'Empty response';
+            throw new Error('Empty response');
         }
         await this.clientsSetup.disconnect(client, server);
     }
@@ -260,7 +261,7 @@ export class DiscoveryTests extends BaseEchoTest {
                     plexus.plexus.interop.testing.EchoRequest);
             });
         } else {
-            throw 'Empty response';
+            throw new Error('Empty response');
         }
         await this.clientsSetup.disconnect(client, server);
     }
@@ -273,7 +274,7 @@ export class DiscoveryTests extends BaseEchoTest {
             discoveryResponse.methods.forEach(
                 method => this.assertDiscoveredMethodValid(method));
         } else {
-            throw 'Empty response';
+            throw new Error('Empty response');
         }
         await this.clientsSetup.disconnect(client, server);
     }
@@ -293,15 +294,17 @@ export class DiscoveryTests extends BaseEchoTest {
             discoveryResponse.methods.forEach(
                 method => this.assertDiscoveredMethodValid(method));
         } else {
-            throw 'Empty response';
+            throw new Error('Empty response');
         }
         await this.clientsSetup.disconnect(client, server);
     }
     
     private assertDiscoveredMethodValid(discoveredMethod: DiscoveredMethod): void {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(discoveredMethod.providedMethod).to.not.be.undefined;
         expect(discoveredMethod.inputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
         expect(discoveredMethod.outputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(discoveredMethod.options).to.not.be.undefined;
         const options = discoveredMethod.options || [];
         expect(options.length).to.be.greaterThan(0);
@@ -310,7 +313,9 @@ export class DiscoveryTests extends BaseEchoTest {
     }
 
     private assertDiscoveredServiceMethodValid(discoveredMethod: DiscoveredServiceMethod): void {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(discoveredMethod.methodId).to.not.be.undefined;
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(discoveredMethod.methodTitle).to.not.be.undefined;
         expect(discoveredMethod.inputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');
         expect(discoveredMethod.outputMessageId).to.be.eq('plexus.interop.testing.EchoRequest');

@@ -48,7 +48,7 @@ export class TestCrossDomainHost {
 
 }
 const globalObject: any = window || global;
-// tslint:disable-next-line:no-string-literal
+// eslint-disable-next-line no-multi-assign
 const host = globalObject.proxyHostVar = new TestCrossDomainHost();
 
 host.start();

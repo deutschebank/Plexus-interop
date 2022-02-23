@@ -30,7 +30,9 @@ export class JsonAppRegistryProvider implements AppRegistryProvider {
         this.$registry = ($jsonMetadata || of(jsonMetadata))
             .pipe(map(this.parseRegistry.bind(this)));
         this.$registry.subscribe({
-            next: update => this.current = update
+            next: update => {
+                this.current = update;
+            }
         });
     }
 

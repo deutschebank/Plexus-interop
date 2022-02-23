@@ -39,6 +39,7 @@
     "@plexus-interop/transport-common": "file:../transport-common",
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
     "@types/loglevel": "^1.4.29",
+    "loglevel": "^1.4.1",
     "minimist": "^1.2.0",
     "protobufjs": "6.11.2",
     "rxjs": "^7.5.4",

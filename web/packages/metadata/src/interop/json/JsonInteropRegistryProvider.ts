@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ExtendedArray, ExtendedMap, Logger, LoggerFactory, toMap } from '@plexus-interop/common';
 import { map, Observable, of } from 'rxjs';
-import { ExtendedArray, Logger, LoggerFactory, ExtendedMap, toMap } from '@plexus-interop/common';
 import { InteropRegistryProvider } from '../InteropRegistryProvider';
-import { InteropRegistry } from '../model/InteropRegistry';
-
-
-import { RegistryDto } from './RegistryDto';
-import { Message } from '../model/Message';
-import { ServiceDto } from './ServiceDto';
-import { Service } from '../model/Service';
-import { Method } from '../model/Method';
-import { MethodType } from '../model/MethodType';
-import { MethodTypeDto } from './MethodTypeDto';
-import { Application } from '../model/Application';
-import { ConsumedServiceDto } from './ConsumedServiceDto';
-import { ConsumedService } from '../model/ConsumedService';
-import { MatchPatternFactory } from '../model/MatchPatternFactory';
-import { ConsumedMethod } from '../model/ConsumedMethod';
-import { ProvidedMethod } from '../model/ProvidedMethod';
-import { ProvidedServiceDto } from './ProvidedServiceDto';
-import { ProvidedService } from '../model/ProvidedService';
-import { ApplicationDto } from './ApplicationDto';
-import { OptionDto } from './OptionDto';
-import { MessagesNamespace, isMessage, isEnum } from './MessagesNamespace';
 import { Enum } from '../model/Enum';
+import { InteropRegistry } from '../model/InteropRegistry';
+import { MatchPatternFactory } from '../model/MatchPatternFactory';
+import { Message } from '../model/Message';
+import { MethodType } from '../model/MethodType';
+import { Application, ConsumedMethod, ConsumedService, Method, ProvidedMethod, ProvidedService, Service } from '../model/ServiceTypes';
+import { ApplicationDto } from './ApplicationDto';
+import { ConsumedServiceDto } from './ConsumedServiceDto';
+import { isEnum, isMessage, MessagesNamespace } from './MessagesNamespace';
+import { MethodTypeDto } from './MethodTypeDto';
+import { OptionDto } from './OptionDto';
+import { ProvidedServiceDto } from './ProvidedServiceDto';
+import { RegistryDto } from './RegistryDto';
+import { ServiceDto } from './ServiceDto';
+
+
 
 export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
@@ -53,7 +47,9 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
         this.$registry = ($jsonMetadata || of(jsonMetadata))
             .pipe(map(this.parseRegistry.bind(this)));
         this.$registry.subscribe({
-            next: update => this.current = update
+            next: update => {
+                this.current = update;
+            }
         });
     }
 
@@ -96,6 +92,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
     private collectMessagesMetadata(
         rawEnries: MessagesNamespace,
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         namespaceId: string | null = null,
         messagesMap: ExtendedMap<string, Message>,
         enumsMap: ExtendedMap<string, Enum>): void {
@@ -105,6 +102,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             return;
         }
 
+        // eslint-disable-next-line guard-for-in, no-restricted-syntax
         for (const key in nested) {
             const namespaceEntry = nested[key];
             const id = namespaceId ? `${namespaceId}.${key}` : key;
@@ -186,6 +184,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
     private getOptionValueOrDefault(options: OptionDto[], id: string, defaultValue: string | null): string | null {
         if (options) {
+            // eslint-disable-next-line no-restricted-syntax
             for (const o of options) {
                 if (o.id === id) {
                     return o.value;

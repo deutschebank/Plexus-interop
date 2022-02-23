@@ -44,7 +44,7 @@ export class PointToPointInvocationTests extends BaseEchoTest {
                 onUnary: async (context: MethodInvocationContext, request: plexus.plexus.interop.testing.IEchoRequest): Promise<plexus.plexus.interop.testing.IEchoRequest> => request
             };
             const echoRequest = this.clientsSetup.createRequestDto();
-            return this.clientsSetup
+            this.clientsSetup
                 .createEchoClients(this.connectionProvider, new NopServiceHandler(), aliasServiceHandler)
                 .then(clients => clients[0].getServiceAliasProxy()
                         .unary(echoRequest)
@@ -86,7 +86,9 @@ export class PointToPointInvocationTests extends BaseEchoTest {
         const echoRequest = this.clientsSetup.createRequestDto();
         let serverReceivedCancel = false;
         const handler = new UnaryServiceHandler(context => new Promise<plexus.plexus.interop.testing.IEchoRequest>(() => {
-                context.cancellationToken.onCancel(() => serverReceivedCancel = true);
+                context.cancellationToken.onCancel(() => {
+                    serverReceivedCancel = true;
+                });
                 // "long running operation" do not return any result
             }));
         const [echoClient, echoServer] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
@@ -111,7 +113,7 @@ export class PointToPointInvocationTests extends BaseEchoTest {
         const echoRequest = this.clientsSetup.createRequestDto();
         return new Promise<void>((resolve, reject) => {
             const handler = new UnaryServiceHandler(async (context: MethodInvocationContext, request) => request);
-            return this.clientsSetup.createEchoClients(this.connectionProvider, handler)
+            this.clientsSetup.createEchoClients(this.connectionProvider, handler)
                 .then(clients => (async () => {
                         let echoResponse = await clients[0].getEchoServiceProxy().unary(echoRequest);
                         this.assertEqual(echoRequest, echoResponse);
@@ -140,7 +142,7 @@ export class PointToPointInvocationTests extends BaseEchoTest {
                 }
                 return request;
             });
-            return this.clientsSetup.createEchoClients(this.connectionProvider, handler)
+            this.clientsSetup.createEchoClients(this.connectionProvider, handler)
                 .then(clients => clients[0].getEchoServiceProxy()
                         .unary(echoRequest)
                         .then(echoResponse => {
@@ -155,7 +157,7 @@ export class PointToPointInvocationTests extends BaseEchoTest {
     private testHostsExecutionErrorReceivedInternal(errorObj: any, errorText: string, isPromise: boolean = true): Promise<void> {
         const echoRequest = this.clientsSetup.createRequestDto();
         return new Promise<void>((resolve, reject) => {
-            const handler = new UnaryServiceHandler((context: MethodInvocationContext, request) => {
+            const handler = new UnaryServiceHandler(() => {
                 if (isPromise) {
                     return Promise.reject(errorObj);
                 }
@@ -164,8 +166,8 @@ export class PointToPointInvocationTests extends BaseEchoTest {
             this.clientsSetup.createEchoClients(this.connectionProvider, handler)
                 .then(clients => clients[0].getEchoServiceProxy()
                         .unary(echoRequest)
-                        .then(echoResponse => {
-                            reject('Should not happen');
+                        .then(() => {
+                            reject(new Error('Should not happen'));
                         })
                         .catch(error => {
                             expect(error.message).to.eq(errorText);
