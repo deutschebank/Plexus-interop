@@ -60,7 +60,8 @@ export class DiscoveryRequestHandler {
             }
 
             if (methodDiscoveryRequest.outputMessageId) {
-                providedMethods = providedMethods.filter(() => methodDiscoveryRequest.outputMessageId === methodDiscoveryRequest.outputMessageId);
+                // TODO ???
+                // providedMethods = providedMethods.filter(() => methodDiscoveryRequest.outputMessageId === methodDiscoveryRequest.outputMessageId);
             }
 
             let discoveredMethods: DiscoveredMethod[];

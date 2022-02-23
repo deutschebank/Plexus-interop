@@ -175,10 +175,11 @@ export class InvocationRequestHandler {
                 const onlineApps = await this.appLifeCycleManager.getOnlineConnections();
                 const appInstanceId = UniqueId.fromProperties(methodReference.providedService.applicationInstanceId as plexus.IUniqueId).toString();
                 this.log.trace(`Looking for app by appInstanceId [${appInstanceId}]`);
-                let connections = onlineApps.filter(a => appInstanceId === a.descriptor.instanceId);
+                const connections = onlineApps.filter(a => appInstanceId === a.descriptor.instanceId);
                 if (methodReference.providedService.applicationId) {
-                    const appId = methodReference.providedService.applicationId;
-                    connections = connections.filter(() => appId === appId);
+                    // const appId = methodReference.providedService.applicationId;
+                    // TODO ?????
+                    // connections = connections.filter(() => appId === appId);
                 }
                 if (connections.length === 0) {
                     appConnection = null;
