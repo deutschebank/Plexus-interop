@@ -65,7 +65,6 @@ describe('Web Socket Client connectivity', () => {
             .withTransportConnectionProvider(failAndSuccessProvider)
             .connect()
             .then(client => {
-                // tslint:disable-next-line: no-unused-expression
                 expect(client).to.not.be.undefined;
                 client.disconnect().then(() => {
                     done();
@@ -79,7 +78,6 @@ describe('Web Socket Client connectivity', () => {
             .withTransportConnectionProvider(() => new WebSocketConnectionFactory(new WebSocket('ws://127.0.0.1:11111')).connect())
             .connect()
             .catch(e => {
-                // tslint:disable-next-line:no-console
                 console.log('Connection error', e);
                 done();
             });

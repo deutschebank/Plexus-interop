@@ -145,9 +145,7 @@ export class ElectronAppLauncher {
 
     private toFileUri(filePath: string): string {
         filePath = path.resolve(filePath).replace(/\\/g, '/');
-        // tslint:disable-next-line:quotemark
         if (filePath[0] !== '/') {
-            // tslint:disable-next-line:quotemark
             filePath = `/${  filePath}`;
         }
         return encodeURI(`file://${  filePath}`);

@@ -185,7 +185,6 @@ describe('Invocation', () => {
     }
 
     async function closeInvocation(): Promise<void> {
-        // tslint:disable-next-line:no-console
         console.log('Cancelling invocation');
         const closePromise = invocation.close();
         addToInbox(modelHelper.sendCompletionPayload({}));

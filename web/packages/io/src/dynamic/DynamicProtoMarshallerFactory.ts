@@ -25,7 +25,6 @@ import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
  */
 export class DynamicProtoMarshallerFactory {
 
-    // tslint:disable-next-line:typedef
     private readonly cache = new Map<string, ExtendedMarshaller<any, ArrayBuffer>>();
 
     private readonly protobufRoot: Root;

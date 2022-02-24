@@ -28,7 +28,6 @@ export class BroadCastChannelEventBus implements EventBus {
 
     private readonly log: Logger;
 
-    // tslint:disable-next-line:typedef
     private readonly openChannels = new InMemoryCache();
 
     public constructor(private readonly namespace: string = 'plexus-bus') {

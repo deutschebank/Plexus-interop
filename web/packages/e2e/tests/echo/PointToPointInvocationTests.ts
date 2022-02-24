@@ -95,7 +95,6 @@ export class PointToPointInvocationTests extends BaseEchoTest {
         const cancellableResponse = await echoClient.getEchoServiceProxy().unaryWithCancellation(echoRequest);
         await cancellableResponse.invocation.cancel();
         await this.clientsSetup.disconnect(echoClient, echoServer);
-        // tslint:disable-next-line: no-unused-expression
         await AsyncHelper.waitFor(() => serverReceivedCancel === true, undefined, 10, 500);
     }
 

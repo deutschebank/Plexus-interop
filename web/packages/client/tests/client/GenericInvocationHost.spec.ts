@@ -35,7 +35,6 @@ import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static
 declare var process: any;
 
 process.on('unhandledRejection', (reason: any, p: any) => {
-    // tslint:disable-next-line:no-console
     console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
 
@@ -50,7 +49,6 @@ describe('GenericInvocationHost', () => {
             done();
             return new SuccessCompletion();
         }, async (context: MethodInvocationContext, request: ArrayBuffer) => {
-            // tslint:disable-next-line:no-console
             console.log('Doing important stuff ...');
             return responsePayload;
         }, (invocation) => {

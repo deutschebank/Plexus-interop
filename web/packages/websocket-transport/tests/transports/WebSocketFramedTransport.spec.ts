@@ -37,7 +37,6 @@ describe('WebSocketFramedTransport', () => {
             connectionUrl = 'ws://localhost:' + ports[0];
             mockServer = new Server(connectionUrl);
             mockServer.on('connection', () => {
-                // tslint:disable-next-line:no-console
             });
             done();
         });
@@ -45,7 +44,6 @@ describe('WebSocketFramedTransport', () => {
 
     afterEach((done) => {
         mockServer.stop(() => {
-            // tslint:disable-next-line:no-console
             done();
         });
     });

@@ -24,7 +24,6 @@ export function install(): Promise<void[]> {
 }
 
 async function installProtoc(): Promise<void> {
-    // tslint:disable-next-line:no-string-literal
     if (process.env.PLEXUS_CLI_SKIP_PROTOC_DOWNLOAD === 'true') {
         console.log('protoc download skipped');
     } else {
@@ -39,7 +38,6 @@ async function installProtoc(): Promise<void> {
 }
 
 async function installJre(): Promise<void> {
-    // tslint:disable-next-line:no-string-literal
     if (process.env.PLEXUS_CLI_SKIP_JRE_DOWNLOAD === 'true') {
         console.log('JRE download skipped');
     } else {

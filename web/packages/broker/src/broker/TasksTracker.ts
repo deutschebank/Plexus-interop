@@ -18,7 +18,6 @@ import { Completion, ClientProtocolUtils } from '@plexus-interop/protocol';
 
 export class TasksTracker {
 
-    // tslint:disable-next-line:typedef
     private readonly tasks = new Map<string, Promise<Completion>>();
 
     public async start(id: string, task: () => Promise<Completion>): Promise<Completion> {

@@ -38,9 +38,7 @@ export class InvocationHandlersRegistry {
 
     protected log: Logger = LoggerFactory.getLogger('InvocationHandler');
 
-    // tslint:disable-next-line:typedef
     protected readonly typeAwareHandlers = new Map<string, BidiStreamingInvocationHandler<any, any>>();
-    // tslint:disable-next-line:typedef
     protected readonly genericHandlers = new Map<string, BidiStreamingInvocationHandler<ArrayBuffer, ArrayBuffer>>();
 
     public constructor(private readonly marshallerProvider: BinaryMarshallerProvider) { }
