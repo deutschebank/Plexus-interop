@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "trash dist",
     "build:main": "tsc -p tsconfig.json",
-    "package": "browserify ./dist/main/src/greeting/server/Main.js --outfile ./dist/greetingServer.bundle.js",
+    "package": "webpack",
     "copy-assets": "copyfiles -f src/greeting/views/* ./dist && copyfiles -f ./dist/greetingServer* ../../../bin/win-x86/samples/greeting/apps/WebGreetingServer",
     "copy-gen-folders": "copyfiles src/greeting/server/gen/* dist/main",
     "build": "npm run build:main && npm run build:bundle",
