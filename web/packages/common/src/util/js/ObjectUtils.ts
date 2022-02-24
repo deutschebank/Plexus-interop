@@ -1,10 +1,5 @@
-/* eslint-disable no-proto */
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable no-underscore-dangle */
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable no-proto */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-underscore-dangle */
 // TODO update these methods
 export class ObjectUtils {
 

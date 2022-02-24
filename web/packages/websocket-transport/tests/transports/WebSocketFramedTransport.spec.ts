@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,10 @@
 import { WebSocketFramedTransport } from '../../src/transport/WebSocketFramedTransport';
 import { ChannelOpenFrame, InternalMessagesConverter, MessageFrame, UniqueId } from '@plexus-interop/transport-common';
 
-// tslint:disable-next-line:variable-name
 const MockSocket = require('mock-socket');
 const findPort = require('find-port')
 
 const Server = MockSocket.Server;
-// tslint:disable-next-line:variable-name
 const MockWebSocket = MockSocket.WebSocket;
 
 describe('WebSocketFramedTransport', () => {

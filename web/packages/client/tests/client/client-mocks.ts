@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable max-classes-per-file */
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
+/* eslint-disable max-classes-per-file */
 import { RemoteInvocationInfo } from '@plexus-interop/client-api';
 import { BlockingQueue, BlockingQueueBase, CancellationToken, Logger, LoggerFactory, Observer } from '@plexus-interop/common';
 import { BinaryMarshaller, BinaryMarshallerProvider } from '@plexus-interop/io';

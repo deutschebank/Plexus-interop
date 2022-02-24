@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// tslint:disable: only-arrow-functions
-// tslint:disable: typedef
-// tslint:disable: no-invalid-this
 import { ClientsSetup } from '../common/ClientsSetup';
 import { TransportsSetup } from '../common/TransportsSetup';
 import { readWsUrl } from '../common/utils';

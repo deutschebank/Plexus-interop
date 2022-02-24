@@ -1,9 +1,5 @@
-/***************************************************************************************************
- * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
- */
-import "@angular/localize/init";
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +14,11 @@ import "@angular/localize/init";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/***************************************************************************************************
+ * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
+ */
+import "@angular/localize/init";
+
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.

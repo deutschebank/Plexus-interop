@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import { ClientsSetup } from '../common/ClientsSetup';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { AsyncHelper } from '@plexus-interop/common';
 
-// tslint:disable:no-unused-expression
+
 describe('Client: Common API Implementation', () => {
 
     const webSocketUrl = readWsUrl();

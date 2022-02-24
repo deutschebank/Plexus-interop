@@ -1,6 +1,5 @@
-import { debounceTime, combineLatest, map } from "rxjs/operators";
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +14,7 @@ import { debounceTime, combineLatest, map } from "rxjs/operators";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { debounceTime, combineLatest, map } from "rxjs/operators";
 import { SubscriptionsRegistry } from "./../services/ui/SubscriptionsRegistry";
 import { OnDestroy } from "@angular/core";
 import { LoggerFactory } from "@plexus-interop/common";

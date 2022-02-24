@@ -1,6 +1,5 @@
-import { map, filter } from "rxjs/operators";
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +14,7 @@ import { map, filter } from "rxjs/operators";
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { map, filter } from "rxjs/operators";
 import { InteropClient } from "../services/core/InteropClient";
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { AppActions } from "../services/ui/AppActions";
