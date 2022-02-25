@@ -57,13 +57,11 @@ module.exports = {
         ecmaVersion: 6,
       },
       env: {
-        browser: true,
-        node: true,
-        es6: true,
         jasmine: true,
       },
       rules: {
         'no-console': 'off',
+        'global-require': 'off',
         'import/no-extraneous-dependencies': 'off',
       },
     },

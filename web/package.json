@@ -6,7 +6,7 @@
   "description": "Plexus Web Interop root module",
   "scripts": {
     "preinstall": "node ./scripts/replace-lock-registry.js && node ./scripts/replace-auth-vars.js --install",
-    "postinstall": "node ./scripts/replace-lock-registry.js --backward && link-parent-bin",
+    "postinstall": "link-parent-bin && node ./scripts/replace-lock-registry.js --backward",
     "build": "npm run build-ts -- --force && npm run build-bundles",
     "prebuild-ts": "lerna run prebuild --stream",
     "build-ts": "tsc -b packages",
