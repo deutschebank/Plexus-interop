@@ -6,7 +6,8 @@
   "description": "Plexus Web Interop root module",
   "scripts": {
     "preinstall": "node ./scripts/replace-lock-registry.js && node ./scripts/replace-auth-vars.js --install",
-    "postinstall": "link-parent-bin && node ./scripts/replace-lock-registry.js --backward",
+    "postinstall": "(is-ci || npm run husky) && link-parent-bin && node ./scripts/replace-lock-registry.js --backward",
+    "husky": "cd .. && husky install web/.husky",
     "build": "npm run build-ts -- --force && npm run build-bundles",
     "prebuild-ts": "lerna run prebuild --stream",
     "build-ts": "tsc -b packages",
@@ -34,6 +35,11 @@
   "workspaces": [
     "packages/*"
   ],
+  "lint-staged": {
+    "*.{ts,js,css,scss,json,md}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.2.3",
     "@angular-eslint/builder": "^13.0.1",
@@ -83,7 +89,9 @@
     "glob": "^7.2.0",
     "glob-to-regexp": "^0.4.1",
     "http-server": "^0.11.1",
+    "husky": "^7.0.4",
     "if-env": "1.0.0",
+    "is-ci": "^3.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "~4.1.0",
@@ -102,6 +110,7 @@
     "karma-webpack": "^5.0.0",
     "lerna": "^4.0.0",
     "link-parent-bin": "^2.0.0",
+    "lint-staged": "^12.3.4",
     "minimist": "^1.2.0",
     "mocha": "^3.5.0",
     "mock-socket": "^7.0.0",

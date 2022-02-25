@@ -16,6 +16,11 @@ module.exports = {
   importOrderSeparation: true,
   importOrderCaseInsensitive: true,
   importOrderSortSpecifiers: true,
+  importOrderParserPlugins: [
+    'typescript',
+    'classProperties',
+    'decorators-legacy',
+  ],
   overrides: [
     {
       files: '*.ts',
