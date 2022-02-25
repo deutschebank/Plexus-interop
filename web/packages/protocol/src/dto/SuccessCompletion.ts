@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {plexus} from '../gen/internal-client-protocol';
+import { plexus } from '../gen/internal-client-protocol';
 
 export class SuccessCompletion implements plexus.ICompletion {
-    public readonly status: plexus.Completion.Status = plexus.Completion.Status.Completed;
+  public readonly status: plexus.Completion.Status = plexus.Completion.Status.Completed;
 }

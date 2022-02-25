@@ -14,54 +14,85 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Completion, GenericRequest, MethodDiscoveryRequest, MethodDiscoveryResponse, ServiceDiscoveryRequest, ServiceDiscoveryResponse } from '@plexus-interop/client-api';
+import {
+  Completion,
+  GenericRequest,
+  MethodDiscoveryRequest,
+  MethodDiscoveryResponse,
+  ServiceDiscoveryRequest,
+  ServiceDiscoveryResponse,
+} from '@plexus-interop/client-api';
 import { InvocationRequestInfo } from '@plexus-interop/protocol';
 import { UniqueId } from '@plexus-interop/transport-common';
+
 import { InvocationObserver } from '../../generic';
-import { InvocationClient } from "../InvocationClient";
-import { ValueHandler } from "../ValueHandler";
+import { InvocationClient } from '../InvocationClient';
+import { ValueHandler } from '../ValueHandler';
 import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
 
 export enum Feature {
-    SEND_UNARY = 'SEND_UNARY',
-    SEND_RAW_UNARY = 'SEND_RAW_UNARY',
-    SEND_BIDI_STREAM = 'SEND_BIDI_STREAM',
-    SEND_RAW_BIDI_STREAM = 'SEND_RAW_BIDI_STREAM',
-    SEND_SERVER_STREAM = 'SEND_SERVER_STREAM',
-    SEND_RAW_SERVER_STREAM = 'SEND_RAW_SERVER_STREAM',
-    DISCOVER_SERVICE = 'DISCOVER_SERVICE',
-    DISCOVER_METHOD = 'DISCOVER_METHOD'
+  SEND_UNARY = 'SEND_UNARY',
+  SEND_RAW_UNARY = 'SEND_RAW_UNARY',
+  SEND_BIDI_STREAM = 'SEND_BIDI_STREAM',
+  SEND_RAW_BIDI_STREAM = 'SEND_RAW_BIDI_STREAM',
+  SEND_SERVER_STREAM = 'SEND_SERVER_STREAM',
+  SEND_RAW_SERVER_STREAM = 'SEND_RAW_SERVER_STREAM',
+  DISCOVER_SERVICE = 'DISCOVER_SERVICE',
+  DISCOVER_METHOD = 'DISCOVER_METHOD',
 }
 
 export interface GenericClientApi {
+  getApplicationId(): string;
 
-    getApplicationId(): string;
+  getApplicationInstanceId(): UniqueId;
 
-    getApplicationInstanceId(): UniqueId;
+  getConnectionId(): UniqueId;
 
-    getConnectionId(): UniqueId;
+  sendUnaryRequest(
+    invocationInfo: GenericRequest,
+    request: any,
+    responseHandler: ValueHandler<any>,
+    requestType: any,
+    responseType: any
+  ): Promise<InvocationClient>;
 
-    sendUnaryRequest(invocationInfo: GenericRequest, request: any, responseHandler: ValueHandler<any>, requestType: any, responseType: any): Promise<InvocationClient>;
+  sendRawUnaryRequest(
+    invocationInfo: GenericRequest,
+    request: ArrayBuffer,
+    responseHandler: ValueHandler<ArrayBuffer>
+  ): Promise<InvocationClient>;
 
-    sendRawUnaryRequest(invocationInfo: GenericRequest, request: ArrayBuffer, responseHandler: ValueHandler<ArrayBuffer>): Promise<InvocationClient>;
+  sendBidirectionalStreamingRequest(
+    invocationInfo: GenericRequest,
+    responseObserver: InvocationObserver<any>,
+    requestType: any,
+    responseType: any
+  ): Promise<StreamingInvocationClient<any>>;
 
-    sendBidirectionalStreamingRequest(invocationInfo: GenericRequest, responseObserver: InvocationObserver<any>, requestType: any, responseType: any): Promise<StreamingInvocationClient<any>>;
+  sendRawBidirectionalStreamingRequest(
+    invocationInfo: GenericRequest,
+    responseObserver: InvocationObserver<ArrayBuffer>
+  ): Promise<StreamingInvocationClient<ArrayBuffer>>;
 
-    sendRawBidirectionalStreamingRequest(invocationInfo: GenericRequest, responseObserver: InvocationObserver<ArrayBuffer>): Promise<StreamingInvocationClient<ArrayBuffer>>;
+  sendServerStreamingRequest(
+    invocationInfo: GenericRequest,
+    request: any,
+    responseObserver: InvocationObserver<any>,
+    requestType: any,
+    responseType: any
+  ): Promise<InvocationClient>;
 
-    sendServerStreamingRequest(invocationInfo: GenericRequest, request: any, responseObserver: InvocationObserver<any>, requestType: any, responseType: any): Promise<InvocationClient>;
+  sendRawServerStreamingRequest(
+    invocationInfo: InvocationRequestInfo,
+    request: ArrayBuffer,
+    responseObserver: InvocationObserver<ArrayBuffer>
+  ): Promise<InvocationClient>;
 
-    sendRawServerStreamingRequest(
-        invocationInfo: InvocationRequestInfo,
-        request: ArrayBuffer,
-        responseObserver: InvocationObserver<ArrayBuffer>): Promise<InvocationClient>;
+  discoverService(discoveryRequest: ServiceDiscoveryRequest): Promise<ServiceDiscoveryResponse>;
 
-    discoverService(discoveryRequest: ServiceDiscoveryRequest): Promise<ServiceDiscoveryResponse>;
+  discoverMethod(discoveryRequest: MethodDiscoveryRequest): Promise<MethodDiscoveryResponse>;
 
-    discoverMethod(discoveryRequest: MethodDiscoveryRequest): Promise<MethodDiscoveryResponse>;
+  disconnect(completion?: Completion): Promise<void>;
 
-    disconnect(completion?: Completion): Promise<void>;
-
-    supported(apiFeature: Feature): boolean;
-
+  supported(apiFeature: Feature): boolean;
 }

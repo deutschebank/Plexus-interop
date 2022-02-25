@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export * from './client';
-export {UniqueId} from '@plexus-interop/transport-common';
-export {InvocationRequestInfo} from '@plexus-interop/protocol';
-export {ReadOnlyCancellationToken} from '@plexus-interop/common';
+export { UniqueId } from '@plexus-interop/transport-common';
+export { InvocationRequestInfo } from '@plexus-interop/protocol';
+export { ReadOnlyCancellationToken } from '@plexus-interop/common';

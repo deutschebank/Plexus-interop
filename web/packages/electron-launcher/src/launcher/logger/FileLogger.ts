@@ -14,59 +14,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger, LogLevel } from '@plexus-interop/common';
 import * as fs from 'fs';
 import * as util from 'util';
 
+import { Logger, LogLevel } from '@plexus-interop/common';
+
 export class FileLogger implements Logger {
+  private logFile: any;
 
-    private logFile: any;
+  constructor(private baseLogger: Logger, fileName: string = 'plexus-electron-launcher.log') {
+    fileName = `${process.cwd()}/${fileName}`;
+    this.logFile = fs.createWriteStream(fileName, { flags: 'w' });
+    this.baseLogger.info(`Writing log to ${fileName}`);
+  }
 
-    constructor(private baseLogger: Logger, fileName: string = 'plexus-electron-launcher.log') {
-        fileName = `${process.cwd()}/${fileName}`;
-        this.logFile = fs.createWriteStream(fileName, { flags: 'w' });
-        this.baseLogger.info(`Writing log to ${fileName}`);
-    }
+  public debug(msg: string, ...args: any[]): void {
+    this.baseLogger.debug(msg, args);
+    this.log(`[DEBUG] | ${msg}`);
+  }
 
-    public debug(msg: string, ...args: any[]): void {
-        this.baseLogger.debug(msg, args);
-        this.log(`[DEBUG] | ${msg}`);
-    }
+  public info(msg: string, ...args: any[]): void {
+    this.baseLogger.info(msg, args);
+    this.log(msg);
+  }
 
-    public info(msg: string, ...args: any[]): void {
-        this.baseLogger.info(msg, args);
-        this.log(msg);
-    }
+  public error(msg: string, ...args: any[]): void {
+    this.baseLogger.error(msg, args);
+    this.log(`[ERROR] | ${msg}`);
+  }
 
-    public error(msg: string, ...args: any[]): void {
-        this.baseLogger.error(msg, args);
-        this.log(`[ERROR] | ${  msg}`);
-    }
+  public warn(msg: string, ...args: any[]): void {
+    this.baseLogger.warn(`[WARN] |${msg}`, args);
+    this.log(msg);
+  }
 
-    public warn(msg: string, ...args: any[]): void {
-        this.baseLogger.warn(`[WARN] |${  msg}`, args);
-        this.log(msg);
-    }
+  public trace(msg: string, ...args: any[]): void {
+    this.baseLogger.trace(msg, args);
+    this.log(`[TRACE] | ${msg}`);
+  }
 
-    public trace(msg: string, ...args: any[]): void {
-        this.baseLogger.trace(msg, args);
-        this.log(`[TRACE] | ${  msg}`);
-    }
+  public getLogLevel(): LogLevel {
+    return this.baseLogger.getLogLevel();
+  }
 
-    public getLogLevel(): LogLevel {
-        return this.baseLogger.getLogLevel();
-    }
+  public isDebugEnabled(): boolean {
+    return this.getLogLevel() <= LogLevel.DEBUG;
+  }
 
-    public isDebugEnabled(): boolean {
-        return this.getLogLevel() <= LogLevel.DEBUG;
-    }
+  public isTraceEnabled(): boolean {
+    return this.getLogLevel() <= LogLevel.TRACE;
+  }
 
-    public isTraceEnabled(): boolean {
-        return this.getLogLevel() <= LogLevel.TRACE;
-    }
-
-    private log(msg: string): void {
-        this.logFile.write(util.format(`${new Date().toISOString()} ${msg}${'\n'}`));
-    }
-
+  private log(msg: string): void {
+    this.logFile.write(util.format(`${new Date().toISOString()} ${msg}${'\n'}`));
+  }
 }

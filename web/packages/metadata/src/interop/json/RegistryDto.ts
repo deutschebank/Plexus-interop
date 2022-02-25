@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 import { ApplicationDto } from './ApplicationDto';
-import { ServiceDto } from './ServiceDto';
 import { MessagesNamespace } from './MessagesNamespace';
+import { ServiceDto } from './ServiceDto';
 
 export interface RegistryDto {
+  messages: MessagesNamespace;
 
-    messages: MessagesNamespace;
-    
-    applications: ApplicationDto[];
-    
-    services: ServiceDto[];
+  applications: ApplicationDto[];
 
+  services: ServiceDto[];
 }

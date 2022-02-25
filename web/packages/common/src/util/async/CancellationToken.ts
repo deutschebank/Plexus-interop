@@ -14,56 +14,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReadOnlyCancellationToken } from './ReadOnlyCancellationToken';
 import { Logger, LoggerFactory } from '../../logger';
+import { ReadOnlyCancellationToken } from './ReadOnlyCancellationToken';
 
 const logger: Logger = LoggerFactory.getLogger('CancellationToken');
 
 export type CancelListener = (reason: any) => void;
 
 export class CancellationToken implements ReadOnlyCancellationToken {
+  private cancelled: boolean = false;
+  private reason: string = 'Not defined';
+  private listeners: CancelListener[] = [];
 
-    private cancelled: boolean = false;
-    private reason: string = 'Not defined';
-    private listeners: CancelListener[] = [];
+  constructor(private readonly baseToken?: CancellationToken) {}
 
-    constructor(private readonly baseToken?: CancellationToken) { }
+  public throwIfCanceled(): void {
+    if (this.isCancelled()) {
+      throw Error(this.getReason());
+    }
+  }
 
-    public throwIfCanceled(): void {
-        if (this.isCancelled()) {
-            throw Error(this.getReason());
+  public onCancel(callback: CancelListener): void {
+    if (this.listeners.indexOf(callback) === -1) {
+      this.listeners.push(callback);
+    }
+  }
+
+  public isCancelled(): boolean {
+    if (this.baseToken) {
+      return this.cancelled || this.baseToken.isCancelled();
+    }
+    return this.cancelled;
+  }
+
+  public cancel(reason: string = 'Operation cancelled'): void {
+    if (!this.cancelled) {
+      this.reason = reason;
+      this.listeners.forEach((listener) => {
+        try {
+          listener(reason);
+        } catch (error) {
+          logger.warn('Cancellation listener raised error', error);
         }
+      });
+      this.cancelled = true;
     }
+  }
 
-    public onCancel(callback: CancelListener): void {
-        if (this.listeners.indexOf(callback) === -1) {
-            this.listeners.push(callback);
-        }
-    }
-
-    public isCancelled(): boolean {
-        if (this.baseToken) {
-            return this.cancelled || this.baseToken.isCancelled();
-        } 
-            return this.cancelled;
-        
-    }
-
-    public cancel(reason: string = 'Operation cancelled'): void {
-        if (!this.cancelled) {
-            this.reason = reason;
-            this.listeners.forEach(listener => {
-                try {
-                    listener(reason);
-                } catch (error) {
-                    logger.warn('Cancellation listener raised error', error);
-                }
-            });
-            this.cancelled = true;
-        }
-    }
-
-    public getReason(): string {
-        return this.baseToken && this.baseToken.cancelled ? this.baseToken.getReason() : this.reason;
-    }
+  public getReason(): string {
+    return this.baseToken && this.baseToken.cancelled ? this.baseToken.getReason() : this.reason;
+  }
 }

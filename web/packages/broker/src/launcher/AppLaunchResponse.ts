@@ -17,7 +17,5 @@
 import { UniqueId } from '@plexus-interop/protocol';
 
 export interface AppLaunchResponse {
-
-    appInstanceId: UniqueId;
-
+  appInstanceId: UniqueId;
 }

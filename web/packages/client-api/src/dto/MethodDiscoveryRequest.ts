@@ -16,4 +16,4 @@
  */
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
 
-export interface MethodDiscoveryRequest extends plexus.interop.protocol.IMethodDiscoveryRequest { }
+export interface MethodDiscoveryRequest extends plexus.interop.protocol.IMethodDiscoveryRequest {}

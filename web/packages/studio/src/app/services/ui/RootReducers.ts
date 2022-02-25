@@ -14,26 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StudioState } from './AppModel';
-import {
-  ActionReducerMap,
-  createSelector,
-  createFeatureSelector,
-  ActionReducer,
-  MetaReducer,
-} from '@ngrx/store';
-import { environment } from '../../../environments/environment';
-
 import * as fromRouter from '@ngrx/router-store';
-import * as fromPlexus from '../reducers/PlexusReducers';
+import { ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer } from '@ngrx/store';
+
 import { LoggerFactory } from '@plexus-interop/common';
+
+import { environment } from '../../../environments/environment';
+import * as fromPlexus from '../reducers/PlexusReducers';
+import { StudioState } from './AppModel';
 
 export interface State {
   plexus: StudioState;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  plexus: fromPlexus.reducer
+  plexus: fromPlexus.reducer,
 };
 
 const log = LoggerFactory.getLogger('StateLogger');
@@ -42,7 +37,7 @@ export function logger(reducer: ActionReducer<State>): ActionReducer<State> {
   return function (state: State, action: any): State {
     let result = reducer(state, action);
     log.debug('Action:', action);
-    log.debug('State:', result);  
+    log.debug('State:', result);
     return result;
   };
 }

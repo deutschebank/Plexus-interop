@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 import { MethodInvocationContext, ServiceInfo } from '@plexus-interop/client-api';
+
 import { InvocationObserver } from '../../../../generic/InvocationObserver';
 import { StreamingInvocationClient } from './StreamingInvocationClient';
 
-
 export interface BidiStreamingInvocationHandler<Req, Res> {
+  serviceInfo: ServiceInfo;
 
-    serviceInfo: ServiceInfo;
+  methodId: string;
 
-    methodId: string;
-
-    handle(invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<Res>): InvocationObserver<Req>;
-
+  handle(
+    invocationContext: MethodInvocationContext,
+    invocationHostClient: StreamingInvocationClient<Res>
+  ): InvocationObserver<Req>;
 }

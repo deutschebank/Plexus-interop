@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface AsyncHandler<Req, Res> {
-    handle(input: Req): Promise<Res>;
+  handle(input: Req): Promise<Res>;
 }

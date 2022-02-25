@@ -18,6 +18,6 @@ import { Options } from './Options';
 import { Values } from './Values';
 
 export interface EnumDto {
-    values: Values;
-    options?: Options;
+  values: Values;
+  options?: Options;
 }

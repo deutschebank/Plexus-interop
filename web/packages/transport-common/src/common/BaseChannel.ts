@@ -17,13 +17,11 @@
 import { clientProtocol as plexus, UniqueId } from '@plexus-interop/protocol';
 
 export interface BaseChannel<ObserverType> {
+  uuid(): UniqueId;
 
-    uuid(): UniqueId;
+  sendMessage(data: ArrayBuffer): Promise<void>;
 
-    sendMessage(data: ArrayBuffer): Promise<void>;
+  open(observer: ObserverType): void;
 
-    open(observer: ObserverType): void;
-
-    close(completion?: plexus.ICompletion): Promise<plexus.ICompletion>;
-
+  close(completion?: plexus.ICompletion): Promise<plexus.ICompletion>;
 }

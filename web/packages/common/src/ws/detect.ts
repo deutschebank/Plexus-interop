@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 export function webSocketCtor(): any {
-    if (typeof window !== 'undefined') {
-        const anyWindow: any = window;
-        if (anyWindow && anyWindow.WebSocket) {
-            return anyWindow.WebSocket;
-        }    
+  if (typeof window !== 'undefined') {
+    const anyWindow: any = window;
+    if (anyWindow && anyWindow.WebSocket) {
+      return anyWindow.WebSocket;
     }
-    const isNode = typeof global !== 'undefined' && ({}).toString.call(global) === '[object global]';    
-    if (isNode) {
-        const anyGlobal: any = global;
-        if (anyGlobal && anyGlobal.WebSocket) {
-            return anyGlobal.WebSocket;
-        }
-        // eslint-disable-next-line global-require
-        return require('websocket').w3cwebsocket;          
+  }
+  const isNode = typeof global !== 'undefined' && {}.toString.call(global) === '[object global]';
+  if (isNode) {
+    const anyGlobal: any = global;
+    if (anyGlobal && anyGlobal.WebSocket) {
+      return anyGlobal.WebSocket;
     }
-    throw new Error('WebSocket API is not found');
+    // eslint-disable-next-line global-require
+    return require('websocket').w3cwebsocket;
+  }
+  throw new Error('WebSocket API is not found');
 }

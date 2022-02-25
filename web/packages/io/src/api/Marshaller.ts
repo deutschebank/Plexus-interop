@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 export interface Marshaller<BaseType, EncodedType> {
-    
-    encode(messageObj: BaseType): EncodedType;
-    
-    decode(messagePayload: EncodedType): BaseType;
+  encode(messageObj: BaseType): EncodedType;
 
+  decode(messagePayload: EncodedType): BaseType;
 }

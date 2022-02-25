@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 import { ConsumedService } from './ConsumedService';
-import { ProvidedServiceReference } from './ProvidedServiceReference';
 import { DiscoveredServiceMethod } from './DiscoveredServiceMethod';
+import { ProvidedServiceReference } from './ProvidedServiceReference';
 
 export interface DiscoveredService {
+  consumedService?: ConsumedService;
 
-    consumedService?: ConsumedService;
+  providedService?: ProvidedServiceReference;
 
-    providedService?: ProvidedServiceReference;
+  serviceTitle?: string;
 
-    serviceTitle?: string;
-
-    methods?: DiscoveredServiceMethod[];
+  methods?: DiscoveredServiceMethod[];
 }

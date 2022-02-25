@@ -14,31 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TransportConnection } from '@plexus-interop/transport-common';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { ClientConnectRequest } from '@plexus-interop/client-api';
-import { clientProtocol as plexus, ClientProtocolHelper, UniqueId } from '@plexus-interop/protocol';
+import { Logger, LoggerFactory } from '@plexus-interop/common';
+import { ClientProtocolHelper, clientProtocol as plexus, UniqueId } from '@plexus-interop/protocol';
+import { TransportConnection } from '@plexus-interop/transport-common';
+
 import { GenericClient } from './GenericClient';
 import { GenericClientImpl } from './GenericClientImpl';
 import { SingleMessageRequest } from './SingleMessageRequst';
 
 export class GenericClientFactory {
+  private log: Logger = LoggerFactory.getLogger('GenericClientFactory');
 
-    private log: Logger = LoggerFactory.getLogger('GenericClientFactory');
+  constructor(private readonly transportConnection: TransportConnection) {}
 
-    constructor(private readonly transportConnection: TransportConnection) { }
-
-    public async createClient(request: ClientConnectRequest): Promise<GenericClient> {
-        const requestPayload = ClientProtocolHelper.connectRequestPayload(request);
-        this.log.debug('Sending client connect request');
-        return new SingleMessageRequest<plexus.interop.protocol.IConnectResponse>(this.transportConnection, this.log)
-            .execute(requestPayload, (responsePayload) => ClientProtocolHelper.decodeConnectResponse(responsePayload))
-            .then(response => {
-                this.log.info('Client connected');
-                return new GenericClientImpl(
-                    request,
-                    UniqueId.fromProperties(response.connectionId as plexus.IUniqueId),
-                    this.transportConnection);
-            });
-    }
+  public async createClient(request: ClientConnectRequest): Promise<GenericClient> {
+    const requestPayload = ClientProtocolHelper.connectRequestPayload(request);
+    this.log.debug('Sending client connect request');
+    return new SingleMessageRequest<plexus.interop.protocol.IConnectResponse>(this.transportConnection, this.log)
+      .execute(requestPayload, (responsePayload) => ClientProtocolHelper.decodeConnectResponse(responsePayload))
+      .then((response) => {
+        this.log.info('Client connected');
+        return new GenericClientImpl(
+          request,
+          UniqueId.fromProperties(response.connectionId as plexus.IUniqueId),
+          this.transportConnection
+        );
+      });
+  }
 }

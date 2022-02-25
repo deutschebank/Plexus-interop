@@ -15,48 +15,48 @@
  * limitations under the License.
  */
 import Queue from 'typescript-collections/dist/lib/Queue';
+
 import { Logger } from '../../logger/Logger';
-import { AsyncHelper } from './AsyncHelper';
 import { LoggerFactory } from '../../logger/LoggerFactory';
+import { AsyncHelper } from './AsyncHelper';
 
 type PendingTask = {
-    id: number,
-    task: () => Promise<void>;
+  id: number;
+  task: () => Promise<void>;
 };
 
 export class SequencedExecutor {
+  private outQueue: Queue<PendingTask> = new Queue<PendingTask>();
 
-    private outQueue: Queue<PendingTask> = new Queue<PendingTask>();
+  private currentId: number = 0;
 
-    private currentId: number = 0;
+  constructor(private readonly log: Logger = LoggerFactory.getLogger('SequencedExecutor')) {}
 
-    constructor(private readonly log: Logger = LoggerFactory.getLogger('SequencedExecutor')) { }
-
-    public async submit(task: () => Promise<void>): Promise<void> {
-        const id = ++this.currentId;
-        /* istanbul ignore if */
-        if (this.log.isTraceEnabled()) {
-            this.log.trace(`Scheduling [${id}] task`);
-        }
-        this.outQueue.enqueue({
-            id: this.currentId,
-            task
-        });
-        if (this.outQueue.size() > 1) {
-            /* istanbul ignore if */
-            if (this.log.isTraceEnabled()) {
-                this.log.trace(`Waiting for [${id}] task to execute`);
-            }
-            await AsyncHelper.waitFor(() => this.outQueue.peek().id === id);
-        }
-        try {
-            /* istanbul ignore if */
-            if (this.log.isTraceEnabled()) {
-                this.log.trace(`Executing [${id}] task`);
-            }
-            await this.outQueue.peek().task();
-        } finally {
-            this.outQueue.dequeue();
-        }
+  public async submit(task: () => Promise<void>): Promise<void> {
+    const id = ++this.currentId;
+    /* istanbul ignore if */
+    if (this.log.isTraceEnabled()) {
+      this.log.trace(`Scheduling [${id}] task`);
     }
+    this.outQueue.enqueue({
+      id: this.currentId,
+      task,
+    });
+    if (this.outQueue.size() > 1) {
+      /* istanbul ignore if */
+      if (this.log.isTraceEnabled()) {
+        this.log.trace(`Waiting for [${id}] task to execute`);
+      }
+      await AsyncHelper.waitFor(() => this.outQueue.peek().id === id);
+    }
+    try {
+      /* istanbul ignore if */
+      if (this.log.isTraceEnabled()) {
+        this.log.trace(`Executing [${id}] task`);
+      }
+      await this.outQueue.peek().task();
+    } finally {
+      this.outQueue.dequeue();
+    }
+  }
 }

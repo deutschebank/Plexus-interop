@@ -15,30 +15,29 @@
  * limitations under the License.
  */
 import { Logger } from '@plexus-interop/common';
+
 import { InvocationObserver } from '../generic';
 
 export class LoggingInvocationObserver implements InvocationObserver<ArrayBuffer> {
+  constructor(private readonly baseObserver: InvocationObserver<ArrayBuffer>, private readonly log: Logger) {}
 
-    constructor(private readonly baseObserver: InvocationObserver<ArrayBuffer>, private readonly log: Logger) { }
+  public streamCompleted(): void {
+    this.log.trace('Stream completed');
+    this.baseObserver.streamCompleted();
+  }
 
-    public streamCompleted(): void {
-        this.log.trace('Stream completed');
-        this.baseObserver.streamCompleted();
-    }
+  public next(payload: ArrayBuffer): void {
+    this.log.trace(`Response payload of ${payload.byteLength} received`);
+    this.baseObserver.next(payload);
+  }
 
-    public next(payload: ArrayBuffer): void {
-        this.log.trace(`Response payload of ${payload.byteLength} received`);
-        this.baseObserver.next(payload);
-    }
+  public error(e: any): void {
+    this.log.error(`Error received`, e);
+    this.baseObserver.error(e);
+  }
 
-    public error(e: any): void {
-        this.log.error(`Error received`, e);
-        this.baseObserver.error(e);
-    }
-
-    public complete(): void {
-        this.log.trace(`Completion received`);
-        this.baseObserver.complete();
-    }
-
+  public complete(): void {
+    this.log.trace(`Completion received`);
+    this.baseObserver.complete();
+  }
 }

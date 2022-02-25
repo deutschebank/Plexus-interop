@@ -17,6 +17,6 @@
 import { OptionDto } from './OptionDto';
 
 export interface ProvidedMethodDto {
-    name: string;
-    options: OptionDto[];
+  name: string;
+  options: OptionDto[];
 }

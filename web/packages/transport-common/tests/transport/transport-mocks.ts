@@ -14,24 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TestInMemoryConnectionFactory } from './TestInMemoryConnectionFactory';
-import { TransportConnection } from '../../src/transport/TransportConnection';
 import { TransportChannel } from '../../src/transport/TransportChannel';
+import { TransportConnection } from '../../src/transport/TransportConnection';
 import { BufferedObserver } from '../BufferedObserver';
+import { TestInMemoryConnectionFactory } from './TestInMemoryConnectionFactory';
 
-export async function setupConnections(): Promise<{ client: TransportConnection, server: TransportConnection, clientChannelsObserver: BufferedObserver<TransportChannel>, serverChannelsObserver: BufferedObserver<TransportChannel> }> {
-    
-    const factory = new TestInMemoryConnectionFactory();
-    const clientChannelsObserver = new BufferedObserver<TransportChannel>();
-    const serverChannelsObserver = new BufferedObserver<TransportChannel>();
-    
-    return Promise.all([
-            factory.connectClient(clientChannelsObserver), 
-            factory.connectServer(serverChannelsObserver)])
-        .then((data) => ({ client: data[0], server: data[1], clientChannelsObserver, serverChannelsObserver }));
+export async function setupConnections(): Promise<{
+  client: TransportConnection;
+  server: TransportConnection;
+  clientChannelsObserver: BufferedObserver<TransportChannel>;
+  serverChannelsObserver: BufferedObserver<TransportChannel>;
+}> {
+  const factory = new TestInMemoryConnectionFactory();
+  const clientChannelsObserver = new BufferedObserver<TransportChannel>();
+  const serverChannelsObserver = new BufferedObserver<TransportChannel>();
 
+  return Promise.all([
+    factory.connectClient(clientChannelsObserver),
+    factory.connectServer(serverChannelsObserver),
+  ]).then((data) => ({ client: data[0], server: data[1], clientChannelsObserver, serverChannelsObserver }));
 }
 
 export function disconnect(clientConnection: TransportConnection, serverConnection: TransportConnection): Promise<any> {
-    return Promise.all([clientConnection.disconnect(), serverConnection.disconnect()]);
+  return Promise.all([clientConnection.disconnect(), serverConnection.disconnect()]);
 }

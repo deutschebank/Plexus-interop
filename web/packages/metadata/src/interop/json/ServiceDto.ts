@@ -17,6 +17,6 @@
 import { MethodDto } from './MethodDto';
 
 export interface ServiceDto {
-    id: string;
-    methods: MethodDto[];
+  id: string;
+  methods: MethodDto[];
 }

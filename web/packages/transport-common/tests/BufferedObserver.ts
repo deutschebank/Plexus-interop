@@ -15,20 +15,23 @@
  * limitations under the License.
  */
 import { BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
+
 import { LogObserver } from './LogObserver';
 
 export class BufferedObserver<T> extends LogObserver<T> {
+  constructor(
+    private cancellationToken?: CancellationToken,
+    private buffer: BlockingQueueBase<T> = new BlockingQueueBase<T>()
+  ) {
+    super();
+  }
 
-    constructor(private cancellationToken?: CancellationToken, private buffer: BlockingQueueBase<T> = new BlockingQueueBase<T>()) {
-        super();
-    }
+  public next(data: T): void {
+    super.next(data);
+    this.buffer.enqueue(data);
+  }
 
-    public next(data: T): void {
-        super.next(data);
-        this.buffer.enqueue(data);
-    }
-
-    public pullData(): Promise<T> {
-        return this.buffer.blockingDequeue(this.cancellationToken);
-    }
+  public pullData(): Promise<T> {
+    return this.buffer.blockingDequeue(this.cancellationToken);
+  }
 }

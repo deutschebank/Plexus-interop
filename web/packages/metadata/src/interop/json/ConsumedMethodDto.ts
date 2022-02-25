@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface ConsumedMethodDto {
-    name: string;
+  name: string;
 }

@@ -17,6 +17,6 @@
 import { ProvidedServiceReference } from './ProvidedServiceReference';
 
 export interface ProvidedMethodReference {
-    providedService?: ProvidedServiceReference;
-    methodId?: string;
+  providedService?: ProvidedServiceReference;
+  methodId?: string;
 }

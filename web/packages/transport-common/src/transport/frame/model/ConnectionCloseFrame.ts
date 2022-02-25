@@ -14,25 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable no-underscore-dangle */
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+
 import { ServiceFrame } from './ServiceFrame';
 
 export class ConnectionCloseFrame extends ServiceFrame<plexus.interop.transport.protocol.IConnectionCloseHeader> {
+  public constructor(header: plexus.interop.transport.protocol.IHeader) {
+    super();
+    this._header = header;
+  }
 
-    public constructor(header: plexus.interop.transport.protocol.IHeader) {
-        super();
-        this._header = header;
-    }
+  public static fromHeaderData(
+    headerData: plexus.interop.transport.protocol.IConnectionCloseHeader
+  ): ConnectionCloseFrame {
+    return new ConnectionCloseFrame({
+      close: headerData,
+    });
+  }
 
-    public static fromHeaderData(headerData: plexus.interop.transport.protocol.IConnectionCloseHeader): ConnectionCloseFrame {
-        return new ConnectionCloseFrame({
-            close: headerData
-        });
-    }
-
-    public getHeaderData(): plexus.interop.transport.protocol.IConnectionCloseHeader {
-        return this._header.close as plexus.interop.transport.protocol.IConnectionCloseHeader;
-    }
-
+  public getHeaderData(): plexus.interop.transport.protocol.IConnectionCloseHeader {
+    return this._header.close as plexus.interop.transport.protocol.IConnectionCloseHeader;
+  }
 }

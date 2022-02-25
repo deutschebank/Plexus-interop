@@ -17,22 +17,18 @@
 import { Observer } from './Observer';
 
 export class ConversionObserver<S, D> implements Observer<D> {
+  constructor(protected readonly source: Observer<S>, protected readonly converter: (from: D) => S) {}
 
-    constructor(
-        protected readonly source: Observer<S>, 
-        protected readonly converter: (from: D) => S) {}
+  public next(value: D): void {
+    const after: S = this.converter(value);
+    this.source.next(after);
+  }
 
-    public next(value: D): void {
-        const after: S = this.converter(value);
-        this.source.next(after);
-    }
+  public error(err: any): void {
+    this.source.error(err);
+  }
 
-    public error(err: any): void {
-        this.source.error(err);
-    } 
-
-    public complete(): void {
-        this.source.complete();
-    }
-
+  public complete(): void {
+    this.source.complete();
+  }
 }

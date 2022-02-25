@@ -17,7 +17,5 @@
 import { Field } from './Field';
 
 export type Fields = {
-
-    [key: string]: Field;
-
+  [key: string]: Field;
 };

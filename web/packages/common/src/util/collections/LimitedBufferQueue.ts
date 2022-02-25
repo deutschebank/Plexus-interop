@@ -17,18 +17,15 @@
 import Queue from 'typescript-collections/dist/lib/Queue';
 
 export class LimitedBufferQueue<T> extends Queue<T> {
+  constructor(private readonly maxBufferSize: number = 1024) {
+    super();
+  }
 
-    constructor(
-        private readonly maxBufferSize: number = 1024) {
-        super();
+  public enqueue(elem: T): boolean {
+    if (this.size() >= this.maxBufferSize) {
+      throw new Error(`Buffer reached the limit ${this.maxBufferSize}`);
+    } else {
+      return super.enqueue(elem);
     }
-
-    public enqueue(elem: T): boolean {
-        if (this.size() >= this.maxBufferSize) {
-            throw new Error(`Buffer reached the limit ${this.maxBufferSize}`);
-        } else {
-            return super.enqueue(elem);
-        }
-    }
-
+  }
 }

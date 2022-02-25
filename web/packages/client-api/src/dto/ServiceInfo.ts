@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface ServiceInfo {
-    serviceId: string;
-    serviceAlias?: string;
+  serviceId: string;
+  serviceAlias?: string;
 }

@@ -20,32 +20,31 @@ import { readHostUrl } from '../common/utils';
 import { DiscoveryTests } from '../echo/DiscoveryTests';
 
 describe('Web Broker: Discovery', () => {
+  const clientsSetup = new ClientsSetup(500);
+  const transportsSetup = new TransportsSetup();
 
-    const clientsSetup = new ClientsSetup(500);
-    const transportsSetup = new TransportsSetup();
+  const proxyHost = readHostUrl();
 
-    const proxyHost = readHostUrl();
+  const discoveryTests = new DiscoveryTests(
+    transportsSetup.createCrossDomainTransportProvider(proxyHost),
+    clientsSetup
+  );
 
-    const discoveryTests = new DiscoveryTests(
-        transportsSetup.createCrossDomainTransportProvider(proxyHost),
-        clientsSetup);
+  it('Receives discovered methods by input message id', function () {
+    this.timeout(3000);
+    return discoveryTests.testMethodDiscoveredByInputMessageId();
+  });
 
-    it('Receives discovered methods by input message id', function() {
-        this.timeout(3000);
-        return discoveryTests.testMethodDiscoveredByInputMessageId();
-    });
+  it('Receives discovered methods by output message id', function () {
+    return discoveryTests.testMethodDiscoveredByOutputMessageId();
+  });
 
-    it('Receives discovered methods by output message id', function() {
-        return discoveryTests.testMethodDiscoveredByOutputMessageId();
-    });
+  it('Receives discovered methods by method reference', function () {
+    return discoveryTests.testMethodDiscoveredByReference();
+  });
 
-    it('Receives discovered methods by method reference', function() {
-        return discoveryTests.testMethodDiscoveredByReference();
-    });
-
-    it('Can invoke discovered unary method passing serialized data', function() {
-        this.timeout(3000);
-        return discoveryTests.testClientCanInvokeDiscoveredMethodPassingRawData();
-    });
-
+  it('Can invoke discovered unary method passing serialized data', function () {
+    this.timeout(3000);
+    return discoveryTests.testClientCanInvokeDiscoveredMethodPassingRawData();
+  });
 });

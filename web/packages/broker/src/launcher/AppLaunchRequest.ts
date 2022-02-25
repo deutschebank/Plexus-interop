@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 export interface AppLaunchRequest {
-    
-    appId: string;
+  appId: string;
 
-    launchParams: any;
-
+  launchParams: any;
 }

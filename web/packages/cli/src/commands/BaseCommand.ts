@@ -15,105 +15,99 @@
  * limitations under the License.
  */
 import * as commander from 'commander';
+
 import { Command } from './Command';
-import { Option, getFlags } from './Option';
+import { getFlags, Option } from './Option';
 
 export abstract class BaseCommand implements Command {
+  public abstract name: () => string;
 
-    public abstract name: () => string;
+  public abstract action(opts: any): Promise<void>;
 
-    public abstract action(opts: any): Promise<void>;
+  public usageExamples = () => ` $ plexus ${this.name()} ${this.optionsExampleArgs().join(' ')}`;
 
-    public usageExamples = () => ` $ plexus ${this.name()} ${this.optionsExampleArgs().join(' ')}`;
+  public generalDescription = () => '';
 
-    public generalDescription = () => '';
+  public options: () => Option[] = () => [];
 
-    public options: () => Option[] = () => [];
+  public optionArgs = (optValues: any, separator?: string, nameConverter: (k: string) => string = (k) => k): string[] =>
+    this.options().reduce<string[]>((seed, option) => {
+      const value = optValues[option.longName];
+      if (!value) {
+        return seed;
+      }
+      const name = `--${nameConverter(option.longName)}`;
+      if (option.isFlag) {
+        return seed.concat(`${name}`);
+      }
+      const optionArgs = separator ? [`${name}${separator}${value}`] : [name, value];
+      return seed.concat(optionArgs);
+    }, []);
 
-    public optionArgs = (
-        optValues: any,
-        separator?: string,
-        nameConverter: (k: string) => string = k => k): string[] => this.options().reduce<string[]>((seed, option) => {
-            const value = optValues[option.longName];
-            if (!value) {
-                return seed;
-            }
-            const name = `--${nameConverter(option.longName)}`;
-            if (option.isFlag) {
-                return seed.concat(`${name}`);
-            } 
-                const optionArgs = separator ? [`${name}${separator}${value}`] : [name, value];
-                return seed.concat(optionArgs);
-            
-        }, [])
-
-    public optionsExampleArgs = () => this.options()
-            .filter(o => o.exampleValue || o.isFlag)
-            .reduce<string[]>((seed, option) => {
-                if (option.isFlag) {
-                    return seed.concat(`-${option.shortName}`);
-                } 
-                    return seed.concat([`-${option.shortName}`, option.exampleValue as string]);
-                
-            }, [])
-
-    public isVerbose(opts: any): boolean {
-        return !!opts && !!opts.verbose && opts.verbose !== 'false';
-    }
-
-    public log(msg: string, ...args: any[]): void {
-        console.log(`[${this.name()}] ${msg}`, args);
-    }
-
-    public register(builder: commander.CommanderStatic): void {
-        let commandBuilder = builder.command(this.name())
-            .description(this.generalDescription());
-        this.options().forEach(o => commandBuilder.option(getFlags(o), o.description, o.defaultValue));
-        commandBuilder = commandBuilder.action(opts => {
-            // need to do it manually :(
-            // https://github.com/tj/commander.js/issues/44
-            this.log('Validating input args');
-            const errors = this.validateRequiredOpts(this.options(), opts);
-            if (errors.length > 0) {
-                this.fail(errors.join('\n'));
-            }
-            this.log('Starting execution');
-            if (opts.verbose === 'true') {
-                this.log(`Passed options: ${this.optionValuesToString(opts)}`);
-            }
-            this.action(opts)
-                .then(() => this.log('Completed successfully'))
-                .catch(e => this.fail(e));
-        });
-        const examples = this.usageExamples();
-        if (examples) {
-            commandBuilder.on('--help', () => {
-                console.log('');
-                console.log('  Examples:');
-                console.log('');
-                console.log(examples);
-                console.log('');
-            });
+  public optionsExampleArgs = () =>
+    this.options()
+      .filter((o) => o.exampleValue || o.isFlag)
+      .reduce<string[]>((seed, option) => {
+        if (option.isFlag) {
+          return seed.concat(`-${option.shortName}`);
         }
-    }
+        return seed.concat([`-${option.shortName}`, option.exampleValue as string]);
+      }, []);
 
-    public fail(error: any): void {
-        this.log('Finished with error', error);
-        process.exit(1);
-    }
+  public isVerbose(opts: any): boolean {
+    return !!opts && !!opts.verbose && opts.verbose !== 'false';
+  }
 
-    public optionValuesToString(opts: any): string {
-        return this.options().reduce<string>((seed, option) => `${seed} ${option.longName}=${opts[option.longName]}`, '');
-    }
+  public log(msg: string, ...args: any[]): void {
+    console.log(`[${this.name()}] ${msg}`, args);
+  }
 
-    public validateRequiredOpts(options: Option[], commanderOpts: any): string[] {
-        if (options) {
-            return options
-                .filter(o => !!o.isRequired && !commanderOpts[o.longName])
-                .map(o => `'${getFlags(o)}' option is required`);
-        } 
-            return [];
-        
+  public register(builder: commander.CommanderStatic): void {
+    let commandBuilder = builder.command(this.name()).description(this.generalDescription());
+    this.options().forEach((o) => commandBuilder.option(getFlags(o), o.description, o.defaultValue));
+    commandBuilder = commandBuilder.action((opts) => {
+      // need to do it manually :(
+      // https://github.com/tj/commander.js/issues/44
+      this.log('Validating input args');
+      const errors = this.validateRequiredOpts(this.options(), opts);
+      if (errors.length > 0) {
+        this.fail(errors.join('\n'));
+      }
+      this.log('Starting execution');
+      if (opts.verbose === 'true') {
+        this.log(`Passed options: ${this.optionValuesToString(opts)}`);
+      }
+      this.action(opts)
+        .then(() => this.log('Completed successfully'))
+        .catch((e) => this.fail(e));
+    });
+    const examples = this.usageExamples();
+    if (examples) {
+      commandBuilder.on('--help', () => {
+        console.log('');
+        console.log('  Examples:');
+        console.log('');
+        console.log(examples);
+        console.log('');
+      });
     }
+  }
 
+  public fail(error: any): void {
+    this.log('Finished with error', error);
+    process.exit(1);
+  }
+
+  public optionValuesToString(opts: any): string {
+    return this.options().reduce<string>((seed, option) => `${seed} ${option.longName}=${opts[option.longName]}`, '');
+  }
+
+  public validateRequiredOpts(options: Option[], commanderOpts: any): string[] {
+    if (options) {
+      return options
+        .filter((o) => !!o.isRequired && !commanderOpts[o.longName])
+        .map((o) => `'${getFlags(o)}' option is required`);
+    }
+    return [];
+  }
 }

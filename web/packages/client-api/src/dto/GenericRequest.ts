@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import { InvocationRequestInfo } from '@plexus-interop/protocol';
+
 import { ProvidedMethodReference } from './ProvidedMethodReference';
 
 export type GenericRequest = ProvidedMethodReference | InvocationRequestInfo;

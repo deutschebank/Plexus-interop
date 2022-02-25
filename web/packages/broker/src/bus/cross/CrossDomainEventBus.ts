@@ -14,23 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { filter, fromEvent, map, Observable, PartialObserver, publish, refCount } from 'rxjs';
+
 import {
-  Subscription,
+  GUID,
   Logger,
   LoggerFactory,
   Observer,
-  GUID,
   StateMaschine,
   StateMaschineBase,
+  Subscription,
 } from '@plexus-interop/common';
-import { filter, fromEvent, map, Observable, PartialObserver, publish, refCount } from 'rxjs';
+
 import { Event } from '../Event';
 import { EventBus } from '../EventBus';
-
 import { IFrameHostMessage } from './model/IFrameHostMessage';
-import { SubscribeRequest } from './model/SubscribeRequest';
-import { ResponseType } from './model/ResponseType';
 import { MessageType } from './model/MessageType';
+import { ResponseType } from './model/ResponseType';
+import { SubscribeRequest } from './model/SubscribeRequest';
 
 enum State {
   CREATED = 'CREATED',
@@ -82,7 +83,7 @@ export class CrossDomainEventBus implements EventBus {
 
   public publish(topic: string, event: Event): void {
     this.stateMaschine.throwIfNot(State.CONNECTED);
-    const {payload} = event;
+    const { payload } = event;
     if (this.log.isTraceEnabled()) {
       this.log.trace(`Publishing to [${topic}]`, payload);
     }
@@ -131,7 +132,7 @@ export class CrossDomainEventBus implements EventBus {
     observer: PartialObserver<IFrameHostMessage<T, ResType>>,
     rejectTimeout: number = this.singleOperationTimeOut
   ): Subscription {
-    const {responseType} = message;
+    const { responseType } = message;
     const subscriptionKey = this.subscriptionKey(message);
     message.responseType =
       !responseType || responseType === ResponseType.None ? ResponseType.Stream : message.responseType;
@@ -183,7 +184,7 @@ export class CrossDomainEventBus implements EventBus {
   }
 
   private postToIFrame(message: any): void {
-    const {contentWindow} = this.hostIFrame;
+    const { contentWindow } = this.hostIFrame;
     if (contentWindow) {
       contentWindow.postMessage(message, this.hostOrigin);
     } else {
@@ -234,7 +235,7 @@ export class CrossDomainEventBus implements EventBus {
   private hostMessage<T, R>(
     requestPayload: T,
     type: MessageType<T, R>,
-    responseType : ResponseType = ResponseType.None
+    responseType: ResponseType = ResponseType.None
   ): IFrameHostMessage<T, R> {
     return { id: GUID.getNewGUIDString(), type, requestPayload, responseType };
   }
@@ -243,9 +244,9 @@ export class CrossDomainEventBus implements EventBus {
     switch (hostMessage.type.id) {
       case MessageType.Subscribe.id: {
         const message = hostMessage as IFrameHostMessage<SubscribeRequest, any>;
-        return (
-          `${message.type.id  }.${  message.requestPayload ? message.requestPayload.topic : message.responsePayload.key}`
-        );
+        return `${message.type.id}.${
+          message.requestPayload ? message.requestPayload.topic : message.responsePayload.key
+        }`;
       }
       default:
         return hostMessage.id;

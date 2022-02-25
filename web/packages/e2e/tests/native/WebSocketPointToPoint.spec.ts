@@ -20,55 +20,54 @@ import { readWsUrl } from '../common/utils';
 import { PointToPointInvocationTests } from '../echo/PointToPointInvocationTests';
 
 describe('Client: Web Socket Point to Point invocation', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
+  const wsUrl = readWsUrl();
 
-    const wsUrl = readWsUrl();    
-    
-    const pointToPointTests = new PointToPointInvocationTests(
-        transportsSetup.createWebSocketTransportProvider(wsUrl),
-        clientsSetup);
+  const pointToPointTests = new PointToPointInvocationTests(
+    transportsSetup.createWebSocketTransportProvider(wsUrl),
+    clientsSetup
+  );
 
-    it('Sends invocation request and receives response', function() {
-        return pointToPointTests.testMessageSent();
-    });
+  it('Sends invocation request and receives response', function () {
+    return pointToPointTests.testMessageSent();
+  });
 
-    it('Sends invocation request to aliased service and receives response', function() {
-        return pointToPointTests.testAliasedServiceInvoked();
-    });
+  it('Sends invocation request to aliased service and receives response', function () {
+    return pointToPointTests.testAliasedServiceInvoked();
+  });
 
-    it('Sends invocation request with huge payload and receives response', function() {
-        this.timeout(10000);
-        return pointToPointTests.testHugeMessageSent();
-    });
+  it('Sends invocation request with huge payload and receives response', function () {
+    this.timeout(10000);
+    return pointToPointTests.testHugeMessageSent();
+  });
 
-    it('Sends few invocations in a row', function() {
-        return pointToPointTests.testFewMessagesSent();
-    });
+  it('Sends few invocations in a row', function () {
+    return pointToPointTests.testFewMessagesSent();
+  });
 
-    it('Receives error from host', function() {
-        return pointToPointTests.testHostsExecutionErrorReceived();
-    });
+  it('Receives error from host', function () {
+    return pointToPointTests.testHostsExecutionErrorReceived();
+  });
 
-    it('Receives Client Error from host', function() {
-        return pointToPointTests.testHostsExecutionClientErrorReceived();
-    });
+  it('Receives Client Error from host', function () {
+    return pointToPointTests.testHostsExecutionClientErrorReceived();
+  });
 
-    it('Receives string error from host', function() {
-        return pointToPointTests.testHostsExecutionStringErrorReceived();
-    });
+  it('Receives string error from host', function () {
+    return pointToPointTests.testHostsExecutionStringErrorReceived();
+  });
 
-    it('Receives exception from host', function() {
-        return pointToPointTests.testHostExecutionExceptionReceived();
-    });
+  it('Receives exception from host', function () {
+    return pointToPointTests.testHostExecutionExceptionReceived();
+  });
 
-    it('Supports cancel of Unary Invocation by Generated Client', () => {
-        return pointToPointTests.testGeneratedClientCanCancelUnaryInvocation();
-    });
+  it('Supports cancel of Unary Invocation by Generated Client', () => {
+    return pointToPointTests.testGeneratedClientCanCancelUnaryInvocation();
+  });
 
-    it('Supports receiving of result from cancellable Unary Invocation by Generated Client', () => {
-        return pointToPointTests.testGeneratedClientCanGetResponseFromCancellableUnaryInvocation();
-    });
-
+  it('Supports receiving of result from cancellable Unary Invocation by Generated Client', () => {
+    return pointToPointTests.testGeneratedClientCanGetResponseFromCancellableUnaryInvocation();
+  });
 });

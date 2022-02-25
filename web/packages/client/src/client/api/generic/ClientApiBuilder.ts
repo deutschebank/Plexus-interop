@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
+
 import { GenericClientApi } from './GenericClientApi';
+import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
 
 export interface ClientApiBuilder<ClientType, BuilderType extends ClientApiBuilder<ClientType, any>> {
-    connect(): Promise<ClientType>;
-    withClientApiDecorator(clientApiDecorator: (client: InternalGenericClientApi) => Promise<GenericClientApi>): BuilderType;
-    withClientExtension(extension: (builder: ClientApiBuilder<ClientType, BuilderType>) => void): BuilderType;
-    withTransportConnectionProvider(provider: () => Promise<TransportConnection>): BuilderType;
-    withAppInstanceId(appInstanceId: UniqueId): BuilderType;
-    withAppId(appId: string): BuilderType;
+  connect(): Promise<ClientType>;
+  withClientApiDecorator(
+    clientApiDecorator: (client: InternalGenericClientApi) => Promise<GenericClientApi>
+  ): BuilderType;
+  withClientExtension(extension: (builder: ClientApiBuilder<ClientType, BuilderType>) => void): BuilderType;
+  withTransportConnectionProvider(provider: () => Promise<TransportConnection>): BuilderType;
+  withAppInstanceId(appInstanceId: UniqueId): BuilderType;
+  withAppId(appId: string): BuilderType;
 }

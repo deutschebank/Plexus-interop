@@ -20,23 +20,19 @@ import { Application } from '../../src/apps/model/Application';
 const fs = require('fs');
 
 describe('JsonAppRegistryProvider', () => {
+  const appsJson: string = fs.readFileSync('tests/json/test-apps.json', 'utf8');
 
-    const appsJson: string = fs.readFileSync('tests/json/test-apps.json', 'utf8');    
+  it('Can parse App Registry JSON', () => {
+    const sut = new JsonAppRegistryProvider(appsJson);
+    const appsRegistry = sut.getCurrent();
 
-    it('Can parse App Registry JSON', () => {
+    expect(appsRegistry.apps.size).toBe(3);
 
-        const sut = new JsonAppRegistryProvider(appsJson);
-        const appsRegistry = sut.getCurrent();
+    const app = appsRegistry.apps.get('plexus.interop.testing.EchoClient') as Application;
 
-        expect(appsRegistry.apps.size).toBe(3);
-
-        const app = appsRegistry.apps.get('plexus.interop.testing.EchoClient') as Application;
-
-        expect(app.id).toBe('plexus.interop.testing.EchoClient');
-        expect(app.displayName).toBe('Test Echo Client');
-        expect(app.launcherId).toBe('plexus.interop.testing.TestAppLauncher');
-        expect(app.launcherParams.url).toBe('http://test.domain.com');
-
-    });
-
+    expect(app.id).toBe('plexus.interop.testing.EchoClient');
+    expect(app.displayName).toBe('Test Echo Client');
+    expect(app.launcherId).toBe('plexus.interop.testing.TestAppLauncher');
+    expect(app.launcherParams.url).toBe('http://test.domain.com');
+  });
 });

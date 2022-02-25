@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface Values {
-    [key: string]: any;
+  [key: string]: any;
 }

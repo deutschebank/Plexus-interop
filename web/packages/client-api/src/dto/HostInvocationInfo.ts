@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/transport-common';
+
 import { BasicInvocationInfo } from './BasicInvocationInfo';
 
 export interface HostInvocationInfo extends BasicInvocationInfo {
-    
-    sourceApplicationId?: string;
+  sourceApplicationId?: string;
 
-    sourceConnectionId?: UniqueId;
-    
+  sourceConnectionId?: UniqueId;
 }

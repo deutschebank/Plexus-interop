@@ -17,5 +17,5 @@
 import { ReadOnlyCancellationToken } from '@plexus-interop/common';
 
 export interface LaunchInvocationContext {
-    cancellationToken: ReadOnlyCancellationToken;
+  cancellationToken: ReadOnlyCancellationToken;
 }

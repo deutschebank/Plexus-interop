@@ -14,32 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable no-underscore-dangle */
+
 /* eslint-disable no-console */
 import { Observer } from '@plexus-interop/common';
 import { UniqueId } from '@plexus-interop/transport-common';
 
 export class LogInvocationObserver<T> implements Observer<T> {
+  constructor(private _next?: (data: T) => void, private id: UniqueId = UniqueId.generateNew()) {}
 
-    constructor(private _next?: (data: T) => void, private id: UniqueId = UniqueId.generateNew()) { }
+  public streamCompleted(): void {
+    console.log('Stream completed');
+  }
 
-    public streamCompleted(): void {
-        console.log('Stream completed');
+  public complete(): void {
+    console.log(`${this.id.toString()} - Complete`);
+  }
+
+  public next(data: T): void {
+    console.log(`${this.id.toString()} - Next`, data);
+    if (this._next) {
+      this._next(data);
     }
+  }
 
-    public complete(): void {
-        console.log(`${this.id.toString()} - Complete`);
-    }
-
-    public next(data: T): void {
-        console.log(`${this.id.toString()} - Next`, data);
-        if (this._next) {
-            this._next(data);
-        }
-    }
-
-    public error(): void {
-        console.log(`${this.id.toString()} - Error`);
-    }
-
+  public error(): void {
+    console.log(`${this.id.toString()} - Error`);
+  }
 }

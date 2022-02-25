@@ -14,26 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Completion, ClientProtocolUtils } from '@plexus-interop/protocol';
+import { ClientProtocolUtils, Completion } from '@plexus-interop/protocol';
 
 export class TasksTracker {
+  private readonly tasks = new Map<string, Promise<Completion>>();
 
-    private readonly tasks = new Map<string, Promise<Completion>>();
-
-    public async start(id: string, task: () => Promise<Completion>): Promise<Completion> {
-        const resultPromise = task();
-        this.tasks.set(id, resultPromise);
-        try {
-            return await resultPromise;
-        } finally {
-            this.tasks.delete(id);
-        }
+  public async start(id: string, task: () => Promise<Completion>): Promise<Completion> {
+    const resultPromise = task();
+    this.tasks.set(id, resultPromise);
+    try {
+      return await resultPromise;
+    } finally {
+      this.tasks.delete(id);
     }
+  }
 
-    public async completePending(): Promise<Completion> {
-        const pendingTasks = this.tasks.values();
-        const results = await Promise.all(pendingTasks);
-        return ClientProtocolUtils.createSummarizedCompletion(...results);
-    }
-
+  public async completePending(): Promise<Completion> {
+    const pendingTasks = this.tasks.values();
+    const results = await Promise.all(pendingTasks);
+    return ClientProtocolUtils.createSummarizedCompletion(...results);
+  }
 }

@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Injectable } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class SubscriptionsRegistry {

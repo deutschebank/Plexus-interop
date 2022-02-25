@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 export interface Application {
-    id: string;
-    displayName: string;
-    launcherId: string;
-    launcherParams: any;
+  id: string;
+  displayName: string;
+  launcherId: string;
+  launcherParams: any;
 }

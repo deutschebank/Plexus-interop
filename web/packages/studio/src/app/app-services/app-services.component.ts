@@ -14,32 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { of as observableOf, Observable } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable, of as observableOf } from 'rxjs';
+import { debounceTime, map } from 'rxjs/operators';
 
-import { debounceTime, map } from "rxjs/operators";
-import { StudioState } from "../services/ui/AppModel";
-import { SubscriptionsRegistry } from "../services/ui/SubscriptionsRegistry";
-import { InteropClientFactory } from "../services/core/InteropClientFactory";
-import { AppActions } from "../services/ui/AppActions";
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { Store } from "@ngrx/store";
-import * as fromRoot from "../services/ui/RootReducers";
 import {
   App,
-  ConsumedService,
-  ProvidedService,
   ConsumedMethod,
+  ConsumedService,
   InteropRegistryService,
-} from "@plexus-interop/metadata";
+  ProvidedService,
+} from '@plexus-interop/metadata';
 
-import { FormControl } from "@angular/forms";
-import { containsFilter } from "../services/ui/filters";
+import { InteropClientFactory } from '../services/core/InteropClientFactory';
+import { AppActions } from '../services/ui/AppActions';
+import { StudioState } from '../services/ui/AppModel';
+import { containsFilter } from '../services/ui/filters';
+import * as fromRoot from '../services/ui/RootReducers';
+import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
 
 @Component({
-  selector: "app-services",
-  templateUrl: "./app-services.component.html",
-  styleUrls: ["./app-services.component.css"],
+  selector: 'app-services',
+  templateUrl: './app-services.component.html',
+  styleUrls: ['./app-services.component.css'],
   providers: [SubscriptionsRegistry],
 })
 export class AppServicesComponent implements OnInit {
@@ -54,15 +54,13 @@ export class AppServicesComponent implements OnInit {
   consumedServices: Observable<ConsumedService[]> = observableOf([]);
   providedServices: Observable<ProvidedService[]> = observableOf([]);
   searchFilterValue: Observable<string>;
-  searchFilterControl: FormControl = new FormControl("");
+  searchFilterControl: FormControl = new FormControl('');
 
   subscriptions: SubscriptionsRegistry;
   registryService: InteropRegistryService;
 
   public ngOnInit(): void {
-    this.searchFilterValue = this.store.select(
-      (state) => state.plexus.serviceFilter || ""
-    );
+    this.searchFilterValue = this.store.select((state) => state.plexus.serviceFilter || '');
     this.consumedServices = this.store
       .select((state) => state.plexus)
       .pipe(
@@ -92,14 +90,12 @@ export class AppServicesComponent implements OnInit {
         })
       );
     this.subscribtions.add(
-      this.searchFilterControl.valueChanges
-        .pipe(debounceTime(150))
-        .subscribe((newFilter) => {
-          this.store.dispatch({
-            type: AppActions.SERVICE_FILTER_UPDATED,
-            payload: newFilter,
-          });
-        })
+      this.searchFilterControl.valueChanges.pipe(debounceTime(150)).subscribe((newFilter) => {
+        this.store.dispatch({
+          type: AppActions.SERVICE_FILTER_UPDATED,
+          payload: newFilter,
+        });
+      })
     );
   }
 
@@ -108,7 +104,7 @@ export class AppServicesComponent implements OnInit {
       type: AppActions.SELECT_PROVIDED_METHOD,
       payload: method,
     });
-    this.router.navigate(["/provided"]);
+    this.router.navigate(['/provided']);
   }
 
   openConsumed(method: ConsumedMethod) {

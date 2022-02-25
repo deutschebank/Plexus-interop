@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 export interface ConsumedServiceReference {
+  serviceId: string;
 
-    serviceId: string;
-    
-    serviceAlias?: string;
-
+  serviceAlias?: string;
 }

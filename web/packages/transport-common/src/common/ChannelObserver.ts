@@ -17,9 +17,7 @@
 import { PlexusObserver } from './PlexusObserver';
 
 export interface ChannelObserver<S, D> extends PlexusObserver<D> {
+  started(subscription: S): void;
 
-    started(subscription: S): void;
-
-    startFailed(error: any): void;
-
+  startFailed(error: any): void;
 }

@@ -17,5 +17,5 @@
 import { DiscoveredService } from './DiscoveredService';
 
 export interface ServiceDiscoveryResponse {
-    services?: DiscoveredService[];
+  services?: DiscoveredService[];
 }

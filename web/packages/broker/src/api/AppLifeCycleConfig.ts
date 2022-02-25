@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface AppLifeCycleConfig {
-    heartBitPeriod: number;
-    heartBitTtl: number;
+  heartBitPeriod: number;
+  heartBitTtl: number;
 }

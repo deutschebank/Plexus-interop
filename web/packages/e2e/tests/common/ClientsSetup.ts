@@ -14,135 +14,146 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as Long from 'long';
+
 import { GenericClientApi, GenericClientApiBuilder } from '@plexus-interop/client';
 import { TimeUtils } from '@plexus-interop/common';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import * as Long from 'long';
+
 import { EchoClientClient, EchoClientClientBuilder } from '../../src/echo/client/EchoClientGeneratedClient';
 import * as plexus from '../../src/echo/gen/plexus-messages';
-import { EchoServerClient, EchoServerClientBuilder, EchoServiceInvocationHandler, ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
+import {
+  EchoServerClient,
+  EchoServerClientBuilder,
+  EchoServiceInvocationHandler,
+  ServiceAliasInvocationHandler,
+} from '../../src/echo/server/EchoServerGeneratedClient';
 import { NopServiceAliasHandler } from '../echo/NopServiceAliasHandler';
 import { ConnectionProvider } from './ConnectionProvider';
 import { ConnectionSetup } from './ConnectionSetup';
 
 export class ClientsSetup {
+  private clientConnectionSetup: ConnectionSetup | null = null;
+  private serverConnectionSetup: ConnectionSetup | null = null;
 
-    private clientConnectionSetup: ConnectionSetup | null = null;
-    private serverConnectionSetup: ConnectionSetup | null = null;
+  public constructor(private readonly clientConnectionDelay: number = 0) {}
 
-    public constructor(private readonly clientConnectionDelay: number = 0) { }
+  public async createEchoClients(
+    transportConnectionProvider: ConnectionProvider,
+    serviceHandler: EchoServiceInvocationHandler,
+    aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()
+  ): Promise<[EchoClientClient, EchoServerClient]> {
+    const server = await this.createEchoServer(transportConnectionProvider, serviceHandler, aliasServiceHandler);
+    const client = await this.createEchoClient(transportConnectionProvider);
+    await TimeUtils.timeout(this.clientConnectionDelay);
+    return [client, server];
+  }
 
-    public async createEchoClients(
-        transportConnectionProvider: ConnectionProvider,
-        serviceHandler: EchoServiceInvocationHandler,
-        aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()): Promise<[EchoClientClient, EchoServerClient]> {
-        const server = await this.createEchoServer(transportConnectionProvider, serviceHandler, aliasServiceHandler);
-        const client = await this.createEchoClient(transportConnectionProvider);
-        await TimeUtils.timeout(this.clientConnectionDelay);
-        return [client, server];
-    }
+  public createEchoClient(transportConnectionProvider: ConnectionProvider): Promise<EchoClientClient> {
+    return new EchoClientClientBuilder()
+      .withTransportConnectionProvider(async () => {
+        this.clientConnectionSetup = await transportConnectionProvider();
+        return this.clientConnectionSetup.getConnection();
+      })
+      .connect();
+  }
 
-    public createEchoClient(transportConnectionProvider: ConnectionProvider): Promise<EchoClientClient> {
-        return new EchoClientClientBuilder()
-            .withTransportConnectionProvider(async () => {
-                this.clientConnectionSetup = await transportConnectionProvider();
-                return this.clientConnectionSetup.getConnection();
-            })
-            .connect();
-    }
+  public async createGenericClientAndStaticServer(
+    clientMarshaller: BinaryMarshallerProvider,
+    transportConnectionProvider: ConnectionProvider,
+    serviceHandler: EchoServiceInvocationHandler,
+    aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()
+  ): Promise<[GenericClientApi, EchoServerClient]> {
+    const server = await this.createEchoServer(transportConnectionProvider, serviceHandler, aliasServiceHandler);
+    const client = await this.createGenericEchoClient(transportConnectionProvider, clientMarshaller);
+    await TimeUtils.timeout(this.clientConnectionDelay);
+    return [client, server];
+  }
 
-    public async createGenericClientAndStaticServer(
-        clientMarshaller: BinaryMarshallerProvider,
-        transportConnectionProvider: ConnectionProvider,
-        serviceHandler: EchoServiceInvocationHandler,
-        aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()): Promise<[GenericClientApi, EchoServerClient]> {
-        const server = await this.createEchoServer(transportConnectionProvider, serviceHandler, aliasServiceHandler);
-        const client = await this.createGenericEchoClient(transportConnectionProvider, clientMarshaller);
-        await TimeUtils.timeout(this.clientConnectionDelay);
-        return [client, server];
-    }
+  public createGenericEchoClient(
+    transportConnectionProvider: ConnectionProvider,
+    marhallerProvider: BinaryMarshallerProvider
+  ): Promise<GenericClientApi> {
+    return new GenericClientApiBuilder(marhallerProvider)
+      .withApplicationId('plexus.interop.testing.EchoClient')
+      .withTransportConnectionProvider(async () => {
+        this.clientConnectionSetup = await transportConnectionProvider();
+        return this.clientConnectionSetup.getConnection();
+      })
+      .connect();
+  }
 
-    public createGenericEchoClient(transportConnectionProvider: ConnectionProvider, marhallerProvider: BinaryMarshallerProvider): Promise<GenericClientApi> {
-        return new GenericClientApiBuilder(marhallerProvider)
-            .withApplicationId('plexus.interop.testing.EchoClient')
-            .withTransportConnectionProvider(async () => {
-                this.clientConnectionSetup = await transportConnectionProvider();
-                return this.clientConnectionSetup.getConnection();
-            })
-            .connect();
-    }
+  public createEchoServer(
+    transportConnectionProvider: ConnectionProvider,
+    serviceHandler: EchoServiceInvocationHandler,
+    aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()
+  ): Promise<EchoServerClient> {
+    return new EchoServerClientBuilder()
+      .withEchoServiceInvocationsHandler(serviceHandler)
+      .withServiceAliasInvocationsHandler(aliasServiceHandler)
+      .withTransportConnectionProvider(async () => {
+        this.serverConnectionSetup = await transportConnectionProvider();
+        return this.serverConnectionSetup.getConnection();
+      })
+      .connect();
+  }
 
-    public createEchoServer(
-        transportConnectionProvider: ConnectionProvider,
-        serviceHandler: EchoServiceInvocationHandler,
-        aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()): Promise<EchoServerClient> {
-        return new EchoServerClientBuilder()
-            .withEchoServiceInvocationsHandler(serviceHandler)
-            .withServiceAliasInvocationsHandler(aliasServiceHandler)
-            .withTransportConnectionProvider(async () => {
-                this.serverConnectionSetup = await transportConnectionProvider();
-                return this.serverConnectionSetup.getConnection();
-            })
-            .connect();
-    }
+  public getClientConnectionSetup(): ConnectionSetup {
+    return this.clientConnectionSetup as ConnectionSetup;
+  }
 
-    public getClientConnectionSetup(): ConnectionSetup {
-        return (this.clientConnectionSetup as ConnectionSetup);
-    }
+  public getServerConnectionSetup(): ConnectionSetup {
+    return this.serverConnectionSetup as ConnectionSetup;
+  }
 
-    public getServerConnectionSetup(): ConnectionSetup {
-        return (this.serverConnectionSetup as ConnectionSetup);
-    }
+  public createRequestDto(): plexus.plexus.interop.testing.IEchoRequest {
+    return {
+      stringField: 'stringData',
+      int64Field: Long.fromInt(1234),
+      uint32Field: 4321,
+      repeatedDoubleField: [1, 2, 3],
+      enumField: plexus.plexus.interop.testing.EchoRequest.SubEnum.value_one,
+      subMessageField: {
+        stringField: 'subString',
+        bytesField: new Uint8Array([5, 6, 7]),
+      },
+      repeatedSubMessageField: [
+        {
+          stringField: 'subString',
+          bytesField: new Uint8Array([5, 6, 7]),
+        },
+        {
+          stringField: 'subString2',
+          bytesField: new Uint8Array([8, 9, 10]),
+        },
+      ],
+    };
+  }
 
-    public createRequestDto(): plexus.plexus.interop.testing.IEchoRequest {
-        return {
-            stringField: 'stringData',
-            int64Field: Long.fromInt(1234),
-            uint32Field: 4321,
-            repeatedDoubleField: [1, 2, 3],
-            enumField: plexus.plexus.interop.testing.EchoRequest.SubEnum.value_one,
-            subMessageField: {
-                stringField: 'subString',
-                bytesField: new Uint8Array([5, 6, 7])
-            },
-            repeatedSubMessageField: [
-                {
-                    stringField: 'subString',
-                    bytesField: new Uint8Array([5, 6, 7])
-                },
-                {
-                    stringField: 'subString2',
-                    bytesField: new Uint8Array([8, 9, 10])
-                }
-            ]
-        };
-    }
+  public createRequestOfBytes(numberOfBytes: number): plexus.plexus.interop.testing.IEchoRequest {
+    const bytesField = Uint8Array.from(Array<number>(numberOfBytes).fill(1));
+    return {
+      subMessageField: {
+        bytesField,
+      },
+    };
+  }
 
-    public createRequestOfBytes(numberOfBytes: number): plexus.plexus.interop.testing.IEchoRequest {
-        const bytesField = Uint8Array.from(Array<number>(numberOfBytes).fill(1));
-        return {
-            subMessageField: {
-                bytesField
-            }
-        };
-    }
+  public createHugeRequestDto(strLength: number): plexus.plexus.interop.testing.IEchoRequest {
+    const text = new Array(strLength).join('x');
+    return {
+      stringField: text,
+    };
+  }
 
-    public createHugeRequestDto(strLength: number): plexus.plexus.interop.testing.IEchoRequest {
-        const text = (new Array(strLength)).join('x');
-        return {
-            stringField: text
-        };
-    }
+  public createSimpleRequestDto(text: string): plexus.plexus.interop.testing.IEchoRequest {
+    return {
+      stringField: text,
+    };
+  }
 
-    public createSimpleRequestDto(text: string): plexus.plexus.interop.testing.IEchoRequest {
-        return {
-            stringField: text
-        };
-    }
-
-    public async disconnect(client: EchoClientClient, server: EchoServerClient): Promise<void> {
-        await client.disconnect();
-        await server.disconnect();
-    }
-
+  public async disconnect(client: EchoClientClient, server: EchoServerClient): Promise<void> {
+    await client.disconnect();
+    await server.disconnect();
+  }
 }

@@ -14,29 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { map } from "rxjs/operators";
-import { SubscriptionsRegistry } from "./../services/ui/SubscriptionsRegistry";
-import { InteropServiceFactory } from "../services/core/InteropServiceFactory";
-import { Application } from "@plexus-interop/metadata";
-import { Subscription, Observable } from "rxjs";
-import { AppActions } from "../services/ui/AppActions";
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Router } from "@angular/router";
-import { ViewChild, ElementRef } from "@angular/core";
-import { Store } from "@ngrx/store";
-import * as fromRoot from "../services/ui/RootReducers";
-import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
-import {
-  ConnectionDetails,
-  transportTypes as types,
-  transportTypes,
-} from "../services/ui/AppModel";
+import { Application } from '@plexus-interop/metadata';
+
+import { InteropServiceFactory } from '../services/core/InteropServiceFactory';
+import { AppActions } from '../services/ui/AppActions';
+import { ConnectionDetails, transportTypes, transportTypes as types } from '../services/ui/AppModel';
+import * as fromRoot from '../services/ui/RootReducers';
+import { SubscriptionsRegistry } from './../services/ui/SubscriptionsRegistry';
 
 @Component({
-  selector: "app-header",
-  templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.css"],
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css'],
   providers: [SubscriptionsRegistry],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
@@ -59,34 +56,22 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.metadataUrl$ = this.store.select(
-      (state) => state.plexus.connectionDetails.generalConfig.metadataUrl
-    );
+    this.metadataUrl$ = this.store.select((state) => state.plexus.connectionDetails.generalConfig.metadataUrl);
     this.application$ = this.store.select((state) => state.plexus.connectedApp);
-    this.connected$ = this.store.select(
-      (state) => state.plexus.connectionDetails.connected
-    );
-    this.connectionDetails$ = this.store.select(
-      (state) => state.plexus.connectionDetails
-    );
+    this.connected$ = this.store.select((state) => state.plexus.connectionDetails.connected);
+    this.connectionDetails$ = this.store.select((state) => state.plexus.connectionDetails);
     this.transportLabel$ = this.connectionDetails$.pipe(
       map((details) => this.findLabel(details.generalConfig.transportType))
     );
     this.connectionId$ = this.store
       .select((state) => state.plexus.services.interopClient)
-      .pipe(
-        map((client) =>
-          client ? client.getConnectionStrId() : "NOT CONNECTED"
-        )
-      );
-    this.subscriptions.add(
-      this.application$.subscribe((app) => (this.currentApp = app))
-    );
+      .pipe(map((client) => (client ? client.getConnectionStrId() : 'NOT CONNECTED')));
+    this.subscriptions.add(this.application$.subscribe((app) => (this.currentApp = app)));
   }
 
   findLabel(typeKey) {
     const type = transportTypes.find((v) => v.key == typeKey);
-    return type ? type.label : "NOT_FOUND";
+    return type ? type.label : 'NOT_FOUND';
   }
 
   ngOnDestroy() {
@@ -108,6 +93,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   openModal(content) {
-    this.modalService.open(content, { size: "lg" });
+    this.modalService.open(content, { size: 'lg' });
   }
 }

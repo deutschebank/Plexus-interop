@@ -14,50 +14,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Subscription, Logger, LoggerFactory } from '@plexus-interop/common';
-import { EventBus } from './EventBus';
+import { Logger, LoggerFactory, Subscription } from '@plexus-interop/common';
+
 import { Event } from './Event';
+import { EventBus } from './EventBus';
 
 export class FallbackEventBus implements EventBus {
+  private readonly log: Logger = LoggerFactory.getLogger('FallbackEventBus');
 
-    private readonly log: Logger = LoggerFactory.getLogger('FallbackEventBus');
+  private baseEventBus: EventBus;
 
-    private baseEventBus: EventBus;
+  public constructor(private readonly sources: EventBus[]) {}
 
-    public constructor(private readonly sources: EventBus[]) { }
-
-    public async init(): Promise<EventBus> {
-        if (!this.sources || this.sources.length === 0) {
-            throw new Error('No source provided');
-        }
-        for (let i = 0; i < this.sources.length; i++) {
-            try {
-                this.baseEventBus = await this.sources[i].init();
-                break;
-            } catch (error) {
-                this.log.warn('Unable to init Event Bus', error);
-            }
-        }
-        if (this.baseEventBus) {
-            return this.baseEventBus;
-        } 
-            throw new Error('All source Event Bus providers failed');
-        
+  public async init(): Promise<EventBus> {
+    if (!this.sources || this.sources.length === 0) {
+      throw new Error('No source provided');
     }
-
-    public publish(key: string, event: Event): void {
-        if (this.baseEventBus) {
-            this.baseEventBus.publish(key, event);
-        } else {
-            throw new Error('Not initialyzed');
-        }
+    for (let i = 0; i < this.sources.length; i++) {
+      try {
+        this.baseEventBus = await this.sources[i].init();
+        break;
+      } catch (error) {
+        this.log.warn('Unable to init Event Bus', error);
+      }
     }
-
-    public subscribe(key: string, handler: (event: Event) => void): Subscription {
-        if (this.baseEventBus) {
-            return this.baseEventBus.subscribe(key, handler);
-        } 
-            throw new Error('Not initialyzed');
-        
+    if (this.baseEventBus) {
+      return this.baseEventBus;
     }
+    throw new Error('All source Event Bus providers failed');
+  }
+
+  public publish(key: string, event: Event): void {
+    if (this.baseEventBus) {
+      this.baseEventBus.publish(key, event);
+    } else {
+      throw new Error('Not initialyzed');
+    }
+  }
+
+  public subscribe(key: string, handler: (event: Event) => void): Subscription {
+    if (this.baseEventBus) {
+      return this.baseEventBus.subscribe(key, handler);
+    }
+    throw new Error('Not initialyzed');
+  }
 }

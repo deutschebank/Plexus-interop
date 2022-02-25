@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export enum ResponseType {
-    None = 'NONE',
-    Stream = 'STREAM',
-    Single = 'SINGLE'
+  None = 'NONE',
+  Stream = 'STREAM',
+  Single = 'SINGLE',
 }

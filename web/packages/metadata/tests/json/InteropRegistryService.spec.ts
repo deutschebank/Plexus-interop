@@ -14,29 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { JsonInteropRegistryProvider } from '../../src/interop/json/JsonInteropRegistryProvider';
 import { InteropRegistryService } from '../../src/interop/InteropRegistryService';
+import { JsonInteropRegistryProvider } from '../../src/interop/json/JsonInteropRegistryProvider';
 
 const fs = require('fs');
 
 describe('InteropRegistryService', () => {
+  const metadataJson = fs.readFileSync('tests/json/test-interop.json', 'utf8');
 
-    const metadataJson = fs.readFileSync('tests/json/test-interop.json', 'utf8');
+  const registryProvider = new JsonInteropRegistryProvider(metadataJson);
+  registryProvider.getCurrent();
+  const registryService = new InteropRegistryService(registryProvider);
 
-    const registryProvider = new JsonInteropRegistryProvider(metadataJson);
-    registryProvider.getCurrent();
-    const registryService = new InteropRegistryService(registryProvider);
-    
-    it('Can retrieve app by id and alias', () => {
-        const byAlias = registryService.getApplication('echo-client');
-        const byId = registryService.getApplication('plexus.interop.testing.EchoClient');
-        expect(byAlias).toBeDefined();
-        expect(byId).toBeDefined();
-        expect(byId).toBe(byAlias);
-    });
+  it('Can retrieve app by id and alias', () => {
+    const byAlias = registryService.getApplication('echo-client');
+    const byId = registryService.getApplication('plexus.interop.testing.EchoClient');
+    expect(byAlias).toBeDefined();
+    expect(byId).toBeDefined();
+    expect(byId).toBe(byAlias);
+  });
 
-    it('Returns all provided methods', () => {
-        expect(registryService.getProvidedMethods().length).toBe(5);
-    });
-
+  it('Returns all provided methods', () => {
+    expect(registryService.getProvidedMethods().length).toBe(5);
+  });
 });

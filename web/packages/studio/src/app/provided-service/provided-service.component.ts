@@ -14,49 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { map, filter } from "rxjs/operators";
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Store } from "@ngrx/store";
-import * as fromRoot from "../services/ui/RootReducers";
-import { ProvidedMethod, ProvidedService } from "@plexus-interop/metadata";
-import { InteropClient } from "../services/core/InteropClient";
-import { SubscriptionsRegistry } from "../services/ui/SubscriptionsRegistry";
-import {
-  Logger,
-  LoggerFactory,
-  uniqueId,
-  ReadOnlyCancellationToken,
-} from "@plexus-interop/common";
-import { StreamingInvocationClient, MethodType } from "@plexus-interop/client";
-import { createInvocationLogger } from "../services/core/invocation-utils";
-import { FormControl } from "@angular/forms";
-import { plexusMessageValidator } from "../services/ui/validators";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { filter, map } from 'rxjs/operators';
+
+import { MethodType, StreamingInvocationClient } from '@plexus-interop/client';
+import { Logger, LoggerFactory, ReadOnlyCancellationToken, uniqueId } from '@plexus-interop/common';
+import { ProvidedMethod, ProvidedService } from '@plexus-interop/metadata';
+
+import { InteropClient } from '../services/core/InteropClient';
+import { createInvocationLogger } from '../services/core/invocation-utils';
+import * as fromRoot from '../services/ui/RootReducers';
+import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
+import { plexusMessageValidator } from '../services/ui/validators';
 
 @Component({
-  selector: "app-provided-service",
-  templateUrl: "./provided-service.component.html",
-  styleUrls: ["./provided-service.component.css"],
+  selector: 'app-provided-service',
+  templateUrl: './provided-service.component.html',
+  styleUrls: ['./provided-service.component.css'],
   providers: [SubscriptionsRegistry],
 })
 export class ProvidedServiceComponent implements OnInit, OnDestroy {
-  private readonly log: Logger = LoggerFactory.getLogger(
-    "ProvidedServiceComponent"
-  );
+  private readonly log: Logger = LoggerFactory.getLogger('ProvidedServiceComponent');
   private readonly maxPrintedContent: number = 1024;
   private providedMethod: ProvidedMethod;
-  public messageContentControl: FormControl = new FormControl("{}");
-  public messageContent: string = "{}";
+  public messageContentControl: FormControl = new FormControl('{}');
+  public messageContent: string = '{}';
 
   private interopClient: InteropClient;
 
   messagesToSend: number = 1;
   messagesPeriodInMillis: number = 200;
-  title: string = "";
+  title: string = '';
 
-  constructor(
-    private store: Store<fromRoot.State>,
-    private subscriptions: SubscriptionsRegistry
-  ) {}
+  constructor(private store: Store<fromRoot.State>, private subscriptions: SubscriptionsRegistry) {}
 
   ngOnInit() {
     this.subscriptions.add(
@@ -64,10 +56,7 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
         .pipe(
           filter((state) => !!state.plexus.providedMethod),
           map((state) => state.plexus),
-          filter(
-            (plexus) =>
-              !!plexus.services.interopClient && !!plexus.providedMethod
-          )
+          filter((plexus) => !!plexus.services.interopClient && !!plexus.providedMethod)
         )
         .subscribe((plexus) => {
           this.providedMethod = plexus.providedMethod.method;
@@ -75,17 +64,9 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
           this.interopClient = plexus.services.interopClient;
           this.messageContent = this.createDefaultPayload();
           this.messageContentControl.setValidators([
-            plexusMessageValidator(
-              "messageContentControl",
-              this.interopClient,
-              this.providedMethod
-            ),
+            plexusMessageValidator('messageContentControl', this.interopClient, this.providedMethod),
           ]);
-          this.updateResponse(
-            this.messageContent,
-            this.messagesToSend,
-            this.messagesPeriodInMillis
-          );
+          this.updateResponse(this.messageContent, this.messagesToSend, this.messagesPeriodInMillis);
         })
     );
   }
@@ -104,55 +85,40 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
   }
 
   getTitle(providedMethod: ProvidedMethod): string {
-    return `Provided Method - ${
-      providedMethod.providedService.service.id
-    }${this.getAlias(providedMethod.providedService)}.${
-      providedMethod.method.name
-    }`;
+    return `Provided Method - ${providedMethod.providedService.service.id}${this.getAlias(
+      providedMethod.providedService
+    )}.${providedMethod.method.name}`;
   }
 
   getAlias(provideService: ProvidedService): string {
-    return !!provideService.alias ? `(${provideService.alias})` : "";
+    return !!provideService.alias ? `(${provideService.alias})` : '';
   }
 
   handleCompleted(log) {
-    log.info("Invocation completed");
+    log.info('Invocation completed');
   }
 
   handleStreamCompleted(log) {
-    log.info("Remote stream completed");
+    log.info('Remote stream completed');
   }
 
   formatAndUpdateArea() {
     this.messageContent = this.format(this.messageContent);
   }
 
-  updateResponse(
-    contentJson: string,
-    messagesToSend: number,
-    messagesPeriodInMillis: number
-  ): void {
+  updateResponse(contentJson: string, messagesToSend: number, messagesPeriodInMillis: number): void {
     const serviceId = this.providedMethod.providedService.service.id;
     const methodId = this.providedMethod.method.name;
     const serviceAlias = this.providedMethod.providedService.alias;
 
     switch (this.providedMethod.method.type) {
       case MethodType.Unary:
-        this.interopClient.setUnaryActionHandler(
-          serviceId,
-          methodId,
-          serviceAlias,
-          async (context, requestJson) => {
-            const invocationLogger = createInvocationLogger(
-              this.providedMethod.method.type,
-              uniqueId(),
-              this.log
-            );
-            this.printRequest(requestJson, invocationLogger);
-            invocationLogger.info(`Sending message:\n${contentJson}`);
-            return contentJson;
-          }
-        );
+        this.interopClient.setUnaryActionHandler(serviceId, methodId, serviceAlias, async (context, requestJson) => {
+          const invocationLogger = createInvocationLogger(this.providedMethod.method.type, uniqueId(), this.log);
+          this.printRequest(requestJson, invocationLogger);
+          invocationLogger.info(`Sending message:\n${contentJson}`);
+          return contentJson;
+        });
         break;
       case MethodType.ServerStreaming:
         this.interopClient.setServerStreamingActionHandler(
@@ -160,14 +126,8 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
           methodId,
           serviceAlias,
           (context, request, client) => {
-            const invocationLogger = createInvocationLogger(
-              this.providedMethod.method.type,
-              uniqueId(),
-              this.log
-            );
-            context.cancellationToken.onCancel((reason) =>
-              invocationLogger.info(`Invocation Cancelled`, reason)
-            );
+            const invocationLogger = createInvocationLogger(this.providedMethod.method.type, uniqueId(), this.log);
+            context.cancellationToken.onCancel((reason) => invocationLogger.info(`Invocation Cancelled`, reason));
             this.printRequest(request, invocationLogger);
             this.sendAndSchedule(
               context.cancellationToken,
@@ -181,82 +141,55 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
         );
         break;
       case MethodType.ClientStreaming:
-        this.interopClient.setBidiStreamingActionHandler(
-          serviceId,
-          methodId,
-          serviceAlias,
-          (context, client) => {
-            const invocationLogger = createInvocationLogger(
-              this.providedMethod.method.type,
-              uniqueId(),
-              this.log
-            );
-            context.cancellationToken.onCancel((reason) =>
-              invocationLogger.info(`Invocation Cancelled`, reason)
-            );
-            return {
-              next: (request) => this.printRequest(request, invocationLogger),
-              error: (e) => this.handleError(e, invocationLogger),
-              complete: () => this.handleCompleted(invocationLogger),
-              streamCompleted: () => {
-                this.handleStreamCompleted(invocationLogger);
-                this.sendAndSchedule(
-                  context.cancellationToken,
-                  contentJson,
-                  messagesToSend,
-                  messagesPeriodInMillis,
-                  client,
-                  invocationLogger
-                );
-              },
-            };
-          }
-        );
+        this.interopClient.setBidiStreamingActionHandler(serviceId, methodId, serviceAlias, (context, client) => {
+          const invocationLogger = createInvocationLogger(this.providedMethod.method.type, uniqueId(), this.log);
+          context.cancellationToken.onCancel((reason) => invocationLogger.info(`Invocation Cancelled`, reason));
+          return {
+            next: (request) => this.printRequest(request, invocationLogger),
+            error: (e) => this.handleError(e, invocationLogger),
+            complete: () => this.handleCompleted(invocationLogger),
+            streamCompleted: () => {
+              this.handleStreamCompleted(invocationLogger);
+              this.sendAndSchedule(
+                context.cancellationToken,
+                contentJson,
+                messagesToSend,
+                messagesPeriodInMillis,
+                client,
+                invocationLogger
+              );
+            },
+          };
+        });
         break;
       case MethodType.DuplexStreaming:
-        this.interopClient.setBidiStreamingActionHandler(
-          serviceId,
-          methodId,
-          serviceAlias,
-          (context, client) => {
-            const invocationLogger = createInvocationLogger(
-              this.providedMethod.method.type,
-              uniqueId(),
-              this.log
-            );
-            context.cancellationToken.onCancel((reason) =>
-              invocationLogger.info(`Invocation Cancelled`, reason)
-            );
-            this.sendAndSchedule(
-              context.cancellationToken,
-              contentJson,
-              messagesToSend,
-              messagesPeriodInMillis,
-              client,
-              invocationLogger
-            );
-            return {
-              next: (request) => {
-                this.printRequest(request, invocationLogger);
-              },
-              error: (e) => this.handleError(e, invocationLogger),
-              complete: () => this.handleCompleted(invocationLogger),
-              streamCompleted: () =>
-                this.handleStreamCompleted(invocationLogger),
-            };
-          }
-        );
+        this.interopClient.setBidiStreamingActionHandler(serviceId, methodId, serviceAlias, (context, client) => {
+          const invocationLogger = createInvocationLogger(this.providedMethod.method.type, uniqueId(), this.log);
+          context.cancellationToken.onCancel((reason) => invocationLogger.info(`Invocation Cancelled`, reason));
+          this.sendAndSchedule(
+            context.cancellationToken,
+            contentJson,
+            messagesToSend,
+            messagesPeriodInMillis,
+            client,
+            invocationLogger
+          );
+          return {
+            next: (request) => {
+              this.printRequest(request, invocationLogger);
+            },
+            error: (e) => this.handleError(e, invocationLogger),
+            complete: () => this.handleCompleted(invocationLogger),
+            streamCompleted: () => this.handleStreamCompleted(invocationLogger),
+          };
+        });
         break;
     }
   }
 
   intercept() {
-    this.updateResponse(
-      this.messageContent,
-      this.messagesToSend,
-      this.messagesPeriodInMillis
-    );
-    this.log.info("Response updated");
+    this.updateResponse(this.messageContent, this.messagesToSend, this.messagesPeriodInMillis);
+    this.log.info('Response updated');
   }
 
   format(data) {
@@ -278,17 +211,10 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
       logger.info(`Sending message:\n${message}`);
       client.next(message);
       setTimeout(() => {
-        this.sendAndSchedule(
-          cancellationToken,
-          message,
-          leftToSend - 1,
-          intervalInMillis,
-          client,
-          logger
-        );
+        this.sendAndSchedule(cancellationToken, message, leftToSend - 1, intervalInMillis, client, logger);
       }, intervalInMillis);
     } else {
-      logger.info("Sending completion");
+      logger.info('Sending completion');
       client.complete();
     }
   }
@@ -307,9 +233,7 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
 
   createDefaultPayload() {
     const method = this.providedMethod.method;
-    return this.format(
-      this.interopClient.createDefaultPayload(method.responseMessage.id)
-    );
+    return this.format(this.interopClient.createDefaultPayload(method.responseMessage.id));
   }
 
   ngOnDestroy() {

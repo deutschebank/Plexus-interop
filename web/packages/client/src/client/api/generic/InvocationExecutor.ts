@@ -14,75 +14,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
-import { UniqueId } from '@plexus-interop/transport-common';
 import { ActionReference, MethodInvocationContext } from '@plexus-interop/client-api';
-import { SuccessCompletion, ClientProtocolHelper, ErrorCompletion, InvocationMetaInfo } from '@plexus-interop/protocol';
-import { Invocation } from "../../generic/Invocation";
-import { StreamingInvocationHost } from './handlers/streaming/StreamingInvocationHost';
-import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
+import { AnonymousSubscription, Logger, LoggerFactory } from '@plexus-interop/common';
+import { ClientProtocolHelper, ErrorCompletion, InvocationMetaInfo, SuccessCompletion } from '@plexus-interop/protocol';
+import { UniqueId } from '@plexus-interop/transport-common';
+
 import { BaseInvocation } from '../../generic/BaseInvocation';
+import { Invocation } from '../../generic/Invocation';
+import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
+import { StreamingInvocationHost } from './handlers/streaming/StreamingInvocationHost';
 
 export class InvocationExecutor {
+  private log: Logger = LoggerFactory.getLogger('InvocationExecutor');
 
-    private log: Logger = LoggerFactory.getLogger('InvocationExecutor');
+  constructor(private readonly handlersRegistry: InvocationHandlersRegistry) {}
 
-    constructor(private readonly handlersRegistry: InvocationHandlersRegistry) { }
+  public handleGenericInvocation(invocation: Invocation): void {
+    this.log.trace(`Received invocation`);
+    new StreamingInvocationHost(this.handlersRegistry).executeGenericHandler(invocation);
+  }
 
-    public handleGenericInvocation(invocation: Invocation): void {
-        this.log.trace(`Received invocation`);
-        new StreamingInvocationHost(this.handlersRegistry).executeGenericHandler(invocation);
-    }
+  public handleInvocation(invocation: BaseInvocation<any, any>): void {
+    this.log.trace(`Received invocation`);
+    new StreamingInvocationHost(this.handlersRegistry).executeTypeAwareHandler(invocation);
+  }
 
-    public handleInvocation(invocation: BaseInvocation<any, any>): void {
-        this.log.trace(`Received invocation`);
-        new StreamingInvocationHost(this.handlersRegistry).executeTypeAwareHandler(invocation);
-    }
+  public invokeRawUnaryHandler(
+    invocationContext: MethodInvocationContext,
+    actionReference: ActionReference,
+    requestPayloadBuffer: ArrayBuffer
+  ): Promise<ArrayBuffer> {
+    return this.internalInvokeUnaryHandler(invocationContext, actionReference, requestPayloadBuffer, false);
+  }
 
-    public invokeRawUnaryHandler(invocationContext: MethodInvocationContext, actionReference: ActionReference, requestPayloadBuffer: ArrayBuffer): Promise<ArrayBuffer> {
-        return this.internalInvokeUnaryHandler(invocationContext, actionReference, requestPayloadBuffer, false);
-    }
+  public invokeUnaryHandler(
+    invocationContext: MethodInvocationContext,
+    actionReference: ActionReference,
+    requestPayload: any
+  ): Promise<any> {
+    return this.internalInvokeUnaryHandler(invocationContext, actionReference, requestPayload, true);
+  }
 
-    public invokeUnaryHandler(invocationContext: MethodInvocationContext, actionReference: ActionReference, requestPayload: any): Promise<any> {
-        return this.internalInvokeUnaryHandler(invocationContext, actionReference, requestPayload, true);
-    }
+  public internalInvokeUnaryHandler(
+    invocationContext: MethodInvocationContext,
+    actionReference: ActionReference,
+    requestPayload: any,
+    isTyped: boolean
+  ): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      const invocation: BaseInvocation<any, any> = {
+        uuid: () => UniqueId.generateNew(),
+        sendMessage: async (response) => resolve(response),
+        open: (observer) => {
+          observer.started(new AnonymousSubscription());
+          observer.next(requestPayload);
+          observer.streamCompleted();
+          observer.complete();
+        },
+        getMetaInfo: () => {
+          const metaInfo: InvocationMetaInfo = {
+            ...actionReference,
+            consumerApplicationId: invocationContext.consumerApplicationId,
+            consumerConnectionId: invocationContext.consumerConnectionId,
+          };
+          return metaInfo;
+        },
+        sendCompleted: async () => {},
+        close: async (completion) => {
+          if (!ClientProtocolHelper.isSuccessCompletion(completion || new SuccessCompletion())) {
+            reject(completion);
+            return new ErrorCompletion();
+          }
+          return new SuccessCompletion();
+        },
+      };
 
-    public internalInvokeUnaryHandler(invocationContext: MethodInvocationContext, actionReference: ActionReference, requestPayload: any, isTyped: boolean): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            const invocation: BaseInvocation<any, any> = {
-                uuid: () => UniqueId.generateNew(),
-                sendMessage: async response => resolve(response),
-                open: observer => {
-                    observer.started(new AnonymousSubscription());
-                    observer.next(requestPayload);
-                    observer.streamCompleted();
-                    observer.complete();
-                },
-                getMetaInfo: () => {
-                    const metaInfo: InvocationMetaInfo = {
-                        ...actionReference,
-                        consumerApplicationId: invocationContext.consumerApplicationId,
-                        consumerConnectionId: invocationContext.consumerConnectionId
-                    };
-                    return metaInfo;
-                },
-                sendCompleted: async () => { },
-                close: async completion => {
-                    if (!ClientProtocolHelper.isSuccessCompletion(completion || new SuccessCompletion())) {
-                        reject(completion);
-                        return new ErrorCompletion();
-                    } 
-                        return new SuccessCompletion();
-                    
-                }
-            };
-
-            if (isTyped) {
-                this.handleInvocation(invocation);
-            } else {
-                this.handleGenericInvocation(invocation);
-            }
-        });
-    }
-
+      if (isTyped) {
+        this.handleInvocation(invocation);
+      } else {
+        this.handleGenericInvocation(invocation);
+      }
+    });
+  }
 }

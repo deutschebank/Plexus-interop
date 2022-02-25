@@ -14,38 +14,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { pbjs, pbts } from 'protobufjs/cli';
 import * as os from 'os';
 import * as path from 'path';
-import { getBaseDir } from "./files";
+import { pbjs, pbts } from 'protobufjs/cli';
+
+import { getBaseDir } from './files';
 
 export function genJsStaticModule(outFilePath: string, protoFiles: string[], namespace: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        pbjs.main(['--force-long', '--no-delimited', '--sparse', '-t', 'static-module', '-r', namespace, '-w', 'commonjs', '-o', outFilePath, ...protoFiles], (error) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-            return {};
-        });
-    });
+  return new Promise<void>((resolve, reject) => {
+    pbjs.main(
+      [
+        '--force-long',
+        '--no-delimited',
+        '--sparse',
+        '-t',
+        'static-module',
+        '-r',
+        namespace,
+        '-w',
+        'commonjs',
+        '-o',
+        outFilePath,
+        ...protoFiles,
+      ],
+      (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+        return {};
+      }
+    );
+  });
 }
 
 export function getPbJsExecPath(): string {
-    return path.resolve(getBaseDir(), 'node_modules', '.bin', os.platform() === 'win32' ? 'pbjs.cmd' : 'pbjs');
+  return path.resolve(getBaseDir(), 'node_modules', '.bin', os.platform() === 'win32' ? 'pbjs.cmd' : 'pbjs');
 }
 
 export function genTsStaticModule(outFilePath: string, jsGeneratedFilePath: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        pbts.main(['--force-long', '-o', outFilePath, jsGeneratedFilePath], (error) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-            return {};
-        });
+  return new Promise<void>((resolve, reject) => {
+    pbts.main(['--force-long', '-o', outFilePath, jsGeneratedFilePath], (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+      return {};
     });
+  });
 }
-

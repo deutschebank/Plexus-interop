@@ -20,5 +20,5 @@ export enum LogLevel {
   INFO,
   WARN,
   ERROR,
-  SILENT
+  SILENT,
 }

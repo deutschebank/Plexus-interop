@@ -14,69 +14,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as path from 'path';
 import * as os from 'os';
-import { getDirectories, getDistDir, exists } from './files';
+import * as path from 'path';
+
 import { downloadPackage } from './download';
+import { exists, getDirectories, getDistDir } from './files';
 
 export function downloadJre(): Promise<string> {
-    const url = getJreDownloadUrl();
-    const downloadDir = getJreDownloadDir();
-    const title = 'JRE';
-    return downloadPackage(url, downloadDir, title, {
-        connection: 'keep-alive',
-        Cookie: 'gpw_e24=http://www.oracle.com/; oraclelicense=accept-securebackup-cookie'
-    });
+  const url = getJreDownloadUrl();
+  const downloadDir = getJreDownloadDir();
+  const title = 'JRE';
+  return downloadPackage(url, downloadDir, title, {
+    connection: 'keep-alive',
+    Cookie: 'gpw_e24=http://www.oracle.com/; oraclelicense=accept-securebackup-cookie',
+  });
 }
 
 export async function javaExecProvided(): Promise<string> {
-    const execPath = await getJavaExecPath();
-    const execExists = await exists(execPath);
-    if (execExists) {
-        return execPath;
-    } 
-        throw new Error(`Do not exist ${execPath}`);
-    
+  const execPath = await getJavaExecPath();
+  const execExists = await exists(execPath);
+  if (execExists) {
+    return execPath;
+  }
+  throw new Error(`Do not exist ${execPath}`);
 }
 
 export function getJreDownloadUrl(): string {
-    const platform = `${os.platform()}-${os.arch()}`;
-    return process.env[`PLEXUS_JRE_DOWNLOAD_URL_${platform.toUpperCase()}`]
-        || process.env.PLEXUS_JRE_DOWNLOAD_URL
-        || getDefaultDownloadUrl(platform);
+  const platform = `${os.platform()}-${os.arch()}`;
+  return (
+    process.env[`PLEXUS_JRE_DOWNLOAD_URL_${platform.toUpperCase()}`] ||
+    process.env.PLEXUS_JRE_DOWNLOAD_URL ||
+    getDefaultDownloadUrl(platform)
+  );
 }
 
 function getDefaultDownloadUrl(platform: string): string {
-    switch (platform) {
-        case 'win32-ia32':
-        case 'win32-x32':
-            return 'http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jre-8u161-windows-i586.tar.gz';
-        case 'win32-x64':
-            return 'http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jre-8u161-windows-x64.tar.gz';
-        default:
-            throw new Error(`${platform} is not supported`);
-    }
+  switch (platform) {
+    case 'win32-ia32':
+    case 'win32-x32':
+      return 'http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jre-8u161-windows-i586.tar.gz';
+    case 'win32-x64':
+      return 'http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jre-8u161-windows-x64.tar.gz';
+    default:
+      throw new Error(`${platform} is not supported`);
+  }
 }
 
 export function getJreBaseDir(downloadDir: string): string {
-    const childs = getDirectories(downloadDir);
-    if (childs.length === 0) {
-        throw new Error('No JRE found');
-    }
-    return path.join(downloadDir, childs[0]);
+  const childs = getDirectories(downloadDir);
+  if (childs.length === 0) {
+    throw new Error('No JRE found');
+  }
+  return path.join(downloadDir, childs[0]);
 }
 
 export async function getJavaExecPath(): Promise<string> {
-    if (process.env.PLEXUS_CLI_JAVA_EXE_PATH) {
-        console.log(`Using Java executable from env variable ${process.env.PLEXUS_CLI_JAVA_EXE_PATH}`);
-        return process.env.PLEXUS_CLI_JAVA_EXE_PATH as string;
-    }
-    const baseDir = getJreBaseDir(getJreDownloadDir());
-    return path.join(baseDir, ...getExePath());
+  if (process.env.PLEXUS_CLI_JAVA_EXE_PATH) {
+    console.log(`Using Java executable from env variable ${process.env.PLEXUS_CLI_JAVA_EXE_PATH}`);
+    return process.env.PLEXUS_CLI_JAVA_EXE_PATH as string;
+  }
+  const baseDir = getJreBaseDir(getJreDownloadDir());
+  return path.join(baseDir, ...getExePath());
 }
 
 function getExePath(): string[] {
-    return os.platform() === 'win32' ? ['bin', 'java.exe'] : ['bin', 'java'];
+  return os.platform() === 'win32' ? ['bin', 'java.exe'] : ['bin', 'java'];
 }
 
 const getJreDownloadDir = () => path.join(getDistDir(), 'jre');

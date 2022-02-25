@@ -15,35 +15,37 @@
  * limitations under the License.
  */
 import { Observable } from 'rxjs';
+
 import { isString } from '@plexus-interop/common';
-import { ProvidedMethodReference , ConsumedMethodReference } from '@plexus-interop/metadata';
+import { ConsumedMethodReference, ProvidedMethodReference } from '@plexus-interop/metadata';
 import { ClientError } from '@plexus-interop/protocol';
 
 export class Types {
+  public static isObservable<T>(obj: any): obj is Observable<T> {
+    return (obj as Observable<T>).subscribe !== undefined;
+  }
 
-    public static isObservable<T>(obj: any): obj is Observable<T> {
-        return (obj as Observable<T>).subscribe !== undefined;
+  public static isConsumedMethodReference(
+    methodReference: ConsumedMethodReference | ProvidedMethodReference
+  ): methodReference is ConsumedMethodReference {
+    return !!(methodReference as ConsumedMethodReference).consumedService;
+  }
+
+  public static isError(value: any): value is Error {
+    return value && value.stack && value.message;
+  }
+
+  public static toClientError(e: any): ClientError {
+    if (Types.isError(e)) {
+      return new ClientError(e.message, e.stack);
     }
-
-    public static isConsumedMethodReference(methodReference: ConsumedMethodReference | ProvidedMethodReference): methodReference is ConsumedMethodReference {
-        return !!(methodReference as ConsumedMethodReference).consumedService;
+    if (isString(e)) {
+      return new ClientError(e);
     }
-
-    public static isError(value: any): value is Error {
-        return value && value.stack && value.message;
+    if (e.message && e.details) {
+      return new ClientError(e.message, e.details);
     }
-
-    public static toClientError(e: any): ClientError {
-        if (Types.isError(e)) {
-            return new ClientError(e.message, e.stack);
-        } if (isString(e)) {
-            return new ClientError(e);
-        } if (e.message && e.details) {
-            return new ClientError(e.message, e.details);
-        } 
-            e = new Error('Unknown error received');
-            return Types.toClientError(e);
-        
-    }
-
+    e = new Error('Unknown error received');
+    return Types.toClientError(e);
+  }
 }

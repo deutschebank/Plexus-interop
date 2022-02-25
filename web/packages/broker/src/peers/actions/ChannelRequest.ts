@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 export interface ChannelRequest {
-
-    channelId: string;
-
+  channelId: string;
 }

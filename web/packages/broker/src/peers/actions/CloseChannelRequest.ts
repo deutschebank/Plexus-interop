@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
+
 import { ChannelRequest } from './ChannelRequest';
 
 export interface CloseChannelRequest extends ChannelRequest {
-    completion: plexus.ICompletion;
+  completion: plexus.ICompletion;
 }

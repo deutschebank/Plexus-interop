@@ -18,9 +18,9 @@ import { MessageType } from './MessageType';
 import { ResponseType } from './ResponseType';
 
 export interface IFrameHostMessage<Req, Res> {
-    id: string;
-    type: MessageType<Req, Res>;
-    responseType: ResponseType;
-    requestPayload?: Req;
-    responsePayload?: Res;
+  id: string;
+  type: MessageType<Req, Res>;
+  responseType: ResponseType;
+  requestPayload?: Req;
+  responsePayload?: Res;
 }

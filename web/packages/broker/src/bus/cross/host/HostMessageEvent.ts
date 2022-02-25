@@ -17,7 +17,7 @@
 import { IFrameHostMessage } from '../model/IFrameHostMessage';
 
 export interface HostMessageEvent {
-    message: IFrameHostMessage<any, any>;
-    sourceWindow: Window;
-    sourceOrigin: string;
+  message: IFrameHostMessage<any, any>;
+  sourceWindow: Window;
+  sourceOrigin: string;
 }

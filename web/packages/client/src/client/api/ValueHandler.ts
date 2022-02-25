@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface ValueHandler<T> {
-    value: (value: T) => void;
-    error: (err: any) => void;
+  value: (value: T) => void;
+  error: (err: any) => void;
 }

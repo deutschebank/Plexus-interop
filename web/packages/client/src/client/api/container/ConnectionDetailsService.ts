@@ -17,6 +17,6 @@
 import { ConnectionDetails } from './ConnectionDetails';
 
 export interface ConnectionDetailsService {
-    getConnectionDetails(): Promise<ConnectionDetails>;
-    getMetadataUrl(): Promise<string>;
+  getConnectionDetails(): Promise<ConnectionDetails>;
+  getMetadataUrl(): Promise<string>;
 }

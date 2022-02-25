@@ -21,15 +21,13 @@ import { ConnectionOpenFrame } from './model/ConnectionOpenFrame';
 import { MessageFrame } from './model/MessageFrame';
 
 export interface TransportFrameListener {
-    
-    handleConnectionCloseFrame(frame: ConnectionCloseFrame): void;
-    
-    handleConnectionOpenFrame(frame: ConnectionOpenFrame): void;
-    
-    handleChannelOpenFrame(frame: ChannelOpenFrame): void;
-    
-    handleChannelCloseFrame(frame: ChannelCloseFrame): void;
-    
-    handleMessageFrame(frame: MessageFrame): void;
+  handleConnectionCloseFrame(frame: ConnectionCloseFrame): void;
 
+  handleConnectionOpenFrame(frame: ConnectionOpenFrame): void;
+
+  handleChannelOpenFrame(frame: ChannelOpenFrame): void;
+
+  handleChannelCloseFrame(frame: ChannelCloseFrame): void;
+
+  handleMessageFrame(frame: MessageFrame): void;
 }

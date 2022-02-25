@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropRegistry } from '@plexus-interop/metadata';
 import * as protobuf from 'protobufjs/light';
 import { Root } from 'protobufjs/light';
+
+import { InteropRegistry } from '@plexus-interop/metadata';
+
 import { ExtendedMarshaller } from '../api/ExtendedMarshaller';
 import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
 
@@ -24,31 +26,29 @@ import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
  * Dynamic Marshaller, based on Interop Metadata Registry
  */
 export class DynamicProtoMarshallerFactory {
+  private readonly cache = new Map<string, ExtendedMarshaller<any, ArrayBuffer>>();
 
-    private readonly cache = new Map<string, ExtendedMarshaller<any, ArrayBuffer>>();
+  private readonly protobufRoot: Root;
 
-    private readonly protobufRoot: Root;
+  public constructor(private readonly registry: InteropRegistry) {
+    this.protobufRoot = protobuf.Root.fromJSON(registry.rawMessages);
+  }
 
-    public constructor(private readonly registry: InteropRegistry) {
-        this.protobufRoot = protobuf.Root.fromJSON(registry.rawMessages);
+  public getMarshaller(messageId: string): ExtendedMarshaller<any, ArrayBuffer> {
+    if (this.cache.has(messageId)) {
+      return this.cache.get(messageId) as ExtendedMarshaller<any, ArrayBuffer>;
     }
+    const marshaller = this.createDynamicMarshaller(this.registry, messageId);
+    this.cache.set(messageId, marshaller);
+    return marshaller;
+  }
 
-    public getMarshaller(messageId: string): ExtendedMarshaller<any, ArrayBuffer> {
-        if (this.cache.has(messageId)) {
-            return this.cache.get(messageId) as ExtendedMarshaller<any, ArrayBuffer>;
-        }
-        const marshaller = this.createDynamicMarshaller(this.registry, messageId);
-        this.cache.set(messageId, marshaller);
-        return marshaller;
+  private createDynamicMarshaller(registry: InteropRegistry, messageId: string): ExtendedMarshaller<any, ArrayBuffer> {
+    const message = registry.messages.get(messageId);
+    if (!message) {
+      throw new Error(`${messageId} not found in Registry`);
     }
-
-    private createDynamicMarshaller(registry: InteropRegistry, messageId: string): ExtendedMarshaller<any, ArrayBuffer> {
-        const message = registry.messages.get(messageId);
-        if (!message) {
-            throw new Error(`${messageId} not found in Registry`);
-        }
-        const type = this.protobufRoot.lookupType(messageId);
-        return new DynamicProtoMarshaller(type);
-    }
-
+    const type = this.protobufRoot.lookupType(messageId);
+    return new DynamicProtoMarshaller(type);
+  }
 }

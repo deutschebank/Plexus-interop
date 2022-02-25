@@ -17,8 +17,8 @@
 import { MethodTypeDto } from './MethodTypeDto';
 
 export interface MethodDto {
-    name: string;
-    request: string;
-    response: string;
-    type: MethodTypeDto;
+  name: string;
+  request: string;
+  response: string;
+  type: MethodTypeDto;
 }

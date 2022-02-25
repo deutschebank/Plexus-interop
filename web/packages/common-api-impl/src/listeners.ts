@@ -14,41 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable max-classes-per-file */
-import { LoggerFactory, Logger } from '@plexus-interop/common';
+import { Logger, LoggerFactory } from '@plexus-interop/common';
+
 import { ConnectionStatus, Subscription } from './api/client-api';
 
 const logger: Logger = LoggerFactory.getLogger('PeerListener');
 
 export class GenericListenerHolder<T> {
-    
-    private listeners: Array<(update: T) => void> = [];
-    
-    public addListener(callback: (update: T) => void): Subscription {
-        this.listeners.push(callback);
-        return {
-            unsubscribe: async () => this.removeListener(callback)
-        };
-    }    
+  private listeners: Array<(update: T) => void> = [];
 
-    public notifyListeners(update: T): void {
-        this.listeners.forEach(l => {
-            try {
-                l(update);
-            } catch (error) {
-                logger.warn('Listener raised error', error);
-            }
-        });
-    }
+  public addListener(callback: (update: T) => void): Subscription {
+    this.listeners.push(callback);
+    return {
+      unsubscribe: async () => this.removeListener(callback),
+    };
+  }
 
-    public reset(): void {
-        this.listeners.length = 0;
-    
-    }
+  public notifyListeners(update: T): void {
+    this.listeners.forEach((l) => {
+      try {
+        l(update);
+      } catch (error) {
+        logger.warn('Listener raised error', error);
+      }
+    });
+  }
 
-    private removeListener(callback: (update: T) => void): void {
-        this.listeners = this.listeners.filter(l => l !== callback);
-    }
+  public reset(): void {
+    this.listeners.length = 0;
+  }
+
+  private removeListener(callback: (update: T) => void): void {
+    this.listeners = this.listeners.filter((l) => l !== callback);
+  }
 }
 
 export class ConnectionStatusListeners extends GenericListenerHolder<ConnectionStatus> {}

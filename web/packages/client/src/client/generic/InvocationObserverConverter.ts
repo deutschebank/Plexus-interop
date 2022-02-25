@@ -15,21 +15,18 @@
  * limitations under the License.
  */
 import { ConversionObserver } from '@plexus-interop/common';
+
 import { InvocationObserver } from './InvocationObserver';
 
-export class InvocationObserverConverter<S, D> extends ConversionObserver<S, D> implements InvocationObserver<D>  {
+export class InvocationObserverConverter<S, D> extends ConversionObserver<S, D> implements InvocationObserver<D> {
+  private baseSource: InvocationObserver<S>;
 
-    private baseSource: InvocationObserver<S>;
+  constructor(source: InvocationObserver<S>, converter: (from: D) => S) {
+    super(source, converter);
+    this.baseSource = source;
+  }
 
-    constructor(
-        source: InvocationObserver<S>,
-        converter: (from: D) => S) {
-        super(source, converter);
-        this.baseSource = source;
-    }
-
-    public streamCompleted(): void {
-        return this.baseSource.streamCompleted();
-    }
-
+  public streamCompleted(): void {
+    return this.baseSource.streamCompleted();
+  }
 }

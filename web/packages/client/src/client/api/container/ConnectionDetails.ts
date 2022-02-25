@@ -17,6 +17,6 @@
 import { WsConnectionDetails } from './WsConnectionDetails';
 
 export interface ConnectionDetails {
-    ws: WsConnectionDetails;
-    appInstanceId?: string;
+  ws: WsConnectionDetails;
+  appInstanceId?: string;
 }

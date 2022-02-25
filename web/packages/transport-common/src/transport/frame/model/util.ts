@@ -17,11 +17,11 @@
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
 
 export function isOk(completion: plexus.ICompletion): boolean {
-    return completion && completion.status === plexus.Completion.Status.Completed;
+  return completion && completion.status === plexus.Completion.Status.Completed;
 }
 
 export function successCompletion(): plexus.ICompletion {
-    return {
-        status: plexus.Completion.Status.Completed
-    };
+  return {
+    status: plexus.Completion.Status.Completed,
+  };
 }

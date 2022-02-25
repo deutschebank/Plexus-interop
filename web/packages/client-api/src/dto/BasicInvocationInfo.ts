@@ -17,7 +17,5 @@
 import { ServiceInfo } from './ServiceInfo';
 
 export interface BasicInvocationInfo extends ServiceInfo {
-
-    methodId: string;
-
+  methodId: string;
 }

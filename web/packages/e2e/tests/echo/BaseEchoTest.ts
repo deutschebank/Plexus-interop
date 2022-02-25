@@ -14,72 +14,83 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import { expect } from 'chai';
+
 import { MethodInvocationContext } from '@plexus-interop/client';
 import { Arrays, AsyncHelper } from '@plexus-interop/common';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
-import { expect } from 'chai';
+
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 
 export class BaseEchoTest {
+  protected marshallerProvider: BinaryMarshallerProvider = new ProtoMarshallerProvider();
 
-    protected marshallerProvider: BinaryMarshallerProvider = new ProtoMarshallerProvider();
+  public assertEqual(
+    first: plexus.plexus.interop.testing.IEchoRequest,
+    second: plexus.plexus.interop.testing.IEchoRequest
+  ): void {
+    let firstInt64;
+    let secondInt64;
 
-    public assertEqual(first: plexus.plexus.interop.testing.IEchoRequest, second: plexus.plexus.interop.testing.IEchoRequest): void {
-        let firstInt64;
-        let secondInt64;
-
-        if (!!first.int64Field && !!second.int64Field) {
-            // chai's deep equal breaks on Long
-            firstInt64 = first.int64Field;
-            secondInt64 = second.int64Field;
-            delete first.int64Field;
-            delete second.int64Field;
-            expect((firstInt64 as Long).high).is.eq((secondInt64 as Long).high);
-            expect((firstInt64 as Long).low).is.eq((secondInt64 as Long).low);
-        }
-
-        expect(first).to.be.deep.equal(second);
-
-        if (!!firstInt64 && !!secondInt64) {
-            // return fields back
-            first.int64Field = firstInt64;
-            second.int64Field = secondInt64;
-        }
-
+    if (!!first.int64Field && !!second.int64Field) {
+      // chai's deep equal breaks on Long
+      firstInt64 = first.int64Field;
+      secondInt64 = second.int64Field;
+      delete first.int64Field;
+      delete second.int64Field;
+      expect((firstInt64 as Long).high).is.eq((secondInt64 as Long).high);
+      expect((firstInt64 as Long).low).is.eq((secondInt64 as Long).low);
     }
 
-    public encodeRequestDto(request: plexus.plexus.interop.testing.IEchoRequest): ArrayBuffer {
-        return Arrays.toArrayBuffer(this.marshallerProvider.getMarshaller(plexus.plexus.interop.testing.EchoRequest).encode(request));
-    }
+    expect(first).to.be.deep.equal(second);
 
-    public decodeRequestDto(payload: ArrayBuffer): plexus.plexus.interop.testing.IEchoRequest {
-        return this.marshallerProvider.getMarshaller(plexus.plexus.interop.testing.EchoRequest).decode(new Uint8Array(payload));
+    if (!!firstInt64 && !!secondInt64) {
+      // return fields back
+      first.int64Field = firstInt64;
+      second.int64Field = secondInt64;
     }
+  }
 
-    public async verifyClientChannelsCleared(clientsSetup: ClientsSetup): Promise<void> {
-        expect(clientsSetup.getClientConnectionSetup().getConnection().getManagedChannels().length).to.eq(0);
-    }
+  public encodeRequestDto(request: plexus.plexus.interop.testing.IEchoRequest): ArrayBuffer {
+    return Arrays.toArrayBuffer(
+      this.marshallerProvider.getMarshaller(plexus.plexus.interop.testing.EchoRequest).encode(request)
+    );
+  }
 
-    public async verifyServerChannelsCleared(clientsSetup: ClientsSetup): Promise<void> {
-        expect(clientsSetup.getServerConnectionSetup().getConnection().getManagedChannels().length).to.eq(0);
-    }
+  public decodeRequestDto(payload: ArrayBuffer): plexus.plexus.interop.testing.IEchoRequest {
+    return this.marshallerProvider
+      .getMarshaller(plexus.plexus.interop.testing.EchoRequest)
+      .decode(new Uint8Array(payload));
+  }
 
-    public verifyInvocationContext(invocationContext: MethodInvocationContext): void {
-        expect(invocationContext).to.not.be.undefined;
-        expect(invocationContext.cancellationToken).to.not.be.undefined;
-        expect(invocationContext.consumerConnectionId).to.not.be.undefined;
-        expect(invocationContext.consumerApplicationId).to.be.eq('plexus.interop.testing.EchoClient');
-    }
+  public async verifyClientChannelsCleared(clientsSetup: ClientsSetup): Promise<void> {
+    expect(clientsSetup.getClientConnectionSetup().getConnection().getManagedChannels().length).to.eq(0);
+  }
 
-    public waitForClientConnectionCleared(clientsSetup: ClientsSetup): Promise<void> {
-        return AsyncHelper.waitFor(() => clientsSetup.getClientConnectionSetup().getConnection().getManagedChannels().length === 0);
-    }
+  public async verifyServerChannelsCleared(clientsSetup: ClientsSetup): Promise<void> {
+    expect(clientsSetup.getServerConnectionSetup().getConnection().getManagedChannels().length).to.eq(0);
+  }
 
-    public waitForServerConnectionCleared(clientsSetup: ClientsSetup): Promise<void> {
-        return AsyncHelper.waitFor(() => clientsSetup.getServerConnectionSetup().getConnection().getManagedChannels().length === 0);
-    }
+  public verifyInvocationContext(invocationContext: MethodInvocationContext): void {
+    expect(invocationContext).to.not.be.undefined;
+    expect(invocationContext.cancellationToken).to.not.be.undefined;
+    expect(invocationContext.consumerConnectionId).to.not.be.undefined;
+    expect(invocationContext.consumerApplicationId).to.be.eq('plexus.interop.testing.EchoClient');
+  }
 
+  public waitForClientConnectionCleared(clientsSetup: ClientsSetup): Promise<void> {
+    return AsyncHelper.waitFor(
+      () => clientsSetup.getClientConnectionSetup().getConnection().getManagedChannels().length === 0
+    );
+  }
+
+  public waitForServerConnectionCleared(clientsSetup: ClientsSetup): Promise<void> {
+    return AsyncHelper.waitFor(
+      () => clientsSetup.getServerConnectionSetup().getConnection().getManagedChannels().length === 0
+    );
+  }
 }

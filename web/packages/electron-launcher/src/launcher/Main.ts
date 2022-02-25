@@ -16,10 +16,11 @@
  */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron';
+
 import { LoggerFactory, LogLevel, PrefixedLogger } from '@plexus-interop/common';
-import { FileLogger } from './logger/FileLogger';
 
 import { ElectronAppLauncher } from './ElectronAppLauncher';
+import { FileLogger } from './logger/FileLogger';
 
 declare let global: any;
 // eslint-disable-next-line global-require
@@ -38,14 +39,15 @@ const appsToLaunch = argv.apps ? argv.apps.split(';') : [];
 const brokerDefaultDir = argv.brokerDir || '../..';
 
 app.on('ready', () => {
-    log.info('Connecting to Broker');
-    const electronAppLauncher = new ElectronAppLauncher(log, appsToLaunch, brokerDefaultDir);
-    electronAppLauncher.start()
-        .then(() => {
-            log.info('Connected to Broker');
-        })
-        .catch(e => {
-            log.error('Connection to broker failed', e);
-            app.quit();
-        })
+  log.info('Connecting to Broker');
+  const electronAppLauncher = new ElectronAppLauncher(log, appsToLaunch, brokerDefaultDir);
+  electronAppLauncher
+    .start()
+    .then(() => {
+      log.info('Connected to Broker');
+    })
+    .catch((e) => {
+      log.error('Connection to broker failed', e);
+      app.quit();
+    });
 });

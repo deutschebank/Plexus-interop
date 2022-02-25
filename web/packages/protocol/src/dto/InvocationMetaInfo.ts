@@ -17,25 +17,23 @@
 import { UniqueId } from './UniqueId';
 
 export interface InvocationMetaInfo extends InvocationRequestInfo {
+  consumerApplicationId?: string;
 
-    consumerApplicationId?: string;
-
-    consumerConnectionId?: UniqueId;
+  consumerConnectionId?: UniqueId;
 }
 
 export interface InvocationRequestInfo {
+  serviceAlias?: string;
 
-    serviceAlias?: string;
+  serviceId?: string;
 
-    serviceId?: string;
+  methodId?: string;
 
-    methodId?: string;
+  applicationId?: string;
 
-    applicationId?: string;
+  componentId?: string;
 
-    componentId?: string;
+  connectionId?: UniqueId;
 
-    connectionId?: UniqueId;
-
-    applicationInstanceId?: UniqueId;
+  applicationInstanceId?: UniqueId;
 }

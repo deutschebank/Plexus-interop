@@ -14,35 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
+
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { EchoServiceInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
 
-
 export class NopServiceHandler implements EchoServiceInvocationHandler {
+  public onUnary(
+    context: MethodInvocationContext,
+    request: plexus.plexus.interop.testing.IEchoRequest
+  ): Promise<plexus.plexus.interop.testing.IEchoRequest> {
+    throw new Error('Not implemented');
+  }
 
-    public onUnary(context: MethodInvocationContext, request: plexus.plexus.interop.testing.IEchoRequest): Promise<plexus.plexus.interop.testing.IEchoRequest> {
-        throw new Error('Not implemented');
-    }
+  public onServerStreaming(
+    context: MethodInvocationContext,
+    request: plexus.plexus.interop.testing.IEchoRequest,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): void {
+    throw new Error('Not implemented');
+  }
 
-    public onServerStreaming(
-        context: MethodInvocationContext, 
-        request: plexus.plexus.interop.testing.IEchoRequest, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): void {
-        throw new Error('Not implemented');        
-    }
+  public onClientStreaming(
+    context: MethodInvocationContext,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
+    throw new Error('Not implemented');
+  }
 
-    public onClientStreaming(
-        context: MethodInvocationContext, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
-        throw new Error('Not implemented');        
-    }
-
-    public onDuplexStreaming(
-        context: MethodInvocationContext, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
-        throw new Error('Not implemented');        
-    }
-
+  public onDuplexStreaming(
+    context: MethodInvocationContext,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
+    throw new Error('Not implemented');
+  }
 }

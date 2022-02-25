@@ -14,113 +14,130 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { GenericClientApi, MethodType } from '@plexus-interop/client';
 import { Application, InteropRegistryService } from '@plexus-interop/metadata';
+
 import { DiscoverMethodsHandler } from './actions/DiscoverMethodsHandler';
 import { InvokeHandler } from './actions/InvokeHandler';
 import { SubscribeHandler } from './actions/SubscribeHandler';
-import { ConnectionStatus, InteropPeer, InteropPeerDescriptor, InvokeResult, Method, MethodImplementation, RegisteredMethod, StreamImplementation, StreamObserver, StreamSubscription, Subscription } from './api/client-api';
+import {
+  ConnectionStatus,
+  InteropPeer,
+  InteropPeerDescriptor,
+  InvokeResult,
+  Method,
+  MethodImplementation,
+  RegisteredMethod,
+  StreamImplementation,
+  StreamObserver,
+  StreamSubscription,
+  Subscription,
+} from './api/client-api';
 import { ConnectionStatusListeners } from './listeners';
 
 export class PlexusInteropPeer implements InteropPeer {
+  private statusChangedListeners: ConnectionStatusListeners = new ConnectionStatusListeners();
 
-    private statusChangedListeners: ConnectionStatusListeners = new ConnectionStatusListeners();
+  public connectionStatus: ConnectionStatus;
+  public isConnected: boolean;
+  public applicationName: string;
+  public id: string;
 
-    public connectionStatus: ConnectionStatus;
-    public isConnected: boolean;
-    public applicationName: string;
-    public id: string;
+  public constructor(
+    private readonly genericClientApi: GenericClientApi,
+    private readonly registryService: InteropRegistryService,
+    private readonly plexusAppMetadata: Application
+  ) {
+    this.id = this.genericClientApi.getConnectionId().toString();
+    this.isConnected = true;
+  }
 
-    public constructor(
-        private readonly genericClientApi: GenericClientApi,
-        private readonly registryService: InteropRegistryService,
-        private readonly plexusAppMetadata: Application
-    ) {
-        this.id = this.genericClientApi.getConnectionId().toString();
-        this.isConnected = true;
-    }
+  public onConnectionStatusChanged(callback: (status: ConnectionStatus) => void): Subscription {
+    return this.statusChangedListeners.addListener(callback);
+  }
 
-    public onConnectionStatusChanged(callback: (status: ConnectionStatus) => void): Subscription {
-        return this.statusChangedListeners.addListener(callback);
-    }
+  public async disconnect(): Promise<void> {
+    await this.genericClientApi.disconnect();
+    this.statusChangedListeners.notifyListeners(ConnectionStatus.Disconnected);
+  }
 
-    public async disconnect(): Promise<void> {
-        await this.genericClientApi.disconnect();
-        this.statusChangedListeners.notifyListeners(ConnectionStatus.Disconnected);
-    }
+  public invoke(method: string | Method, args?: any): Promise<InvokeResult> {
+    return new InvokeHandler(this.registryService, this.genericClientApi, this.plexusAppMetadata).handle(method, args);
+  }
 
-    public invoke(method: string | Method, args?: any): Promise<InvokeResult> {
-        return new InvokeHandler(this.registryService, this.genericClientApi, this.plexusAppMetadata).handle(method, args);
-    }
+  public subscribe(stream: string | Method, observer: StreamObserver, args?: any): Promise<StreamSubscription> {
+    return new SubscribeHandler(this.registryService, this.genericClientApi, this.plexusAppMetadata).handle(
+      stream,
+      observer,
+      args
+    );
+  }
 
-    public subscribe(stream: string | Method, observer: StreamObserver, args?: any): Promise<StreamSubscription> {
-        return new SubscribeHandler(this.registryService, this.genericClientApi, this.plexusAppMetadata).handle(stream, observer, args);
-    }
+  public discoverMethods(): Promise<Method[]> {
+    return new DiscoverMethodsHandler(this.genericClientApi, this.registryService).discoverMethods(MethodType.Unary);
+  }
 
-    public discoverMethods(): Promise<Method[]> {
-        return new DiscoverMethodsHandler(this.genericClientApi, this.registryService)
-            .discoverMethods(MethodType.Unary);
-    }
+  public discoverStreams(): Promise<Method[]> {
+    return new DiscoverMethodsHandler(this.genericClientApi, this.registryService).discoverMethods(
+      MethodType.ServerStreaming
+    );
+  }
 
-    public discoverStreams(): Promise<Method[]> {
-        return new DiscoverMethodsHandler(this.genericClientApi, this.registryService)
-            .discoverMethods(MethodType.ServerStreaming);
-    }
+  // TODO: Not Implemented =>
 
-    // TODO: Not Implemented =>
+  public onMethodRegistered(callback: (method: Method) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onMethodRegistered(callback: (method: Method) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
+  public onMethodUnregistered(callback: (method: Method) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onMethodUnregistered(callback: (method: Method) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
+  public onStreamRegistered(callback: (stream: Method) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onStreamRegistered(callback: (stream: Method) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
+  public onStreamUnregistered(callback: (stream: Method) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onStreamUnregistered(callback: (stream: Method) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
+  public onPeerConnected(callback: (peer: InteropPeerDescriptor) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onPeerConnected(callback: (peer: InteropPeerDescriptor) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
+  public register(methodImplementation: MethodImplementation): Promise<RegisteredMethod> {
+    throw new Error('Method not implemented.');
+  }
 
-    public register(methodImplementation: MethodImplementation): Promise<RegisteredMethod> {
-        throw new Error('Method not implemented.');
-    }
+  public registerStream(streamImplementation: StreamImplementation): Promise<RegisteredMethod> {
+    throw new Error('Method not implemented.');
+  }
 
-    public registerStream(streamImplementation: StreamImplementation): Promise<RegisteredMethod> {
-        throw new Error('Method not implemented.');
-    }
+  public publishApiMetadata(apiMetadata: string): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 
-    public publishApiMetadata(apiMetadata: string): Promise<void> {
-        throw new Error('Method not implemented.');
-    }
+  public getApiMetadata(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
 
-    public getApiMetadata(): Promise<string> {
-        throw new Error('Method not implemented.');
-    }
+  public onApiMetadataChanged(callback: (metadata: string) => void): void {
+    throw new Error('Method not implemented.');
+  }
 
-    public onApiMetadataChanged(callback: (metadata: string) => void): void {
-        throw new Error('Method not implemented.');
-    }
+  public onDisconnected(callback: (error?: Error) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onDisconnected(callback: (error?: Error) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
+  public discoverPeers(): Promise<InteropPeerDescriptor[]> {
+    throw new Error('Method not implemented.');
+  }
 
-    public discoverPeers(): Promise<InteropPeerDescriptor[]> {
-        throw new Error('Method not implemented.');
-    }
+  public onPeerDisconnected(callback: (peer: InteropPeerDescriptor) => void): Subscription {
+    throw new Error('Method not implemented.');
+  }
 
-    public onPeerDisconnected(callback: (peer: InteropPeerDescriptor) => void): Subscription {
-        throw new Error('Method not implemented.');
-    }
-
-    // <= TODO: Not Implemented
+  // <= TODO: Not Implemented
 }

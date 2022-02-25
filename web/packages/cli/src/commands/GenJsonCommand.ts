@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BaseJavaGenCommand } from './BaseJavaGenCommand';
-import { baseDir, out, verbose, excludePattern } from './DefaultOptions';
-import { Option } from './Option';
 import { getPbJsExecPath } from '../common/protoJs';
+import { BaseJavaGenCommand } from './BaseJavaGenCommand';
+import { baseDir, excludePattern, out, verbose } from './DefaultOptions';
+import { Option } from './Option';
 
 export class GenJsonCommand extends BaseJavaGenCommand {
-    
-    public plexusGenArgs: (opts: any) => string[] = opts => ['--type=json_meta', ...this.optionArgs(opts), `--protoc=${getPbJsExecPath()}`]
+  public plexusGenArgs: (opts: any) => string[] = (opts) => [
+    '--type=json_meta',
+    ...this.optionArgs(opts),
+    `--protoc=${getPbJsExecPath()}`,
+  ];
 
-    public generalDescription = () => 'generate metadata in JSON format';
+  public generalDescription = () => 'generate metadata in JSON format';
 
-    public name = () => 'gen-json-meta';
+  public name = () => 'gen-json-meta';
 
-    public options: () => Option[] = () => [baseDir(), out(), verbose(), excludePattern()];
-
+  public options: () => Option[] = () => [baseDir(), out(), verbose(), excludePattern()];
 }

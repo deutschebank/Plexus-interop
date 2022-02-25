@@ -17,6 +17,6 @@
 import { Fields } from '../json/Fields';
 
 export interface Message {
-    id: string;
-    fields: Fields;
+  id: string;
+  fields: Fields;
 }

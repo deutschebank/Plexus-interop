@@ -14,18 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ProvidedServiceDto } from './ProvidedServiceDto';
 import { ConsumedServiceDto } from './ConsumedServiceDto';
 import { OptionDto } from './OptionDto';
+import { ProvidedServiceDto } from './ProvidedServiceDto';
 
 export interface ApplicationDto {
-    
-    id: string;
-    
-    provides: ProvidedServiceDto[];
-    
-    consumes: ConsumedServiceDto[];
+  id: string;
 
-    options: OptionDto[];    
+  provides: ProvidedServiceDto[];
 
+  consumes: ConsumedServiceDto[];
+
+  options: OptionDto[];
 }

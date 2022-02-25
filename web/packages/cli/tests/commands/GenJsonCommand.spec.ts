@@ -14,27 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getApprovalsBaseDir, prepareOutDir, getTestBaseDir, filesEqual } from './setup';
-import { GenJsonCommand } from '../../src/commands/GenJsonCommand';
 import * as path from 'path';
 
+import { GenJsonCommand } from '../../src/commands/GenJsonCommand';
+import { filesEqual, getApprovalsBaseDir, getTestBaseDir, prepareOutDir } from './setup';
+
 describe('Metadata JSON generation CLI', () => {
+  it('Generates JSON with all metadata', async () => {
+    const testName = 'generated-json';
+    const genCommand = new GenJsonCommand();
+    const outDir = prepareOutDir(testName);
 
-    it('Generates JSON with all metadata', async () => {
+    await genCommand.action({
+      out: outDir,
+      baseDir: getTestBaseDir(),
+    });
 
-        const testName = 'generated-json';
-        const genCommand = new GenJsonCommand();
-        const outDir = prepareOutDir(testName);
-        
-        await genCommand.action({
-            out: outDir,
-            baseDir: getTestBaseDir()
-        });
-
-        expect(await filesEqual(
-            path.join(outDir, 'interop.json'), 
-            path.join(getApprovalsBaseDir(), 'generated-json.approved.txt'))).toBeTruthy();
-
-    }, 15000);
-
+    expect(
+      await filesEqual(
+        path.join(outDir, 'interop.json'),
+        path.join(getApprovalsBaseDir(), 'generated-json.approved.txt')
+      )
+    ).toBeTruthy();
+  }, 15000);
 });

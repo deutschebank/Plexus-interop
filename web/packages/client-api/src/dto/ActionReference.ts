@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 export interface ActionReference {
+  serviceId: string;
 
-    serviceId: string;
+  serviceAlias?: string;
 
-    serviceAlias?: string;
-
-    methodId: string;
-
+  methodId: string;
 }

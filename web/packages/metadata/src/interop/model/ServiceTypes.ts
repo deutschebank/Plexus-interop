@@ -15,73 +15,68 @@
  * limitations under the License.
  */
 import { ExtendedMap } from '@plexus-interop/common';
+
 import { MatchPattern } from './MatchPattern';
 import { Message } from './Message';
 import { MethodType } from './MethodType';
 import { Option } from './Option';
 
 export interface Application {
+  id: string;
 
-    id: string;
-    
-    consumedServices: ConsumedService[];
+  consumedServices: ConsumedService[];
 
-    providedServices: ProvidedService[];
+  providedServices: ProvidedService[];
 
-    options: Option[];    
-
+  options: Option[];
 }
 
 export interface ConsumedService {
+  service: Service;
 
-    service: Service;
+  application: Application;
 
-    application: Application;
+  methods: ExtendedMap<string, ConsumedMethod>;
 
-    methods: ExtendedMap<string, ConsumedMethod>;
+  from: MatchPattern;
 
-    from: MatchPattern;
-
-    alias?: string;
-
+  alias?: string;
 }
 
 export interface ConsumedMethod {
-    method: Method;
-    consumedService: ConsumedService;
+  method: Method;
+  consumedService: ConsumedService;
 }
 
 export interface ProvidedMethod {
-    method: Method;
-    providedService: ProvidedService;
-    title?: string;
-    options: Option[];
+  method: Method;
+  providedService: ProvidedService;
+  title?: string;
+  options: Option[];
 }
 
 export interface ProvidedService {
+  service: Service;
 
-    service: Service;
+  application: Application;
 
-    application: Application;
+  methods: ExtendedMap<string, ProvidedMethod>;
 
-    methods: ExtendedMap<string, ProvidedMethod>;
+  to: MatchPattern;
 
-    to: MatchPattern;
-
-    alias?: string;
-
+  alias?: string;
 }
 
 export interface Service {
-    id: string;
-    serviceAlias?: string;
-    methods: ExtendedMap<string, Method>;
+  id: string;
+  serviceAlias?: string;
+  methods: ExtendedMap<string, Method>;
 }
 
 export interface Method {
-    name: string;
-    type: MethodType;
-    requestMessage: Message;
-    responseMessage: Message;
-    service: Service;
+  name: string;
+  type: MethodType;
+  requestMessage: Message;
+  responseMessage: Message;
+  service: Service;
 }

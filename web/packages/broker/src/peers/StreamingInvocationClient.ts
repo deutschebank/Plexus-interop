@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 export interface StreamingInvocationClient<T> {
+  next(value: T): Promise<void>;
 
-    next(value: T): Promise<void>;
+  complete(): Promise<void>;
 
-    complete(): Promise<void>;
-
-    error(e: any): void;
-
+  error(e: any): void;
 }

@@ -17,22 +17,22 @@
 /**
  * Call source fn only once, even if source promise is rejected
  */
-export const once = <Req, Res>(fn: (req?: Req) => Promise<Res>): (req?: Req) => Promise<Res> => {
-    let promise: Promise<Res> | undefined;
-    return (req?: Req) => {
-        if (!promise) {
-            promise = fn(req);
-        }
-        return promise;
-    };
+export const once = <Req, Res>(fn: (req?: Req) => Promise<Res>): ((req?: Req) => Promise<Res>) => {
+  let promise: Promise<Res> | undefined;
+  return (req?: Req) => {
+    if (!promise) {
+      promise = fn(req);
+    }
+    return promise;
+  };
 };
 
 export function onceVoid(fn: () => void): () => void {
-    let called = false;
-    return () => {
-        if (!called) {
-            called = true;
-            fn();
-        }
-    };
+  let called = false;
+  return () => {
+    if (!called) {
+      called = true;
+      fn();
+    }
+  };
 }

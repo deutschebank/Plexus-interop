@@ -17,13 +17,11 @@
 import { ConsumedMethodDto } from './ConsumedMethodDto';
 
 export interface ConsumedServiceDto {
-    
-    service: string;
-    
-    from: string[];
+  service: string;
 
-    methods: ConsumedMethodDto[];
+  from: string[];
 
-    alias?: string;
+  methods: ConsumedMethodDto[];
 
-} 
+  alias?: string;
+}

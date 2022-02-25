@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface PublishRequest {
-    payload: any;
-    topic: string;
+  payload: any;
+  topic: string;
 }

@@ -17,26 +17,26 @@
 import { SequencedExecutor } from '../../src/util/async/SequencedExecutor';
 
 describe('SequencedExecutor', () => {
+  const sut = new SequencedExecutor();
 
-    const sut = new SequencedExecutor();
-
-    it('Executus tasks in a row', (done) => {
-        let counter = 0;
-        sut.submit(async () => {
-            counter++;
-        });
-        sut.submit(async () => {      
-            if (counter === 1) {
-                done();
-            }
-        });
+  it('Executus tasks in a row', (done) => {
+    let counter = 0;
+    sut.submit(async () => {
+      counter++;
     });
-
-    it('Executus tasks if previous failed', (done) => {
-        sut.submit(async () => {
-            throw new Error('Failed');
-        }).catch(e => {});
-        sut.submit(async () => done());
+    sut.submit(async () => {
+      if (counter === 1) {
+        done();
+      }
     });
+  });
 
+  it('Executus tasks if previous failed', (done) => {
+    sut
+      .submit(async () => {
+        throw new Error('Failed');
+      })
+      .catch((e) => {});
+    sut.submit(async () => done());
+  });
 });

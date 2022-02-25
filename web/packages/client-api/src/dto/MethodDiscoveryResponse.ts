@@ -17,6 +17,5 @@
 import { DiscoveredMethod } from './DiscoveredMethod';
 
 export interface MethodDiscoveryResponse {
-    
-    methods?: DiscoveredMethod[];
+  methods?: DiscoveredMethod[];
 }

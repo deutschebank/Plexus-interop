@@ -20,44 +20,43 @@ import { readHostUrl } from '../common/utils';
 import { PointToPointInvocationTests } from '../echo/PointToPointInvocationTests';
 
 describe('Web Broker: Point to Point invocation', () => {
+  const clientsSetup = new ClientsSetup(500);
+  const transportsSetup = new TransportsSetup();
 
-    const clientsSetup = new ClientsSetup(500);
-    const transportsSetup = new TransportsSetup();
+  const proxyHost = readHostUrl();
 
-    const proxyHost = readHostUrl();
+  const pointToPointTests = new PointToPointInvocationTests(
+    transportsSetup.createCrossDomainTransportProvider(proxyHost),
+    clientsSetup
+  );
 
-    const pointToPointTests = new PointToPointInvocationTests(
-        transportsSetup.createCrossDomainTransportProvider(proxyHost),
-        clientsSetup);
+  it('Sends invocation request and receives response', function () {
+    this.timeout(5000);
+    return pointToPointTests.testMessageSent();
+  });
 
-    it('Sends invocation request and receives response', function () {
-        this.timeout(5000);
-        return pointToPointTests.testMessageSent();
-    });
+  it('Sends few invocations in a row', function () {
+    this.timeout(10000);
+    return pointToPointTests.testFewMessagesSent();
+  });
 
-    it('Sends few invocations in a row', function() {
-        this.timeout(10000);     
-        return pointToPointTests.testFewMessagesSent();
-    });
+  it('Receives error from host', function () {
+    this.timeout(10000);
+    return pointToPointTests.testHostsExecutionErrorReceived();
+  });
 
-    it('Receives error from host', function() {
-        this.timeout(10000);        
-        return pointToPointTests.testHostsExecutionErrorReceived();
-    });
+  it('Receives Client Error from host', function () {
+    this.timeout(10000);
+    return pointToPointTests.testHostsExecutionClientErrorReceived();
+  });
 
-    it('Receives Client Error from host', function() {
-        this.timeout(10000);        
-        return pointToPointTests.testHostsExecutionClientErrorReceived();
-    });
+  it('Receives string error from host', function () {
+    this.timeout(10000);
+    return pointToPointTests.testHostsExecutionStringErrorReceived();
+  });
 
-    it('Receives string error from host', function() {
-        this.timeout(10000);        
-        return pointToPointTests.testHostsExecutionStringErrorReceived();
-    });
-
-    it('Receives exception from host', function() {
-        this.timeout(10000);        
-        return pointToPointTests.testHostExecutionExceptionReceived();
-    });
-
+  it('Receives exception from host', function () {
+    this.timeout(10000);
+    return pointToPointTests.testHostExecutionExceptionReceived();
+  });
 });

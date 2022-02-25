@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 export interface WsConnectionDetails {
-    port: number;
-    wssPort?: number;
+  port: number;
+  wssPort?: number;
 }
 
 export function getBaseWsUrl(details: WsConnectionDetails): string {
-    return details.wssPort
-        ? `wss://127.0.0.1:${details.wssPort}`
-        : `ws://127.0.0.1:${details.port}`;
+  return details.wssPort ? `wss://127.0.0.1:${details.wssPort}` : `ws://127.0.0.1:${details.port}`;
 }

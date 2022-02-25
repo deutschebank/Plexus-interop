@@ -15,88 +15,89 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
+
+import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+
+import { EchoClientClientBuilder } from '../../src/echo/client/EchoClientGeneratedClient';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { TransportsSetup } from '../common/TransportsSetup';
 import { readWsUrl } from '../common/utils';
 import { ClientConnectivityTests } from '../echo/ClientConnectivityTests';
-import { EchoClientClientBuilder } from '../../src/echo/client/EchoClientGeneratedClient';
-import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 
 describe('Web Socket Client connectivity', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
+  const wsUrl = readWsUrl();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
+  const connectivityTests = new ClientConnectivityTests(
+    transportsSetup.createWebSocketTransportProvider(wsUrl),
+    clientsSetup
+  );
+
+  it('Can receive WS URL from Broker', () => {
+    expect(wsUrl).is.not.empty;
+  });
+
+  it('Can connect/disconnect from running Broker instance', function (done) {
+    this.timeout(5000);
+    let wsUrl = readWsUrl();
+    clientsSetup.createEchoClient(transportsSetup.createWebSocketTransportProvider(wsUrl)).then((client) => {
+      expect(client).to.not.be.undefined;
+      client.disconnect().then(() => {
+        done();
+      });
+    });
+  });
+
+  it('Connects when second connect is successfull', (done) => {
     const wsUrl = readWsUrl();
+    const provider = transportsSetup.createWebSocketTransportProvider(wsUrl);
+    let count = 0;
+    const failAndSuccessProvider = () => {
+      if (count === 0) {
+        count++;
+        return Promise.reject('Failed');
+      } else {
+        return provider().then((setup) => setup.getConnection());
+      }
+    };
+    new EchoClientClientBuilder()
+      .withTransportConnectionProvider(failAndSuccessProvider)
+      .connect()
+      .then((client) => {
+        expect(client).to.not.be.undefined;
+        client.disconnect().then(() => {
+          done();
+        });
+      });
+  });
 
-    const connectivityTests = new ClientConnectivityTests(
-        transportsSetup.createWebSocketTransportProvider(wsUrl),
-        clientsSetup);
+  it('Failed to connect if Web Socket server is not available', function (done) {
+    this.timeout(10000);
+    new EchoClientClientBuilder()
+      .withTransportConnectionProvider(() =>
+        new WebSocketConnectionFactory(new WebSocket('ws://127.0.0.1:11111')).connect()
+      )
+      .connect()
+      .catch((e) => {
+        console.log('Connection error', e);
+        done();
+      });
+  });
 
-    it('Can receive WS URL from Broker', () => {
-        expect(wsUrl).is.not.empty;
-    });
+  it('Received error for open invocation on disconnect', function () {
+    return connectivityTests.testInvocationClientReceiveErrorOnClientDisconnect();
+  });
 
-    it('Can connect/disconnect from running Broker instance', function (done) {
-        this.timeout(5000);
-        let wsUrl = readWsUrl();
-        clientsSetup
-            .createEchoClient(transportsSetup.createWebSocketTransportProvider(wsUrl))
-            .then(client => {
-                expect(client).to.not.be.undefined;
-                client.disconnect().then(() => {
-                    done();
-                });
-            });
-    });
+  it('Receives error if provide wrong client id to Broker', function () {
+    return connectivityTests.testClientReceiveErrorIfProvideWrongId();
+  });
 
-    it('Connects when second connect is successfull', done => {
-        const wsUrl = readWsUrl();
-        const provider = transportsSetup.createWebSocketTransportProvider(wsUrl);
-        let count = 0;
-        const failAndSuccessProvider = () => {
-            if (count === 0) {
-                count++;
-                return Promise.reject('Failed');
-            } else {
-                return provider().then(setup => setup.getConnection());
-            }
-        }
-        new EchoClientClientBuilder()
-            .withTransportConnectionProvider(failAndSuccessProvider)
-            .connect()
-            .then(client => {
-                expect(client).to.not.be.undefined;
-                client.disconnect().then(() => {
-                    done();
-                });
-            });
-    });
+  it('Server receives error if client dropped connection', function () {
+    return connectivityTests.testServerReceivesErrorIfClientDroppedConnection();
+  });
 
-    it('Failed to connect if Web Socket server is not available', function (done) {
-        this.timeout(10000);    
-        new EchoClientClientBuilder()
-            .withTransportConnectionProvider(() => new WebSocketConnectionFactory(new WebSocket('ws://127.0.0.1:11111')).connect())
-            .connect()
-            .catch(e => {
-                console.log('Connection error', e);
-                done();
-            });
-    });
-
-    it('Received error for open invocation on disconnect', function () {
-        return connectivityTests.testInvocationClientReceiveErrorOnClientDisconnect();
-    });
-
-    it('Receives error if provide wrong client id to Broker', function () {
-        return connectivityTests.testClientReceiveErrorIfProvideWrongId();
-    });
-
-    it('Server receives error if client dropped connection', function () {
-        return connectivityTests.testServerReceivesErrorIfClientDroppedConnection();
-    });
-
-    it('Client receives error if server dropped connection', function () {
-        return connectivityTests.testClientReceivesErrorIfServerDroppedConnection();
-    });
-
+  it('Client receives error if server dropped connection', function () {
+    return connectivityTests.testClientReceivesErrorIfServerDroppedConnection();
+  });
 });

@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ProvidedMethodDto } from './ProvidedMethodDto';
 import { OptionDto } from './OptionDto';
+import { ProvidedMethodDto } from './ProvidedMethodDto';
 
 export interface ProvidedServiceDto {
-    
-    service: string;
-    
-    to: string[];
-    
-    alias?: string;
-    
-    methods: ProvidedMethodDto[];
+  service: string;
 
-    options: OptionDto[];
+  to: string[];
 
+  alias?: string;
+
+  methods: ProvidedMethodDto[];
+
+  options: OptionDto[];
 }

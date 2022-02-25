@@ -14,35 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { prepareOutDir, getInvalidTestBaseDir } from './setup';
 import * as path from 'path';
+
 import { ValidateMetadataCommand } from '../../src/commands/ValidateMetadataCommand';
 import { readTextFile } from '../../src/common/files';
+import { getInvalidTestBaseDir, prepareOutDir } from './setup';
 
 describe('Metadata Validation CLI', () => {
+  it('Validates metadata and prints error to file', async () => {
+    const testName = 'generated-json';
+    const genCommand = new ValidateMetadataCommand();
+    const outDir = prepareOutDir(testName);
+    const outFile = path.join(outDir, 'plexus.errors.log');
 
-    it('Validates metadata and prints error to file', async () => {
+    try {
+      await genCommand.action({
+        out: outFile,
+        baseDir: getInvalidTestBaseDir(),
+      });
+      fail('Should finish with error');
+    } catch (error) {
+      // expect to fail
+    }
 
-        const testName = 'generated-json';
-        const genCommand = new ValidateMetadataCommand();
-        const outDir = prepareOutDir(testName);
-        const outFile = path.join(outDir, 'plexus.errors.log');
-        
-        try {
-            await genCommand.action({
-                out: outFile,
-                baseDir: getInvalidTestBaseDir()
-            });   
-            fail('Should finish with error'); 
-        } catch (error) {
-            // expect to fail
-        }
+    const firstContent = await readTextFile(outFile);
 
-        const firstContent = await readTextFile(outFile);
-
-        expect(firstContent)
-            .toContain('Couldn\'t resolve reference to Service \'com.db.plexus.interop.dsl.gen.test.services.ExampleService_NotExists\'');
-
-    }, 15000);
-
+    expect(firstContent).toContain(
+      "Couldn't resolve reference to Service 'com.db.plexus.interop.dsl.gen.test.services.ExampleService_NotExists'"
+    );
+  }, 15000);
 });

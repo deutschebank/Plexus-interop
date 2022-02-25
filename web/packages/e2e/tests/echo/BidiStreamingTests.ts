@@ -14,114 +14,117 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
+import { MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 import { AsyncHelper } from '@plexus-interop/common';
-import { ConnectionProvider } from '../common/ConnectionProvider';
-import { ClientsSetup } from '../common/ClientsSetup';
-import { BaseEchoTest } from './BaseEchoTest';
-import * as plexus from '../../src/echo/gen/plexus-messages';
-import { ClientStreamingHandler } from './ClientStreamingHandler';
+
 import { EchoClientClient } from '../../src/echo/client/EchoClientGeneratedClient';
+import * as plexus from '../../src/echo/gen/plexus-messages';
 import { EchoServerClient } from '../../src/echo/server/EchoServerGeneratedClient';
+import { ClientsSetup } from '../common/ClientsSetup';
+import { ConnectionProvider } from '../common/ConnectionProvider';
+import { BaseEchoTest } from './BaseEchoTest';
+import { ClientStreamingHandler } from './ClientStreamingHandler';
 
 export class BidiStreamingInvocationTests extends BaseEchoTest {
+  public constructor(
+    private connectionProvider: ConnectionProvider,
+    private clientsSetup: ClientsSetup = new ClientsSetup()
+  ) {
+    super();
+  }
 
-    public constructor(
-        private connectionProvider: ConnectionProvider,
-        private clientsSetup: ClientsSetup = new ClientsSetup()) {
-        super();
-    }
+  public testClientCanCancelInvocation(): Promise<void> {
+    let invocationCompletedReceivedByServer = false;
+    let clientReceivedCompletion = false;
+    let serverReceivedMessage = false;
+    return new Promise<void>((resolve, reject) => {
+      const serverHandler = new ClientStreamingHandler(() => ({
+        next: () => {
+          serverReceivedMessage = true;
+        },
+        complete: () => {
+          invocationCompletedReceivedByServer = true;
+        },
+        error: () => {},
+        streamCompleted: () => {},
+      }));
+      try {
+        (async () => {
+          const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
+          const streamingClient = await client.getEchoServiceProxy().duplexStreaming({
+            next: () => {},
+            error: () => {},
+            complete: () => {
+              clientReceivedCompletion = true;
+            },
+            streamCompleted: () => {},
+          });
+          streamingClient.next(this.clientsSetup.createRequestDto());
+          await AsyncHelper.waitFor(() => serverReceivedMessage === true);
+          streamingClient.cancel();
+          await AsyncHelper.waitFor(() => invocationCompletedReceivedByServer === true);
+          await AsyncHelper.waitFor(() => clientReceivedCompletion === true);
+          await this.waitForClientConnectionCleared(this.clientsSetup);
+          await this.waitForServerConnectionCleared(this.clientsSetup);
+          await this.clientsSetup.disconnect(client as EchoClientClient, server as EchoServerClient);
+          resolve();
+        })();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-    public testClientCanCancelInvocation(): Promise<void> {
-
-        let invocationCompletedReceivedByServer = false;
-        let clientReceivedCompletion = false;
-        let serverReceivedMessage = false;
-        return new Promise<void>((resolve, reject) => {
-            const serverHandler = new ClientStreamingHandler(() => ({
-                    next: () => {
-                        serverReceivedMessage = true;
-                    },
-                    complete: () => {
-                        invocationCompletedReceivedByServer = true;
-                    },
-                    error: () => {},
-                    streamCompleted: () => {}
-                }));
-            try {
-                (async () => {
-                    const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
-                    const streamingClient = await client.getEchoServiceProxy().duplexStreaming({
-                        next: () => {},
-                        error: () => {},
-                        complete: () => {
-                            clientReceivedCompletion = true;
-                        },
-                        streamCompleted: () => { }
-                    });
-                    streamingClient.next(this.clientsSetup.createRequestDto());
-                    await AsyncHelper.waitFor(() => serverReceivedMessage === true);
-                    streamingClient.cancel();
-                    await AsyncHelper.waitFor(() => invocationCompletedReceivedByServer === true);
-                    await AsyncHelper.waitFor(() => clientReceivedCompletion === true);
-                    await this.waitForClientConnectionCleared(this.clientsSetup);
-                    await this.waitForServerConnectionCleared(this.clientsSetup);
-                    await this.clientsSetup.disconnect(client as EchoClientClient, server as EchoServerClient);
-                    resolve();
-                })();
-            } catch (error) {
-                reject(error);
+  public testClientAndServerCanSendMessages(): Promise<void> {
+    let client: EchoClientClient | null = null;
+    let server: EchoServerClient | null = null;
+    return new Promise<void>((resolve, reject) => {
+      const serverHandler = new ClientStreamingHandler(
+        (
+          context: MethodInvocationContext,
+          hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+        ) => ({
+          next: async (clientRequest) => {
+            if (clientRequest.stringField === 'Hey') {
+              hostClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
+            } else if (clientRequest.stringField === 'Ping') {
+              hostClient.next(this.clientsSetup.createSimpleRequestDto('Pong'));
+              await hostClient.complete();
+              this.verifyServerChannelsCleared(this.clientsSetup).catch((e) => reject(e));
             }
+          },
+          complete: () => {},
+          error: (e) => {
+            reject(e);
+          },
+          streamCompleted: () => {},
+        })
+      );
+      (async () => {
+        [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
+        const streamingClient = await client.getEchoServiceProxy().duplexStreaming({
+          next: (serverResponse) => {
+            if (serverResponse.stringField === 'Hey') {
+              streamingClient.next(this.clientsSetup.createSimpleRequestDto('Ping'));
+            } else if (serverResponse.stringField === 'Pong') {
+              streamingClient
+                .complete()
+                .then(() => {
+                  this.verifyClientChannelsCleared(this.clientsSetup).catch((e) => reject(e));
+                  return this.clientsSetup.disconnect(client as EchoClientClient, server as EchoServerClient);
+                })
+                .then(() => resolve())
+                .catch((e) => reject(e));
+            }
+          },
+          error: (e) => {
+            reject(e);
+          },
+          complete: () => {},
+          streamCompleted: () => {},
         });
-    }
-
-    public testClientAndServerCanSendMessages(): Promise<void> {
-        let client: EchoClientClient | null = null;
-        let server: EchoServerClient | null = null;
-        return new Promise<void>((resolve, reject) => {
-            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => ({
-                    next: async (clientRequest) => {
-                        if (clientRequest.stringField === 'Hey') {
-                            hostClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
-                        } else if (clientRequest.stringField === 'Ping') {
-                            hostClient.next(this.clientsSetup.createSimpleRequestDto('Pong'));
-                            await hostClient.complete();
-                            this.verifyServerChannelsCleared(this.clientsSetup)
-                                .catch(e => reject(e));
-                        }
-                    },
-                    complete: () => { },
-                    error: (e) => {
-                        reject(e);
-                    },
-                    streamCompleted: () => { }
-                }));
-            (async () => {
-                [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
-                const streamingClient = await client.getEchoServiceProxy().duplexStreaming({
-                    next: (serverResponse) => {
-                        if (serverResponse.stringField === 'Hey') {
-                            streamingClient.next(this.clientsSetup.createSimpleRequestDto('Ping'));
-                        } else if (serverResponse.stringField === 'Pong') {
-                            streamingClient.complete().then(() => {
-                                this.verifyClientChannelsCleared(this.clientsSetup)
-                                    .catch(e => reject(e));
-                                return this.clientsSetup.disconnect(client as EchoClientClient, server as EchoServerClient);
-                            })
-                                .then(() => resolve())
-                                .catch(e => reject(e));
-                        }
-                    },
-                    error: (e) => {
-                        reject(e);
-                    },
-                    complete: () => { },
-                    streamCompleted: () => { }
-                });
-                streamingClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
-            })();
-
-        });
-    }
-
+        streamingClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
+      })();
+    });
+  }
 }

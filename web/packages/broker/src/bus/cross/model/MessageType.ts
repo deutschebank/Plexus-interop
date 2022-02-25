@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PublishRequest } from './PublishRequest';
 import { Event } from '../../Event';
+import { PublishRequest } from './PublishRequest';
 import { SubscribeRequest } from './SubscribeRequest';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class MessageType<Req, Res> {
+  public static Ping: MessageType<{}, {}> = new MessageType<{}, {}>(1);
 
-    public static Ping: MessageType<{}, {}> = new MessageType<{}, {}>(1);
+  public static Publish: MessageType<PublishRequest, {}> = new MessageType<PublishRequest, {}>(6);
 
-    public static Publish: MessageType<PublishRequest, {}> = new MessageType<PublishRequest, {}>(6);
+  public static Subscribe: MessageType<SubscribeRequest, Event> = new MessageType<SubscribeRequest, Event>(8);
 
-    public static Subscribe: MessageType<SubscribeRequest, Event> = new MessageType<SubscribeRequest, Event>(8);
-
-    constructor(public id: number) { }
-    
+  constructor(public id: number) {}
 }

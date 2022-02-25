@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 export function randomPayload(length?: number): ArrayBuffer {
-    length = length || 10;
-    const array = new Array(length).fill('').map(() => randomInt(1, 10));
-    return new Uint8Array(array).buffer;
+  length = length || 10;
+  const array = new Array(length).fill('').map(() => randomInt(1, 10));
+  return new Uint8Array(array).buffer;
 }
 
 export function randomInt(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }

@@ -17,22 +17,20 @@
 import * as plexus from './gen/plexus-messages';
 
 export class RateService {
-    
-    public getRate(ccyPair: string): plexus.fx.ICcyPairRate {
-         switch (ccyPair)  {
-            case 'EURUSD':
-                return {
-                    ccyPairName: ccyPair,
-                    rate: parseFloat((1.15 + 0.1 * Math.random()).toFixed(3))
-                };
-            case 'EURGBP':
-                return {
-                    ccyPairName: ccyPair,
-                    rate: parseFloat((0.87 + 0.1 * Math.random()).toFixed(3))
-                };
-            default:
-                throw new Error(`Unsupported CCY Pair name ${ccyPair}`);
-        }
+  public getRate(ccyPair: string): plexus.fx.ICcyPairRate {
+    switch (ccyPair) {
+      case 'EURUSD':
+        return {
+          ccyPairName: ccyPair,
+          rate: parseFloat((1.15 + 0.1 * Math.random()).toFixed(3)),
+        };
+      case 'EURGBP':
+        return {
+          ccyPairName: ccyPair,
+          rate: parseFloat((0.87 + 0.1 * Math.random()).toFixed(3)),
+        };
+      default:
+        throw new Error(`Unsupported CCY Pair name ${ccyPair}`);
     }
-
+  }
 }

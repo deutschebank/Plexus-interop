@@ -14,53 +14,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable max-classes-per-file */
 import Queue from 'typescript-collections/dist/lib/Queue';
-import { CancellationToken } from '../async/CancellationToken';
+
 import { AsyncHelper } from '../async/AsyncHelper';
+import { CancellationToken } from '../async/CancellationToken';
 
 export abstract class BlockingQueue<T> {
-    public abstract blockingDequeue(cancellationToken?: CancellationToken): Promise<T>;
-    public abstract enqueue(el: T): Promise<void>;
-    public abstract size(): number;
-    public abstract clear(): void;
-    public abstract peek(): T;
-    public abstract dequeue(): T;
+  public abstract blockingDequeue(cancellationToken?: CancellationToken): Promise<T>;
+  public abstract enqueue(el: T): Promise<void>;
+  public abstract size(): number;
+  public abstract clear(): void;
+  public abstract peek(): T;
+  public abstract dequeue(): T;
 }
 
 export class BlockingQueueBase<T> implements BlockingQueue<T> {
+  constructor(private readonly internal: Queue<T> = new Queue<T>()) {}
 
-    constructor(private readonly internal: Queue<T> = new Queue<T>()) {}
-
-    public async blockingDequeue(cancellationToken: CancellationToken = new CancellationToken()): Promise<T> {
-        if (this.internal.size() > 0) {
-            return Promise.resolve(this.internal.dequeue());
-        }
-        return AsyncHelper
-            .waitFor(
-                () => this.internal.size() > 0, 
-                cancellationToken)
-            .then(() => this.internal.dequeue());
+  public async blockingDequeue(cancellationToken: CancellationToken = new CancellationToken()): Promise<T> {
+    if (this.internal.size() > 0) {
+      return Promise.resolve(this.internal.dequeue());
     }
+    return AsyncHelper.waitFor(() => this.internal.size() > 0, cancellationToken).then(() => this.internal.dequeue());
+  }
 
-    public async enqueue(el: T): Promise<void> {
-        this.internal.enqueue(el);
-    }
+  public async enqueue(el: T): Promise<void> {
+    this.internal.enqueue(el);
+  }
 
-    public size(): number {
-        return this.internal.size();
-    }
+  public size(): number {
+    return this.internal.size();
+  }
 
-    public clear(): void {
-        this.internal.clear();
-    }
+  public clear(): void {
+    this.internal.clear();
+  }
 
-    public peek(): T {
-        return this.internal.peek();
-    }
+  public peek(): T {
+    return this.internal.peek();
+  }
 
-    public dequeue(): T {
-        return this.internal.dequeue();
-    }
-
+  public dequeue(): T {
+    return this.internal.dequeue();
+  }
 }

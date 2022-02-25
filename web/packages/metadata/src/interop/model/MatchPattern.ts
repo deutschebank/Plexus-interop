@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface MatchPattern {
-    isMatch(id: string): boolean;
+  isMatch(id: string): boolean;
 }

@@ -14,22 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DelegateChannelObserver } from '@plexus-interop/transport-common';
 import { AnonymousSubscription } from '@plexus-interop/common';
-import { InvocationObserver, InvocationChannelObserver } from '../generic';
+import { DelegateChannelObserver } from '@plexus-interop/transport-common';
 
-export class DelegateInvocationObserver<T> extends DelegateChannelObserver<T> implements InvocationChannelObserver<AnonymousSubscription, T> {
-    
-    public constructor(
-        private readonly base: InvocationObserver<T>, 
-        subscriptionHandler: (subscription: AnonymousSubscription) => void, 
-        startFailedHandler?: (error: any) => void) {
-        
-        super(base, subscriptionHandler, startFailedHandler);
-        
-    }
+import { InvocationChannelObserver, InvocationObserver } from '../generic';
 
-    public streamCompleted(): void {
-        this.base.streamCompleted();
-    }
+export class DelegateInvocationObserver<T>
+  extends DelegateChannelObserver<T>
+  implements InvocationChannelObserver<AnonymousSubscription, T>
+{
+  public constructor(
+    private readonly base: InvocationObserver<T>,
+    subscriptionHandler: (subscription: AnonymousSubscription) => void,
+    startFailedHandler?: (error: any) => void
+  ) {
+    super(base, subscriptionHandler, startFailedHandler);
+  }
+
+  public streamCompleted(): void {
+    this.base.streamCompleted();
+  }
 }

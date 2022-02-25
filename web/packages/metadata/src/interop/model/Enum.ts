@@ -17,6 +17,6 @@
 import { Values } from '../json/Values';
 
 export interface Enum {
-    id: string;
-    values: Values;
+  id: string;
+  values: Values;
 }

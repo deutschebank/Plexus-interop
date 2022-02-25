@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/transport-common';
+
 import { BasicInvocationInfo } from './BasicInvocationInfo';
 
 export interface RemoteInvocationInfo extends BasicInvocationInfo {
-    
-    applicationId?: string;
+  applicationId?: string;
 
-    connectionId?: UniqueId;
-
+  connectionId?: UniqueId;
 }

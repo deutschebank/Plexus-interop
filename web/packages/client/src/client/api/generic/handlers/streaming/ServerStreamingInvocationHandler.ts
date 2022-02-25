@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 import { MethodInvocationContext, ServiceInfo } from '@plexus-interop/client-api';
+
 import { StreamingInvocationClient } from './StreamingInvocationClient';
 
 export interface ServerStreamingInvocationHandler<Req, Res> {
+  serviceInfo: ServiceInfo;
 
-    serviceInfo: ServiceInfo;
-    
-    methodId: string;
+  methodId: string;
 
-    handle(invocationContext: MethodInvocationContext, requestPayload: Req, invocationHostClient: StreamingInvocationClient<Res>): void;
-
+  handle(
+    invocationContext: MethodInvocationContext,
+    requestPayload: Req,
+    invocationHostClient: StreamingInvocationClient<Res>
+  ): void;
 }

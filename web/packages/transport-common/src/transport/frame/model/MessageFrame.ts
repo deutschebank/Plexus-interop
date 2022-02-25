@@ -14,30 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/* eslint-disable no-underscore-dangle */
 
+/* eslint-disable no-underscore-dangle */
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+
 import { DataFrame } from './DataFrame';
 
 export class MessageFrame extends DataFrame<plexus.interop.transport.protocol.IMessageFrameHeader> {
+  constructor(header: plexus.interop.transport.protocol.IHeader, body: ArrayBuffer = new Uint8Array([]).buffer) {
+    super();
+    this._header = header;
+    this.body = body;
+  }
 
-    constructor(header: plexus.interop.transport.protocol.IHeader, body: ArrayBuffer = new Uint8Array([]).buffer) {
-        super();
-        this._header = header;
-        this.body = body;
-    }
+  public static fromHeaderData(
+    headerData: plexus.interop.transport.protocol.IMessageFrameHeader,
+    body?: ArrayBuffer
+  ): MessageFrame {
+    return new MessageFrame(
+      {
+        messageFrame: headerData,
+      },
+      body
+    );
+  }
 
-    public static fromHeaderData(headerData: plexus.interop.transport.protocol.IMessageFrameHeader, body?: ArrayBuffer): MessageFrame {
-        return new MessageFrame({
-            messageFrame: headerData
-        }, body);
-    }
+  public isLast(): boolean {
+    return !this.getHeaderData().hasMore;
+  }
 
-    public isLast(): boolean {
-        return !this.getHeaderData().hasMore;
-    }
-
-    public getHeaderData(): plexus.interop.transport.protocol.IMessageFrameHeader {
-        return this._header.messageFrame as plexus.interop.transport.protocol.IMessageFrameHeader;
-    }
+  public getHeaderData(): plexus.interop.transport.protocol.IMessageFrameHeader {
+    return this._header.messageFrame as plexus.interop.transport.protocol.IMessageFrameHeader;
+  }
 }

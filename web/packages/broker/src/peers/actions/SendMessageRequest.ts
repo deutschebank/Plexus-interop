@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface SendMessageRequest {
-    channelId: string;
-    messagePayload: string;
+  channelId: string;
+  messagePayload: string;
 }

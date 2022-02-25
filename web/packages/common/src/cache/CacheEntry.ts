@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 export class CacheEntry<T> {
-    constructor(
-        public readonly value: T,
-        public readonly ttl: number = -1,
-        public readonly onEvict: (value: T) => void = () => {}
-    ) {}
+  constructor(
+    public readonly value: T,
+    public readonly ttl: number = -1,
+    public readonly onEvict: (value: T) => void = () => {}
+  ) {}
 }

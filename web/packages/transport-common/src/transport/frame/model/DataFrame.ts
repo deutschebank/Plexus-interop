@@ -17,8 +17,7 @@
 import { BaseFrame } from './Frame';
 
 export abstract class DataFrame<T> extends BaseFrame<T> {
-
-    public isDataFrame(): boolean {
-        return true;
-    }
+  public isDataFrame(): boolean {
+    return true;
+  }
 }

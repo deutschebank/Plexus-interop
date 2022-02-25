@@ -14,4 +14,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import "jest-preset-angular/setup-jest";
+import 'jest-preset-angular/setup-jest';

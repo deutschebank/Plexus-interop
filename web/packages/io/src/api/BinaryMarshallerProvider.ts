@@ -17,7 +17,5 @@
 import { BinaryMarshaller } from './BinaryMarshaller';
 
 export abstract class BinaryMarshallerProvider {
-
-    public abstract getMarshaller(messageType: any): BinaryMarshaller;
-    
+  public abstract getMarshaller(messageType: any): BinaryMarshaller;
 }

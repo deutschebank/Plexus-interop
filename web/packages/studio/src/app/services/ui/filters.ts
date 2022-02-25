@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export function containsFilter(value: string, filter?: string): boolean {
-    return !(filter && filter.trim().length > 0) || value.toLowerCase().indexOf(filter.toLowerCase()) != -1;
+  return !(filter && filter.trim().length > 0) || value.toLowerCase().indexOf(filter.toLowerCase()) != -1;
 }

@@ -15,17 +15,24 @@
  * limitations under the License.
  */
 import { MethodInvocationContext } from '@plexus-interop/client';
-import { NopServiceHandler } from './NopServiceHandler';
+
 import * as plexus from '../../src/echo/gen/plexus-messages';
+import { NopServiceHandler } from './NopServiceHandler';
 
 export class UnaryServiceHandler extends NopServiceHandler {
+  public constructor(
+    private handler: (
+      context: MethodInvocationContext,
+      request: plexus.plexus.interop.testing.IEchoRequest
+    ) => Promise<plexus.plexus.interop.testing.IEchoRequest>
+  ) {
+    super();
+  }
 
-    public constructor(private handler: (context: MethodInvocationContext, request: plexus.plexus.interop.testing.IEchoRequest) => Promise<plexus.plexus.interop.testing.IEchoRequest>) {
-        super();
-    }
-
-    public onUnary(context: MethodInvocationContext, request: plexus.plexus.interop.testing.IEchoRequest): Promise<plexus.plexus.interop.testing.IEchoRequest> {
-        return this.handler(context, request);
-    }
-
+  public onUnary(
+    context: MethodInvocationContext,
+    request: plexus.plexus.interop.testing.IEchoRequest
+  ): Promise<plexus.plexus.interop.testing.IEchoRequest> {
+    return this.handler(context, request);
+  }
 }

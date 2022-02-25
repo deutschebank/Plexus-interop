@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface CreateChannelResponse {
-    id: string;
+  id: string;
 }

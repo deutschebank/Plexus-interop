@@ -19,9 +19,8 @@ import { AppLaunchResponse } from './AppLaunchResponse';
 import { LaunchInvocationContext } from './LaunchInvocationContext';
 
 export interface AppLauncher {
-
-    /**
-     * Launches new application, returns instance Id
-     */
-    launch(invocationContext: LaunchInvocationContext, request: AppLaunchRequest): Promise<AppLaunchResponse>;
+  /**
+   * Launches new application, returns instance Id
+   */
+  launch(invocationContext: LaunchInvocationContext, request: AppLaunchRequest): Promise<AppLaunchResponse>;
 }

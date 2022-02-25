@@ -14,20 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getTestBaseDir } from './setup';
 import { ValidateMetadataPatchCommand } from '../../src/commands/ValidateMetadataPatchCommand';
+import { getTestBaseDir } from './setup';
 
 describe('Metadata Patch Validation', () => {
+  it("Doesn't fail on valid update", async () => {
+    const genCommand = new ValidateMetadataPatchCommand();
 
-    it('Doesn\'t fail on valid update', async () => {
-
-        const genCommand = new ValidateMetadataPatchCommand();
-        
-        await genCommand.action({
-            baseDir: getTestBaseDir(),
-            targetBaseDir: getTestBaseDir()
-        });   
-
-    }, 15000);
-
+    await genCommand.action({
+      baseDir: getTestBaseDir(),
+      targetBaseDir: getTestBaseDir(),
+    });
+  }, 15000);
 });

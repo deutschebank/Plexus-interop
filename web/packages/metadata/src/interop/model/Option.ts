@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface Option {
-    id: string;
-    value: string;
+  id: string;
+  value: string;
 }

@@ -14,38 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as path from 'path';
 import { mkdirsSync } from 'fs-extra';
+import * as path from 'path';
+
 import { getBaseDir, readTextFile } from '../../src/common/files';
 
 export function getTestBaseDir(): string {
-    return path.resolve(getBaseDir(), '../../../samples/greeting/registry');
+  return path.resolve(getBaseDir(), '../../../samples/greeting/registry');
 }
 
 export function getInvalidTestBaseDir(): string {
-    return path.resolve(getBaseDir(), '../../../dsl/gen/test/src/main/resources');
+  return path.resolve(getBaseDir(), '../../../dsl/gen/test/src/main/resources');
 }
 
 export function getTestClientInput(): string {
-    return 'greeting_client.interop';
+  return 'greeting_client.interop';
 }
 
 export function getApprovalsBaseDir(): string {
-    return path.join(getBaseDir(), 'tests/approved');
+  return path.join(getBaseDir(), 'tests/approved');
 }
 
 export function prepareOutDir(testName: string): string {
-    const outDir = path.join(getBaseDir(), 'dist/gen', testName);
-    mkdirsSync(outDir);
-    return outDir;
+  const outDir = path.join(getBaseDir(), 'dist/gen', testName);
+  mkdirsSync(outDir);
+  return outDir;
 }
 
 export async function filesEqual(first: string, second: string): Promise<boolean> {
-    const firstContent = await readTextFile(first);
-    const secondContent = await readTextFile(second);
-    return unifyWhiteSpaces(firstContent) === unifyWhiteSpaces(secondContent);
+  const firstContent = await readTextFile(first);
+  const secondContent = await readTextFile(second);
+  return unifyWhiteSpaces(firstContent) === unifyWhiteSpaces(secondContent);
 }
 
 export function unifyWhiteSpaces(s: string): string {
-    return s.replace(/\s+/g, ' ');
+  return s.replace(/\s+/g, ' ');
 }

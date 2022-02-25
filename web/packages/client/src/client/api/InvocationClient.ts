@@ -17,9 +17,7 @@
 import { ClientError } from '@plexus-interop/protocol';
 
 export interface InvocationClient {
+  error(clientError: ClientError): Promise<void>;
 
-    error(clientError: ClientError): Promise<void>;
-
-    cancel(): Promise<void>;
-
+  cancel(): Promise<void>;
 }

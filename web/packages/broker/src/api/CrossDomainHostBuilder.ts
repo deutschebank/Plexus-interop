@@ -14,34 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../bus/EventBus';
 import { CrossDomainHost } from '../bus/cross/host/CrossDomainHost';
 import { CrossDomainHostConfig } from '../bus/cross/host/CrossDomainHostConfig';
-import { BroadCastChannelEventBus } from '../bus/same/BroadCastChannelEventBus';
+import { EventBus } from '../bus/EventBus';
 import { FallbackEventBus } from '../bus/FallbackEventBus';
+import { BroadCastChannelEventBus } from '../bus/same/BroadCastChannelEventBus';
 import { JStorageEventBus } from '../bus/same/JStorageEventBus';
 
 export class CrossDomainHostBuilder {
+  private crossDomainConfig: CrossDomainHostConfig;
 
-    private crossDomainConfig: CrossDomainHostConfig;
+  public withEventBusProvider(eventBusProvider: () => Promise<EventBus>): CrossDomainHostBuilder {
+    this.eventBusProvider = eventBusProvider;
+    return this;
+  }
 
-    public withEventBusProvider(eventBusProvider: () => Promise<EventBus>): CrossDomainHostBuilder {
-        this.eventBusProvider = eventBusProvider;
-        return this;
-    }
+  public withCrossDomainConfig(crossDomainConfig: CrossDomainHostConfig): CrossDomainHostBuilder {
+    this.crossDomainConfig = crossDomainConfig;
+    return this;
+  }
 
-    public withCrossDomainConfig(crossDomainConfig: CrossDomainHostConfig): CrossDomainHostBuilder {
-        this.crossDomainConfig = crossDomainConfig;
-        return this;
-    }
+  public async build(): Promise<CrossDomainHost> {
+    const eventBus = await this.eventBusProvider();
+    const crossDomainHost = new CrossDomainHost(eventBus, this.crossDomainConfig);
+    await crossDomainHost.connect();
+    return crossDomainHost;
+  }
 
-    public async build(): Promise<CrossDomainHost> {
-        const eventBus = await this.eventBusProvider();
-        const crossDomainHost = new CrossDomainHost(eventBus, this.crossDomainConfig);
-        await crossDomainHost.connect();
-        return crossDomainHost;
-    }
-
-    private eventBusProvider: () => Promise<EventBus> = async () => new FallbackEventBus([new BroadCastChannelEventBus(), new JStorageEventBus()]).init();
-
+  private eventBusProvider: () => Promise<EventBus> = async () =>
+    new FallbackEventBus([new BroadCastChannelEventBus(), new JStorageEventBus()]).init();
 }
