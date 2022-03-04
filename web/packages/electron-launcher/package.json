@@ -7,6 +7,7 @@
   "main": "./dist/electronLauncher.bundle.js",
   "private": true,
   "scripts": {
+    "prebuild": "npm run gen-launcher-protocol",
     "build": "npm run build:main && npm run build:bundle",
     "build:bundle": "npm run copy-gen-folders && npm run package && npm run build-binary",
     "package": "webpack",
@@ -14,7 +15,7 @@
     "build:main": "tsc -p tsconfig.json",
     "test": "npm run unit",
     "unit": "jest --coverage --passWithNoTests",
-    "gen-launcher-js": "pbjs --force-long -t static-module -r launcher -w commonjs -o src/launcher/gen/plexus-messages.js ../../../plexus-desktop/src/Plexus.Interop.Samples.Configuration/metadata/interop/appLauncher.proto ../../../plexus-desktop/src/Plexus.Interop.Samples.Configuration/metadata/interop/common.proto",
+    "gen-launcher-js": "pbjs --force-long -t static-module -r launcher -w commonjs -o src/launcher/gen/plexus-messages.js -p ../../../dsl/interop-lang/src/main/resources/interop/ app_launcher_service.proto app_launch_mode.proto unique_id.proto",
     "gen-launcher-ts": "pbts --force-long -o src/launcher/gen/plexus-messages.d.ts src/launcher/gen/plexus-messages.js",
     "gen-launcher-protocol": "npm run gen-launcher-js && npm run gen-launcher-ts",
     "build-binary": "electron-packager . ElectronAppLauncher --prune true --overwrite true --out=../../../bin/win-x86/samples/greeting/apps && npm run rename-packages && copyfiles ElectronAppLauncher.cmd ../../../bin/win-x86/samples/greeting",

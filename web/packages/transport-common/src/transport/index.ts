@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require('long');
 export * from './TransportConnection';
 export * from './frame';
 export * from './ClientConnectionFactory';

@@ -7,6 +7,7 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
+    "prebuild": "npm run gen-echo-protocol",
     "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
@@ -18,18 +19,18 @@
     "gen-echo-ts": "pbts --force-long -o src/echo/gen/plexus-messages.d.ts src/echo/gen/plexus-messages.js",
     "gen-echo-protocol": "npm run gen-echo-js && npm run gen-echo-ts",
     "copy-assets": "copyfiles src/echo/gen/* dist/main && copyfiles src/views/* dist/main",
-    "build-host-proxy": "node scripts/browserify-all.js --standalone proxyHost --inputGlob dist/main/tests/common/TestCrossDomainHost.js --outputFile dist/main/tests/web/CrossDomainHost.bundle.js",
-    "prepare-native-e2e-debug-tests": "node scripts/browserify-all.js --inputGlob dist/main/tests/native/*Connect*spec.js --outputFile dist/main/tests/native/RendererProcess.bundle.js",
+    "build-host-proxy": "node scripts/bundle-all.js --standalone proxyHost --inputGlob dist/main/tests/common/TestCrossDomainHost.js --outputFile ./dist/main/tests/web/CrossDomainHost.bundle.js",
+    "prepare-native-e2e-debug-tests": "node scripts/bundle-all.js --inputGlob dist/main/tests/native/*Connect*spec.js --outputFile ./dist/main/tests/native/RendererProcess.bundle.js",
     "e2e-web-electron": "node scripts/web-e2e-tests-launcher.js --file ./dist/main/tests/web/RendererProcess.bundle.js",
-    "pree2e-web-electron": "node scripts/browserify-all.js --brokerCoverage true --inputGlob dist/main/tests/web/*spec.js --outputFile dist/main/tests/web/RendererProcess.bundle.js",
+    "pree2e-web-electron": "node scripts/bundle-all.js --brokerCoverage true --inputGlob dist/main/tests/web/*spec.js --outputFile ./dist/main/tests/web/RendererProcess.bundle.js",
     "e2e-web-ie": "node scripts/web-e2e-tests-launcher.js --browser ie",
     "e2e-web-chrome": "node scripts/web-e2e-tests-launcher.js --browser chrome",
     "web-broker-benchmarks": "node scripts/web-e2e-tests-launcher.js --file ./dist/main/tests/web/benchmarks/RendererProcessBenchmarks.bundle.js",
-    "preweb-broker-benchmarks": "node scripts/browserify-all.js --inputGlob dist/main/tests/web/benchmarks/*spec.js --outputFile dist/main/tests/web/benchmarks/RendererProcessBenchmarks.bundle.js",
+    "preweb-broker-benchmarks": "node scripts/bundle-all.js --inputGlob dist/main/tests/web/benchmarks/*spec.js --outputFile ./dist/main/tests/web/benchmarks/RendererProcessBenchmarks.bundle.js",
     "native-broker-benchmarks": "node scripts/native-e2e-tests-launcher.js --file ./dist/main/tests/native/benchmarks/RendererProcessBenchmarks.bundle.js",
-    "prenative-broker-benchmarks": "node scripts/browserify-all.js --inputGlob dist/main/tests/native/benchmarks/*spec.js --outputFile dist/main/tests/native/benchmarks/RendererProcessBenchmarks.bundle.js",
+    "prenative-broker-benchmarks": "node scripts/bundle-all.js --inputGlob dist/main/tests/native/benchmarks/*spec.js --outputFile ./dist/main/tests/native/benchmarks/RendererProcessBenchmarks.bundle.js",
     "e2e-native": "node scripts/native-e2e-tests-launcher.js --file ./dist/main/tests/native/RendererProcess.bundle.js",
-    "pree2e-native": "node scripts/browserify-all.js --clientCoverage true --inputGlob dist/main/tests/native/*spec.js --outputFile dist/main/tests/native/RendererProcess.bundle.js",
+    "pree2e-native": "node scripts/bundle-all.js --clientCoverage true --inputGlob dist/main/tests/native/*spec.js --outputFile ./dist/main/tests/native/RendererProcess.bundle.js",
     "e2e-native-debug": "npm run build && npm run prepare-native-e2e-debug-tests && npm run e2e-native-debug-run",
     "e2e-native-debug-run": "node scripts/native-e2e-tests-launcher.js --printBrokerStdout true --debug true --file ./dist/main/tests/native/RendererProcess.bundle.js"
   },
@@ -53,8 +54,15 @@
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
     "testRunner": "jest-jasmine2",
-    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
-    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
   }
 }

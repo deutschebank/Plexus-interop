@@ -1,4 +1,5 @@
 const path = require('path');
+const OptimizePlugin = require('optimize-plugin');
 
 module.exports = {
   mode: 'production',
@@ -8,8 +9,13 @@ module.exports = {
     filename: 'CrossDomainHostBuilder.bundle.js',
     library: {
       name: 'proxyHost',
-      type: 'umd'
+      type: 'umd',
     },
   },
-  stats: 'minimal'
+  stats: 'minimal',
+  plugins: [
+    new OptimizePlugin({
+      modernize: false,
+    }),
+  ],
 };
