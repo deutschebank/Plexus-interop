@@ -16,6 +16,7 @@
  */
 const path = require('path');
 const OptimizePlugin = require('optimize-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -30,6 +31,9 @@ module.exports = {
   },
   stats: 'minimal',
   plugins: [
+    new HtmlWebpackPlugin({
+      template: 'public/index.html',
+    }),
     new OptimizePlugin({
       modernize: false,
     }),
