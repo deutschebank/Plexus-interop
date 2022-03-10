@@ -99,7 +99,7 @@
     "jest": "^27.5.1",
     "jest-jasmine2": "^27.5.1",
     "jest-preset-angular": "^11.1.0",
-    "karma": "~6.3.15",
+    "karma": "^6.3.17",
     "karma-chrome-launcher": "^3.1.0",
     "karma-cli": "~1.0.1",
     "karma-coverage-istanbul-reporter": "~3.0.2",
@@ -112,7 +112,7 @@
     "lerna": "^4.0.0",
     "link-parent-bin": "^2.0.0",
     "lint-staged": "^12.3.4",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.5",
     "mocha": "^3.5.0",
     "mock-socket": "^7.0.0",
     "npm-run-all": "4.1.1",
@@ -123,13 +123,13 @@
     "protobufjs": "6.11.2",
     "protractor": "~7.0.0",
     "prr": "1.0.1",
-    "renamer": "^0.6.1",
+    "renamer": "^2.0.0",
     "rxjs": "^7.5.4",
-    "shx": "0.2.2",
+    "shx": "^0.3.4",
     "sinon": "^2.4.1",
     "strip-bom": "^3.0.0",
     "trash": "^4.1.0",
-    "trash-cli": "^1.4.0",
+    "trash-cli": "^5.0.0",
     "tree-kill": "^1.1.0",
     "ts-jest": "^27.1.3",
     "ts-mockito": "2.0.2",
@@ -159,5 +159,8 @@
     "@plexus-interop/transport-common": "file:packages/transport-common",
     "@plexus-interop/web-app-example": "file:packages/web-example",
     "@plexus-interop/websocket-transport": "file:packages/websocket-transport"
+  },
+  "engines": {
+    "node": ">= 12"
   }
 }
