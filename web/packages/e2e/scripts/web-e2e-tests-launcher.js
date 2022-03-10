@@ -116,6 +116,7 @@ function runElectronTest(path) {
     {
       cwd: process.cwd(),
       env: {
+        ...process.env,
         PLEXUS_BROKER_HOST_URL: path,
       },
     },
