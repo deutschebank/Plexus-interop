@@ -22,7 +22,7 @@
     "verify": "npm run lint && npm run test",
     "e2e-native": "cd ./packages/e2e && npm run e2e-native",
     "poste2e-native": "npm run coverage",
-    "e2e-web": "cd ./packages/e2e && npm run e2e-web-electron",
+    "e2e-web": "cd ./packages/e2e && npm run e2e-web-electron && npm run e2e-web-chrome",
     "poste2e-web": "npm run coverage",
     "coverage": "nyc report --reporter=text --reporter=html",
     "build-e2e": "run-s build e2e-native e2e-web",
