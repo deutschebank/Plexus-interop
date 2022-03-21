@@ -24,7 +24,7 @@ describe('InteropRegistryService', () => {
     const metadataJson = fs.readFileSync('tests/json/test-interop.json', 'utf8');
 
     const registryProvider = new JsonInteropRegistryProvider(metadataJson);
-    // const registry = registryProvider.getCurrent();
+    registryProvider.getCurrent();
     const registryService = new InteropRegistryService(registryProvider);
     
     it('Can retrieve app by id and alias', () => {

@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GenericClientApi } from './GenericClientApi';
+import { ClientConnectRequest } from '@plexus-interop/client-api';
+import { defaultPromiseRetryConfig, Logger, LoggerFactory, retriable } from '@plexus-interop/common';
+import { BinaryMarshallerProvider } from '@plexus-interop/io';
+import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 import { GenericClientFactory } from '../../generic/GenericClientFactory';
-import { ClientConnectRequest } from '@plexus-interop/client-api';
+import { GenericClientApi } from './GenericClientApi';
 import { GenericClientApiImpl } from './GenericClientApiImpl';
 import { GenericInvocationsHost } from './GenericInvocationsHost';
-import { Logger, LoggerFactory, retriable, defaultPromiseRetryConfig } from '@plexus-interop/common';
 import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
 import { BidiStreamingInvocationHandler } from './handlers/streaming/BidiStreamingInvocationHandler';
 import { ServerStreamingInvocationHandler } from './handlers/streaming/ServerStreamingInvocationHandler';
 import { UnaryInvocationHandler } from './handlers/unary/UnaryInvocationHandler';
 import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
 
 
 // tslint:disable:member-ordering
@@ -136,13 +136,13 @@ export class GenericClientApiBuilder {
 
     private async validateState(): Promise<void> {
         if (!this.marshallerProvider) {
-            throw 'Marshaller Provider is not defined';
+            throw new Error('Marshaller Provider is not defined');
         }
         if (!this.transportConnectionProvider) {
-            throw 'Transport Connection Provider is not defined';
+            throw new Error('Transport Connection Provider is not defined');
         }
         if (!this.applicationId || !this.applicationInstanceId) {
-            throw 'Application ID is not defined';
+            throw new Error('Application ID is not defined');
         }
     }
 

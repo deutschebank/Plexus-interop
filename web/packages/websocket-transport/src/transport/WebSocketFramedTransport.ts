@@ -67,10 +67,10 @@ export class WebSocketFramedTransport implements ConnectableFramedTransport {
             this.log.warn('Socket is CLOSED, cancelling connection');
             this.cancelConnectionAndCleanUp();
             return Promise.resolve();
-        } else {
+        } 
             this.throwIfNotConnected();
             return this.closeConnectionInternal();
-        }
+        
     }
 
     public connected(): boolean {
@@ -129,7 +129,7 @@ export class WebSocketFramedTransport implements ConnectableFramedTransport {
             };
             this.socket.addEventListener('error', (e) => {
                 if (!opened) {
-                    reject('Connection error');
+                    reject(new Error('Connection error'));
                 } else {
                     this.log.warn('Connection error', e);
                 }
@@ -250,22 +250,22 @@ export class WebSocketFramedTransport implements ConnectableFramedTransport {
     private readEventData(ev: MessageEvent): Uint8Array {
         if (ev.data instanceof Array) {
             return new Uint8Array(ev.data);
-        } else if (this.isArrayBuffer(ev.data)) {
+        } if (this.isArrayBuffer(ev.data)) {
             /* istanbul ignore if */
             if (this.log.isDebugEnabled()) {
                 this.log.debug('Array Buffer message');
             }
             return new Uint8Array(ev.data);
-        } else if (this.isArrayBufferView(ev.data)) {
+        } if (this.isArrayBufferView(ev.data)) {
             /* istanbul ignore if */
             if (this.log.isDebugEnabled()) {
                 this.log.debug('ArrayBufferView Buffer message');
             }
             return new Uint8Array(ev.data);
-        } else {
+        } 
             this.log.error('Unknown payload type', ev.data);
             throw new Error('Unknown payload type');
-        }
+        
     }
 
     private isArrayBuffer(value: any): boolean {

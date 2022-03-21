@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPeerDescriptor } from './api';
+import { InteropPeerDescriptor } from './api/client-api';
 
 /**
  * Temporary Mock Implementation before we agree on final state of returned Remote Peers
@@ -31,6 +31,7 @@ export class PartialPeerDescriptor implements InteropPeerDescriptor {
         throw new Error('Method not implemented.');
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onApiMetadataChanged(callback: (metadata: string) => void): void {
         // TODO
         throw new Error('Method not implemented.');

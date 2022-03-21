@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../../EventBus';
-import { Event } from '../../Event';
 import { StateMaschine, StateMaschineBase, LoggerFactory, Logger } from '@plexus-interop/common';
 import { filter, fromEvent, map } from 'rxjs';
+import { EventBus } from '../../EventBus';
+import { Event } from '../../Event';
 
 import { IFrameHostMessage } from '../model/IFrameHostMessage';
 import { CrossDomainHostConfig } from './CrossDomainHostConfig';
@@ -91,7 +91,7 @@ export class CrossDomainHost {
     }
 
     private handleParentMessage(parsedEvent: HostMessageEvent): void {
-        const message = parsedEvent.message;
+        const {message} = parsedEvent;
         switch (message.type.id) {
             case MessageType.Ping.id:
                 this.log.trace('Received ping request');
@@ -101,7 +101,7 @@ export class CrossDomainHost {
                     parsedEvent.sourceWindow,
                     parsedEvent.sourceOrigin);
                 break;
-            case MessageType.Publish.id:
+            case MessageType.Publish.id: {
                 const pubMsg = message as IFrameHostMessage<PublishRequest, {}>;
                 const requestPayload = pubMsg.requestPayload as PublishRequest;
                 if (this.log.isTraceEnabled()) {
@@ -109,7 +109,8 @@ export class CrossDomainHost {
                 }
                 this.internalBus.publish(requestPayload.topic, { payload: requestPayload.payload });
                 break;
-            case MessageType.Subscribe.id:
+            }
+            case MessageType.Subscribe.id: {
                 const subMsg = message as IFrameHostMessage<SubscribeRequest, Event>;
                 const request = subMsg.requestPayload as SubscribeRequest;
                 this.log.trace(`Received subscribe request, [${request.topic}]`);
@@ -129,6 +130,7 @@ export class CrossDomainHost {
                         parsedEvent.sourceOrigin);
                     });
                 break;
+            }
             default:
                 this.log.error(`Unsupported message type ${message.type.id}`);
                 break;
@@ -136,7 +138,7 @@ export class CrossDomainHost {
     }
 
     private isLastRemoteMessage(event: Event): boolean {
-        const payload = event.payload;
+        const {payload} = event;
         return payload && (payload.status === RemoteActionStatus.COMPLETED || payload.status === RemoteActionStatus.FAILURE);
     }
 

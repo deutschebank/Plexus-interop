@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { UniqueId } from '@plexus-interop/protocol';
+import Queue from 'typescript-collections/dist/lib/Queue';
+import { LoggerFactory, Observer } from '@plexus-interop/common';
 import { TransportConnection } from '../../src/transport/TransportConnection';
 import { TransportChannel } from '../../src/transport/TransportChannel';
 import { Frame } from '../../src/transport/frame/model/Frame';
-import { TestBufferedInMemoryFramedTransport } from './TestBufferedInMemoryFramedTransport';;
-import { UniqueId } from '@plexus-interop/protocol';
+import { TestBufferedInMemoryFramedTransport } from './TestBufferedInMemoryFramedTransport';
 import { FramedTransportConnection } from '../../src/transport/frame/FramedTransportConnection';
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
-import { LoggerFactory, Observer } from '@plexus-interop/common';
+;
 
 export class TestInMemoryConnectionFactory {
 

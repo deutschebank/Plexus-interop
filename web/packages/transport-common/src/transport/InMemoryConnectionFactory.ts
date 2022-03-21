@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DuplexConnectionFactory } from './DuplexConnectionFactory';
 import { Observer, Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
-import { TransportConnection, Defaults, Frame, FramedTransportConnection } from '../.';
+import { DuplexConnectionFactory } from './DuplexConnectionFactory';
 import { InMemoryFramedTransport } from './InMemoryFramedTransport';
-import { BufferedObserver } from '../common';
+import { BufferedObserver, Defaults } from '../common';
+import { TransportConnection } from './TransportConnection';
+import { Frame } from './frame/model/Frame';
+import { FramedTransportConnection } from './frame/FramedTransportConnection';
 
 /**
  * Creates pair of coupled in memory connections for each Client's connect request

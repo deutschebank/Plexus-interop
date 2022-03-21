@@ -14,17 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Invocation } from './Invocation';
-import { InvocationMetaInfo } from '@plexus-interop/protocol';
+import { InvocationMetaInfo , clientProtocol } from '@plexus-interop/protocol';
 import { Observer } from '@plexus-interop/common';
-import { AnonymousSubscription } from '../api/AnonymousSubscription';
-import { ServiceDiscoveryRequest } from '@plexus-interop/client-api';
-import { ServiceDiscoveryResponse } from '@plexus-interop/client-api';
-import { clientProtocol } from '@plexus-interop/protocol';
-import { MethodDiscoveryRequest } from '@plexus-interop/client-api';
-import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
-import { ProvidedMethodReference } from '@plexus-interop/client-api';
+import { ServiceDiscoveryRequest , ServiceDiscoveryResponse , MethodDiscoveryRequest , MethodDiscoveryResponse , ProvidedMethodReference } from '@plexus-interop/client-api';
 import { UniqueId } from '@plexus-interop/transport-common';
+import { AnonymousSubscription } from '../api/AnonymousSubscription';
+import { Invocation } from './Invocation';
 
 export interface GenericClient {
 

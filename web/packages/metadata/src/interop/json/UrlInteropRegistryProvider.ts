@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { Observable, throttleTime, throwError } from 'rxjs';
-import { InteropRegistry } from '../model/InteropRegistry';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { HttpDataLoader } from '@plexus-interop/remote';
+import { HttpDataLoader , WebSocketDataProvider } from '@plexus-interop/remote';
+import { InteropRegistry } from '../model/InteropRegistry';
+import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { JsonInteropRegistryProvider } from './JsonInteropRegistryProvider';
-import { WebSocketDataProvider } from '@plexus-interop/remote';
 
 
 export class UrlInteropRegistryProvider implements InteropRegistryProvider {
@@ -51,7 +50,7 @@ export class UrlInteropRegistryProvider implements InteropRegistryProvider {
 
     public async start(): Promise<void> {
         if (this.started) {
-            return Promise.reject('Already started');
+            return Promise.reject(new Error('Already started'));
         }
         this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
         const isWebSocket = this.url.startsWith('ws');
@@ -60,6 +59,7 @@ export class UrlInteropRegistryProvider implements InteropRegistryProvider {
         } else {
             await this.startWithHttp();
         }
+        return undefined;
     }
 
     private async startWithHttp(): Promise<void> {

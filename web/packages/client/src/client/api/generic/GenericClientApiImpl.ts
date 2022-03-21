@@ -14,29 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Feature } from './GenericClientApi';
-import { GenericClient } from '../../../client/generic/GenericClient';
-import { ServiceDiscoveryRequest, MethodInvocationContext } from '@plexus-interop/client-api';
-import { ServiceDiscoveryResponse } from '@plexus-interop/client-api';
-import { ClientDtoUtils } from './../../ClientDtoUtils';
+import { ServiceDiscoveryRequest, MethodInvocationContext , ServiceDiscoveryResponse , Completion , ProvidedMethodReference, ActionReference , MethodDiscoveryRequest , MethodDiscoveryResponse , GenericRequest } from '@plexus-interop/client-api';
+import { ClientError , InvocationRequestInfo } from '@plexus-interop/protocol';
+import { Logger, LoggerFactory, Arrays, onceVoid } from '@plexus-interop/common';
+import { BinaryMarshallerProvider } from '@plexus-interop/io';
+import { UniqueId } from '@plexus-interop/transport-common';
+import { GenericClient } from "../../generic/GenericClient";
+import { ClientDtoUtils } from "../../ClientDtoUtils";
 import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
 import { StreamingInvocationClientInternal } from './handlers/streaming/StreamingInvocationClientInternal';
 import { StreamingInvocationClientImpl } from './handlers/streaming/StreamingInvocationClientImpl';
-import { InvocationClient } from './../InvocationClient';
-import { ValueHandler } from './../ValueHandler';
-import { ClientError } from '@plexus-interop/protocol';
-import { InvocationRequestInfo } from '@plexus-interop/protocol';
-import { Logger, LoggerFactory, Arrays, onceVoid } from '@plexus-interop/common';
-import { Completion } from '@plexus-interop/client-api';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { UniqueId } from '@plexus-interop/transport-common';
-import { ProvidedMethodReference, ActionReference } from '@plexus-interop/client-api';
+import { InvocationClient } from "../InvocationClient";
+import { ValueHandler } from "../ValueHandler";
 import { Invocation } from '../../generic/Invocation';
-import { MethodDiscoveryRequest } from '@plexus-interop/client-api';
-import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
-import { GenericRequest } from '@plexus-interop/client-api';
 import { InvocationObserver } from '../../generic';
-import { DelegateInvocationObserver } from '../../api/DelegateInvocationObserver';
+import { DelegateInvocationObserver } from "../DelegateInvocationObserver";
 import { LoggingInvocationObserver } from '../LoggingInvocationObserver';
 import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
 import { InvocationExecutor } from './InvocationExecutor';
@@ -52,7 +44,7 @@ export class GenericClientApiImpl implements InternalGenericClientApi {
         protected readonly handlersRegistry: InvocationHandlersRegistry
     ) { }
 
-    public supported(feature: Feature): boolean {
+    public supported(): boolean {
         return true;
     }
 

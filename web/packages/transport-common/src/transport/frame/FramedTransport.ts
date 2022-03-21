@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Frame } from './model/Frame';
 import { UniqueId } from '@plexus-interop/protocol';
 import { Observer } from '@plexus-interop/common';
+import { Frame } from './model/Frame';
 
 export interface FramedTransport {
 

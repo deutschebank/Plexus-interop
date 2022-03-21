@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InvocationClient } from './InvocationClient';
-import { Invocation } from '../generic/Invocation';
 import { clientProtocol as plexus, SuccessCompletion, ClientError, CancelledCompletion, ErrorCompletion } from '@plexus-interop/protocol';
 import { Logger } from '@plexus-interop/common';
+import { InvocationClient } from './InvocationClient';
+import { Invocation } from '../generic/Invocation';
 
 export abstract class BaseInvocationClientImpl implements InvocationClient {
 

@@ -14,16 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Invocation } from '../../../../../client/generic/Invocation';
-import { StreamingInvocationClientImpl } from './StreamingInvocationClientImpl';
 import { Logger, Observer, LoggerFactory, CancellationToken } from '@plexus-interop/common';
-import { ClientDtoUtils } from '../../../../ClientDtoUtils';
 import { MethodInvocationContext, ActionReference } from '@plexus-interop/client-api';
 import { UniqueId } from '@plexus-interop/transport-common';
+import { ClientProtocolUtils } from '@plexus-interop/protocol';
+import { Invocation } from "../../../../generic/Invocation";
+import { StreamingInvocationClientImpl } from './StreamingInvocationClientImpl';
+import { ClientDtoUtils } from '../../../../ClientDtoUtils';
 import { InvocationObserver } from '../../../../generic/InvocationObserver';
 import { InvocationHandlersRegistry } from '../InvocationHandlersRegistry';
 import { BaseInvocation } from '../../../../generic/BaseInvocation';
-import { ClientProtocolUtils } from '@plexus-interop/protocol';
 
 export class StreamingInvocationHost {
 

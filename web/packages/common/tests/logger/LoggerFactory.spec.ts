@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerFactory, LogLevel } from '../../src/logger/LoggerFactory';
+import { LoggerFactory } from '../../src/logger/LoggerFactory';
+import { LogLevel } from "../../src/logger/LogLevel";
 
 describe('Logger Factory', () => {
 

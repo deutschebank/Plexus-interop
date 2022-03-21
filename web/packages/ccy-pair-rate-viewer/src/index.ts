@@ -14,27 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-declare var window: any;
-import { WebCcyPairRateViewerClientBuilder, WebCcyPairRateViewerClient } from './gen/WebCcyPairRateViewerGeneratedClient';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 import { LoggerFactory, LogLevel } from '@plexus-interop/common';
+import { WebCcyPairRateViewerClientBuilder, WebCcyPairRateViewerClient } from './gen/WebCcyPairRateViewerGeneratedClient';
+declare let window: any;
 
 // Read launch arguments, provided by Electron Launcher
 LoggerFactory.setLogLevel(LogLevel.TRACE);
 const electron = window.require('electron');
-const remote = electron.remote;
+const {remote} = electron;
 const electronWindow: any = remote.getCurrentWindow();
 
 const webSocketUrl = remote.getCurrentWindow().plexusBrokerWsUrl;
 const instanceId = remote.getCurrentWindow().plexusAppInstanceId;
 // enable dev tools
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', (e) => {
     if (e.which === 123) {
         // F12
         electronWindow.toggleDevTools();
     } else if (e.which === 116) {
         // F5
-        location.reload();
+        window.location.reload();
     }
 });
 
@@ -42,7 +42,7 @@ const outEl = document.getElementById('out')!;
 
 const log = (msg: string) => {
     console.log(msg);
-    outEl.innerText = outEl.innerText + '\n' + msg;
+    outEl.innerText = `${outEl.innerText  }\n${  msg}`;
 };
 
 window.getRate = () => log('Not connected to Broker');

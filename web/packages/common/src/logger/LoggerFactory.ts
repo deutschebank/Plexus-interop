@@ -14,32 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerDelegate } from './index';
 import * as log from 'loglevel';
-import { Logger } from './Logger';
-import { LoggerBase } from './LoggerBase';
 import { TimeUtils } from '../util/time/TimeUtils';
-const logPrefixer: any = require('loglevel-plugin-prefix');
+import { Logger, LoggerDelegate } from './Logger';
+import { LoggerBase } from './LoggerBase';
+import { LogLevel } from './LogLevel';
 
-export enum LogLevel {
-  TRACE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  SILENT
-}
+const logPrefixer: any = require('loglevel-plugin-prefix');
 
 export class LoggerFactory {
   
   private static additionalRecipients: LoggerDelegate[] = [];
 
   public static registerDelegate(logger: LoggerDelegate): { unregister: () => void } {
-    let newRecipientsLen = LoggerFactory.additionalRecipients.push(logger);
-    let registeredRecipientIndex = newRecipientsLen - 1;
+    const newRecipientsLen = LoggerFactory.additionalRecipients.push(logger);
+    const registeredRecipientIndex = newRecipientsLen - 1;
 
     return {
-      unregister: () => LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1)
+      unregister: () => {
+        LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1);
+      }
     };
   }
 

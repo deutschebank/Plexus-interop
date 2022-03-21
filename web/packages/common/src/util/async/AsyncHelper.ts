@@ -33,7 +33,7 @@ export class AsyncHelper {
                     if (checkTimeout) {
                         clearTimeout(checkTimeout);
                     }
-                    reject(`Waiting timeout ${timeout}ms passed`);
+                    reject(new Error(`Waiting timeout ${timeout}ms passed`));
                 }, timeout);
             }
             function success(): void {

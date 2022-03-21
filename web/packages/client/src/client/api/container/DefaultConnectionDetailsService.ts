@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { ConnectionDetailsService } from './ConnectionDetailsService';
 import { ConnectionDetails } from './ConnectionDetails';
 import { getBaseWsUrl } from './WsConnectionDetails';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
 
 export class DefaultConnectionDetailsService implements ConnectionDetailsService {
 
@@ -43,7 +43,7 @@ export class DefaultConnectionDetailsService implements ConnectionDetailsService
         if (this.connectionDetailsFactory) {
             return this.connectionDetailsFactory;
         }
-        const globalObj = self as any;
+        const globalObj = window.self as any;
         if (globalObj.plexus && globalObj.plexus.getConnectionDetails) {
             this.log.info('Detected connection details service, provided by container');
             return globalObj.plexus.getConnectionDetails;

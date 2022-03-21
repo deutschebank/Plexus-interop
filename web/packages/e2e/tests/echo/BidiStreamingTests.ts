@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
+import { AsyncHelper } from '@plexus-interop/common';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { BaseEchoTest } from './BaseEchoTest';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientStreamingHandler } from './ClientStreamingHandler';
-import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
 import { EchoClientClient } from '../../src/echo/client/EchoClientGeneratedClient';
 import { EchoServerClient } from '../../src/echo/server/EchoServerGeneratedClient';
-import { AsyncHelper } from '@plexus-interop/common';
 
 export class BidiStreamingInvocationTests extends BaseEchoTest {
 
@@ -38,21 +38,25 @@ export class BidiStreamingInvocationTests extends BaseEchoTest {
         let clientReceivedCompletion = false;
         let serverReceivedMessage = false;
         return new Promise<void>((resolve, reject) => {
-            const serverHandler = new ClientStreamingHandler(() => {
-                return {
-                    next: () => serverReceivedMessage = true,
-                    complete: () => invocationCompletedReceivedByServer = true,
+            const serverHandler = new ClientStreamingHandler(() => ({
+                    next: () => {
+                        serverReceivedMessage = true;
+                    },
+                    complete: () => {
+                        invocationCompletedReceivedByServer = true;
+                    },
                     error: () => {},
                     streamCompleted: () => {}
-                };
-            });
+                }));
             try {
                 (async () => {
                     const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
                     const streamingClient = await client.getEchoServiceProxy().duplexStreaming({
                         next: () => {},
                         error: () => {},
-                        complete: () => clientReceivedCompletion = true,
+                        complete: () => {
+                            clientReceivedCompletion = true;
+                        },
                         streamCompleted: () => { }
                     });
                     streamingClient.next(this.clientsSetup.createRequestDto());
@@ -75,8 +79,7 @@ export class BidiStreamingInvocationTests extends BaseEchoTest {
         let client: EchoClientClient | null = null;
         let server: EchoServerClient | null = null;
         return new Promise<void>((resolve, reject) => {
-            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => {
-                return {
+            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => ({
                     next: async (clientRequest) => {
                         if (clientRequest.stringField === 'Hey') {
                             hostClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
@@ -92,8 +95,7 @@ export class BidiStreamingInvocationTests extends BaseEchoTest {
                         reject(e);
                     },
                     streamCompleted: () => { }
-                };
-            });
+                }));
             (async () => {
                 [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
                 const streamingClient = await client.getEchoServiceProxy().duplexStreaming({

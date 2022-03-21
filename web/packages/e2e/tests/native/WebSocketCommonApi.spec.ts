@@ -91,7 +91,6 @@ describe('Client: Common API Implementation', () => {
     it('Returns all peer descriptors', async () => {
         const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
         const definitions = await platform.getPeerDefinitions();
-        // tslint:disable-next-line:no-console
         const names = definitions.map(d => d.applicationName);
         expect(names).to.have.members(['echo-server', 'echo-client']);
     });

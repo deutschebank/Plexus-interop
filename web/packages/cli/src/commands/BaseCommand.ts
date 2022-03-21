@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as commander from 'commander';
 import { Command } from './Command';
 import { Option, getFlags } from './Option';
-import * as commander from 'commander';
 
 export abstract class BaseCommand implements Command {
 
@@ -33,8 +33,7 @@ export abstract class BaseCommand implements Command {
     public optionArgs = (
         optValues: any,
         separator?: string,
-        nameConverter: (k: string) => string = k => k): string[] => {
-        return this.options().reduce<string[]>((seed, option) => {
+        nameConverter: (k: string) => string = k => k): string[] => this.options().reduce<string[]>((seed, option) => {
             const value = optValues[option.longName];
             if (!value) {
                 return seed;
@@ -42,24 +41,21 @@ export abstract class BaseCommand implements Command {
             const name = `--${nameConverter(option.longName)}`;
             if (option.isFlag) {
                 return seed.concat(`${name}`);
-            } else {
-                const optionArgs = !!separator ? [`${name}${separator}${value}`] : [name, value];
+            } 
+                const optionArgs = separator ? [`${name}${separator}${value}`] : [name, value];
                 return seed.concat(optionArgs);
-            }
-        }, []);
-    }
+            
+        }, [])
 
-    public optionsExampleArgs = () => {
-        return this.options()
+    public optionsExampleArgs = () => this.options()
             .filter(o => o.exampleValue || o.isFlag)
             .reduce<string[]>((seed, option) => {
                 if (option.isFlag) {
                     return seed.concat(`-${option.shortName}`);
-                } else {
+                } 
                     return seed.concat([`-${option.shortName}`, option.exampleValue as string]);
-                }
-            }, []);
-    }
+                
+            }, [])
 
     public isVerbose(opts: any): boolean {
         return !!opts && !!opts.verbose && opts.verbose !== 'false';
@@ -115,9 +111,9 @@ export abstract class BaseCommand implements Command {
             return options
                 .filter(o => !!o.isRequired && !commanderOpts[o.longName])
                 .map(o => `'${getFlags(o)}' option is required`);
-        } else {
+        } 
             return [];
-        }
+        
     }
 
 }

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
+/* eslint-disable max-classes-per-file */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,14 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InvocationMetaInfo } from '@plexus-interop/protocol';
-import { UniqueId, TransportChannel, ChannelObserver } from '@plexus-interop/transport-common';
 import { RemoteInvocationInfo } from '@plexus-interop/client-api';
-import { BinaryMarshallerProvider, BinaryMarshaller } from '@plexus-interop/io';
-import { Observer } from '@plexus-interop/common';
+import { BlockingQueue, BlockingQueueBase, CancellationToken, Logger, LoggerFactory, Observer } from '@plexus-interop/common';
+import { BinaryMarshaller, BinaryMarshallerProvider } from '@plexus-interop/io';
+import { clientProtocol as plexus, InvocationMetaInfo, SuccessCompletion } from '@plexus-interop/protocol';
+import { ChannelObserver, TransportChannel, UniqueId } from '@plexus-interop/transport-common';
 import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
-import { clientProtocol as plexus, SuccessCompletion } from '@plexus-interop/protocol';
-import { Logger, LoggerFactory, BlockingQueue, BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
 
 export function createInvocationInfo(): InvocationMetaInfo {
     return {
@@ -119,13 +120,11 @@ export class BufferedChannel implements TransportChannel {
         try {
             while (!this.cancellationToken.isCancelled()) {
                 const message = await this.in.blockingDequeue(this.cancellationToken);
-                // tslint:disable-next-line:no-console
                 console.log(`Got in message from buffer ${message.byteLength} bytes`);
                 observer.next(message);
             }
             observer.complete();
         } catch (error) {
-            // tslint:disable-next-line:no-console
             console.error('Error on reading message', error);
             observer.error(error);
         }

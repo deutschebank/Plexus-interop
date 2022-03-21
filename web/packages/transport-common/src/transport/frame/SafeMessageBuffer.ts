@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import Queue from 'typescript-collections/dist/lib/Queue';
 import { LimitedBufferQueue, Arrays, Logger, LoggerFactory } from '@plexus-interop/common';
 
-let globalObj: any = typeof window !== 'undefined' ? window : global;
+const globalObj: any = typeof window !== 'undefined' ? window : global;
 
 type Chunk = {
     isLast: boolean,
@@ -106,10 +106,10 @@ export class SafeMessageBuffer {
         if (last) {
             this.onMessage(Arrays.concatenateBuffers(resultBuffer, chunksBuffer));
             return new ArrayBuffer(0);
-        } else {
+        } 
             resultBuffer = Arrays.concatenateBuffers(resultBuffer, chunksBuffer);
             return resultBuffer;
-        }
+        
     }
 
     private handleError(e: any): void {

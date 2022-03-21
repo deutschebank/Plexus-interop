@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import * as path from 'path';
-import { getBaseDir, readTextFile } from '../../src/common/files';
 import { mkdirsSync } from 'fs-extra';
+import { getBaseDir, readTextFile } from '../../src/common/files';
 
 export function getTestBaseDir(): string {
     return path.resolve(getBaseDir(), '../../../samples/greeting/registry');

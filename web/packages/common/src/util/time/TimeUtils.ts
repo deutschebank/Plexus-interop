@@ -17,11 +17,13 @@
 export class TimeUtils {
 
     public static timeout(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
     }
 
     public static format(date: Date): string {
-        return `${date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1')}.${('000' + date.getMilliseconds()).slice(-3)}`;
+        return `${date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1')}.${(`000${  date.getMilliseconds()}`).slice(-3)}`;
     }
 
 }

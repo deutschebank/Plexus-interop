@@ -16,8 +16,7 @@
  */
 import { Observable } from 'rxjs';
 import { isString } from '@plexus-interop/common';
-import { ProvidedMethodReference } from '@plexus-interop/metadata';
-import { ConsumedMethodReference } from '@plexus-interop/metadata';
+import { ProvidedMethodReference , ConsumedMethodReference } from '@plexus-interop/metadata';
 import { ClientError } from '@plexus-interop/protocol';
 
 export class Types {
@@ -37,14 +36,14 @@ export class Types {
     public static toClientError(e: any): ClientError {
         if (Types.isError(e)) {
             return new ClientError(e.message, e.stack);
-        } else if (isString(e)) {
+        } if (isString(e)) {
             return new ClientError(e);
-        } else if (e.message && e.details) {
+        } if (e.message && e.details) {
             return new ClientError(e.message, e.details);
-        } else {
+        } 
             e = new Error('Unknown error received');
             return Types.toClientError(e);
-        }
+        
     }
 
 }

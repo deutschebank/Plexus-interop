@@ -14,18 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceDiscoveryRequest } from '@plexus-interop/client-api';
-import { ServiceDiscoveryResponse } from '@plexus-interop/client-api';
-import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
-import { InvocationClient } from './../InvocationClient';
-import { ValueHandler } from './../ValueHandler';
+import { Completion, GenericRequest, MethodDiscoveryRequest, MethodDiscoveryResponse, ServiceDiscoveryRequest, ServiceDiscoveryResponse } from '@plexus-interop/client-api';
 import { InvocationRequestInfo } from '@plexus-interop/protocol';
-import { Completion } from '@plexus-interop/client-api';
-import { MethodDiscoveryRequest } from '@plexus-interop/client-api';
-import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
-import { GenericRequest } from '@plexus-interop/client-api';
 import { UniqueId } from '@plexus-interop/transport-common';
 import { InvocationObserver } from '../../generic';
+import { InvocationClient } from "../InvocationClient";
+import { ValueHandler } from "../ValueHandler";
+import { StreamingInvocationClient } from './handlers/streaming/StreamingInvocationClient';
 
 export enum Feature {
     SEND_UNARY = 'SEND_UNARY',

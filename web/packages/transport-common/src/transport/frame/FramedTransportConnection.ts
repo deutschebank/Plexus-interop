@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MessageFrame, ConnectionOpenFrame, ConnectionCloseFrame } from './model';
-import { ChannelOpenFrame, ChannelCloseFrame } from './model';
+import { UniqueId, ClientProtocolUtils, ClientError, SuccessCompletion , transportProtocol as plexus } from '@plexus-interop/protocol';
+import { StateMaschineBase, StateMaschine, LoggerFactory, Logger, ReadWriteCancellationToken, Observer, Subscription, AnonymousSubscription } from '@plexus-interop/common';
+import { MessageFrame, ConnectionOpenFrame, ConnectionCloseFrame , ChannelOpenFrame, ChannelCloseFrame } from './model';
 import { ConnectableFramedTransport } from './ConnectableFramedTransport';
 import { TransportConnection } from '../TransportConnection';
 import { FramedTransportChannel } from './FramedTransportChannel';
 import { BufferedTransportProxy } from './BufferedTransportProxy';
 import { TransportChannel } from '../TransportChannel';
-import { UniqueId, ClientProtocolUtils, ClientError, SuccessCompletion } from '@plexus-interop/protocol';
-import { transportProtocol as plexus } from '@plexus-interop/protocol';
 import { TransportFrameHandler } from './TransportFrameHandler';
-import { StateMaschineBase, StateMaschine, LoggerFactory, Logger, ReadWriteCancellationToken, Observer, Subscription, AnonymousSubscription } from '@plexus-interop/common';
 import { TransportFrameListener } from './TransportFrameListener';
 import { BufferedObserver } from '../../common';
 
@@ -121,7 +119,7 @@ export class FramedTransportConnection implements TransportConnection, Transport
     }
 
     public async connect(channelObserver?: Observer<TransportChannel>): Promise<void> {
-        this.log.debug(`Opening connection, channel observer ${!!channelObserver ? 'provided' : 'not provided'}`);
+        this.log.debug(`Opening connection, channel observer ${channelObserver ? 'provided' : 'not provided'}`);
         if (channelObserver) {
             this.channelObserver.setObserver(channelObserver);
         }
@@ -129,7 +127,7 @@ export class FramedTransportConnection implements TransportConnection, Transport
     }
 
     public async acceptingConnection(channelObserver?: Observer<TransportChannel>): Promise<void> {
-        this.log.debug(`Accepting connection, channel observer ${!!channelObserver ? 'provided' : 'not provided'}`);
+        this.log.debug(`Accepting connection, channel observer ${channelObserver ? 'provided' : 'not provided'}`);
         if (channelObserver) {
             this.channelObserver.setObserver(channelObserver);
         }
@@ -214,7 +212,7 @@ export class FramedTransportConnection implements TransportConnection, Transport
         }
     }
 
-    public handleConnectionOpenFrame(frame: ConnectionOpenFrame): void {
+    public handleConnectionOpenFrame(): void {
         this.log.trace('Received connection open frame');
         if (this.stateMachine.is(ConnectionState.OPEN)) {
             this.log.debug(`Received connection open confimation`);
@@ -343,7 +341,7 @@ export class FramedTransportConnection implements TransportConnection, Transport
     }
 
     private reportErrorToChannels(error: any): void {
-        this.channelsHolder.forEach((value, key: string) => {
+        this.channelsHolder.forEach((value) => {
             value.channelTransportProxy.error(error);
         });
     }

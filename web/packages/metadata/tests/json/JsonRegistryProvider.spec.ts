@@ -16,14 +16,10 @@
  */
 import { JsonInteropRegistryProvider } from '../../src/interop/json/JsonInteropRegistryProvider';
 import { Message } from '../../src/interop/model/Message';
-import { Service } from '../../src/interop/model/Service';
-import { Method } from '../../src/interop/model/Method';
 import { MethodType } from '../../src/interop/model/MethodType';
-import { Application } from '../../src/interop/model/Application';
-import { ConsumedMethod } from '../../src/interop/model/ConsumedMethod';
-import { ProvidedMethod } from '../../src/interop/model/ProvidedMethod';
 import { Enum } from '../../src/interop/model/Enum';
 import { ExtendedMap } from '@plexus-interop/common';
+import { Application, ConsumedMethod, Method, ProvidedMethod, Service } from 'src/interop/model/ServiceTypes';
 
 const fs = require('fs');
 

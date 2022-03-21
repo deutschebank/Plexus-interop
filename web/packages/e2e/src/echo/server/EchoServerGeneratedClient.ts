@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,13 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InternalGenericClientApi, ClientApiBuilder, MethodInvocationContext, Completion, ClientConnectRequest, StreamingInvocationClient, GenericClientApi, InvocationRequestInfo, InvocationClient, GenericRequest, GenericClientApiBase } from '@plexus-interop/client';
-import { ProvidedMethodReference, ServiceDiscoveryRequest, ServiceDiscoveryResponse, MethodDiscoveryRequest, MethodDiscoveryResponse, GenericClientApiBuilder, ValueHandler } from '@plexus-interop/client';
+import { ClientApiBuilder, ContainerAwareClientAPIBuilder, GenericClientApi, GenericClientApiBase, GenericClientApiBuilder, InternalGenericClientApi, InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import { Arrays, Observer } from '@plexus-interop/common';
-import { InvocationObserver, InvocationObserverConverter, ContainerAwareClientAPIBuilder } from '@plexus-interop/client';
-
 import * as plexus from '../gen/plexus-messages';
+
 
 
 
@@ -118,10 +116,10 @@ export class EchoServerClientBuilder implements ClientApiBuilder<EchoServerClien
 
     public connect(): Promise<EchoServerClient> {
         if (!this.echoServiceHandler) {
-            return Promise.reject('Invocation handler for EchoService is not provided');
+            return Promise.reject(new Error('Invocation handler for EchoService is not provided'));
         }
         if (!this.serviceAliasHandler) {
-            return Promise.reject('Invocation handler for ServiceAlias is not provided');
+            return Promise.reject(new Error('Invocation handler for ServiceAlias is not provided'));
         }
         return this.genericBuilder
             .withTypeAwareUnaryHandler({

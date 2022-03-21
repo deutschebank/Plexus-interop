@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { LimitedBufferQueue } from '@plexus-interop/common';
-import { PlexusObserver } from './PlexusObserver';
+import Queue from 'typescript-collections/dist/lib/Queue';
+import { Logger, LoggerFactory , LimitedBufferQueue } from '@plexus-interop/common';
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+import { PlexusObserver } from './PlexusObserver';
 
 /**
  * Saves interraction with Observer, until real Observer arrives

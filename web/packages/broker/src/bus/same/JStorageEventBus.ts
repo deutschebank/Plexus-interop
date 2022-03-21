@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../EventBus';
-import { Event } from '../Event';
+import { AnonymousSubscription, Logger, LoggerFactory, Subscription } from '@plexus-interop/common';
 import 'ya-js-storage';
-import { Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
+import { Event } from '../Event';
+import { EventBus } from '../EventBus';
 
 const globalObj: any = global || window;
-const yaJsStorage = globalObj.$.yaJsStorage;
+const {yaJsStorage} = globalObj.$;
 
 export class JStorageEventBus implements EventBus {
 

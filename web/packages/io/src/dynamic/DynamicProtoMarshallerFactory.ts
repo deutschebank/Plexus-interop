@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 import { InteropRegistry } from '@plexus-interop/metadata';
-import { ExtendedMarshaller } from '../api/ExtendedMarshaller';
 import * as protobuf from 'protobufjs/light';
-import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
 import { Root } from 'protobufjs/light';
+import { ExtendedMarshaller } from '../api/ExtendedMarshaller';
+import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
 
 /**
  * Dynamic Marshaller, based on Interop Metadata Registry
  */
 export class DynamicProtoMarshallerFactory {
 
-    // tslint:disable-next-line:typedef
     private readonly cache = new Map<string, ExtendedMarshaller<any, ArrayBuffer>>();
 
     private readonly protobufRoot: Root;

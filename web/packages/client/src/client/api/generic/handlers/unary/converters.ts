@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { Arrays } from '@plexus-interop/common';
+import { Arrays , Logger, LoggerFactory } from '@plexus-interop/common';
+import { MethodInvocationContext } from '@plexus-interop/client-api';
 import { UnaryInvocationHandler } from './UnaryInvocationHandler';
 import { BidiStreamingInvocationHandler } from '../streaming/BidiStreamingInvocationHandler';
 import { StreamingInvocationClient } from '../streaming/StreamingInvocationClient';
 import { InvocationHandlerConverter } from '../InvocationHandlerConverter';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { MethodInvocationContext } from '@plexus-interop/client-api';
 import { ClientDtoUtils } from '../../../../ClientDtoUtils';
 
 export function toGenericUnaryHandler(
@@ -52,8 +51,7 @@ export class UnaryHandlerConverter<Req, Res> implements InvocationHandlerConvert
         return {
             serviceInfo: unary.serviceInfo,
             methodId: unary.methodId,
-            handle: (invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<Res>) => {
-                return {
+            handle: (invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<Res>) => ({
                     next: (request: Req) => {
                         try {
                             unary.handle(invocationContext, request).then(async (response) => {
@@ -75,8 +73,7 @@ export class UnaryHandlerConverter<Req, Res> implements InvocationHandlerConvert
                     streamCompleted: () => this.log.debug('Stream completed'),
                     error: e => this.log.error('Error received', e),
                     complete: () => this.log.debug('Invocation completed')
-                };
-            }
+                })
         };
     }
 

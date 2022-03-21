@@ -16,7 +16,7 @@
  */
 import * as log from 'loglevel';
 import { Logger, LoggerDelegate } from './Logger';
-import { LogLevel } from './LoggerFactory';
+import { LogLevel } from "./LogLevel";
 
 export class LoggerBase implements Logger, LoggerDelegate {
 
@@ -53,7 +53,7 @@ export class LoggerBase implements Logger, LoggerDelegate {
 
     public log(logLevel: LogLevel, msg: string, args: any[]): void {
 
-        let actualMessage = `${this.name} ${msg}`;
+        const actualMessage = `${this.name} ${msg}`;
 
         switch (logLevel) {
             case LogLevel.TRACE: 
@@ -75,7 +75,7 @@ export class LoggerBase implements Logger, LoggerDelegate {
                 /* be silent */
                 break;
             default: 
-                throw `Unkown LogLevel: ${logLevel}`;
+                throw new Error(`Unkown LogLevel: ${logLevel}`);
         }
         try {
             this.loggerDelegates.forEach(logger => logger.log(logLevel, msg, args));

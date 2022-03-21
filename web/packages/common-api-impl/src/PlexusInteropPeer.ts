@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,13 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPeer, ConnectionStatus, Subscription, Method, InvokeResult, StreamObserver, StreamSubscription, InteropPeerDescriptor, MethodImplementation, RegisteredMethod, StreamImplementation } from './api/client-api';
 import { GenericClientApi, MethodType } from '@plexus-interop/client';
-import { ConnectionStatusListeners } from './listeners';
-import { InteropRegistryService, Application } from '@plexus-interop/metadata';
+import { Application, InteropRegistryService } from '@plexus-interop/metadata';
+import { DiscoverMethodsHandler } from './actions/DiscoverMethodsHandler';
 import { InvokeHandler } from './actions/InvokeHandler';
 import { SubscribeHandler } from './actions/SubscribeHandler';
-import { DiscoverMethodsHandler } from './actions/DiscoverMethodsHandler';
+import { ConnectionStatus, InteropPeer, InteropPeerDescriptor, InvokeResult, Method, MethodImplementation, RegisteredMethod, StreamImplementation, StreamObserver, StreamSubscription, Subscription } from './api/client-api';
+import { ConnectionStatusListeners } from './listeners';
 
 export class PlexusInteropPeer implements InteropPeer {
 

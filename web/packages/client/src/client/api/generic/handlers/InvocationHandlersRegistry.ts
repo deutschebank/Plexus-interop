@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BidiStreamingInvocationHandler, ServerStreamingInvocationHandler } from './streaming';
 import { ActionReference } from '@plexus-interop/client-api';
-import { UnaryHandlerConverter, toGenericUnaryHandler } from './unary/converters';
 import { LoggerFactory, Logger } from '@plexus-interop/common';
+import { BinaryMarshallerProvider } from '@plexus-interop/io';
+import { UnaryHandlerConverter, toGenericUnaryHandler } from './unary/converters';
 import { UnaryInvocationHandler } from './unary/UnaryInvocationHandler';
 import { ServerStreamingConverter, toGenericStreamingHandler, toGenericBidiStreamingHandler } from './streaming/converters';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
+import { BidiStreamingInvocationHandler } from './streaming/BidiStreamingInvocationHandler';
+import { ServerStreamingInvocationHandler } from './streaming/ServerStreamingInvocationHandler';
 
 type HandlerActionRef = {
     serviceInfo: {
@@ -37,9 +38,7 @@ export class InvocationHandlersRegistry {
 
     protected log: Logger = LoggerFactory.getLogger('InvocationHandler');
 
-    // tslint:disable-next-line:typedef
     protected readonly typeAwareHandlers = new Map<string, BidiStreamingInvocationHandler<any, any>>();
-    // tslint:disable-next-line:typedef
     protected readonly genericHandlers = new Map<string, BidiStreamingInvocationHandler<ArrayBuffer, ArrayBuffer>>();
 
     public constructor(private readonly marshallerProvider: BinaryMarshallerProvider) { }

@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */ // TODO re-enable this
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,14 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { MethodInvocationContext } from '@plexus-interop/client';
+import { AsyncHelper } from '@plexus-interop/common';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';
 import { ServerStreamingHandler } from './ServerStreamingHandler';
 import { EchoClientClient, EchoClientClientBuilder } from '../../src/echo/client/EchoClientGeneratedClient';
 import { EchoServerClient } from '../../src/echo/server/EchoServerGeneratedClient';
-import { MethodInvocationContext } from '@plexus-interop/client';
-import { AsyncHelper } from '@plexus-interop/common';
 
 export class ClientConnectivityTests extends BaseEchoTest {
 
@@ -61,7 +62,8 @@ export class ClientConnectivityTests extends BaseEchoTest {
         let client: EchoClientClient | null = null;
         let server: EchoServerClient | null = null;
         let serverInvocationContext: MethodInvocationContext | null = null;
-        return new Promise<void>(async (testResolve, testError) => {
+        // TODO no-async-promise-executor
+        return new Promise<void>(async (testResolve) => {
 
             let handler: ServerStreamingHandler | null = null;
             let clientInvocationErrorReceived: Promise<void> | null = null;
@@ -134,11 +136,11 @@ export class ClientConnectivityTests extends BaseEchoTest {
                 [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler as ServerStreamingHandler);
                 clientInvocationErrorReceived = new Promise<void>((clientErrorResolve, clientErrorReject) => {
                     (client as EchoClientClient).getEchoServiceProxy().serverStreaming(echoRequest, {
-                        next: (r) => {
-                            clientErrorReject('Not expected to receive update');
+                        next: () => {
+                            clientErrorReject(new Error('Not expected to receive update'));
                         },
                         complete: () => { },
-                        error: (e) => {
+                        error: () => {
                             clientErrorResolve();
                         },
                         streamCompleted: () => { }

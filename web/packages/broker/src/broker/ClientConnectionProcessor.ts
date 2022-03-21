@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AsyncHandler } from '../AsyncHandler';
 import { TransportConnection } from '@plexus-interop/transport-common';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { Completion, ErrorCompletion, ClientError } from '@plexus-interop/protocol';
+import { AsyncHandler } from '../AsyncHandler';
 import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 import { ClientRequestProcessor } from './ClientRequestProcessor';
 import { ApplicationConnection } from '../lifecycle/ApplicationConnection';
@@ -52,7 +52,7 @@ export class ClientConnectionProcessor implements AsyncHandler<TransportConnecti
                             const appConnection = await this.appLifeCycleManager.acceptConnection(connection, {
                                 applicationId: appDescriptor.applicationId as string,
                                 instanceId: appDescriptor.instanceId
-                            }, c => {
+                            }, () => {
                                 log.error('Connection dropped');
                             });
                             sourceConnection = appConnection;
@@ -88,7 +88,7 @@ export class ClientConnectionProcessor implements AsyncHandler<TransportConnecti
                 error: e => {
                     log.error(`Error received from source connection`, e);
                     this.completeAndDisconnect(connection, requestsTracker, log)
-                        .catch(completeErr => log.error('Failed to complete pending requests', e))
+                        .catch(() => log.error('Failed to complete pending requests', e))
                         .then(() => log.debug('Pending requests completed'));
                     reject(new ErrorCompletion(e));
                 }

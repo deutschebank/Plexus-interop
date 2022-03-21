@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LogObserver } from './LogObserver';
 import { BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
+import { LogObserver } from './LogObserver';
 
 export class BufferedObserver<T> extends LogObserver<T> {
 

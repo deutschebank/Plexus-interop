@@ -20,7 +20,6 @@ export * from './ServiceDiscoveryResponse';
 export * from './ServiceInfo';
 export * from './RemoteInvocationInfo';
 export * from './HostInvocationInfo';
-export * from './ClientConnectRequest';
 export * from './Completion';
 export * from './MethodDiscoveryRequest';
 export * from './MethodDiscoveryResponse';

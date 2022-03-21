@@ -16,10 +16,10 @@
  */
 import { InteropRegistryService, Application } from '@plexus-interop/metadata';
 import { GenericClientApi } from '@plexus-interop/client';
+import { GenericRequest } from '@plexus-interop/client-api';
 import { Method, InvokeResult } from '../api/client-api';
 import { isMethod } from '../types';
 import { getProvidedMethodByAlias, getAppAliasById } from '../metadata';
-import { GenericRequest } from '@plexus-interop/client-api';
 import { DiscoverMethodHandler } from './DiscoverMethodHandler';
 import { PartialPeerDescriptor } from '../PartialPeerDescriptor';
 

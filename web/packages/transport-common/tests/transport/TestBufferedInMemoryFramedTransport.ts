@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 import { UniqueId } from '@plexus-interop/protocol';
+import { LoggerFactory, Observer, Logger , AsyncHelper, CancellationToken } from '@plexus-interop/common';
+import Queue from 'typescript-collections/dist/lib/Queue';
 import { Frame } from '../../src/transport/frame/model/Frame';
 import { ConnectableFramedTransport } from '../../src/transport/frame/ConnectableFramedTransport';
-import { LoggerFactory, Observer, Logger } from '@plexus-interop/common';
 import { BufferedReadFramedTransport } from '../../src/transport/frame/BufferedReadFramedTransport';
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
-import { AsyncHelper, CancellationToken } from '@plexus-interop/common';
 
 export class TestBufferedInMemoryFramedTransport extends BufferedReadFramedTransport implements ConnectableFramedTransport {
 

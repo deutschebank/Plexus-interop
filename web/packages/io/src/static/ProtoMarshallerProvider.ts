@@ -30,9 +30,7 @@ export class ProtoMarshallerProvider implements BinaryMarshallerProvider {
             throw new Error('Encode/Decode is missed for message definition');
         } else {
             return {
-                encode: (obj: any): Uint8Array => {
-                    return messageObj.encode(obj).finish() as Uint8Array;
-                },
+                encode: (obj: any): Uint8Array => messageObj.encode(obj).finish() as Uint8Array,
                 decode: (payload: Uint8Array): any => {
                     const features = getPlexusFeatures();
                     return messageObj.toObject(messageObj.decode(payload), { defaults: features.decodeUndefinedToDefault });

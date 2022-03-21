@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropRegistryProvider } from '../InteropRegistryProvider';
-import { InteropRegistry } from '../model/InteropRegistry';
+import { ExtendedArray, ExtendedMap, Logger, LoggerFactory, toMap } from '@plexus-interop/common';
 import { map, Observable, of } from 'rxjs';
-
-
-import { RegistryDto } from './RegistryDto';
-import { ExtendedArray, Logger, LoggerFactory, ExtendedMap, toMap } from '@plexus-interop/common';
-import { Message } from '../model/Message';
-import { ServiceDto } from './ServiceDto';
-import { Service } from '../model/Service';
-import { Method } from '../model/Method';
-import { MethodType } from '../model/MethodType';
-import { MethodTypeDto } from './MethodTypeDto';
-import { Application } from '../model/Application';
-import { ConsumedServiceDto } from './ConsumedServiceDto';
-import { ConsumedService } from '../model/ConsumedService';
-import { MatchPatternFactory } from '../model/MatchPatternFactory';
-import { ConsumedMethod } from '../model/ConsumedMethod';
-import { ProvidedMethod } from '../model/ProvidedMethod';
-import { ProvidedServiceDto } from './ProvidedServiceDto';
-import { ProvidedService } from '../model/ProvidedService';
-import { ApplicationDto } from './ApplicationDto';
-import { OptionDto } from './OptionDto';
-import { MessagesNamespace, isMessage, isEnum } from './MessagesNamespace';
+import { InteropRegistryProvider } from '../InteropRegistryProvider';
 import { Enum } from '../model/Enum';
+import { InteropRegistry } from '../model/InteropRegistry';
+import { MatchPatternFactory } from '../model/MatchPatternFactory';
+import { Message } from '../model/Message';
+import { MethodType } from '../model/MethodType';
+import { Application, ConsumedMethod, ConsumedService, Method, ProvidedMethod, ProvidedService, Service } from '../model/ServiceTypes';
+import { ApplicationDto } from './ApplicationDto';
+import { ConsumedServiceDto } from './ConsumedServiceDto';
+import { isEnum, isMessage, MessagesNamespace } from './MessagesNamespace';
+import { MethodTypeDto } from './MethodTypeDto';
+import { OptionDto } from './OptionDto';
+import { ProvidedServiceDto } from './ProvidedServiceDto';
+import { RegistryDto } from './RegistryDto';
+import { ServiceDto } from './ServiceDto';
+
+
 
 export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
@@ -53,7 +47,9 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
         this.$registry = ($jsonMetadata || of(jsonMetadata))
             .pipe(map(this.parseRegistry.bind(this)));
         this.$registry.subscribe({
-            next: update => this.current = update
+            next: update => {
+                this.current = update;
+            }
         });
     }
 
@@ -96,16 +92,18 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
     private collectMessagesMetadata(
         rawEnries: MessagesNamespace,
+        // eslint-disable-next-line @typescript-eslint/default-param-last
         namespaceId: string | null = null,
         messagesMap: ExtendedMap<string, Message>,
         enumsMap: ExtendedMap<string, Enum>): void {
 
-        const nested = rawEnries.nested;
+        const {nested} = rawEnries;
         if (!nested) {
             return;
         }
 
-        for (let key in nested) {
+        // eslint-disable-next-line guard-for-in, no-restricted-syntax
+        for (const key in nested) {
             const namespaceEntry = nested[key];
             const id = namespaceId ? `${namespaceId}.${key}` : key;
             if (isMessage(namespaceEntry)) {
@@ -137,9 +135,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             providedServices.push(this.convertProvidedService(providedDto, application, services.get(providedDto.service) as Service));
         });
         if (appDto.options) {
-            application.options = appDto.options.map(optDto => {
-                return { id: optDto.id, value: optDto.value };
-            });
+            application.options = appDto.options.map(optDto => ({ id: optDto.id, value: optDto.value }));
         }
         return application;
     }
@@ -155,12 +151,10 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
         };
         serviceDto.methods = serviceDto.methods || [];
         serviceDto.methods
-            .map(m => {
-                return {
+            .map(m => ({
                     method: service.methods.get(m.name) as Method,
                     consumedService
-                } as ConsumedMethod;
-            })
+                } as ConsumedMethod))
             .forEach(cm => methods.set(cm.method.name, cm));
         return consumedService;
     }
@@ -177,14 +171,12 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             methods
         };
 
-        serviceDto.methods.map(pm => {
-            return {
+        serviceDto.methods.map(pm => ({
                 method: service.methods.get(pm.name) as Method,
                 providedService,
                 title: this.getOptionValueOrDefault(pm.options, 'interop.ProvidedMethodOptions.title', null),
                 options: pm.options
-            } as ProvidedMethod;
-        })
+            } as ProvidedMethod))
             .forEach(pm => methods.set(pm.method.name, pm));
 
         return providedService;
@@ -192,7 +184,8 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
 
     private getOptionValueOrDefault(options: OptionDto[], id: string, defaultValue: string | null): string | null {
         if (options) {
-            for (let o of options) {
+            // eslint-disable-next-line no-restricted-syntax
+            for (const o of options) {
                 if (o.id === id) {
                     return o.value;
                 }
@@ -207,15 +200,13 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             methods: ExtendedMap.create<string, Method>()
         };
         service.methods = toMap(
-            serviceDto.methods.map(methodDto => {
-                return {
+            serviceDto.methods.map(methodDto => ({
                     name: methodDto.name,
                     type: this.convertMethodType(methodDto.type),
                     requestMessage: messagesMap.get(methodDto.request) as Message,
                     responseMessage: messagesMap.get(methodDto.response) as Message,
                     service
-                } as Method;
-            }), m => m.name, m => m);
+                } as Method)), m => m.name, m => m);
         return service;
     }
 
@@ -230,7 +221,7 @@ export class JsonInteropRegistryProvider implements InteropRegistryProvider {
             case MethodTypeDto.DuplexStreaming:
                 return MethodType.DuplexStreaming;
             default:
-                throw new Error('Unsupported method type: ' + methodTypeDto);
+                throw new Error(`Unsupported method type: ${  methodTypeDto}`);
         }
     }
 

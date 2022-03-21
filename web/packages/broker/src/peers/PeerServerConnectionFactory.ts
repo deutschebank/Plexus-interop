@@ -16,10 +16,10 @@
  */
 import { Observer, Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
 import { TransportConnection, UniqueId, ServerConnectionFactory, BufferedObserver } from '@plexus-interop/transport-common';
-import { AppConnectionHeartBit } from '../peers/events/AppConnectionHeartBit';
-import { PeerConnectionsService } from '../peers/PeerConnectionsService';
+import { AppConnectionHeartBit } from "./events/AppConnectionHeartBit";
+import { PeerConnectionsService } from "./PeerConnectionsService";
 import { ApplicationConnectionDescriptor } from '../lifecycle/ApplicationConnectionDescriptor';
-import { PeerProxyConnection } from '../peers/PeerProxyConnection';
+import { PeerProxyConnection } from "./PeerProxyConnection";
 import { RemoteBrokerService } from './remote/RemoteBrokerService';
 
 export class PeerServerConnectionFactory implements ServerConnectionFactory {

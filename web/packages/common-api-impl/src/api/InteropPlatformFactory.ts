@@ -14,12 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPlatform } from '.';
+import { InteropPlatform } from './client-api';
 import { PlexusInteropPlatform } from '../PlexusInteropPlatform';
-
-export interface InteropPlatformConfig {
-    webSocketUrl: string;
-}
+import { InteropPlatformConfig } from './InteropPlatformConfig';
 
 export class InteropPlatformFactory {
 

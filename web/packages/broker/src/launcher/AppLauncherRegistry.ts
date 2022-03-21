@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { AppLauncher } from './AppLauncher';
 import { UrlWebAppLauncher } from './UrlWebAppLauncher';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
 
 export class AppLauncherRegistry {
 

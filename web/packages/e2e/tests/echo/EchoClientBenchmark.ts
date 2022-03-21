@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { MethodInvocationContext, MethodType } from '@plexus-interop/client';
+import { CancellationToken } from '@plexus-interop/common';
 import { BaseEchoTest } from './BaseEchoTest';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { BenchmarkResult } from '../common/BenchmarkResult';
 import { UnaryServiceHandler } from './UnaryServiceHandler';
-import { MethodInvocationContext, MethodType } from '@plexus-interop/client';
 import { ServerStreamingHandler } from './ServerStreamingHandler';
-import { CancellationToken } from '@plexus-interop/common';
 
 export class EchoClientBenchmark extends BaseEchoTest {
 
@@ -73,13 +73,14 @@ export class EchoClientBenchmark extends BaseEchoTest {
             sendMessages();
         });              
         const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<BenchmarkResult>(async (resolve, reject) => {
             const start = Date.now();
             const finish = start + periodInMillis;
             let sentMessagesCount = 0;
             let lastReceived = 0;      
             client.getEchoServiceProxy().serverStreaming(echoRequest, {
-                next: response => {
+                next: () => {
                     if (cancellationToken.isCancelled()) {
                         return;
                     }

@@ -9,10 +9,9 @@
   "scripts": {
     "prebuild": "npm run gen-echo-protocol",
     "build": "npm run build:main && npm run build:bundle",
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc",
     "build:watch": "tsc -w -p tsconfig.json",
     "build:bundle": "npm run copy-assets && npm run build-host-proxy",
-    "lint": "tslint src/**/*.ts",
     "unit": "jest --coverage",
     "test": "if-env PLEXUS_E2E_TESTS_ENABLED=true && npm run unit || echo 'E2E unit tests disabled'",
     "gen-echo-js": "pbjs --force-long -t static-module -r echo-client -w commonjs -o src/echo/gen/plexus-messages.js src/echo/metadata/messages.proto",
@@ -47,6 +46,9 @@
     "@plexus-interop/transport-common": "file:../transport-common",
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
     "@types/long": "^4.0.0",
+    "chai": "^4.1.0",
+    "core-js": "^2.5.3",
+    "is-electron-renderer": "^2.0.1",
     "long": "^4.0.0",
     "protobufjs": "6.11.2"
   },

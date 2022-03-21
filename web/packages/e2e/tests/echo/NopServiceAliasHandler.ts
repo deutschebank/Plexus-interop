@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
 import { MethodInvocationContext } from '@plexus-interop/client';
-import { Observer } from '@plexus-interop/common';
-
 import * as plexus from '../../src/echo/gen/plexus-messages';
+import { ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
+
 
 export class NopServiceAliasHandler implements ServiceAliasInvocationHandler {
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onUnary(context: MethodInvocationContext, request: plexus.plexus.interop.testing.IEchoRequest): Promise<plexus.plexus.interop.testing.IEchoRequest> {
         throw new Error('Not implemented');
     }
-
 }

@@ -13,7 +13,7 @@
     "protobufjs": "6.11.2"
   },
   "scripts": {
-    "build:main": "tsc -p tsconfig.json",
+    "build:main": "tsc",
     "copy-assets": "copyfiles src/gen/* dist/main && copyfiles -f src/views/* dist",
     "prebuild:bundle": "npm run copy-assets",
     "build:bundle": "webpack",

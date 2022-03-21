@@ -44,9 +44,9 @@ export class CancellationToken implements ReadOnlyCancellationToken {
     public isCancelled(): boolean {
         if (this.baseToken) {
             return this.cancelled || this.baseToken.isCancelled();
-        } else {
+        } 
             return this.cancelled;
-        }
+        
     }
 
     public cancel(reason: string = 'Operation cancelled'): void {

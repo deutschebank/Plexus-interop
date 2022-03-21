@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
-import { ConnectionProvider } from './ConnectionProvider';
-import { WebBrokerConnectionBuilder, EventBus } from '@plexus-interop/broker';
-import { CrossDomainEventBusProvider, CrossDomainEventBus } from '@plexus-interop/broker';
+import { WebBrokerConnectionBuilder, EventBus , CrossDomainEventBusProvider, CrossDomainEventBus } from '@plexus-interop/broker';
 import { JsonAppRegistryProvider, JsonInteropRegistryProvider } from '@plexus-interop/metadata';
 import { TransportConnection } from '@plexus-interop/transport-common';
+import { ConnectionProvider } from './ConnectionProvider';
 import { RawMetadata } from './RawMetadata';
 
 export class TransportsSetup {
@@ -50,7 +49,7 @@ export class TransportsSetup {
                 .connect();
             return {
                 getConnection: () => connection,
-                // tslint:disable-next-line:no-console
+                // eslint-disable-next-line no-console
                 dropConnection: () => eventBus.disconnect().catch(e => console.error('Failed to disconnect', e))
             };
         };

@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ClientError , transportProtocol as plexus } from '@plexus-interop/protocol';
 import { RemoteActionStatus } from './RemoteActionStatus';
-import { ClientError } from '@plexus-interop/protocol';
-import { transportProtocol as plexus } from '@plexus-interop/protocol';
 
 export interface RemoteActionResult {
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,11 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EchoServiceInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
-import { StreamingInvocationClient, MethodInvocationContext, InvocationObserver } from '@plexus-interop/client';
-import { Observer } from '@plexus-interop/common';
-
+import { InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 import * as plexus from '../../src/echo/gen/plexus-messages';
+import { EchoServiceInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
+
 
 export class NopServiceHandler implements EchoServiceInvocationHandler {
 

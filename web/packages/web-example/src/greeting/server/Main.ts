@@ -16,18 +16,18 @@
  */
 import { LoggerFactory, LogLevel } from '@plexus-interop/common';
 
-LoggerFactory.setLogLevel(LogLevel.TRACE);
-
-import { WebGreetingServerClientBuilder } from './WebGreetingServerGeneratedClient';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+import { WebGreetingServerClientBuilder } from './WebGreetingServerGeneratedClient';
 
 import * as plexus from './gen/plexus-messages';
 import { DomLogger } from '../../common/DomLogger';
 
-declare var window: any;
+LoggerFactory.setLogLevel(LogLevel.TRACE);
+
+declare let window: any;
 
 const electron = window.require('electron')
-const remote = electron.remote;
+const {remote} = electron;
 const log = new DomLogger('out');
 const windowAny: any = remote.getCurrentWindow();
 const wsUrl = windowAny.plexusBrokerWsUrl;
@@ -37,7 +37,7 @@ log.info(`Received Web Socket URL - ${wsUrl}`);
 log.info(`Received App Instance ID - ${instanceId.toString()}`);
 
 // Reload and Dev tools hot keys
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', (e) => {
     if (e.which === 123) {
         // F12
         windowAny.toggleDevTools();
@@ -63,7 +63,7 @@ new WebGreetingServerClientBuilder()
     .withTransportConnectionProvider(() => new WebSocketConnectionFactory(new WebSocket(wsUrl)).connect())
     .connect()
     .then(() => log.info('Connected to Broker'))
-    .catch(e => {
+    .catch(() => {
         log.error('Failed to connect');
     });
 

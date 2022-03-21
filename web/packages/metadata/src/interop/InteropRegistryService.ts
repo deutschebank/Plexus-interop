@@ -14,18 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Application } from './model/Application';
-import { ConsumedService } from './model/ConsumedService';
+import { join, distinct, Logger, LoggerFactory, flatMap, ExtendedMap } from '@plexus-interop/common';
+import { Application, ConsumedMethod, ConsumedService, Method, ProvidedMethod, ProvidedService } from './model/ServiceTypes';
 import { ConsumedMethodReference } from './model/ConsumedMethodReference';
-import { ConsumedMethod } from './model/ConsumedMethod';
-import { ProvidedMethod } from './model/ProvidedMethod';
 import { ProvidedServiceReference } from './model/ProvidedServiceReference';
 import { InteropRegistryProvider } from './InteropRegistryProvider';
-import { join, distinct, Logger, LoggerFactory, flatMap, ExtendedMap } from '@plexus-interop/common';
 import { InteropRegistry } from './model/InteropRegistry';
 import { ConsumedServiceReference } from './model/ConsumedServiceReference';
-import { ProvidedService } from './model/ProvidedService';
-import { Method } from './model/Method';
 import { Option } from './model/Option';
 
 export class InteropRegistryService {
@@ -75,12 +70,10 @@ export class InteropRegistryService {
             consumedService => consumedService.methods.valuesArray(),
             app.consumedServices);
 
-        const result = consumedMethods.find(method => {
-            return this.equalsIfExist(reference.methodId, method.method.name)
+        const result = consumedMethods.find(method => this.equalsIfExist(reference.methodId, method.method.name)
                 && (!reference.consumedService
                     || (this.equalsIfExist(reference.consumedService.serviceAlias, method.consumedService.service.serviceAlias)
-                        && this.equalsIfExist(reference.consumedService.serviceId, method.consumedService.service.id)));
-        });
+                        && this.equalsIfExist(reference.consumedService.serviceId, method.consumedService.service.id))));
 
         if (!result) {
             throw new Error(`Service not found`);
@@ -146,14 +139,12 @@ export class InteropRegistryService {
     private getMatchingProvidedMethodsForAppInternal(app: Application): ProvidedMethod[] {
 
         const allProvidedServices: ProvidedService[] = flatMap<Application, ProvidedService>(
-            app => app.providedServices, this.registry.applications.valuesArray());
+            application => application.providedServices, this.registry.applications.valuesArray());
 
         const consumedProvidedPairs = join(
             app.consumedServices,
             allProvidedServices,
-            (consumed, provided) => {
-                return { consumed, provided };
-            },
+            (consumed, provided) => ({ consumed, provided }),
             // matched by service id app permissions
             (c, p) => p.to.isMatch(c.application.id)
                 && c.from.isMatch(p.application.id)

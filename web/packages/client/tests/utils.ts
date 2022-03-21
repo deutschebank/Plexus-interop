@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function randomPayload(length?: number): ArrayBuffer {
-    length = length || 10;
-    const array = new Array(length).fill('').map(_ => randomInt(1, 10));
+export function randomPayload(length: number = 10): ArrayBuffer {
+    const array = new Array(length).fill('').map(() => randomInt(1, 10));
     return new Uint8Array(array).buffer;
 }
 

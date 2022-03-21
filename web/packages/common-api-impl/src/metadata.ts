@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Application, InteropRegistryService, ProvidedMethod, ConsumedMethodReference } from '@plexus-interop/metadata';
+import { Application, ConsumedMethodReference, InteropRegistryService, Option, ProvidedMethod } from '@plexus-interop/metadata';
 import { Method } from './api/client-api';
 import { PartialPeerDescriptor } from './PartialPeerDescriptor';
-import { Option } from '@plexus-interop/metadata';
 
 const isAliasOption = (o: Option) => o.id.endsWith('alias');
 
 export function getProvidedMethodByAlias(actionAlias: string, registryService: InteropRegistryService, consumerAppMetadata?: Application): ProvidedMethod {
-    const methods = !!consumerAppMetadata ?
+    const methods = consumerAppMetadata ?
         registryService.getMatchingProvidedMethodsForApp(consumerAppMetadata)
         : registryService.getProvidedMethods();
     const provideMethod = methods.find(pm => !!pm.options && !!pm.options.find(o => isAliasOption(o) && o.value === actionAlias));
@@ -58,7 +57,7 @@ export function toMethodDefinition(providedMethod: ProvidedMethod): Method {
 }
 
 export function getAlias(options?: Option[]): string | undefined {
-    if (!!options) {
+    if (options) {
         const option = options.find(isAliasOption);
         if (option) {
             return option.value;

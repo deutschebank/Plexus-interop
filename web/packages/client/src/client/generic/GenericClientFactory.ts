@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 import { TransportConnection } from '@plexus-interop/transport-common';
-import { GenericClient } from './GenericClient';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { GenericClientImpl } from './GenericClientImpl';
-import { SingleMessageRequest } from './SingleMessageRequst';
 import { ClientConnectRequest } from '@plexus-interop/client-api';
 import { clientProtocol as plexus, ClientProtocolHelper, UniqueId } from '@plexus-interop/protocol';
+import { GenericClient } from './GenericClient';
+import { GenericClientImpl } from './GenericClientImpl';
+import { SingleMessageRequest } from './SingleMessageRequst';
 
 export class GenericClientFactory {
 

@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Option } from './Option';
 import * as path from 'path';
+import { Option } from './Option';
 
 export function targetBaseDir(): Option {
     return {

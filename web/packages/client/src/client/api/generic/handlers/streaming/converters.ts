@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger, LoggerFactory, Arrays } from '@plexus-interop/common';
+import { MethodInvocationContext } from '@plexus-interop/client-api';
+import { BinaryMarshallerProvider } from '@plexus-interop/io';
 import { InvocationHandlerConverter } from '../InvocationHandlerConverter';
 import { ServerStreamingInvocationHandler } from './ServerStreamingInvocationHandler';
 import { BidiStreamingInvocationHandler } from './BidiStreamingInvocationHandler';
 import { StreamingInvocationClient } from './StreamingInvocationClient';
 import { ClientDtoUtils } from '../../../../ClientDtoUtils';
-import { Logger, LoggerFactory, Arrays } from '@plexus-interop/common';
-import { MethodInvocationContext } from '@plexus-interop/client-api';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
 
 export class ServerStreamingConverter<Req, Res> implements InvocationHandlerConverter<ServerStreamingInvocationHandler<Req, Res>, Req, Res> {
 
@@ -31,8 +31,7 @@ export class ServerStreamingConverter<Req, Res> implements InvocationHandlerConv
         return {
             serviceInfo: baseHandler.serviceInfo,
             methodId: baseHandler.methodId,
-            handle: (invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<Res>) => {
-                return {
+            handle: (invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<Res>) => ({
                     next: (request) => {
                         try {
                             baseHandler.handle(invocationContext, request, invocationHostClient);
@@ -44,8 +43,7 @@ export class ServerStreamingConverter<Req, Res> implements InvocationHandlerConv
                     streamCompleted: () => this.log.debug('Messages stream completed'),
                     error: e => this.log.error('Error received', e),
                     complete: () => this.log.debug('Invocation completed')
-                };
-            }
+                })
         };
     }
 }

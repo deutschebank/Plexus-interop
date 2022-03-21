@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
-import { AppRegistryService } from '@plexus-interop/metadata';
-import { InteropRegistryService } from '@plexus-interop/metadata';
+import { AppRegistryService , InteropRegistryService , ProvidedMethod } from '@plexus-interop/metadata';
 import { MethodDiscoveryRequest } from '@plexus-interop/client-api';
 import { TransportChannel } from '@plexus-interop/transport-common';
-import { ApplicationConnection } from '../lifecycle/ApplicationConnection';
 import { clientProtocol, ErrorCompletion, ClientError, UniqueId, ClientProtocolHelper } from '@plexus-interop/protocol';
 import { Logger, LoggerFactory, ExtendedArray } from '@plexus-interop/common';
-import { ProvidedMethod } from '@plexus-interop/metadata';
 import { DiscoveredMethod, MethodType } from '@plexus-interop/client';
+import { ApplicationConnection } from '../lifecycle/ApplicationConnection';
+import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 
 export class DiscoveryRequestHandler {
 
@@ -62,7 +60,7 @@ export class DiscoveryRequestHandler {
             }
 
             if (methodDiscoveryRequest.outputMessageId) {
-                providedMethods = providedMethods.filter(m => methodDiscoveryRequest.outputMessageId === methodDiscoveryRequest.outputMessageId);
+                providedMethods = providedMethods.filter((m) => m.method.requestMessage.id === methodDiscoveryRequest.outputMessageId);
             }
 
             let discoveredMethods: DiscoveredMethod[];
@@ -75,13 +73,13 @@ export class DiscoveryRequestHandler {
                 this.log.trace(`Handling online discovery, ${connectedApps.length} apps connected`);
 
                 discoveredMethods = ExtendedArray.of(providedMethods)
-                    .joinWith(connectedApps, (providedMethod, app) => {
+                    .joinWith(connectedApps, (providedMethod, app) => 
                         // join fn
-                        return this.convertDiscoveredMethod(providedMethod, app.descriptor.connectionId);
-                    }, (providedMethod, app) => {
+                         this.convertDiscoveredMethod(providedMethod, app.descriptor.connectionId)
+                    , (providedMethod, app) => 
                         // predicate
-                        return providedMethod.providedService.application.id === app.descriptor.applicationId;
-                    })
+                         providedMethod.providedService.application.id === app.descriptor.applicationId
+                    )
                     .toArray();
 
             } else {
@@ -107,7 +105,7 @@ export class DiscoveryRequestHandler {
         const methodTitle = pm.title;
         const inputMessageId = pm.method.requestMessage.id;
         const outputMessageId = pm.method.responseMessage.id;        
-        const options = pm.options;
+        const {options} = pm;
 
         const providedMethod = {
             providedService: {

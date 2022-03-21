@@ -21,9 +21,7 @@ import { getPbJsExecPath } from '../common/protoJs';
 
 export class GenJsonCommand extends BaseJavaGenCommand {
     
-    public plexusGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=json_meta', ...this.optionArgs(opts), `--protoc=${getPbJsExecPath()}`];
-    }
+    public plexusGenArgs: (opts: any) => string[] = opts => ['--type=json_meta', ...this.optionArgs(opts), `--protoc=${getPbJsExecPath()}`]
 
     public generalDescription = () => 'generate metadata in JSON format';
 

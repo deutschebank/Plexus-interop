@@ -28,9 +28,7 @@ export async function setupConnections(): Promise<{ client: TransportConnection,
     return Promise.all([
             factory.connectClient(clientChannelsObserver), 
             factory.connectServer(serverChannelsObserver)])
-        .then((data) => {
-            return { client: data[0], server: data[1], clientChannelsObserver, serverChannelsObserver };
-        });
+        .then((data) => ({ client: data[0], server: data[1], clientChannelsObserver, serverChannelsObserver }));
 
 }
 

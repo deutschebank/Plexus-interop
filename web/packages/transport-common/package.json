@@ -9,8 +9,7 @@
   "scripts": {
     "build": "npm run build:main",
     "build:watch": "tsc -w",
-    "build:main": "tsc -p tsconfig.json",
-    "lint": "tslint src/**/*.ts",
+    "build:main": "tsc",
     "test": "jest --coverage"
   },
   "dependencies": {

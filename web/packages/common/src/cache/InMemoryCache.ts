@@ -19,7 +19,7 @@ import { CacheEntry } from './CacheEntry';
 import { CacheEntryDescriptor } from './CacheEntryDescriptor';
 import { Logger, LoggerFactory } from '../logger';
 
-let globalObj: any = typeof window !== 'undefined' ? window : global;
+const globalObj: any = typeof window !== 'undefined' ? window : global;
 
 export class InMemoryCache implements Cache {
 
@@ -69,9 +69,9 @@ export class InMemoryCache implements Cache {
         const descriptor = this.storage.get(key);
         if (descriptor) {
             return descriptor.entry.value;
-        } else {
+        } 
             return undefined;
-        }
+        
     }
 
     private cleanEntry(key: string): void {

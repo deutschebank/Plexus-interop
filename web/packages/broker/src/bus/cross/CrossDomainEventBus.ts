@@ -14,8 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Event } from '../Event';
-import { EventBus } from '../EventBus';
 import {
   Subscription,
   Logger,
@@ -26,6 +24,8 @@ import {
   StateMaschineBase,
 } from '@plexus-interop/common';
 import { filter, fromEvent, map, Observable, PartialObserver, publish, refCount } from 'rxjs';
+import { Event } from '../Event';
+import { EventBus } from '../EventBus';
 
 import { IFrameHostMessage } from './model/IFrameHostMessage';
 import { SubscribeRequest } from './model/SubscribeRequest';
@@ -75,14 +75,14 @@ export class CrossDomainEventBus implements EventBus {
       this.log.info('Unsubsribing from Host iFrame');
       this.hostIframeEventsSubscription.unsubscribe();
     }
-    this.emitters.forEach((v, k) => v.error('Disconnected from Host iFrame'));
+    this.emitters.forEach((v) => v.error('Disconnected from Host iFrame'));
     this.emitters.clear();
     this.observables.clear();
   }
 
   public publish(topic: string, event: Event): void {
     this.stateMaschine.throwIfNot(State.CONNECTED);
-    const payload = event.payload;
+    const {payload} = event;
     if (this.log.isTraceEnabled()) {
       this.log.trace(`Publishing to [${topic}]`, payload);
     }
@@ -94,7 +94,7 @@ export class CrossDomainEventBus implements EventBus {
     this.stateMaschine.throwIfNot(State.CONNECTED);
     const message = this.hostMessage({ topic }, MessageType.Subscribe, ResponseType.Stream);
     return this.sendAndSubscribe<SubscribeRequest, Event>(message, {
-      next: (message) => handler(message.responsePayload as Event),
+      next: (newMessage) => handler(newMessage.responsePayload as Event),
     });
   }
 
@@ -131,7 +131,7 @@ export class CrossDomainEventBus implements EventBus {
     observer: PartialObserver<IFrameHostMessage<T, ResType>>,
     rejectTimeout: number = this.singleOperationTimeOut
   ): Subscription {
-    const responseType = message.responseType;
+    const {responseType} = message;
     const subscriptionKey = this.subscriptionKey(message);
     message.responseType =
       !responseType || responseType === ResponseType.None ? ResponseType.Stream : message.responseType;
@@ -167,7 +167,7 @@ export class CrossDomainEventBus implements EventBus {
       this.sendAndSubscribe(
         message,
         {
-          next: (m) => {
+          next: () => {
             this.log.info('Success ping response received');
             this.stateMaschine.go(State.CONNECTED);
             resolve();
@@ -183,7 +183,7 @@ export class CrossDomainEventBus implements EventBus {
   }
 
   private postToIFrame(message: any): void {
-    const contentWindow = this.hostIFrame.contentWindow;
+    const {contentWindow} = this.hostIFrame;
     if (contentWindow) {
       contentWindow.postMessage(message, this.hostOrigin);
     } else {
@@ -234,19 +234,19 @@ export class CrossDomainEventBus implements EventBus {
   private hostMessage<T, R>(
     requestPayload: T,
     type: MessageType<T, R>,
-    responseType?: ResponseType
+    responseType : ResponseType = ResponseType.None
   ): IFrameHostMessage<T, R> {
-    responseType = responseType ? responseType : ResponseType.None;
     return { id: GUID.getNewGUIDString(), type, requestPayload, responseType };
   }
 
   private subscriptionKey(hostMessage: IFrameHostMessage<any, any>): string {
     switch (hostMessage.type.id) {
-      case MessageType.Subscribe.id:
-        let message = hostMessage as IFrameHostMessage<SubscribeRequest, any>;
+      case MessageType.Subscribe.id: {
+        const message = hostMessage as IFrameHostMessage<SubscribeRequest, any>;
         return (
-          message.type.id + '.' + (message.requestPayload ? message.requestPayload.topic : message.responsePayload.key)
+          `${message.type.id  }.${  message.requestPayload ? message.requestPayload.topic : message.responsePayload.key}`
         );
+      }
       default:
         return hostMessage.id;
     }
@@ -265,7 +265,7 @@ export class CrossDomainEventBus implements EventBus {
   }
 
   private emitError(subscription: string, error: string): void {
-    let observer = this.emitters.get(subscription);
+    const observer = this.emitters.get(subscription);
     if (observer) {
       observer.error(new Error(error));
       this.clearEmitter(subscription);

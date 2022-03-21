@@ -18,15 +18,13 @@ import { PublishRequest } from './PublishRequest';
 import { Event } from '../../Event';
 import { SubscribeRequest } from './SubscribeRequest';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class MessageType<Req, Res> {
 
-    // tslint:disable-next-line:variable-name
     public static Ping: MessageType<{}, {}> = new MessageType<{}, {}>(1);
 
-    // tslint:disable-next-line:variable-name
     public static Publish: MessageType<PublishRequest, {}> = new MessageType<PublishRequest, {}>(6);
 
-    // tslint:disable-next-line:variable-name
     public static Subscribe: MessageType<SubscribeRequest, Event> = new MessageType<SubscribeRequest, Event>(8);
 
     constructor(public id: number) { }

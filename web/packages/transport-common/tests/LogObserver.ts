@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-console */
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -32,7 +34,7 @@ export class LogObserver<T> implements Observer<T> {
         }
     }
 
-    public error(error: any) {
+    public error() {
         console.log(`${this.id.toString()} - Error`);
     }
 

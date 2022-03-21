@@ -14,16 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 import { ServerConnectionFactory } from '@plexus-interop/transport-common';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
+import { InteropRegistryProvider , InteropRegistryService , AppRegistryService } from '@plexus-interop/metadata';
+import { AppLifeCycleManager } from '../lifecycle/AppLifeCycleManager';
 import { ClientConnectionProcessor } from './ClientConnectionProcessor';
 import { AuthenticationHandler } from './AuthenticationHandler';
 import { InvocationRequestHandler } from './InvocationRequestHandler';
-import { InteropRegistryProvider } from '@plexus-interop/metadata';
-import { InteropRegistryService } from '@plexus-interop/metadata';
 import { ClientRequestProcessor } from './ClientRequestProcessor';
-import { AppRegistryService } from '@plexus-interop/metadata';
 import { DiscoveryRequestHandler } from './DiscoveryRequestHandler';
 
 export class Broker {

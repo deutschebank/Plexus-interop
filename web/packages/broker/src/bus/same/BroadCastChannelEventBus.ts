@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Subscription, AnonymousSubscription, Logger, LoggerFactory, InMemoryCache, CacheEntry } from '@plexus-interop/common';
 import { EventBus } from '../EventBus';
 import { Event } from '../Event';
-import { Subscription, AnonymousSubscription, Logger, LoggerFactory, InMemoryCache, CacheEntry } from '@plexus-interop/common';
 
 /**
  * Event bus based on Broad Cast Channel API 
@@ -28,7 +28,6 @@ export class BroadCastChannelEventBus implements EventBus {
 
     private readonly log: Logger;
 
-    // tslint:disable-next-line:typedef
     private readonly openChannels = new InMemoryCache();
 
     public constructor(private readonly namespace: string = 'plexus-bus') {

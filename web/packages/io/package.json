@@ -9,7 +9,6 @@
     "build": "npm run build:main",
     "build:main": "tsc -p tsconfig.json",
     "build:watch": "tsc -w -p tsconfig.json",
-    "lint": "tslint src/**/*.ts",
     "unit": "jest --coverage",
     "test": "npm run unit"
   },

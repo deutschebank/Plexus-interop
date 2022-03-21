@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable no-async-promise-executor */ // TODO re-enable this
 /**
  * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -14,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { BaseEchoTest } from './BaseEchoTest';
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientStreamingHandler } from './ClientStreamingHandler';
-import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
 
 export class ClientStreamingTests extends BaseEchoTest {
 
@@ -30,9 +32,9 @@ export class ClientStreamingTests extends BaseEchoTest {
     }
 
     public testClientCanSendStreamToServer(): Promise<void> {
+        // TODO no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
-            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => {
-                return {
+            const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => ({
                     next: async clientRequest => {
                         hostClient.next(clientRequest);
                         hostClient.complete();
@@ -42,23 +44,23 @@ export class ClientStreamingTests extends BaseEchoTest {
                         reject(e);
                     },
                     streamCompleted: () => { }
-                };
-            });
+                }));
             const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, serverHandler);
             let remoteCompleted = false;
             const streamingClient = await client.getEchoServiceProxy().clientStreaming({
                 next: () => { },
                 error: (e) => {
-                    // tslint:disable-next-line: no-console
                     console.error('Error received by client', e);
                     reject(e);
                 },
-                complete: async () => remoteCompleted = true,
+                complete: async () => {
+                    remoteCompleted = true;
+                },
                 streamCompleted: () => { }
             });
             streamingClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
             await streamingClient.complete();
-            if (!remoteCompleted) { reject('Server stream not completed'); }            
+            if (!remoteCompleted) { reject(new Error('Server stream not completed')); }
             await this.clientsSetup.disconnect(client, server);
             resolve();
         });
@@ -69,12 +71,14 @@ export class ClientStreamingTests extends BaseEchoTest {
             const serverHandler = new ClientStreamingHandler((context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => {
                 let lastRequest: plexus.plexus.interop.testing.IEchoRequest | null = null;
                 return {
-                    next: async clientRequest => lastRequest = clientRequest,
+                    next: clientRequest => {
+                        lastRequest = clientRequest;
+                    },
                     complete: () => { },
                     error: e => reject(e),
                     streamCompleted: () => {
                         if (!lastRequest) {
-                            reject('Request not received');
+                            reject(new Error('Request not received'));
                         } else {
                             hostClient.next(lastRequest);
                             hostClient.complete();
@@ -88,13 +92,17 @@ export class ClientStreamingTests extends BaseEchoTest {
             const streamingClient = await client.getEchoServiceProxy().clientStreaming({
                 next: () => { },
                 error: e => reject(e),
-                complete: async () => serverCompleted = true,
-                streamCompleted: () => serverStreamCompleted = true
+                complete: () => {
+                    serverCompleted = true;
+                },
+                streamCompleted: () => {
+                    serverStreamCompleted = true;
+                }
             });
             streamingClient.next(this.clientsSetup.createSimpleRequestDto('Hey'));
             await streamingClient.complete();
-            if (!serverCompleted) { reject('Server not completed'); }
-            if (!serverStreamCompleted) { reject('Server stream not completed'); }
+            if (!serverCompleted) { reject(new Error('Server not completed')); }
+            if (!serverStreamCompleted) { reject(new Error('Server stream not completed')); }
             await this.clientsSetup.disconnect(client, server);
             resolve();
         });

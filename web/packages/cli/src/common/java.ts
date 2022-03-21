@@ -34,9 +34,9 @@ export async function javaExecProvided(): Promise<string> {
     const execExists = await exists(execPath);
     if (execExists) {
         return execPath;
-    } else {
+    } 
         throw new Error(`Do not exist ${execPath}`);
-    }
+    
 }
 
 export function getJreDownloadUrl(): string {

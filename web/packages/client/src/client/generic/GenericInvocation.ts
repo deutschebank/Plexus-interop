@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 import { UniqueId, Channel } from '@plexus-interop/transport-common';
-import { clientProtocol as plexus, SuccessCompletion, ErrorCompletion, ClientError, ClientProtocolUtils, InvocationMetaInfo } from '@plexus-interop/protocol';
-import { ClientProtocolHelper as modelHelper, ClientProtocolHelper } from '@plexus-interop/protocol';
-import { InvocationState } from './InvocationState';
+import { clientProtocol as plexus, SuccessCompletion, ErrorCompletion, ClientError, ClientProtocolUtils, InvocationMetaInfo , ClientProtocolHelper as modelHelper, ClientProtocolHelper } from '@plexus-interop/protocol';
 import { Subscription, Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { StateMaschine, CancellationToken, Logger, LoggerFactory, StateMaschineBase, once } from '@plexus-interop/common';
 import { ProvidedMethodReference } from '@plexus-interop/client-api';
+import { InvocationState } from './InvocationState';
 import { ClientDtoUtils } from '../ClientDtoUtils';
 import { InvocationChannelObserver } from './InvocationChannelObserver';
 
@@ -359,11 +358,11 @@ export class GenericInvocation {
                     message
                 }
             };
-        } else {
+        } 
             return {
                 status: plexus.Completion.Status.Completed
             };
-        }
+        
     }
 
     private async sendStartInvocationRequest(metaInfo: InvocationMetaInfo): Promise<void> {
