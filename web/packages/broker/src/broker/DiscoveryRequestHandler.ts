@@ -64,7 +64,7 @@ export class DiscoveryRequestHandler {
 
       if (methodDiscoveryRequest.outputMessageId) {
         providedMethods = providedMethods.filter(
-          (method) => method.providedService.application.id === methodDiscoveryRequest.outputMessageId
+          (m) => m.method.requestMessage.id === methodDiscoveryRequest.outputMessageId
         );
       }
 
