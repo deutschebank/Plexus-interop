@@ -113,7 +113,7 @@
     "lerna": "^4.0.0",
     "link-parent-bin": "^2.0.0",
     "lint-staged": "^12.3.4",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "mocha": "^9.2.1",
     "mock-socket": "^7.0.0",
     "npm-run-all": "4.1.1",
