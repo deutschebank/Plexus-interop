@@ -25,7 +25,7 @@ namespace Plexus.Interop.Apps.Internal
     using System.Reactive.Subjects;
     using System.Threading.Tasks;
     using Plexus.Interop.Apps.Internal.Generated;
-    using AppConnectionDescriptor = Plexus.Interop.Apps.AppConnectionDescriptor;
+    using AppConnectionDescriptor = Plexus.AppConnectionDescriptor;
     using UniqueId = Plexus.UniqueId;
 
     internal sealed class AppLifecycleManager : IAppLifecycleManager
@@ -50,13 +50,12 @@ namespace Plexus.Interop.Apps.Internal
         {
             _appRegistryProvider = appRegistryProvider;
             _appLifecycleManagerClientClientRepo = appLifecycleManagerClientClientRepo;
-            ConnectionEventsStream = _connectionSubject.ObserveOn(TaskPoolScheduler.Default);
             appLaunchedEventProvider.AppLaunchedStream.Subscribe(OnApplicationLaunchedEvent);
         }
 
         private ILogger Log { get; } = LogManager.GetLogger<AppLifecycleManager>();
 
-        public IObservable<AppConnectionEvent> ConnectionEventsStream { get; }
+        public IObservable<AppConnectionEvent> ConnectionEventsStream => _connectionSubject;
 
         public IReadOnlyCollection<IAppConnection> GetAppInstanceConnections(UniqueId appInstanceId)
         {
@@ -323,9 +322,14 @@ namespace Plexus.Interop.Apps.Internal
 
         public void RegisterAppInstance(UniqueId appInstanceId)
         {
+            bool added;
             lock (_sync)
             {
-                _appInstanceIds.Add(appInstanceId);
+                added = _appInstanceIds.Add(appInstanceId);
+            }
+            if (added)
+            {
+                Log.Debug($"{nameof(RegisterAppInstance)}: {appInstanceId}");
             }
         }
 

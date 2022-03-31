@@ -15,16 +15,18 @@
 // limitations under the License.
 //
 
-import "interop/app_launcher_service.proto";
-import "interop/app_lifecycle_service.proto";
-import "interop/context_linkage.proto";
+syntax = "proto3";
 
-package plexus.interop.testing;
+package interop.testing;
 
-application TestAppLauncher {
+service GreetingService {
+	rpc Hello (GreetingRequest) returns (GreetingResponse);
+}
 
-	provides .interop.AppLauncherService to interop.AppLifecycleManager { Launch; AppLaunchedEventStream; }
+message GreetingRequest {
+	string name = 1;
+}
 
-	consumes .interop.ContextLinkageService { ContextLoadedStream; CreateContext; JoinContext; GetContexts; GetLinkedInvocations; GetAllLinkedInvocations; }
-	consumes .interop.AppLifecycleService from interop.AppLifecycleManager { GetLifecycleEventStream; GetInvocationEventStream; }
+message GreetingResponse {
+	string greeting = 1;
 }
