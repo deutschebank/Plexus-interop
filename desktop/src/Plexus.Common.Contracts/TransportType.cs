@@ -1,5 +1,5 @@
-/**
- * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
+﻿/**
+ * Copyright 2017-2021 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- namespace Plexus.Interop.Transport
+namespace Plexus
 {
-    using Plexus.Channels;
-    using System;
-    using System.Threading.Tasks;
-
-    public interface ITransportConnection : IDisposable
+    public enum TransportType
     {
-        UniqueId Id { get; }
-
-        Task Completion { get; }
-
-        IReadableChannel<ITransportChannel> IncomingChannels { get; }
-
-        TransportType TransportType { get; }
-
-        bool TryComplete();
-
-        bool TryTerminate(Exception ex = null);
-        
-        ValueTask<Maybe<ITransportChannel>> TryCreateChannelSafeAsync();
+        Pipe,
+        Ws,
+        Wss
     }
 }

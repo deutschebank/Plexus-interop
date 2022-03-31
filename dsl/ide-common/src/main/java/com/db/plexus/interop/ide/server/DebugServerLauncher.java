@@ -35,7 +35,8 @@ import java.util.function.Function;
 
 public class DebugServerLauncher {
 
-    public static void launch(LanguageServerImpl languageServer, int port) throws InterruptedException, ExecutionException, IOException {
+    public static void launch(LanguageServerImpl languageServer, int port)
+            throws InterruptedException, ExecutionException, IOException {
         Launcher<LanguageClient> launcher = createSocketLauncher(
                 languageServer,
                 LanguageClient.class,
@@ -47,7 +48,10 @@ public class DebugServerLauncher {
         future.get();
     }
 
-    static <T> Launcher<T> createSocketLauncher(Object localService, Class<T> remoteInterface, SocketAddress socketAddress, ExecutorService executorService, Function<MessageConsumer, MessageConsumer> wrapper) throws IOException, ExecutionException, InterruptedException {
+    static <T> Launcher<T> createSocketLauncher(Object localService, Class<T> remoteInterface,
+            SocketAddress socketAddress, ExecutorService executorService,
+            Function<MessageConsumer, MessageConsumer> wrapper)
+            throws IOException, ExecutionException, InterruptedException {
         final AsynchronousServerSocketChannel serverSocket = AsynchronousServerSocketChannel.open().bind(socketAddress);
         final AsynchronousSocketChannel socketChannel = serverSocket.accept().get();
         return Launcher.createIoLauncher(

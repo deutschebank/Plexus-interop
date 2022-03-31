@@ -24,9 +24,9 @@
     {
         public static TransportClientFactory Instance = new TransportClientFactory();
 
-        public ITransportClient Create(ITransmissionClient transmissionClient, ITransportProtocolSerializationProvider serializationProvider)
+        public ITransportClient Create(TransportType transportType, ITransmissionClient transmissionClient, ITransportProtocolSerializationProvider serializationProvider)
         {
-            return new TransportClient(transmissionClient, serializationProvider);
+            return new TransportClient(transportType, transmissionClient, serializationProvider);
         }
     }
 }

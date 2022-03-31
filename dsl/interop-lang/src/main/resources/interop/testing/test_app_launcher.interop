@@ -15,20 +15,18 @@
 // limitations under the License.
 //
 
-package plexus.interop.testing;
-
-import "plexus/interop/testing/echo_service.proto";
-import "plexus/interop/testing/greeting_service.proto";
+import "interop/app_launcher_service.proto";
 import "interop/app_lifecycle_service.proto";
+import "interop/app_registration_service.proto";
 import "interop/context_linkage.proto";
 
-application EchoClient {
-	
-	consumes plexus.interop.testing.EchoService from plexus.interop.testing.* { Unary; ServerStreaming; ClientStreaming; DuplexStreaming; }
+package interop.testing;
 
-	consumes plexus.interop.testing.GreetingService from plexus.interop.testing.* { Hello; } 
+application TestAppLauncher {
 
-	consumes .interop.AppLifecycleService from interop.AppLifecycleManager { GetConnections; GetConnectionsStream; }
-		
+	provides .interop.AppLauncherService to interop.AppLifecycleManager { Launch; AppLaunchedEventStream; }
+
 	consumes .interop.ContextLinkageService { ContextLoadedStream; CreateContext; JoinContext; GetContexts; GetLinkedInvocations; GetAllLinkedInvocations; }
+	consumes .interop.AppLifecycleService from interop.AppLifecycleManager { GetLifecycleEventStream; GetInvocationEventStream; }
+	consumes .interop.AppRegistrationService { RequestInstanceId; RegisterInstanceId; }
 }

@@ -5,12 +5,14 @@
 	      "nested": {
 	        "protobuf": {
 	          "options": {
-	            "go_package": "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
+	            "go_package": "github.com/golang/protobuf/ptypes/empty",
 	            "java_package": "com.google.protobuf",
-	            "java_outer_classname": "DescriptorProtos",
-	            "csharp_namespace": "Google.Protobuf.Reflection",
+	            "java_outer_classname": "EmptyProto",
+	            "csharp_namespace": "Google.Protobuf.WellKnownTypes",
 	            "objc_class_prefix": "GPB",
-	            "optimize_for": "SPEED"
+	            "optimize_for": "SPEED",
+	            "java_multiple_files": true,
+	            "cc_enable_arenas": true
 	          },
 	          "nested": {
 	            "FileDescriptorSet": {
@@ -889,7 +891,19 @@
 	            "appInstanceId": {
 	              "type": "UniqueId",
 	              "id": 3
+	            },
+	            "transportType": {
+	              "type": "TransportType",
+	              "id": 4
 	            }
+	          }
+	        },
+	        "TransportType": {
+	          "values": {
+	            "Unknown": 0,
+	            "Pipe": 1,
+	            "Ws": 2,
+	            "Wss": 3
 	          }
 	        },
 	        "AppLaunchMode": {
@@ -1063,7 +1077,8 @@
 	            "event": {
 	              "oneof": [
 	                "connected",
-	                "disconnected"
+	                "disconnected",
+	                "error"
 	              ]
 	            }
 	          },
@@ -1075,6 +1090,10 @@
 	            "disconnected": {
 	              "type": "AppDisconnectedEvent",
 	              "id": 2
+	            },
+	            "error": {
+	              "type": "AppConnectionErrorEvent",
+	              "id": 3
 	            }
 	          }
 	        },
@@ -1115,6 +1134,17 @@
 	        "AppDisconnectedEvent": {
 	          "options": {
 	            "(.interop.message_id)": "interop.AppDisconnectedEvent"
+	          },
+	          "fields": {
+	            "connectionDescriptor": {
+	              "type": "AppConnectionDescriptor",
+	              "id": 1
+	            }
+	          }
+	        },
+	        "AppConnectionErrorEvent": {
+	          "options": {
+	            "(.interop.message_id)": "interop.AppConnectionErrorEvent"
 	          },
 	          "fields": {
 	            "connectionDescriptor": {
@@ -1467,6 +1497,44 @@
 	            }
 	          }
 	        },
+	        "AppRegistrationService": {
+	          "options": {
+	            "(.interop.service_id)": "interop.AppRegistrationService"
+	          },
+	          "methods": {
+	            "RequestInstanceId": {
+	              "requestType": "RequestInstanceIdRequest",
+	              "responseType": "UniqueId"
+	            },
+	            "RegisterInstanceId": {
+	              "requestType": "RegisterInstanceIdRequest",
+	              "responseType": "RegisterInstanceIdResponse"
+	            }
+	          }
+	        },
+	        "RequestInstanceIdRequest": {
+	          "options": {
+	            "(.interop.message_id)": "interop.RequestInstanceIdRequest"
+	          },
+	          "fields": {}
+	        },
+	        "RegisterInstanceIdRequest": {
+	          "options": {
+	            "(.interop.message_id)": "interop.RegisterInstanceIdRequest"
+	          },
+	          "fields": {
+	            "appInstanceId": {
+	              "type": "UniqueId",
+	              "id": 1
+	            }
+	          }
+	        },
+	        "RegisterInstanceIdResponse": {
+	          "options": {
+	            "(.interop.message_id)": "interop.RegisterInstanceIdResponse"
+	          },
+	          "fields": {}
+	        },
 	        "Context": {
 	          "options": {
 	            "(.interop.message_id)": "interop.Context"
@@ -1475,6 +1543,14 @@
 	            "id": {
 	              "type": "string",
 	              "id": 1
+	            },
+	            "own": {
+	              "type": "bool",
+	              "id": 2
+	            },
+	            "kind": {
+	              "type": "string",
+	              "id": 3
 	            }
 	          }
 	        },
@@ -1486,6 +1562,17 @@
 	            "contexts": {
 	              "rule": "repeated",
 	              "type": "Context",
+	              "id": 1
+	            }
+	          }
+	        },
+	        "CreateContextRequest": {
+	          "options": {
+	            "(.interop.message_id)": "interop.CreateContextRequest"
+	          },
+	          "fields": {
+	            "kind": {
+	              "type": "string",
 	              "id": 1
 	            }
 	          }
@@ -1616,7 +1703,15 @@
 	            "contextIds": {
 	              "rule": "repeated",
 	              "type": "string",
-	              "id": 3
+	              "id": 3,
+	              "options": {
+	                "deprecated": true
+	              }
+	            },
+	            "contexts": {
+	              "rule": "repeated",
+	              "type": "Context",
+	              "id": 4
 	            }
 	          }
 	        },
@@ -1644,6 +1739,18 @@
 	            },
 	            "CreateContext": {
 	              "requestType": "google.protobuf.Empty",
+	              "responseType": "Context",
+	              "options": {
+	                "deprecated": true
+	              },
+	              "parsedOptions": [
+	                {
+	                  "deprecated": true
+	                }
+	              ]
+	            },
+	            "CreateContext2": {
+	              "requestType": "CreateContextRequest",
 	              "responseType": "Context"
 	            },
 	            "JoinContext": {
@@ -1804,6 +1911,143 @@
 	          "id": 9650,
 	          "extend": "google.protobuf.MethodOptions"
 	        },
+	        "testing": {
+	          "options": {
+	            "csharp_namespace": "plexus"
+	          },
+	          "nested": {
+	            "stringOption": {
+	              "type": "string",
+	              "id": 1500,
+	              "extend": ".interop.ProvidedMethodOptions"
+	            },
+	            "enumOption": {
+	              "type": "EchoRequest.SubEnum",
+	              "id": 1501,
+	              "extend": ".interop.ProvidedMethodOptions"
+	            },
+	            "EchoService": {
+	              "options": {
+	                "(.interop.service_id)": "interop.testing.EchoService"
+	              },
+	              "methods": {
+	                "Unary": {
+	                  "requestType": "EchoRequest",
+	                  "responseType": "EchoRequest"
+	                },
+	                "ServerStreaming": {
+	                  "requestType": "EchoRequest",
+	                  "responseType": "EchoRequest",
+	                  "responseStream": true
+	                },
+	                "ClientStreaming": {
+	                  "requestType": "EchoRequest",
+	                  "requestStream": true,
+	                  "responseType": "EchoRequest"
+	                },
+	                "DuplexStreaming": {
+	                  "requestType": "EchoRequest",
+	                  "requestStream": true,
+	                  "responseType": "EchoRequest",
+	                  "responseStream": true
+	                }
+	              }
+	            },
+	            "EchoRequest": {
+	              "options": {
+	                "(.interop.message_id)": "interop.testing.EchoRequest"
+	              },
+	              "fields": {
+	                "stringField": {
+	                  "type": "string",
+	                  "id": 1
+	                },
+	                "int64Field": {
+	                  "type": "int64",
+	                  "id": 2
+	                },
+	                "uint32Field": {
+	                  "type": "uint32",
+	                  "id": 3
+	                },
+	                "repeatedDoubleField": {
+	                  "rule": "repeated",
+	                  "type": "double",
+	                  "id": 4
+	                },
+	                "enumField": {
+	                  "type": "SubEnum",
+	                  "id": 5
+	                },
+	                "subMessageField": {
+	                  "type": "SubMessage",
+	                  "id": 6
+	                },
+	                "repeatedSubMessageField": {
+	                  "rule": "repeated",
+	                  "type": "SubMessage",
+	                  "id": 7
+	                }
+	              },
+	              "nested": {
+	                "SubMessage": {
+	                  "options": {
+	                    "(.interop.message_id)": "interop.testing.EchoRequest.SubMessage"
+	                  },
+	                  "fields": {
+	                    "bytesField": {
+	                      "type": "bytes",
+	                      "id": 1
+	                    },
+	                    "stringField": {
+	                      "type": "string",
+	                      "id": 2
+	                    }
+	                  }
+	                },
+	                "SubEnum": {
+	                  "values": {
+	                    "VALUE_ONE": 0,
+	                    "VALUE_TWO": 1
+	                  }
+	                }
+	              }
+	            },
+	            "GreetingService": {
+	              "options": {
+	                "(.interop.service_id)": "interop.testing.GreetingService"
+	              },
+	              "methods": {
+	                "Hello": {
+	                  "requestType": "GreetingRequest",
+	                  "responseType": "GreetingResponse"
+	                }
+	              }
+	            },
+	            "GreetingRequest": {
+	              "options": {
+	                "(.interop.message_id)": "interop.testing.GreetingRequest"
+	              },
+	              "fields": {
+	                "name": {
+	                  "type": "string",
+	                  "id": 1
+	                }
+	              }
+	            },
+	            "GreetingResponse": {
+	              "options": {
+	                "(.interop.message_id)": "interop.testing.GreetingResponse"
+	              },
+	              "fields": {
+	                "greeting": {
+	                  "type": "string",
+	                  "id": 1
+	                }
+	              }
+	            }
+	          }
+	        },
 	        "UniqueId": {
 	          "options": {
 	            "(.interop.message_id)": "interop.UniqueId"
@@ -1816,151 +2060,6 @@
 	            "hi": {
 	              "type": "fixed64",
 	              "id": 2
-	            }
-	          }
-	        }
-	      }
-	    },
-	    "plexus": {
-	      "nested": {
-	        "interop": {
-	          "nested": {
-	            "testing": {
-	              "options": {
-	                "csharp_namespace": "plexus"
-	              },
-	              "nested": {
-	                "stringOption": {
-	                  "type": "string",
-	                  "id": 1500,
-	                  "extend": ".interop.ProvidedMethodOptions"
-	                },
-	                "enumOption": {
-	                  "type": "EchoRequest.SubEnum",
-	                  "id": 1501,
-	                  "extend": ".interop.ProvidedMethodOptions"
-	                },
-	                "EchoService": {
-	                  "options": {
-	                    "(.interop.service_id)": "plexus.interop.testing.EchoService"
-	                  },
-	                  "methods": {
-	                    "Unary": {
-	                      "requestType": "EchoRequest",
-	                      "responseType": "EchoRequest"
-	                    },
-	                    "ServerStreaming": {
-	                      "requestType": "EchoRequest",
-	                      "responseType": "EchoRequest",
-	                      "responseStream": true
-	                    },
-	                    "ClientStreaming": {
-	                      "requestType": "EchoRequest",
-	                      "requestStream": true,
-	                      "responseType": "EchoRequest"
-	                    },
-	                    "DuplexStreaming": {
-	                      "requestType": "EchoRequest",
-	                      "requestStream": true,
-	                      "responseType": "EchoRequest",
-	                      "responseStream": true
-	                    }
-	                  }
-	                },
-	                "EchoRequest": {
-	                  "options": {
-	                    "(.interop.message_id)": "plexus.interop.testing.EchoRequest"
-	                  },
-	                  "fields": {
-	                    "stringField": {
-	                      "type": "string",
-	                      "id": 1
-	                    },
-	                    "int64Field": {
-	                      "type": "int64",
-	                      "id": 2
-	                    },
-	                    "uint32Field": {
-	                      "type": "uint32",
-	                      "id": 3
-	                    },
-	                    "repeatedDoubleField": {
-	                      "rule": "repeated",
-	                      "type": "double",
-	                      "id": 4
-	                    },
-	                    "enumField": {
-	                      "type": "SubEnum",
-	                      "id": 5
-	                    },
-	                    "subMessageField": {
-	                      "type": "SubMessage",
-	                      "id": 6
-	                    },
-	                    "repeatedSubMessageField": {
-	                      "rule": "repeated",
-	                      "type": "SubMessage",
-	                      "id": 7
-	                    }
-	                  },
-	                  "nested": {
-	                    "SubMessage": {
-	                      "options": {
-	                        "(.interop.message_id)": "plexus.interop.testing.EchoRequest.SubMessage"
-	                      },
-	                      "fields": {
-	                        "bytesField": {
-	                          "type": "bytes",
-	                          "id": 1
-	                        },
-	                        "stringField": {
-	                          "type": "string",
-	                          "id": 2
-	                        }
-	                      }
-	                    },
-	                    "SubEnum": {
-	                      "values": {
-	                        "VALUE_ONE": 0,
-	                        "VALUE_TWO": 1
-	                      }
-	                    }
-	                  }
-	                },
-	                "GreetingService": {
-	                  "options": {
-	                    "(.interop.service_id)": "plexus.interop.testing.GreetingService"
-	                  },
-	                  "methods": {
-	                    "Hello": {
-	                      "requestType": "GreetingRequest",
-	                      "responseType": "GreetingResponse"
-	                    }
-	                  }
-	                },
-	                "GreetingRequest": {
-	                  "options": {
-	                    "(.interop.message_id)": "plexus.interop.testing.GreetingRequest"
-	                  },
-	                  "fields": {
-	                    "name": {
-	                      "type": "string",
-	                      "id": 1
-	                    }
-	                  }
-	                },
-	                "GreetingResponse": {
-	                  "options": {
-	                    "(.interop.message_id)": "plexus.interop.testing.GreetingResponse"
-	                  },
-	                  "fields": {
-	                    "greeting": {
-	                      "type": "string",
-	                      "id": 1
-	                    }
-	                  }
-	                }
-	              }
 	            }
 	          }
 	        }
@@ -2070,6 +2169,18 @@
 					"name": "CreateContext",
 					"request": "google.protobuf.Empty",
 					"response": "interop.Context",
+					"type": "Unary",
+					"options": [
+						{
+							"id": "google.protobuf.MethodOptions.deprecated",
+							"value": "true"
+						}
+					]
+				},
+				{
+					"name": "CreateContext2",
+					"request": "interop.CreateContextRequest",
+					"response": "interop.Context",
 					"type": "Unary"
 				},
 				{
@@ -2117,54 +2228,77 @@
 			]
 		},
 		{
-			"id": "plexus.interop.testing.EchoService",
+			"id": "interop.AppRegistrationService",
+			"methods": [
+				{
+					"name": "RequestInstanceId",
+					"request": "interop.RequestInstanceIdRequest",
+					"response": "interop.UniqueId",
+					"type": "Unary"
+				},
+				{
+					"name": "RegisterInstanceId",
+					"request": "interop.RegisterInstanceIdRequest",
+					"response": "interop.RegisterInstanceIdResponse",
+					"type": "Unary"
+				}
+			],
+			"options": [
+				{
+					"id": "interop.service_id",
+					"value": "interop.AppRegistrationService"
+				}
+			]
+		},
+		{
+			"id": "interop.testing.EchoService",
 			"methods": [
 				{
 					"name": "Unary",
-					"request": "plexus.interop.testing.EchoRequest",
-					"response": "plexus.interop.testing.EchoRequest",
+					"request": "interop.testing.EchoRequest",
+					"response": "interop.testing.EchoRequest",
 					"type": "Unary"
 				},
 				{
 					"name": "ServerStreaming",
-					"request": "plexus.interop.testing.EchoRequest",
-					"response": "plexus.interop.testing.EchoRequest",
+					"request": "interop.testing.EchoRequest",
+					"response": "interop.testing.EchoRequest",
 					"type": "ServerStreaming"
 				},
 				{
 					"name": "ClientStreaming",
-					"request": "plexus.interop.testing.EchoRequest",
-					"response": "plexus.interop.testing.EchoRequest",
+					"request": "interop.testing.EchoRequest",
+					"response": "interop.testing.EchoRequest",
 					"type": "ClientStreaming"
 				},
 				{
 					"name": "DuplexStreaming",
-					"request": "plexus.interop.testing.EchoRequest",
-					"response": "plexus.interop.testing.EchoRequest",
+					"request": "interop.testing.EchoRequest",
+					"response": "interop.testing.EchoRequest",
 					"type": "DuplexStreaming"
 				}
 			],
 			"options": [
 				{
 					"id": "interop.service_id",
-					"value": "plexus.interop.testing.EchoService"
+					"value": "interop.testing.EchoService"
 				}
 			]
 		},
 		{
-			"id": "plexus.interop.testing.GreetingService",
+			"id": "interop.testing.GreetingService",
 			"methods": [
 				{
 					"name": "Hello",
-					"request": "plexus.interop.testing.GreetingRequest",
-					"response": "plexus.interop.testing.GreetingResponse",
+					"request": "interop.testing.GreetingRequest",
+					"response": "interop.testing.GreetingResponse",
 					"type": "Unary"
 				}
 			],
 			"options": [
 				{
 					"id": "interop.service_id",
-					"value": "plexus.interop.testing.GreetingService"
+					"value": "interop.testing.GreetingService"
 				}
 			]
 		}
@@ -2227,6 +2361,9 @@
 							"name": "CreateContext"
 						},
 						{
+							"name": "CreateContext2"
+						},
+						{
 							"name": "JoinContext"
 						},
 						{
@@ -2243,6 +2380,17 @@
 						},
 						{
 							"name": "RestoreContextsLinkage"
+						}
+					]
+				},
+				{
+					"service": "interop.AppRegistrationService",
+					"methods": [
+						{
+							"name": "RequestInstanceId"
+						},
+						{
+							"name": "RegisterInstanceId"
 						}
 					]
 				}
@@ -2284,10 +2432,10 @@
 			]
 		},
 		{
-			"id": "plexus.interop.testing.EchoClient",
+			"id": "interop.testing.EchoClient",
 			"consumes": [
 				{
-					"service": "plexus.interop.testing.EchoService",
+					"service": "interop.testing.EchoService",
 					"methods": [
 						{
 							"name": "Unary"
@@ -2303,18 +2451,18 @@
 						}
 					],
 					"from": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				},
 				{
-					"service": "plexus.interop.testing.GreetingService",
+					"service": "interop.testing.GreetingService",
 					"methods": [
 						{
 							"name": "Hello"
 						}
 					],
 					"from": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				},
 				{
@@ -2338,7 +2486,7 @@
 							"name": "ContextLoadedStream"
 						},
 						{
-							"name": "CreateContext"
+							"name": "CreateContext2"
 						},
 						{
 							"name": "JoinContext"
@@ -2357,10 +2505,10 @@
 			]
 		},
 		{
-			"id": "plexus.interop.testing.EchoServer",
+			"id": "interop.testing.EchoServer",
 			"consumes": [
 				{
-					"service": "plexus.interop.testing.EchoService",
+					"service": "interop.testing.EchoService",
 					"methods": [
 						{
 							"name": "Unary"
@@ -2376,24 +2524,24 @@
 						}
 					],
 					"from": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				},
 				{
-					"service": "plexus.interop.testing.GreetingService",
+					"service": "interop.testing.GreetingService",
 					"methods": [
 						{
 							"name": "Hello"
 						}
 					],
 					"from": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				}
 			],
 			"provides": [
 				{
-					"service": "plexus.interop.testing.EchoService",
+					"service": "interop.testing.EchoService",
 					"methods": [
 						{
 							"name": "Unary",
@@ -2403,11 +2551,11 @@
 									"value": "Sample Unary Method"
 								},
 								{
-									"id": "plexus.interop.testing.string_option",
+									"id": "interop.testing.string_option",
 									"value": "some string"
 								},
 								{
-									"id": "plexus.interop.testing.enum_option",
+									"id": "interop.testing.enum_option",
 									"value": "VALUE_TWO"
 								}
 							]
@@ -2441,7 +2589,7 @@
 						}
 					],
 					"to": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					],
 					"options": [
 						{
@@ -2451,18 +2599,18 @@
 					]
 				},
 				{
-					"service": "plexus.interop.testing.GreetingService",
+					"service": "interop.testing.GreetingService",
 					"methods": [
 						{
 							"name": "Hello"
 						}
 					],
 					"to": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				},
 				{
-					"service": "plexus.interop.testing.GreetingService",
+					"service": "interop.testing.GreetingService",
 					"methods": [
 						{
 							"name": "Hello",
@@ -2476,11 +2624,11 @@
 					],
 					"alias": "AlwaysLaunchGreetingService",
 					"to": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				},
 				{
-					"service": "plexus.interop.testing.GreetingService",
+					"service": "interop.testing.GreetingService",
 					"methods": [
 						{
 							"name": "Hello",
@@ -2494,13 +2642,13 @@
 					],
 					"alias": "NeverLaunchGreetingService",
 					"to": [
-						"plexus.interop.testing.*"
+						"interop.testing.*"
 					]
 				}
 			]
 		},
 		{
-			"id": "plexus.interop.testing.TestAppLauncher",
+			"id": "interop.testing.TestAppLauncher",
 			"consumes": [
 				{
 					"service": "interop.ContextLinkageService",
@@ -2537,6 +2685,17 @@
 					],
 					"from": [
 						"interop.AppLifecycleManager"
+					]
+				},
+				{
+					"service": "interop.AppRegistrationService",
+					"methods": [
+						{
+							"name": "RequestInstanceId"
+						},
+						{
+							"name": "RegisterInstanceId"
+						}
 					]
 				}
 			],

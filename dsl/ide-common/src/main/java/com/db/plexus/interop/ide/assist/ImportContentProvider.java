@@ -32,7 +32,8 @@ public class ImportContentProvider extends IdeContentProposalProvider {
     private ProtoLangImportResolver importResolver;
 
     @Override
-    protected void _createProposals(Assignment assignment, ContentAssistContext context, IIdeContentProposalAcceptor acceptor) {
+    protected void _createProposals(Assignment assignment, ContentAssistContext context,
+            IIdeContentProposalAcceptor acceptor) {
         final AbstractElement terminal = assignment.getTerminal();
         if (terminal instanceof RuleCallImpl) {
             final String feature = assignment.getFeature();

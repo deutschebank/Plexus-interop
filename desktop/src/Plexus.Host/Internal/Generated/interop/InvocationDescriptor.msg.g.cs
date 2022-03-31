@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2021 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,10 +25,10 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Plexus.Interop.Testing.Generated {
+namespace Plexus.Host.Internal.Generated {
 
   /// <summary>Holder for reflection information generated from interop/invocation_descriptor.proto</summary>
-  public static partial class InvocationDescriptorReflection {
+  internal static partial class InvocationDescriptorReflection {
 
     #region Descriptor
     /// <summary>File descriptor for interop/invocation_descriptor.proto</summary>
@@ -47,19 +47,19 @@ namespace Plexus.Interop.Testing.Generated {
             "CRIRCgltZXRob2RfaWQYAyABKAkSMAoGc291cmNlGAQgASgLMiAuaW50ZXJv",
             "cC5BcHBDb25uZWN0aW9uRGVzY3JpcHRvchIwCgZ0YXJnZXQYBSABKAsyIC5p",
             "bnRlcm9wLkFwcENvbm5lY3Rpb25EZXNjcmlwdG9yOiCS2wQcaW50ZXJvcC5J",
-            "bnZvY2F0aW9uRGVzY3JpcHRvckIjqgIgUGxleHVzLkludGVyb3AuVGVzdGlu",
-            "Zy5HZW5lcmF0ZWRiBnByb3RvMw=="));
+            "bnZvY2F0aW9uRGVzY3JpcHRvckIhqgIeUGxleHVzLkhvc3QuSW50ZXJuYWwu",
+            "R2VuZXJhdGVkYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Plexus.Interop.Testing.Generated.AppConnectionDescriptorReflection.Descriptor, global::Plexus.Interop.Testing.Generated.OptionsReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Plexus.Host.Internal.Generated.AppConnectionDescriptorReflection.Descriptor, global::Plexus.Host.Internal.Generated.OptionsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Plexus.Interop.Testing.Generated.InvocationDescriptor), global::Plexus.Interop.Testing.Generated.InvocationDescriptor.Parser, new[]{ "ServiceId", "ServiceAliasId", "MethodId", "Source", "Target" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Plexus.Host.Internal.Generated.InvocationDescriptor), global::Plexus.Host.Internal.Generated.InvocationDescriptor.Parser, new[]{ "ServiceId", "ServiceAliasId", "MethodId", "Source", "Target" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
-  public sealed partial class InvocationDescriptor : pb::IMessage<InvocationDescriptor>
+  internal sealed partial class InvocationDescriptor : pb::IMessage<InvocationDescriptor>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
@@ -73,7 +73,7 @@ namespace Plexus.Interop.Testing.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Plexus.Interop.Testing.Generated.InvocationDescriptorReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Plexus.Host.Internal.Generated.InvocationDescriptorReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -145,10 +145,10 @@ namespace Plexus.Interop.Testing.Generated {
 
     /// <summary>Field number for the "source" field.</summary>
     public const int SourceFieldNumber = 4;
-    private global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor source_;
+    private global::Plexus.Host.Internal.Generated.AppConnectionDescriptor source_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor Source {
+    public global::Plexus.Host.Internal.Generated.AppConnectionDescriptor Source {
       get { return source_; }
       set {
         source_ = value;
@@ -157,10 +157,10 @@ namespace Plexus.Interop.Testing.Generated {
 
     /// <summary>Field number for the "target" field.</summary>
     public const int TargetFieldNumber = 5;
-    private global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor target_;
+    private global::Plexus.Host.Internal.Generated.AppConnectionDescriptor target_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor Target {
+    public global::Plexus.Host.Internal.Generated.AppConnectionDescriptor Target {
       get { return target_; }
       set {
         target_ = value;
@@ -315,13 +315,13 @@ namespace Plexus.Interop.Testing.Generated {
       }
       if (other.source_ != null) {
         if (source_ == null) {
-          Source = new global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor();
+          Source = new global::Plexus.Host.Internal.Generated.AppConnectionDescriptor();
         }
         Source.MergeFrom(other.Source);
       }
       if (other.target_ != null) {
         if (target_ == null) {
-          Target = new global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor();
+          Target = new global::Plexus.Host.Internal.Generated.AppConnectionDescriptor();
         }
         Target.MergeFrom(other.Target);
       }
@@ -354,14 +354,14 @@ namespace Plexus.Interop.Testing.Generated {
           }
           case 34: {
             if (source_ == null) {
-              Source = new global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor();
+              Source = new global::Plexus.Host.Internal.Generated.AppConnectionDescriptor();
             }
             input.ReadMessage(Source);
             break;
           }
           case 42: {
             if (target_ == null) {
-              Target = new global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor();
+              Target = new global::Plexus.Host.Internal.Generated.AppConnectionDescriptor();
             }
             input.ReadMessage(Target);
             break;
@@ -395,14 +395,14 @@ namespace Plexus.Interop.Testing.Generated {
           }
           case 34: {
             if (source_ == null) {
-              Source = new global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor();
+              Source = new global::Plexus.Host.Internal.Generated.AppConnectionDescriptor();
             }
             input.ReadMessage(Source);
             break;
           }
           case 42: {
             if (target_ == null) {
-              Target = new global::Plexus.Interop.Testing.Generated.AppConnectionDescriptor();
+              Target = new global::Plexus.Host.Internal.Generated.AppConnectionDescriptor();
             }
             input.ReadMessage(Target);
             break;
