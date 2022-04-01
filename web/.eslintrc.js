@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path = require('path');
+
 module.exports = {
   env: {
     browser: true,
@@ -24,7 +26,7 @@ module.exports = {
   plugins: ['jsdoc'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './packages/tsconfig.settings.json',
+    project: path.join(__dirname, 'packages/tsconfig.settings.json'),
     sourceType: 'module',
   },
   rules: {
