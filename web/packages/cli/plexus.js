@@ -19,6 +19,8 @@ It won't work even if there's an empty line or comment line before it.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const main = require('./dist/main/src/index').main;
-const version = require('./package.json').version;
+
+const { main } = require('./dist/main/src/index');
+const { version } = require('./package.json');
+
 main(process.argv, version);

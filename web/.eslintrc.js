@@ -31,11 +31,7 @@ module.exports = {
   },
   rules: {
     // TODO revisit post-prettier
-    'jsdoc/check-indentation': 'off',
-    'jsdoc/newline-after-description': 'off',
-    'import/newline-after-import': 'off',
     '@typescript-eslint/lines-between-class-members': 'off',
-    '@typescript-eslint/member-ordering': 'warn',
     // TODO differences of opinion
     'no-console': 'error',
     'import/prefer-default-export': 'off',

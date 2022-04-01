@@ -16,6 +16,7 @@
  */
 const path = require('path');
 const reporters = require('jasmine-reporters');
+
 const reporter = new reporters.JUnitXmlReporter({
   consolidateAll: false,
   filePrefix: 'jest-junit-result-',

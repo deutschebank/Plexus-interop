@@ -17,6 +17,7 @@
 const argv = require('minimist')(process.argv.slice(2));
 const exec = require('child_process').exec;
 const kill = require('tree-kill');
+
 const log = console.log.bind(console);
 const startNativeBroker = require('./native-broker-launcher').start;
 

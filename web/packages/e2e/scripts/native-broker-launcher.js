@@ -21,6 +21,7 @@ const { exec } = require('child_process');
 const stripBom = require('strip-bom');
 const { readline } = require('./file-utils');
 const { onFileAdded } = require('./file-utils');
+
 const log = console.log.bind(console);
 
 /**
