@@ -44,7 +44,7 @@ export class PlexusInteropPlatform implements InteropPlatform {
   public readonly version: string = '0.0.1';
 
   public constructor(platformConfig: InteropPlatformConfig) {
-    const WsCtor = webSocketCtor();
+    const WsCtor = webSocketCtor(platformConfig.webSocketProvider);
     const metadataWsUrl = `${platformConfig.webSocketUrl}/metadata/interop`;
     this.connectionProvider = async () =>
       new WebSocketConnectionFactory(new WsCtor(platformConfig.webSocketUrl)).connect();

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
+import WebSocket from 'ws';
 
 import { AsyncHelper } from '@plexus-interop/common';
 import {
@@ -22,7 +23,6 @@ import {
   InteropPlatform,
   InteropPlatformFactory,
   MethodImplementation,
-  Stream,
   StreamImplementation,
   StreamObserver,
 } from '@plexus-interop/common-api-impl';
@@ -31,6 +31,8 @@ import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { readWsUrl } from '../common/utils';
 import { BaseEchoTest } from '../echo/BaseEchoTest';
+
+const webSocketProvider = () => WebSocket;
 
 describe('Client: Common API Implementation', () => {
   const webSocketUrl = readWsUrl();
@@ -41,19 +43,19 @@ describe('Client: Common API Implementation', () => {
   const testUtils = new BaseEchoTest();
 
   it('Creates Interop Platform Factory', async () => {
-    const platform = factory.createPlatform({ webSocketUrl });
+    const platform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     expect(platform).to.not.be.undefined;
   });
 
   it('Connects to Broker', async () => {
-    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
+    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     const client = await platform.connect('echo-client');
     expect(client).to.not.be.undefined;
     await client.disconnect();
   });
 
   it('Subscribes to stream and receives data from provider', async () => {
-    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
+    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     const stream: StreamImplementation = {
       name: 'server-stream',
       onSubscriptionRequested: async (streamObserver: StreamObserver, caller: InteropPeerDescriptor, args?: any) => {
@@ -99,14 +101,14 @@ describe('Client: Common API Implementation', () => {
   });
 
   it('Returns all peer descriptors', async () => {
-    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
+    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     const definitions = await platform.getPeerDefinitions();
     const names = definitions.map((d) => d.applicationName);
     expect(names).to.have.members(['echo-server', 'echo-client']);
   });
 
   it('Discovers streams', async () => {
-    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
+    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     const stream: StreamImplementation = {
       name: 'server-stream',
       onSubscriptionRequested: async (streamObserver: StreamObserver, caller: InteropPeerDescriptor, args?: any) => {
@@ -128,7 +130,7 @@ describe('Client: Common API Implementation', () => {
   });
 
   it('Discovers methods', async () => {
-    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
+    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     const client = await platform.connect('echo-client');
     const method: MethodImplementation = {
       name: 'unary-method',
@@ -144,7 +146,7 @@ describe('Client: Common API Implementation', () => {
   });
 
   it('Sends request and receives response', async () => {
-    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl });
+    const platform: InteropPlatform = factory.createPlatform({ webSocketUrl, webSocketProvider });
     let invoked = false;
     const method: MethodImplementation = {
       name: 'unary-method',
