@@ -28,8 +28,11 @@ module.exports = {
     filename: 'electronLauncher.bundle.js',
   },
   stats: 'minimal',
-  externals: ['electron'],
-  plugins: ignorePackages.map(ignorePackage => new webpack.IgnorePlugin({
-    resourceRegExp: new RegExp("^" + ignorePackage + "$")
-  }))
+  externals: ['electron', 'websocket'],
+  plugins: ignorePackages.map(
+    (ignorePackage) =>
+      new webpack.IgnorePlugin({
+        resourceRegExp: new RegExp(`^${ignorePackage}$`),
+      })
+  ),
 };

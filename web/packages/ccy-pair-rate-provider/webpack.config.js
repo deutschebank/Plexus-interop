@@ -22,10 +22,11 @@ module.exports = {
   entry: './dist/main/src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'app.bundle.js'
+    filename: 'app.bundle.js',
   },
   stats: 'minimal',
   performance: {
     hints: false,
   },
+  externals: ['websocket'],
 };

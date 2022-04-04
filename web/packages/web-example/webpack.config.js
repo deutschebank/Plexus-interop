@@ -22,10 +22,11 @@ module.exports = {
   entry: './dist/main/src/greeting/server/Main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'greetingServer.bundle.js'
+    filename: 'greetingServer.bundle.js',
   },
   stats: 'minimal',
   performance: {
     hints: false,
   },
+  externals: ['websocket'],
 };

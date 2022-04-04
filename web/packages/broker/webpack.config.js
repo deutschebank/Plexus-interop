@@ -38,4 +38,5 @@ module.exports = {
       modernize: false,
     }),
   ],
+  externals: ['websocket'],
 };
