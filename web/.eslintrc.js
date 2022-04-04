@@ -63,5 +63,11 @@ module.exports = {
         'import/no-extraneous-dependencies': 'off',
       },
     },
+    {
+      files: '*.spec.*',
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
   ],
 };

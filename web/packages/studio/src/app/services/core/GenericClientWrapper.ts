@@ -31,7 +31,7 @@ import {
   ProvidedMethodReference,
 } from '@plexus-interop/client-api';
 import { flatMap } from '@plexus-interop/common';
-import { DynamicProtoMarshallerFactory } from '@plexus-interop/io/dist/main/src/dynamic';
+import { DynamicProtoMarshallerFactory } from '@plexus-interop/io';
 import { ConsumedMethod, InteropRegistryService, ProvidedMethod, ProvidedService } from '@plexus-interop/metadata';
 import { ClientError } from '@plexus-interop/protocol';
 

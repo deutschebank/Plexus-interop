@@ -22,16 +22,14 @@ import {
   InvocationObserver,
   MethodType,
   ServerStreamingInvocationHandler,
-  StreamingInvocationClient,
   UnaryInvocationHandler,
 } from '@plexus-interop/client';
 import { DefaultConnectionDetailsService } from '@plexus-interop/client';
 import { UrlParamsProvider } from '@plexus-interop/common';
-import { flatMap, Logger, LoggerFactory, Observer } from '@plexus-interop/common';
-import { Marshaller } from '@plexus-interop/io';
-import { DynamicProtoMarshallerFactory } from '@plexus-interop/io/dist/main/src/dynamic';
+import { flatMap, Logger, LoggerFactory } from '@plexus-interop/common';
+import { DynamicProtoMarshallerFactory, Marshaller } from '@plexus-interop/io';
 import { InteropRegistryService, ProvidedMethod, ProvidedService } from '@plexus-interop/metadata';
-import { ClientError, UniqueId } from '@plexus-interop/protocol';
+import { UniqueId } from '@plexus-interop/protocol';
 
 import { TransportConnectionProvider } from '../transport/TransportConnectionProvider';
 import { DefaultMessageGenerator } from './DefaultMessageGenerator';

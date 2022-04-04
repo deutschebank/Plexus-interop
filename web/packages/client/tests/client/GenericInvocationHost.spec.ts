@@ -19,7 +19,7 @@ import { anything, instance, mock, verify, when } from 'ts-mockito';
 
 import { MethodInvocationContext } from '@plexus-interop/client-api';
 import { Observer } from '@plexus-interop/common';
-import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
+import { ProtoMarshallerProvider } from '@plexus-interop/io';
 import { clientProtocol as plexus, SuccessCompletion } from '@plexus-interop/protocol';
 import { ChannelObserver } from '@plexus-interop/transport-common';
 

@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 import { GenericClientApiBuilder } from '@plexus-interop/client';
-import { webSocketCtor } from '@plexus-interop/common/dist/main/src/ws/detect';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io/dist/main/src/dynamic';
+import { webSocketCtor } from '@plexus-interop/common';
+import { BinaryMarshallerProvider, DynamicBinaryMarshallerProvider } from '@plexus-interop/io';
 import { Application, InteropRegistryService, Option, UrlInteropRegistryProvider } from '@plexus-interop/metadata';
 import { WebSocketDataProvider } from '@plexus-interop/remote';
 import { TransportConnection } from '@plexus-interop/transport-common';

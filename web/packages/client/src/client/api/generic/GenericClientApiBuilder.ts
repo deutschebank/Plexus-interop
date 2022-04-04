@@ -16,8 +16,7 @@
  */
 import { ClientConnectRequest } from '@plexus-interop/client-api';
 import { defaultPromiseRetryConfig, Logger, LoggerFactory, retriable } from '@plexus-interop/common';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
+import { BinaryMarshallerProvider, ProtoMarshallerProvider } from '@plexus-interop/io';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 
 import { GenericClientFactory } from '../../generic/GenericClientFactory';
