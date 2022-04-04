@@ -17,7 +17,7 @@
     "postinstall": "node ./install.js",
     "postbuild": "npm run test",
     "build:main": "tsc",
-    "build:watch": "tsc -w -p tsconfig.json",
+    "build:watch": "tsc -w",
     "unit": "jest --coverage",
     "pretest": "trash dist/gen",
     "test": "if-env PLEXUS_CLI_TESTS_ENABLED=true && npm run cli-test || echo 'CLI tests disabled'",

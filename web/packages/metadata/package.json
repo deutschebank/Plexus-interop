@@ -1,13 +1,16 @@
 {
   "name": "@plexus-interop/metadata",
-  "types": "dist/main/src/index.d.ts",
   "description": "Plexus Interop Metadata management",
   "license": "Apache-2.0",
   "version": "0.1.0",
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
   "scripts": {
     "build": "npm run build:main",
     "build:main": "tsc",
-    "build:watch": "tsc -w -p tsconfig.json",
+    "build:watch": "tsc -w",
     "unit": "jest --coverage",
     "test": "npm run unit"
   },
@@ -19,13 +22,19 @@
   "peerDependencies": {
     "rxjs": "^7.5.4"
   },
-  "main": "dist/main/src/index.js",
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testRunner": "jest-jasmine2",
-    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
-    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
   }
 }

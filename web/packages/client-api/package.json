@@ -1,11 +1,13 @@
 {
   "name": "@plexus-interop/client-api",
   "version": "0.1.0",
-  "types": "dist/main/src/index.d.ts",
-  "main": "dist/main/src/index.js",
   "description": "Client contracts, shared between client and broker",
   "license": "Apache-2.0",
   "sideEffects": false,
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
   "scripts": {
     "build": "npm run build:main",
     "build:main": "tsc"

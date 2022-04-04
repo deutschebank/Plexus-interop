@@ -1,14 +1,17 @@
 {
   "name": "@plexus-interop/broker",
-  "types": "dist/main/src/index.d.ts",
   "description": "Plexus Interop Broker",
   "license": "Apache-2.0",
   "version": "0.1.0",
   "sideEffects": false,
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
   "scripts": {
     "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc",
-    "build:watch": "tsc -w -p tsconfig.json",
+    "build:watch": "tsc -w",
     "build:bundle": "webpack",
     "test": "jest --coverage --passWithNoTests"
   },
@@ -25,7 +28,6 @@
     "tslib": "^2.3.1",
     "ya-js-storage": "0.1.4"
   },
-  "main": "dist/main/src/index.js",
   "peerDependencies": {
     "protobufjs": "6.11.2",
     "rxjs": "^7.5.4"
@@ -36,8 +38,15 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "testMatch": ["<rootDir>/src/**/*.spec.ts"],
-    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
   }
 }

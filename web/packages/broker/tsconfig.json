@@ -1,22 +1,17 @@
 {
-    "extends": "../tsconfig.settings.json",
-    "compilerOptions": {
-        "outDir": "dist/main",
-        "rootDir": ".",
-    },
-    "references": [
-        { "path": "../client" },
-        { "path": "../client-api" },
-        { "path": "../common" },
-        { "path": "../metadata" },
-        { "path": "../protocol" },
-        { "path": "../transport-common" }
-    ],
-    "include": [
-        "src/**/*.ts",
-        "tests/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules/**"
-    ]
+  "extends": "../tsconfig.settings.json",
+  "compilerOptions": {
+    "outDir": "dist/main",
+    "rootDir": "."
+  },
+  "references": [
+    { "path": "../client" },
+    { "path": "../client-api" },
+    { "path": "../common" },
+    { "path": "../metadata" },
+    { "path": "../protocol" },
+    { "path": "../transport-common" }
+  ],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules/**"]
 }

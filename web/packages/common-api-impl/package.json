@@ -1,15 +1,18 @@
 {
   "name": "@plexus-interop/common-api-impl",
-  "types": "dist/main/src/index.d.ts",
   "description": "Common API implementation",
   "license": "Apache-2.0",
   "version": "0.1.0",
   "sideEffects": false,
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
   "scripts": {
     "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc",
     "build:bundle": "webpack",
-    "build:watch": "tsc -w -p tsconfig.json",
+    "build:watch": "tsc -w",
     "test": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
@@ -27,7 +30,6 @@
   "peerDependencies": {
     "rxjs": "^7.5.4"
   },
-  "main": "dist/main/src/index.js",
   "publishConfig": {
     "access": "public"
   },
@@ -35,8 +37,15 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testRunner": "jest-jasmine2",
-    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
-    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
   }
 }
