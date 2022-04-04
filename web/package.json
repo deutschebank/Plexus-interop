@@ -30,9 +30,9 @@
     "poste2e-web": "npm run coverage",
     "coverage": "nyc report --reporter=text --reporter=html",
     "build-e2e": "run-s build e2e-native e2e-web",
-    "ci-build": "run-s lint build test",
-    "ci-build-e2e": "run-s lint build test e2e-native e2e-web",
-    "ci-publish": "run-s lint bump-version build test publish-all",
+    "ci-build": "run-s build verify",
+    "ci-build-e2e": "run-s build verify e2e-native e2e-web",
+    "ci-publish": "run-s bump-version build verify publish-all",
     "bump-version": "cross-var lerna version $PLEXUS_BUILD_NPM_PACKAGE_VERSION --force-publish=* --loglevel=verbose",
     "benchmarks": "cd ./packages/e2e && npm run native-broker-benchmarks && npm run web-broker-benchmarks"
   },
