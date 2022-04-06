@@ -102,11 +102,11 @@ function start() {
         log('Broker stopped');
         if (error) {
           logError(error);
+          process.exitCode = 1;
         }
         if (argv.printBrokerStdout) {
           log('StdOut', stdout);
         }
-        process.exit();
       }
     );
   });
