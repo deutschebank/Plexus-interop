@@ -17,7 +17,10 @@
     "gen-echo-js": "pbjs --force-long -t static-module -r echo-client -w commonjs -o src/echo/gen/plexus-messages.js src/echo/metadata/messages.proto",
     "gen-echo-ts": "pbts --force-long -o src/echo/gen/plexus-messages.d.ts src/echo/gen/plexus-messages.js",
     "gen-echo-protocol": "npm run gen-echo-js && npm run gen-echo-ts",
-    "copy-assets": "copyfiles src/echo/gen/* dist/main && copyfiles src/views/* dist/main",
+    "copy-assets": "run-s copy-assets:*",
+    "copy-assets:cjs": "copyfiles src/echo/gen/* dist/main && copyfiles src/views/* dist/main",
+    "copy-assets:esm5": "copyfiles src/echo/gen/* dist/esm5 && copyfiles src/views/* dist/esm5",
+    "copy-assets:esm": "copyfiles src/echo/gen/* dist/esm && copyfiles src/views/* dist/esm",
     "build-host-proxy": "node scripts/bundle-all.js --standalone proxyHost --inputGlob dist/main/tests/common/TestCrossDomainHost.js --outputFile ./dist/main/tests/web/CrossDomainHost.bundle.js",
     "prepare-native-e2e-debug-tests": "node scripts/bundle-all.js --inputGlob dist/main/tests/native/*Connect*spec.js --outputFile ./dist/main/tests/native/RendererProcess.bundle.js",
     "e2e-web-electron": "node scripts/web-e2e-tests-launcher.js --file ./dist/main/tests/web/RendererProcess.bundle.js",
@@ -34,6 +37,7 @@
     "e2e-native-debug-run": "node scripts/native-e2e-tests-launcher.js --printBrokerStdout true --debug true --file ./dist/main/tests/native/RendererProcess.bundle.js"
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@plexus-interop/broker": "file:../broker",
     "@plexus-interop/client": "file:../client",
     "@plexus-interop/client-api": "file:../client-api",

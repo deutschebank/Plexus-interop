@@ -19,7 +19,7 @@
   "scripts": {
     "prebuild": "npm run gen-transport-protocol && npm run gen-client-protocol && npm run copy-gen-folder",
     "build": "npm run build:main",
-    "copy-gen-folder": "run-s copy-gen-folder:cjs copy-gen-folder:esm copy-gen-folder:esm5",
+    "copy-gen-folder": "run-s copy-gen-folder:*",
     "copy-gen-folder:cjs": "copyfiles src/gen/* dist/main",
     "copy-gen-folder:esm5": "copyfiles src/gen/* dist/esm5",
     "copy-gen-folder:esm": "copyfiles src/gen/* dist/esm",

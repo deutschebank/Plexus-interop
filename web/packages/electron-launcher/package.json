@@ -11,7 +11,10 @@
     "build": "npm run build:main && npm run build:bundle",
     "build:bundle": "npm run copy-gen-folders && npm run package && npm run build-binary",
     "package": "webpack",
-    "copy-gen-folders": "copyfiles src/launcher/gen/* dist/main",
+    "copy-gen-folders": "run-s copy-gen-folders:*",
+    "copy-gen-folders:cjs": "copyfiles src/launcher/gen/* dist/main",
+    "copy-gen-folders:esm5": "copyfiles src/launcher/gen/* dist/esm5",
+    "copy-gen-folders:esm": "copyfiles src/launcher/gen/* dist/esm",
     "build:main": "tsc",
     "test": "npm run unit",
     "unit": "jest --coverage --passWithNoTests",
@@ -33,6 +36,7 @@
     "derefSymlinks": true
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@plexus-interop/client": "file:../client",
     "@plexus-interop/common": "file:../common",
     "@plexus-interop/protocol": "file:../protocol",
