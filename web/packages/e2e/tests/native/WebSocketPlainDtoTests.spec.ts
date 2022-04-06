@@ -16,14 +16,13 @@
  */
 import { InvocationRequestInfo } from '@plexus-interop/client';
 import { MethodInvocationContext } from '@plexus-interop/client-api';
-import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io/dist/main/src/dynamic';
+import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io';
 import { UrlInteropRegistryProvider } from '@plexus-interop/metadata';
 
 import { ClientsSetup } from '../common/ClientsSetup';
 import { TransportsSetup } from '../common/TransportsSetup';
 import { readWsUrl } from '../common/utils';
 import { BaseEchoTest } from '../echo/BaseEchoTest';
-import { PointToPointInvocationTests } from '../echo/PointToPointInvocationTests';
 import { UnaryServiceHandler } from '../echo/UnaryServiceHandler';
 
 describe('Client: Web Socket Send Plain JS Object', () => {
