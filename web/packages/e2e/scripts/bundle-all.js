@@ -20,17 +20,25 @@ const argv = require('minimist')(process.argv.slice(2));
 const webpack = require('webpack');
 const globToRegExp = require('glob-to-regexp');
 
-console.log(`Passed arguments${JSON.stringify(argv)}`);
-const resultOutFile = path.join(__dirname, '..', argv.outputFile);
-console.log(`Output file:${resultOutFile}`);
-const resultInputGlob = path.join(__dirname, '..', argv.inputGlob);
-console.log(`Input files pattern:${resultInputGlob}`);
-if (argv.standalone) {
-  console.log(`Building UMD module [${argv.standalone}]`);
-}
-const testFiles = glob.sync(resultInputGlob);
+const log = console.log.bind(console);
+const logError = console.error.bind(console);
 
-console.log(`Processing files: ${JSON.stringify(testFiles)}`);
+log(`Passed arguments${JSON.stringify(argv, null, 2)}`);
+log();
+const resultOutFile = path.join(__dirname, '..', argv.outputFile);
+log(`Output file:${resultOutFile}`);
+log();
+const resultInputGlob = path.join(__dirname, '..', argv.inputGlob);
+log(`Input files pattern:${resultInputGlob}`);
+log();
+if (argv.standalone) {
+  log(`Building UMD module [${argv.standalone}]`);
+  log();
+}
+
+const testFiles = glob.sync(resultInputGlob);
+log(`Processing files: ${JSON.stringify(testFiles)}`);
+log();
 
 const coverageIgnorePatterns = [
   // skip all node modules, except our
@@ -51,18 +59,20 @@ if (argv.clientCoverage) {
   coverageIgnorePatterns.push('**/broker/**');
 }
 
+const useCoverage = argv.clientCoverage || argv.brokerCoverage;
+
 let excludePaths = /node_modules/;
-if (argv.clientCoverage || argv.brokerCoverage) {
+if (useCoverage) {
   excludePaths = coverageIgnorePatterns.map((pattern) => globToRegExp(pattern));
 }
 
 const compiler = webpack({
   entry: testFiles,
   mode: 'production',
-  target: ['web', 'es5'],
+  target: ['electron-renderer'],
   externals: ['websocket'],
   devtool: 'source-map',
-  ...(argv.clientCoverage || argv.brokerCoverage
+  ...(useCoverage
     ? {
         module: {
           rules: [
@@ -95,12 +105,22 @@ const compiler = webpack({
   },
 });
 
-compiler.run((err) => {
+compiler.run((err, stats) => {
+  if (stats.compilation.errors.length) {
+    logError(stats.compilation.errors);
+    process.exitCode = 1;
+  }
   // [Stats Object](#stats-object)
-  if (err) throw new Error(err);
-  console.log('...done');
+  if (err) {
+    logError(err);
+    process.exitCode = 1;
+  }
+  log('...done');
 
   compiler.close((closeErr) => {
-    if (closeErr) throw new Error(closeErr);
+    if (closeErr) {
+      logError(closeErr);
+      process.exitCode = 1;
+    }
   });
 });

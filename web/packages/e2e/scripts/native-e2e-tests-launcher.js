@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 const argv = require('minimist')(process.argv.slice(2));
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const kill = require('tree-kill');
+const fs = require('fs');
 
 const log = console.log.bind(console);
 const startNativeBroker = require('./native-broker-launcher').start;
@@ -24,7 +25,7 @@ const startNativeBroker = require('./native-broker-launcher').start;
 let brokerProcess;
 
 function main() {
-  log('Passed arguments' + JSON.stringify(argv));
+  log(`Passed arguments${JSON.stringify(argv)}`);
   startNativeBroker().then((brokerInfo) => {
     brokerProcess = brokerInfo.process;
     runElectronTest(brokerInfo.workingDir);
@@ -46,11 +47,14 @@ function killBroker() {
 }
 
 function runElectronTest(wsUrl) {
-  log('Starting Electron Tests ...');
+  log(`Starting Electron Tests on ${wsUrl} ...`);
+  if (!fs.existsSync(argv.file)) {
+    throw new Error(`${argv.file} does not exist`);
+  }
   exec(
     `electron-mocha --require scripts/coverage ${argv.file} ${
       argv.debug ? '--debug' : ''
-    } --renderer --reporter spec --colors`,
+    } --renderer --reporter spec --colors --window-config scripts/window-config.json`,
     {
       cwd: process.cwd(),
       env: {

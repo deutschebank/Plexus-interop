@@ -23,6 +23,7 @@ const { readline } = require('./file-utils');
 const { onFileAdded } = require('./file-utils');
 
 const log = console.log.bind(console);
+const logError = console.error.bind(console);
 
 /**
  * Starts Broker
@@ -99,6 +100,9 @@ function start() {
       },
       (error, stdout) => {
         log('Broker stopped');
+        if (error) {
+          logError(error);
+        }
         if (argv.printBrokerStdout) {
           log('StdOut', stdout);
         }

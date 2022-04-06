@@ -61,6 +61,7 @@ module.exports = {
         'no-console': 'off',
         'global-require': 'off',
         'import/no-extraneous-dependencies': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
       },
     },
     {
