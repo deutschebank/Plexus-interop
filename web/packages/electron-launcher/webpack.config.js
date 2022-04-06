@@ -22,7 +22,7 @@ const ignorePackages = ['bufferutil', 'utf-8-validate'];
 module.exports = {
   mode: 'production',
   target: 'node',
-  entry: './dist/main/src/launcher/Main.js',
+  entry: './dist/esm/src/launcher/Main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'electronLauncher.bundle.js',

@@ -20,7 +20,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'production',
-  entry: './dist/main/src/api/CrossDomainHostEntryPoint.js',
+  entry: './dist/esm/src/api/CrossDomainHostEntryPoint.js',
   output: {
     path: path.resolve(__dirname, 'dist', 'main', 'src'),
     filename: 'CrossDomainHostBuilder.bundle.js',
@@ -36,6 +36,7 @@ module.exports = {
     }),
     new OptimizePlugin({
       modernize: false,
+      minify: true,
     }),
   ],
 };
