@@ -32,11 +32,14 @@ export function downloadJre(): Promise<string> {
 
 export async function javaExecProvided(): Promise<string> {
   const execPath = await getJavaExecPath();
+  if (!execPath.endsWith('.exe')) {
+    throw new Error(`Java exe path does not target an .exe: ${execPath}`);
+  }
   const execExists = await exists(execPath);
   if (execExists) {
     return execPath;
   }
-  throw new Error(`Do not exist ${execPath}`);
+  throw new Error(`Does not exist: ${execPath}`);
 }
 
 export function getJreDownloadUrl(): string {
