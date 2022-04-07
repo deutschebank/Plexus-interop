@@ -24,7 +24,7 @@
     "build-binary": "electron-packager . ElectronAppLauncher --prune true --overwrite true --out=../../../bin/win-x86/samples/greeting/apps && npm run rename-packages && copyfiles ElectronAppLauncher.cmd ../../../bin/win-x86/samples/greeting",
     "prestart": "npm run build",
     "start": "node_modules/.bin/electron .",
-    "rename-packages": "trash ../../../bin/win-x86/samples/greeting/apps/ElectronAppLauncher && renamer --find ElectronAppLauncher-.* --replace ElectronAppLauncher ../../../bin/win-x86/samples/greeting/apps/*"
+    "rename-packages": "trash ../../../bin/win-x86/samples/greeting/apps/ElectronAppLauncher && renamer --find \"/ElectronAppLauncher-.*/i\" --replace ElectronAppLauncher ../../../bin/win-x86/samples/greeting/apps/*"
   },
   "keywords": [
     "plexus",

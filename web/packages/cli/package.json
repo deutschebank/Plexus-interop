@@ -12,7 +12,8 @@
   "scripts": {
     "prebuild": "npm run copy-assets && npm run rename-lib",
     "copy-assets": "copyfiles -f ../../../dsl/gen/cli/build/libs/cli-*-all.jar dist/lib",
-    "rename-lib": "renamer --find cli-.*-all.jar --replace plexusgen.jar dist/lib/* && trash dist/lib/cli-.*-all.jar",
+    "rename-lib": "renamer --find \"/cli-.*-all.jar/i\" --replace plexusgen.jar dist/lib/*",
+    "postrename-lib": "trash dist/lib/cli-*-all.jar",
     "build": "npm run build:main",
     "postinstall": "node ./install.js",
     "postbuild": "npm run test",
