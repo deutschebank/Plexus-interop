@@ -16,6 +16,7 @@
  */
 
 /* eslint-disable no-underscore-dangle */
+import * as remote from '@electron/remote';
 import isElectronRenderer from 'is-electron-renderer';
 
 const globalObj: any = global || window;
@@ -27,7 +28,10 @@ export function readEncodedConfig(): any {
 
   let env: any;
   if (isElectronRenderer) {
-    env = globalObj.require('electron').remote.process.env;
+    const remoteMain = remote.require('@electron/remote/main');
+    remoteMain.enable();
+    env = remoteMain.process.env;
+    // env = globalObj.require('electron').remote.process.env;
   } else {
     env = process.env;
   }

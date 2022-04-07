@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as remoteMain from '@electron/remote/main';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { BrowserWindow } from 'electron';
+import * as electron from 'electron';
 import * as fs from 'fs';
 import * as loglevel from 'loglevel';
 
@@ -32,6 +33,8 @@ import * as plexus from './gen/plexus-messages';
 
 const stripBom = require('strip-bom');
 const path = require('path');
+
+remoteMain.initialize();
 
 /**
  * Simple launcher, open apps with provided URL and pass App Instance ID and Broker Web Socket URL to them.
@@ -123,6 +126,7 @@ export class ElectronAppLauncher {
 
   private launchApp(launchPath: string): Promise<plexus.interop.IAppLaunchResponse> {
     this.log.info(`Launching app for path: ${launchPath}`);
+
     if (!this.isCompleteUri(launchPath)) {
       // relative file path
       launchPath = this.toFileUri(launchPath);
@@ -131,7 +135,14 @@ export class ElectronAppLauncher {
     const appInstanceId = UniqueId.generateNew();
     this.log.info(`Launching instance [${appInstanceId.toString()}] with URL [${launchPath}]`);
     return new Promise<plexus.interop.IAppLaunchResponse>((resolve) => {
-      const window = new BrowserWindow();
+      const window = new electron.BrowserWindow({
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+        },
+      });
+      remoteMain.enable(window.webContents);
+
       // pass url and instance id to App's window
       const windowAny: any = window;
       windowAny.plexusBrokerWsUrl = this.webSocketAddress;

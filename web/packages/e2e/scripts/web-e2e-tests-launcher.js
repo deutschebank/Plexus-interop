@@ -44,7 +44,7 @@ async function main() {
     },
     (error, stdout, stderr) => {
       log('http-server stopped');
-      if (error || stderr) {
+      if ((error && error?.signal !== 'SIGKILL') || stderr) {
         console.error('http-server std Error:', stderr);
         console.error('http-server error: ', error);
       }
