@@ -69,10 +69,10 @@ async function main() {
   }, 1000);
 }
 
-function killHttpServerProcess() {
+async function killHttpServerProcess() {
   if (httpServerProcess) {
     log('Killing http-server broker process ...');
-    killP(argv.port || 3001);
+    await killP(argv.port || 3001);
     log('Kill signal sent');
   }
 }
