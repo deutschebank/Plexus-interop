@@ -54,3 +54,7 @@ app.on('ready', () => {
       app.quit();
     });
 });
+app.on('browser-window-created', (_, window) => {
+  // eslint-disable-next-line global-require
+  require('@electron/remote/main').enable(window.webContents);
+});

@@ -27,7 +27,9 @@ export function webSocketCtor(wsProvider?: () => any): any {
     if (anyGlobal && anyGlobal.WebSocket) {
       return anyGlobal.WebSocket;
     }
-    return wsProvider?.();
+    if (wsProvider) {
+      return wsProvider();
+    }
   }
   throw new Error('WebSocket API is not found');
 }
