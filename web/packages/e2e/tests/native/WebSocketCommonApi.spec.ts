@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 
 import { AsyncHelper } from '@plexus-interop/common';
 import {
