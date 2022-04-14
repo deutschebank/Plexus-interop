@@ -69,7 +69,7 @@ if (useCoverage) {
 const compiler = webpack({
   entry: testFiles,
   mode: 'production',
-  target: ['electron-renderer'],
+  target: argv.standalone ? ['web', 'es5'] : ['electron-renderer'],
   externals: ['websocket'],
   devtool: 'inline-source-map',
   ...(useCoverage
