@@ -130,6 +130,21 @@ export class ClientsSetup {
     };
   }
 
+  private createEmptyRequest(
+    config: plexus.plexus.interop.testing.IEchoRequest
+  ): plexus.plexus.interop.testing.IEchoRequest {
+    return {
+      repeatedDoubleField: [],
+      repeatedSubMessageField: [],
+      stringField: '',
+      int64Field: Long.fromInt(0),
+      uint32Field: 0,
+      enumField: 0,
+      subMessageField: null,
+      ...config,
+    };
+  }
+
   public createRequestOfBytes(numberOfBytes: number): plexus.plexus.interop.testing.IEchoRequest {
     const bytesField = Uint8Array.from(Array<number>(numberOfBytes).fill(1));
     return {
@@ -141,9 +156,9 @@ export class ClientsSetup {
 
   public createHugeRequestDto(strLength: number): plexus.plexus.interop.testing.IEchoRequest {
     const text = new Array(strLength).join('x');
-    return {
+    return this.createEmptyRequest({
       stringField: text,
-    };
+    });
   }
 
   public createSimpleRequestDto(text: string): plexus.plexus.interop.testing.IEchoRequest {
