@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "dist/main",
     "rootDir": ".",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "inlineSources": true
   },
   "references": [
     { "path": "../broker" },

@@ -71,7 +71,7 @@ const compiler = webpack({
   mode: 'production',
   target: ['electron-renderer'],
   externals: ['websocket'],
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   ...(useCoverage
     ? {
         module: {

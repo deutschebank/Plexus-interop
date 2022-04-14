@@ -17,7 +17,7 @@
 // Karma configuration
 // Generated on Fri Dec 29 2017 15:31:22 GMT+0300 (Russia TZ 2 Standard Time)
 
-module.exports = function (config) {
+module.exports = (config) => {
   config.set({
     client: {
       mocha: {},
@@ -33,7 +33,13 @@ module.exports = function (config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'webpack'],
 
-    plugins: ['karma-mocha', 'karma-mocha-reporter', 'karma-webpack', 'karma-ie-launcher', 'karma-chrome-launcher'],
+    plugins: [
+      'karma-mocha',
+      'karma-mocha-reporter',
+      'karma-webpack',
+      'karma-ie-launcher',
+      'karma-chrome-launcher',
+    ],
 
     // list of files / patterns to load in the browser
     files: [
@@ -57,6 +63,7 @@ module.exports = function (config) {
     webpack: {
       // debug: true
       target: ['web', 'es5'],
+      devtool: 'inline-source-map',
     },
 
     // test results reporter to use
