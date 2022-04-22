@@ -1,11 +1,21 @@
 {
   "name": "@plexus-interop/client",
   "version": "0.1.0",
-  "types": "dist/main/src/index.d.ts",
-  "main": "dist/main/src/index.js",
   "description": "Client for Plexus Interop",
   "license": "Apache-2.0",
   "sideEffects": false,
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
+  "exports": {
+    ".": {
+      "node": "./dist/main/src/index.js",
+      "es2015": "./dist/esm/src/index.js",
+      "default": "./dist/esm5/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "build": "npm run build:main",
     "build:main": "tsc",
@@ -38,8 +48,15 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testRunner": "jest-jasmine2",
-    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
-    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
   }
 }

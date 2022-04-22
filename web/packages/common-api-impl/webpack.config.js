@@ -19,7 +19,7 @@ const OptimizePlugin = require('optimize-plugin');
 
 module.exports = {
   mode: 'production',
-  entry: './dist/main/src/api/InteropPlatformFactory.js',
+  entry: './dist/esm/src/api/InteropPlatformFactory.js',
   output: {
     path: path.resolve(__dirname, 'dist', 'main', 'src'),
     filename: 'platform-factory.bundle.js',
@@ -33,6 +33,7 @@ module.exports = {
   plugins: [
     new OptimizePlugin({
       modernize: false,
+      minify: true,
     }),
   ],
 };

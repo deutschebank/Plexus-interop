@@ -34,6 +34,7 @@
     "e2e-native-debug-run": "node scripts/native-e2e-tests-launcher.js --printBrokerStdout true --debug true --file ./dist/main/tests/native/RendererProcess.bundle.js"
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@plexus-interop/broker": "file:../broker",
     "@plexus-interop/client": "file:../client",
     "@plexus-interop/client-api": "file:../client-api",

@@ -16,12 +16,14 @@
  */
 const argv = require('minimist')(process.argv.slice(2));
 const { exec } = require('child_process');
-const kill = require('tree-kill');
+const killP = require('kill-port');
+const fs = require('fs');
+
 const log = console.log.bind(console);
 
 let httpServerProcess;
 
-function main() {
+async function main() {
   log(`Passed arguments${JSON.stringify(argv)}`);
 
   const port = argv.port || 3001;
@@ -30,7 +32,10 @@ function main() {
 
   const proxyHostUrl = `http://localhost:${port}/${proxyPagePath}`;
 
-  log(`Starting http-server in ${baseDir}, listening on ${port} port`);
+  log(`Killing anything on port ${port}...`);
+  await killP(port);
+
+  log(`Starting http-server in ${baseDir}, listening on port ${port}`);
 
   httpServerProcess = exec(
     `http-server ${baseDir} -p ${port}`,
@@ -39,9 +44,9 @@ function main() {
     },
     (error, stdout, stderr) => {
       log('http-server stopped');
-      if (error || stderr) {
-        console.error('Std Error:', stderr);
-        console.error('Error: ', error);
+      if ((error && error?.signal !== 'SIGKILL') || stderr) {
+        console.error('http-server std Error:', stderr);
+        console.error('http-server error: ', error);
       }
       killHttpServerProcess();
     }
@@ -64,10 +69,10 @@ function main() {
   }, 1000);
 }
 
-function killHttpServerProcess() {
+async function killHttpServerProcess() {
   if (httpServerProcess) {
-    log('Killing broker process ...');
-    kill(httpServerProcess.pid);
+    log('Killing http-server broker process ...');
+    await killP(argv.port || 3001);
     log('Kill signal sent');
   }
 }
@@ -96,23 +101,24 @@ function runIETest(path) {
 
 function testsFinishedHandler(error, stdout, stderr) {
   log('Tests exection process completed, killing HTTP Server');
-  let exitCode = 0;
   if (error || stderr) {
-    console.error('Std Error:', stderr);
-    console.error('Error: ', error);
-    exitCode = 1;
+    console.error('karma std Error:', stderr);
+    console.error('karma error: ', error);
+    process.exitCode = 1;
   }
-  log('StdOut', stdout);
+  log('karma stdOut', stdout);
   killHttpServerProcess();
-  process.exit(exitCode);
 }
 
 function runElectronTest(path) {
-  log('Starting Web Broker Electron Tests ...');
+  log(`Starting Web Broker Electron Tests on ${path} ...`);
+  if (!fs.existsSync(argv.file)) {
+    throw new Error(`${argv.file} does not exist`);
+  }
   exec(
     `electron-mocha --require scripts/coverage ${argv.file} ${
       argv.debug ? '--debug' : ''
-    } --renderer --reporter spec --colors`,
+    } --renderer --reporter spec --colors --window-config scripts/window-config.json`,
     {
       cwd: process.cwd(),
       env: {

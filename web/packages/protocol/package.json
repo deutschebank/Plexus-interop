@@ -1,15 +1,28 @@
 {
   "name": "@plexus-interop/protocol",
   "version": "0.1.0",
-  "types": "dist/main/src/index.d.ts",
-  "main": "dist/main/src/index.js",
   "description": "Plexus Internal Protocol",
   "license": "Apache-2.0",
   "sideEffects": true,
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
+  "exports": {
+    ".": {
+      "node": "./dist/main/src/index.js",
+      "es2015": "./dist/esm/src/index.js",
+      "default": "./dist/esm5/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "prebuild": "npm run gen-transport-protocol && npm run gen-client-protocol && npm run copy-gen-folder",
     "build": "npm run build:main",
-    "copy-gen-folder": "copyfiles src/gen/* dist/main",
+    "copy-gen-folder": "run-s copy-gen-folder:*",
+    "copy-gen-folder:cjs": "copyfiles src/gen/* dist/main",
+    "copy-gen-folder:esm5": "copyfiles src/gen/* dist/esm5",
+    "copy-gen-folder:esm": "copyfiles src/gen/* dist/esm",
     "build:main": "tsc",
     "gen-client-js": "pbjs --force-long --no-delimited --no-beautify --no-verify --no-create -t static-module -r plexusClient -w commonjs -o src/gen/internal-client-protocol.js ../../../protocol/plexus.interop.proto",
     "gen-client-ts": "pbts --force-long -o src/gen/internal-client-protocol.d.ts src/gen/internal-client-protocol.js",

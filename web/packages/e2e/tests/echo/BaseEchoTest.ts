@@ -20,8 +20,7 @@ import { expect } from 'chai';
 
 import { MethodInvocationContext } from '@plexus-interop/client';
 import { Arrays, AsyncHelper } from '@plexus-interop/common';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { ProtoMarshallerProvider } from '@plexus-interop/io/dist/main/src/static';
+import { BinaryMarshallerProvider, ProtoMarshallerProvider } from '@plexus-interop/io';
 
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';

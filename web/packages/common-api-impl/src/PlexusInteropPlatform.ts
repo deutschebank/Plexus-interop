@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 import { GenericClientApiBuilder } from '@plexus-interop/client';
-import { webSocketCtor } from '@plexus-interop/common/dist/main/src/ws/detect';
-import { BinaryMarshallerProvider } from '@plexus-interop/io';
-import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io/dist/main/src/dynamic';
+import { webSocketCtor } from '@plexus-interop/common';
+import { BinaryMarshallerProvider, DynamicBinaryMarshallerProvider } from '@plexus-interop/io';
 import { Application, InteropRegistryService, Option, UrlInteropRegistryProvider } from '@plexus-interop/metadata';
 import { WebSocketDataProvider } from '@plexus-interop/remote';
 import { TransportConnection } from '@plexus-interop/transport-common';
@@ -45,7 +44,7 @@ export class PlexusInteropPlatform implements InteropPlatform {
   public readonly version: string = '0.0.1';
 
   public constructor(platformConfig: InteropPlatformConfig) {
-    const WsCtor = webSocketCtor();
+    const WsCtor = webSocketCtor(platformConfig.webSocketProvider);
     const metadataWsUrl = `${platformConfig.webSocketUrl}/metadata/interop`;
     this.connectionProvider = async () =>
       new WebSocketConnectionFactory(new WsCtor(platformConfig.webSocketUrl)).connect();

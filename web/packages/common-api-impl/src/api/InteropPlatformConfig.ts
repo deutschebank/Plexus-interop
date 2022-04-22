@@ -16,4 +16,5 @@
  */
 export interface InteropPlatformConfig {
   webSocketUrl: string;
+  webSocketProvider?: () => any;
 }

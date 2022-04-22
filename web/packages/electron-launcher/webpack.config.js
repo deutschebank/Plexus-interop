@@ -29,7 +29,10 @@ module.exports = {
   },
   stats: 'minimal',
   externals: ['electron'],
-  plugins: ignorePackages.map(ignorePackage => new webpack.IgnorePlugin({
-    resourceRegExp: new RegExp("^" + ignorePackage + "$")
-  }))
+  plugins: ignorePackages.map(
+    (ignorePackage) =>
+      new webpack.IgnorePlugin({
+        resourceRegExp: new RegExp(`^${ignorePackage}$`),
+      })
+  ),
 };

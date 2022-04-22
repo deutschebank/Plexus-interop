@@ -28,9 +28,13 @@ export class WebSocketDataProvider {
     return new Promise<string>((resolve, reject) => {
       let resolved = false;
       this.getData(url).subscribe({
-        next: (message: string) => {
+        next: (message: any) => {
           resolved = true;
-          resolve(message);
+          if (typeof message !== 'string') {
+            resolve(JSON.stringify(message));
+          } else {
+            resolve(message);
+          }
         },
         error: (e) => reject(e),
         complete: () => {

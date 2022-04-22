@@ -21,7 +21,9 @@ const { exec } = require('child_process');
 const stripBom = require('strip-bom');
 const { readline } = require('./file-utils');
 const { onFileAdded } = require('./file-utils');
+
 const log = console.log.bind(console);
+const logError = console.error.bind(console);
 
 /**
  * Starts Broker
@@ -98,10 +100,13 @@ function start() {
       },
       (error, stdout) => {
         log('Broker stopped');
+        if (error) {
+          logError(error);
+          process.exitCode = 1;
+        }
         if (argv.printBrokerStdout) {
           log('StdOut', stdout);
         }
-        process.exit();
       }
     );
   });

@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path = require('path');
+
 module.exports = {
   env: {
     browser: true,
@@ -24,16 +26,12 @@ module.exports = {
   plugins: ['jsdoc'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './packages/tsconfig.settings.json',
+    project: path.join(__dirname, 'packages/tsconfig.settings.json'),
     sourceType: 'module',
   },
   rules: {
     // TODO revisit post-prettier
-    'jsdoc/check-indentation': 'off',
-    'jsdoc/newline-after-description': 'off',
-    'import/newline-after-import': 'off',
     '@typescript-eslint/lines-between-class-members': 'off',
-    '@typescript-eslint/member-ordering': 'warn',
     // TODO differences of opinion
     'no-console': 'error',
     'import/prefer-default-export': 'off',
@@ -62,6 +60,13 @@ module.exports = {
       rules: {
         'no-console': 'off',
         'global-require': 'off',
+        'import/no-extraneous-dependencies': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
+      },
+    },
+    {
+      files: '*.spec.*',
+      rules: {
         'import/no-extraneous-dependencies': 'off',
       },
     },

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 const path = require('path');
+
 let install = null;
 try {
   // eslint-disable-next-line import/no-dynamic-require

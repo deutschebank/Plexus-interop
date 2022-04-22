@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function webSocketCtor(): any {
+export function webSocketCtor(wsProvider?: () => any): any {
   if (typeof window !== 'undefined') {
     const anyWindow: any = window;
     if (anyWindow && anyWindow.WebSocket) {
@@ -27,8 +27,9 @@ export function webSocketCtor(): any {
     if (anyGlobal && anyGlobal.WebSocket) {
       return anyGlobal.WebSocket;
     }
-    // eslint-disable-next-line global-require
-    return require('websocket').w3cwebsocket;
+    if (wsProvider) {
+      return wsProvider();
+    }
   }
   throw new Error('WebSocket API is not found');
 }

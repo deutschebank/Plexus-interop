@@ -1,0 +1,6 @@
+{
+  "webPreferences": {
+    "nodeIntegration": true,
+    "contextIsolation": false
+  }
+}

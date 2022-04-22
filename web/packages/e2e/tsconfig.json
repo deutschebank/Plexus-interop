@@ -1,28 +1,26 @@
 {
-    "extends": "../tsconfig.settings.json",
-    "compilerOptions": {
-        "outDir": "dist/main",
-        "rootDir": ".",
-        "baseUrl": "."
-    },
-    "references": [
-        { "path": "../broker" },
-        { "path": "../client" },
-        { "path": "../client-api" },
-        { "path": "../common" },
-        { "path": "../common-api-impl" },
-        { "path": "../io" },
-        { "path": "../metadata" },
-        { "path": "../protocol" },
-        { "path": "../remote" },
-        { "path": "../transport-common" },
-        { "path": "../websocket-transport" }
-    ],
-    "include": [
-        "src/**/*.ts",
-        "tests/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules/**"
-    ]
+  "extends": "../tsconfig.settings.json",
+  "compilerOptions": {
+    "outDir": "dist/main",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "sourceMap": false,
+    "inlineSourceMap": true,
+    "inlineSources": true
+  },
+  "references": [
+    { "path": "../broker" },
+    { "path": "../client" },
+    { "path": "../client-api" },
+    { "path": "../common" },
+    { "path": "../common-api-impl" },
+    { "path": "../io" },
+    { "path": "../metadata" },
+    { "path": "../protocol" },
+    { "path": "../remote" },
+    { "path": "../transport-common" },
+    { "path": "../websocket-transport" }
+  ],
+  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules/**"]
 }

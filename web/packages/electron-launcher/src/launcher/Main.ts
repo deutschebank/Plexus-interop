@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as remoteMain from '@electron/remote/main';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { app } from 'electron';
 
@@ -38,6 +39,8 @@ log.info('Started');
 const appsToLaunch = argv.apps ? argv.apps.split(';') : [];
 const brokerDefaultDir = argv.brokerDir || '../..';
 
+remoteMain.initialize();
+
 app.on('ready', () => {
   log.info('Connecting to Broker');
   const electronAppLauncher = new ElectronAppLauncher(log, appsToLaunch, brokerDefaultDir);
@@ -50,4 +53,8 @@ app.on('ready', () => {
       log.error('Connection to broker failed', e);
       app.quit();
     });
+});
+app.on('browser-window-created', (_, window) => {
+  // eslint-disable-next-line global-require
+  require('@electron/remote/main').enable(window.webContents);
 });

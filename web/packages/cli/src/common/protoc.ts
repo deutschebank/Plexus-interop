@@ -53,11 +53,14 @@ export async function downloadProtoc(): Promise<string> {
 
 export async function protocExecProvided(): Promise<string> {
   const execPath = getProtocExecPath();
+  if (!execPath.endsWith('.exe')) {
+    throw new Error(`Protoc exe path does not target an .exe: ${execPath}`);
+  }
   const execExists = await exists(execPath);
   if (execExists) {
     return execPath;
   }
-  throw new Error(`Do not exist ${execPath}`);
+  throw new Error(`Does not exist ${execPath}`);
 }
 
 export function getProtocExecPath(): string {
