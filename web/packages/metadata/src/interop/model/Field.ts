@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 export interface Field {
-    name: string;
-    num: number;
-    primitive: boolean;
-    type: string;
+  name: string;
+  num: number;
+  primitive: boolean;
+  type: string;
 }

@@ -18,21 +18,21 @@ import { MethodType } from './MethodType';
 import { Option } from './Option';
 
 export interface DiscoveredServiceMethod {
-    /** DiscoveredServiceMethod methodId */
-    methodId?: string;
+  /** DiscoveredServiceMethod methodId */
+  methodId?: string;
 
-    /** DiscoveredServiceMethod methodTitle */
-    methodTitle?: string;
+  /** DiscoveredServiceMethod methodTitle */
+  methodTitle?: string;
 
-    /** DiscoveredServiceMethod inputMessageId */
-    inputMessageId?: string;
+  /** DiscoveredServiceMethod inputMessageId */
+  inputMessageId?: string;
 
-    /** DiscoveredServiceMethod outputMessageId */
-    outputMessageId?: string;
+  /** DiscoveredServiceMethod outputMessageId */
+  outputMessageId?: string;
 
-    /** DiscoveredServiceMethod methodType */
-    methodType?: MethodType;
+  /** DiscoveredServiceMethod methodType */
+  methodType?: MethodType;
 
-    /** DiscoveredServiceMethod options */
-    options?: Option[];
+  /** DiscoveredServiceMethod options */
+  options?: Option[];
 }

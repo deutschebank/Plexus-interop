@@ -14,10 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /***************************************************************************************************
  * Load `$localize` onto the global scope - used if i18n tags appear in Angular templates.
  */
-import "@angular/localize/init";
+import '@angular/localize/init';
+// Included with Angular CLI.
+
+/***************************************************************************************************
+ * APPLICATION IMPORTS
+ */
+import 'arraybuffer-slice';
 
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
@@ -40,16 +47,11 @@ import "@angular/localize/init";
  */
 
 /** IE10 and IE11 requires the following for the Reflect API. */
-import "core-js/es6/reflect";
+import 'core-js/es6/reflect';
 
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import "zone.js"; // Included with Angular CLI.
+import 'zone.js';
 
-/***************************************************************************************************
- * APPLICATION IMPORTS
- */
-import "arraybuffer-slice";
-
-(window as any)["global"] = window;
+(window as any)['global'] = window;

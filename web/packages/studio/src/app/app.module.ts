@@ -14,41 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CustomRouterStateSerializer } from "./services/AppUtils";
-import { TransportConnectionFactory } from "./services/core/TransportConnectionFactory";
-import { InteropClientFactory } from "./services/core/InteropClientFactory";
-import { InteropServiceFactory } from "./services/core/InteropServiceFactory";
-import { metaReducers } from "./services/ui/RootReducers";
-import { AppActions } from "./services/ui/AppActions";
-import { AppRoutes } from "./app.routing";
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { EffectsModule } from '@ngrx/effects';
+import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
-import { AppComponent } from "./app.component";
-import { MetadataLoaderComponent } from "./metadata-loader/metadata-loader.component";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { RouterModule } from "@angular/router";
-import { AppListComponent } from "./app-list/app-list.component";
-import { HeaderComponent } from "./header/header.component";
-
-import { reducers } from "./services/ui/RootReducers";
-import { AppServicesComponent } from "./app-services/app-services.component";
-import { ConsumedServiceComponent } from "./consumed-service/consumed-service.component";
-import { ProvidedServiceComponent } from "./provided-service/provided-service.component";
-
-import { StoreModule } from "@ngrx/store";
-
-import { EffectsModule } from "@ngrx/effects";
-import { Effects } from "./services/ui/AppEffects";
-import { HttpClientModule } from "@angular/common/http";
-
-import {
-  StoreRouterConnectingModule,
-  RouterStateSerializer,
-} from "@ngrx/router-store";
-import { StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { LocationStrategy, HashLocationStrategy } from "@angular/common";
+import { AppListComponent } from './app-list/app-list.component';
+import { AppServicesComponent } from './app-services/app-services.component';
+import { AppComponent } from './app.component';
+import { AppRoutes } from './app.routing';
+import { ConsumedServiceComponent } from './consumed-service/consumed-service.component';
+import { HeaderComponent } from './header/header.component';
+import { MetadataLoaderComponent } from './metadata-loader/metadata-loader.component';
+import { ProvidedServiceComponent } from './provided-service/provided-service.component';
+import { CustomRouterStateSerializer } from './services/AppUtils';
+import { InteropClientFactory } from './services/core/InteropClientFactory';
+import { InteropServiceFactory } from './services/core/InteropServiceFactory';
+import { TransportConnectionFactory } from './services/core/TransportConnectionFactory';
+import { AppActions } from './services/ui/AppActions';
+import { Effects } from './services/ui/AppEffects';
+import { metaReducers } from './services/ui/RootReducers';
+import { reducers } from './services/ui/RootReducers';
 
 @NgModule({
   declarations: [

@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface Event {
-    payload: any;
+  payload: any;
 }

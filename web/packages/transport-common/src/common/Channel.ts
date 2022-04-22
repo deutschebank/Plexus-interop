@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
-import { ChannelObserver } from './ChannelObserver';
-import { BaseChannel } from './BaseChannel';
 
-export interface Channel extends BaseChannel<ChannelObserver<AnonymousSubscription, ArrayBuffer>> {
-}
+import { BaseChannel } from './BaseChannel';
+import { ChannelObserver } from './ChannelObserver';
+
+export interface Channel extends BaseChannel<ChannelObserver<AnonymousSubscription, ArrayBuffer>> {}

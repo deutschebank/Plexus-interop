@@ -14,78 +14,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable no-console */
-import { BlockingQueue, BlockingQueueBase, CancellationToken, Logger, LoggerFactory, Observer } from '@plexus-interop/common';
-import { clientProtocol as plexus, SuccessCompletion, UniqueId } from '@plexus-interop/protocol';
 import { Subscription } from 'rxjs';
+
+import {
+  BlockingQueue,
+  BlockingQueueBase,
+  CancellationToken,
+  Logger,
+  LoggerFactory,
+  Observer,
+} from '@plexus-interop/common';
+import { clientProtocol as plexus, SuccessCompletion, UniqueId } from '@plexus-interop/protocol';
+
 import { TransportChannel } from '../../../src/transport/TransportChannel';
 
 export class BufferedChannel implements TransportChannel {
+  private log: Logger = LoggerFactory.getLogger('Test Channel');
 
-    private log: Logger = LoggerFactory.getLogger('Test Channel');
+  public readonly in: BlockingQueue<ArrayBuffer> = new BlockingQueueBase<ArrayBuffer>();
+  public readonly out: BlockingQueue<ArrayBuffer> = new BlockingQueueBase<ArrayBuffer>();
+  public readonly id: UniqueId = UniqueId.generateNew();
 
-    public readonly in: BlockingQueue<ArrayBuffer> = new BlockingQueueBase<ArrayBuffer>();
-    public readonly out: BlockingQueue<ArrayBuffer> = new BlockingQueueBase<ArrayBuffer>();
-    public readonly id: UniqueId = UniqueId.generateNew();
+  constructor(private cancellationToken: CancellationToken) {
+    this.log.info('Created');
+  }
 
-    constructor(private cancellationToken: CancellationToken) {
-        this.log.info('Created');
+  public async open(observer: Observer<ArrayBuffer>): Promise<Subscription> {
+    const subscription = new Subscription(() => this.cancellationToken.cancel('unsubscribed'));
+    this.listenToMessages(observer);
+    return subscription;
+  }
+
+  private async listenToMessages(observer: Observer<ArrayBuffer>): Promise<void> {
+    try {
+      while (!this.cancellationToken.isCancelled()) {
+        const message = await this.in.blockingDequeue(this.cancellationToken);
+        console.log(`Got in message from buffer ${message.byteLength} bytes`);
+        observer.next(message);
+      }
+      observer.complete();
+    } catch (error) {
+      console.error('Error on reading message', error);
+      observer.error(error);
     }
+  }
 
-    public async open(observer: Observer<ArrayBuffer>): Promise<Subscription> {
-        const subscription = new Subscription(() => this.cancellationToken.cancel('unsubscribed'));
-        this.listenToMessages(observer);
-        return subscription;
-    }
+  public addToInbox(data: ArrayBuffer): Promise<void> {
+    this.log.debug(`Adding ${data.byteLength} bytes to inbox`);
+    return this.in.enqueue(data);
+  }
 
-    private async listenToMessages(observer: Observer<ArrayBuffer>): Promise<void> {
-        try {
-            while (!this.cancellationToken.isCancelled()) {
-                const message = await this.in.blockingDequeue(this.cancellationToken);
-                console.log(`Got in message from buffer ${message.byteLength} bytes`);
-                observer.next(message);
-            }
-            observer.complete();
-        } catch (error) {
-            console.error('Error on reading message', error);
-            observer.error(error);
-        }
-    }
+  public pullOutMessage(): Promise<ArrayBuffer> {
+    return this.out.blockingDequeue(this.cancellationToken);
+  }
 
-    public addToInbox(data: ArrayBuffer): Promise<void> {
-        this.log.debug(`Adding ${data.byteLength} bytes to inbox`);
-        return this.in.enqueue(data);
-    }
+  public isInboxEmpty(): boolean {
+    return this.in.size() === 0;
+  }
 
-    public pullOutMessage(): Promise<ArrayBuffer> {
-        return this.out.blockingDequeue(this.cancellationToken);
-    }
+  public async sendMessage(data: ArrayBuffer): Promise<void> {
+    this.log.debug(`Sending ${data.byteLength} bytes`);
+    this.out.enqueue(data);
+  }
 
-    public isInboxEmpty(): boolean {
-        return this.in.size() === 0;
-    }
+  public async sendLastMessage(data: ArrayBuffer): Promise<plexus.ICompletion> {
+    await this.sendMessage(data);
+    return this.close();
+  }
 
-    public async sendMessage(data: ArrayBuffer): Promise<void> {
-        this.log.debug(`Sending ${data.byteLength} bytes`);
-        this.out.enqueue(data);
-    }
+  public cancel(): void {
+    this.cancellationToken.cancel('Closed');
+  }
 
-    public async sendLastMessage(data: ArrayBuffer): Promise<plexus.ICompletion> {
-        await this.sendMessage(data);
-        return this.close();
-    }
+  public async close(): Promise<SuccessCompletion> {
+    this.log.info('Close requested');
+    return new SuccessCompletion();
+  }
 
-    public cancel(): void {
-        this.cancellationToken.cancel('Closed');
-    }
-
-    public async close(): Promise<SuccessCompletion> {
-        this.log.info('Close requested');
-        return new SuccessCompletion();
-    }
-
-    public uuid(): UniqueId {
-        return this.id;
-    }
-
+  public uuid(): UniqueId {
+    return this.id;
+  }
 }

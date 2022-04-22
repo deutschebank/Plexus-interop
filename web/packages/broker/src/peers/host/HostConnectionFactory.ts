@@ -14,24 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TransportConnection, ServerConnectionFactory } from '@plexus-interop/transport-common';
-import { Subscription, Observer } from '@plexus-interop/common';
+import { Observer, Subscription } from '@plexus-interop/common';
+import { ServerConnectionFactory, TransportConnection } from '@plexus-interop/transport-common';
+
+import { RemoteBrokerService } from '../remote/RemoteBrokerService';
 import { HostTransportConnection } from './HostTransportConnection';
-import { RemoteBrokerService } from "../remote/RemoteBrokerService";
 
 export class HostConnectionFactory implements ServerConnectionFactory {
+  public constructor(
+    private readonly baseFactory: ServerConnectionFactory,
+    private readonly remoteBrokerService: RemoteBrokerService
+  ) {}
 
-    public constructor(
-        private readonly baseFactory: ServerConnectionFactory,
-        private readonly remoteBrokerService: RemoteBrokerService
-    ) { }
-
-    public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
-        return this.baseFactory.acceptConnections({
-            next: c => connectionsObserver.next(new HostTransportConnection(c, this.remoteBrokerService)),
-            complete: () => connectionsObserver.complete(),
-            error: e => connectionsObserver.error(e)
-        });
-    }
-
+  public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
+    return this.baseFactory.acceptConnections({
+      next: (c) => connectionsObserver.next(new HostTransportConnection(c, this.remoteBrokerService)),
+      complete: () => connectionsObserver.complete(),
+      error: (e) => connectionsObserver.error(e),
+    });
+  }
 }

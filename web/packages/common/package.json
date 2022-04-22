@@ -29,8 +29,15 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testRunner": "jest-jasmine2",
-    "setupFilesAfterEnv": ["<rootDir>/setup-jasmine.js"],
-    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
-    "collectCoverageFrom": ["src/**/*.ts", "!src/**/*.d.ts"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
+    ],
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
+    ]
   }
 }

@@ -14,39 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { CancellationToken, Logger } from '@plexus-interop/common';
 import { UniqueId } from '@plexus-interop/protocol';
-import { Logger, CancellationToken } from '@plexus-interop/common';
-import { Frame } from './model';
-import { FramedTransport } from './FramedTransport';
+
 import { BufferedReadFramedTransport } from './BufferedReadFramedTransport';
+import { FramedTransport } from './FramedTransport';
+import { Frame } from './model';
 
 /**
  * Collects all read events until client opened connection, delegates all write events to source
  */
 export class BufferedTransportProxy extends BufferedReadFramedTransport {
+  constructor(
+    private readonly innerTransport: FramedTransport,
+    private readonly writeCancellationToken: CancellationToken,
+    log: Logger
+  ) {
+    super(log);
+  }
 
-    constructor(
-        private readonly innerTransport: FramedTransport,
-        private readonly writeCancellationToken: CancellationToken,
-        log: Logger) {
-        super(log);
-    }
+  public uuid(): UniqueId {
+    return this.innerTransport.uuid();
+  }
 
-    public uuid(): UniqueId {
-        return this.innerTransport.uuid();
-    }
+  public clear(): void {
+    this.inBuffer.clear();
+  }
 
-    public clear(): void {
-        this.inBuffer.clear();
-    }
+  public getMaxFrameSize(): number {
+    return this.innerTransport.getMaxFrameSize();
+  }
 
-    public getMaxFrameSize(): number {
-        return this.innerTransport.getMaxFrameSize();
-    }
-
-    public async writeFrame(frame: Frame): Promise<void> {
-        this.writeCancellationToken.throwIfCanceled();
-        return this.innerTransport.writeFrame(frame);
-    }
-
+  public async writeFrame(frame: Frame): Promise<void> {
+    this.writeCancellationToken.throwIfCanceled();
+    return this.innerTransport.writeFrame(frame);
+  }
 }

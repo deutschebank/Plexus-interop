@@ -16,5 +16,4 @@
  */
 import { Marshaller } from './Marshaller';
 
-export interface BinaryMarshaller extends Marshaller<any, Uint8Array> {
-}
+export interface BinaryMarshaller extends Marshaller<any, Uint8Array> {}

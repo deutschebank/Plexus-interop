@@ -14,31 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ClientError, SuccessCompletion, ClientProtocolHelper } from '@plexus-interop/protocol';
-import { StreamingInvocationClientInternal } from './StreamingInvocationClientInternal';
+import { ClientError, ClientProtocolHelper, SuccessCompletion } from '@plexus-interop/protocol';
+
 import { BaseInvocationClientImpl } from '../../../BaseInvocationClientImpl';
+import { StreamingInvocationClientInternal } from './StreamingInvocationClientInternal';
 
-export class StreamingInvocationClientImpl extends BaseInvocationClientImpl implements StreamingInvocationClientInternal<ArrayBuffer> {
+export class StreamingInvocationClientImpl
+  extends BaseInvocationClientImpl
+  implements StreamingInvocationClientInternal<ArrayBuffer>
+{
+  public next(value: ArrayBuffer): Promise<void> {
+    this.log.trace(`Sending new message of ${value.byteLength} bytes`);
+    return this.invocation.sendMessage(value);
+  }
 
-
-    public next(value: ArrayBuffer): Promise<void> {
-        this.log.trace(`Sending new message of ${value.byteLength} bytes`);
-        return this.invocation.sendMessage(value);
+  public async complete(): Promise<void> {
+    this.log.trace(`Complete operation requested`);
+    const completion = await this.invocation.close(new SuccessCompletion());
+    if (!ClientProtocolHelper.isSuccessCompletion(completion)) {
+      this.log.error(`Completed with errors`, completion ? completion.error : 'Completion is empty');
+      const error = completion && completion.error ? completion.error : new ClientError('Completed with errors');
+      throw error as Error;
     }
+  }
 
-    public async complete(): Promise<void> {
-        this.log.trace(`Complete operation requested`);
-        const completion = await this.invocation.close(new SuccessCompletion());
-        if (!ClientProtocolHelper.isSuccessCompletion(completion)) {
-            this.log.error(`Completed with errors`, completion ? completion.error : 'Completion is empty');
-            const error = completion && completion.error ? completion.error : new ClientError('Completed with errors');
-            throw error as Error;
-        }
-    }
-
-    public async sendCompleted(): Promise<void> {
-        this.log.trace(`Stream completed operation requested`);
-        return this.invocation.sendCompleted();
-    }
-
+  public async sendCompleted(): Promise<void> {
+    this.log.trace(`Stream completed operation requested`);
+    return this.invocation.sendCompleted();
+  }
 }

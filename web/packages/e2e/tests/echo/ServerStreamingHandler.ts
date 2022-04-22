@@ -14,24 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
-import { NopServiceHandler } from './NopServiceHandler';
+import { MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
+
 import * as plexus from '../../src/echo/gen/plexus-messages';
+import { NopServiceHandler } from './NopServiceHandler';
 
 export class ServerStreamingHandler extends NopServiceHandler {
+  constructor(
+    private handler: (
+      context: MethodInvocationContext,
+      request: plexus.plexus.interop.testing.IEchoRequest,
+      hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+    ) => void
+  ) {
+    super();
+  }
 
-    constructor(private handler: (
-        context: MethodInvocationContext,
-        request: plexus.plexus.interop.testing.IEchoRequest, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => void) {
-        super();
-    }
-
-    public onServerStreaming(
-        context: MethodInvocationContext,        
-        request: plexus.plexus.interop.testing.IEchoRequest, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): void {
-        this.handler(context, request, hostClient);        
-    }
-
+  public onServerStreaming(
+    context: MethodInvocationContext,
+    request: plexus.plexus.interop.testing.IEchoRequest,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): void {
+    this.handler(context, request, hostClient);
+  }
 }

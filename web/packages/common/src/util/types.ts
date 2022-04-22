@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export function isString(value: any): boolean {
-    return value && Object.prototype.toString.call(value) === '[object String]';
+  return value && Object.prototype.toString.call(value) === '[object String]';
 }

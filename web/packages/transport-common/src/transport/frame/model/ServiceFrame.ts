@@ -17,9 +17,7 @@
 import { BaseFrame } from './Frame';
 
 export abstract class ServiceFrame<T> extends BaseFrame<T> {
-
-    public isDataFrame(): boolean {
-        return false;
-    }
-
+  public isDataFrame(): boolean {
+    return false;
+  }
 }

@@ -15,33 +15,35 @@
  * limitations under the License.
  */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
+
 import { Observer } from '@plexus-interop/common';
+
 import { ChannelObserver } from './ChannelObserver';
 
 export class DelegateChannelObserver<T> implements ChannelObserver<AnonymousSubscription, T> {
+  constructor(
+    private baseObserver: Observer<T>,
+    private subscriptionHandler: (subscription: AnonymousSubscription) => void,
+    private startFailedHandler: (error: any) => void = () => {}
+  ) {}
 
-    constructor(private baseObserver: Observer<T>,
-                private subscriptionHandler: (subscription: AnonymousSubscription) => void,
-                private startFailedHandler: (error: any) => void = () => {}) {}
+  public started(subscription: AnonymousSubscription): void {
+    this.subscriptionHandler(subscription);
+  }
 
-    public started(subscription: AnonymousSubscription): void {
-        this.subscriptionHandler(subscription);
-    }
+  public next(value: T): void {
+    this.baseObserver.next(value);
+  }
 
-    public next(value: T): void {
-        this.baseObserver.next(value);
-    }
+  public error(err: any): void {
+    this.baseObserver.error(err);
+  }
 
-    public error(err: any): void {
-        this.baseObserver.error(err);
-    }
+  public complete(): void {
+    this.baseObserver.complete();
+  }
 
-    public complete(): void {
-        this.baseObserver.complete();
-    }
-
-    public startFailed(error: any): void {
-        this.startFailedHandler(error);
-    }
-
+  public startFailed(error: any): void {
+    this.startFailedHandler(error);
+  }
 }

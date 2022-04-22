@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 import { Observable } from 'rxjs';
+
 import { InteropRegistry } from './model/InteropRegistry';
 
 export interface InteropRegistryProvider {
+  getCurrent(): InteropRegistry;
 
-    getCurrent(): InteropRegistry;
-
-    getRegistry(): Observable<InteropRegistry>;
-
+  getRegistry(): Observable<InteropRegistry>;
 }

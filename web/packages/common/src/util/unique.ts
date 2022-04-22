@@ -17,8 +17,8 @@
 const idCounters: Map<string, number> = new Map();
 
 export function uniqueId(prefix: string = ''): string {
-    const prevIdx = idCounters.get(prefix) || 0;
-    const nextIdx = prevIdx + 1;
-    idCounters.set(prefix, nextIdx);
-    return `${prefix + nextIdx}`;
+  const prevIdx = idCounters.get(prefix) || 0;
+  const nextIdx = prevIdx + 1;
+  idCounters.set(prefix, nextIdx);
+  return `${prefix + nextIdx}`;
 }

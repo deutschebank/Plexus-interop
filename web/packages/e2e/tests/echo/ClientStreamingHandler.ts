@@ -15,23 +15,31 @@
  * limitations under the License.
  */
 import { InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
+
 import * as plexus from '../../src/echo/gen/plexus-messages';
 import { NopServiceHandler } from './NopServiceHandler';
 
 export class ClientStreamingHandler extends NopServiceHandler {
+  public constructor(
+    private handler: (
+      context: MethodInvocationContext,
+      hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+    ) => InvocationObserver<plexus.plexus.interop.testing.IEchoRequest>
+  ) {
+    super();
+  }
 
-    public constructor(private handler: (context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => InvocationObserver<plexus.plexus.interop.testing.IEchoRequest>) {
-        super();
-    }
+  public onDuplexStreaming(
+    context: MethodInvocationContext,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
+    return this.handler(context, hostClient);
+  }
 
-    public onDuplexStreaming(context: MethodInvocationContext, hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
-        return this.handler(context, hostClient);
-    }
-
-    public onClientStreaming(
-        context: MethodInvocationContext,
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
-        return this.handler(context, hostClient);
-    }
-
+  public onClientStreaming(
+    context: MethodInvocationContext,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): InvocationObserver<plexus.plexus.interop.testing.IEchoRequest> {
+    return this.handler(context, hostClient);
+  }
 }

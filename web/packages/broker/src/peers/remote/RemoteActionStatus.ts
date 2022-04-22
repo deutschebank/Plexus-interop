@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export enum RemoteActionStatus {
-    SUCCESS = 'SUCCESS',
-    COMPLETED = 'COMPLETED',
-    FAILURE = 'FAILURE'
+  SUCCESS = 'SUCCESS',
+  COMPLETED = 'COMPLETED',
+  FAILURE = 'FAILURE',
 }

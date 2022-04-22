@@ -14,29 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UniqueId } from '@plexus-interop/protocol';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
+import { UniqueId } from '@plexus-interop/protocol';
+
 import { AppLauncher } from './AppLauncher';
 import { AppLaunchRequest } from './AppLaunchRequest';
 import { AppLaunchResponse } from './AppLaunchResponse';
 import { LaunchInvocationContext } from './LaunchInvocationContext';
 
 export class UrlWebAppLauncher implements AppLauncher {
+  public static readonly instanceIdRequestParam: string = 'plexusInstanceId';
 
-    public static readonly instanceIdRequestParam: string = 'plexusInstanceId';
+  private readonly log: Logger = LoggerFactory.getLogger('UrlWebAppLauncher');
 
-    private readonly log: Logger = LoggerFactory.getLogger('UrlWebAppLauncher');
-
-    public async launch(invocationContext: LaunchInvocationContext, request: AppLaunchRequest): Promise<AppLaunchResponse> {
-        const appInstanceId = UniqueId.generateNew();
-        const launchUrl: string = request.launchParams.url;
-        const instanceIdParam = `${UrlWebAppLauncher.instanceIdRequestParam}=${appInstanceId.toString()}`;
-        const url = launchUrl.indexOf('?') === -1 ? `${launchUrl}?${instanceIdParam}` : `${launchUrl}&${instanceIdParam}`;
-        this.log.info(`Launching application with [${url}] url`);
-        window.open(url, '_blank');
-        return {
-            appInstanceId
-        };
-    }
-
+  public async launch(
+    invocationContext: LaunchInvocationContext,
+    request: AppLaunchRequest
+  ): Promise<AppLaunchResponse> {
+    const appInstanceId = UniqueId.generateNew();
+    const launchUrl: string = request.launchParams.url;
+    const instanceIdParam = `${UrlWebAppLauncher.instanceIdRequestParam}=${appInstanceId.toString()}`;
+    const url = launchUrl.indexOf('?') === -1 ? `${launchUrl}?${instanceIdParam}` : `${launchUrl}&${instanceIdParam}`;
+    this.log.info(`Launching application with [${url}] url`);
+    window.open(url, '_blank');
+    return {
+      appInstanceId,
+    };
+  }
 }

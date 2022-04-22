@@ -14,44 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable no-underscore-dangle */
 // eslint-disable-next-line max-classes-per-file
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
 
 export abstract class Frame {
+  protected _header: plexus.interop.transport.protocol.IHeader;
 
-    protected _header: plexus.interop.transport.protocol.IHeader;
+  public abstract isDataFrame(): boolean;
 
-    public abstract isDataFrame(): boolean;
+  public abstract getHeaderData(): any;
 
-    public abstract getHeaderData(): any;
+  public get internalHeaderProperties(): plexus.interop.transport.protocol.IHeader {
+    return this._header;
+  }
 
-    public get internalHeaderProperties(): plexus.interop.transport.protocol.IHeader {
-        return this._header;
-    }
+  public getInternalHeader(): plexus.interop.transport.protocol.Header {
+    return new plexus.interop.transport.protocol.Header(this._header);
+  }
 
-    public getInternalHeader(): plexus.interop.transport.protocol.Header {
-        return new plexus.interop.transport.protocol.Header(this._header);
-    }
+  public abstract get body(): ArrayBuffer;
 
-    public abstract get body(): ArrayBuffer;
-
-    public abstract set body(body: ArrayBuffer);
-
+  public abstract set body(body: ArrayBuffer);
 }
 
 export abstract class BaseFrame<T> extends Frame {
+  private _body: ArrayBuffer;
 
-    private _body: ArrayBuffer;
+  public abstract getHeaderData(): T;
 
-    public abstract getHeaderData(): T;
-    
-    public get body(): ArrayBuffer {
-        return this._body;
-    }
-    
-    public set body(body: ArrayBuffer) {
-        this._body = body;
-    }
+  public get body(): ArrayBuffer {
+    return this._body;
+  }
 
+  public set body(body: ArrayBuffer) {
+    this._body = body;
+  }
 }

@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 export interface PlexusFeatures {
-    readonly decodeUndefinedToDefault: boolean;
+  readonly decodeUndefinedToDefault: boolean;
 }
 
 const plexusFeatures = {
-    decodeUndefinedToDefault: true
+  decodeUndefinedToDefault: true,
 };
 
 export function setDecodeUndefinedToDefault(value: boolean): void {
-    plexusFeatures.decodeUndefinedToDefault = value;
+  plexusFeatures.decodeUndefinedToDefault = value;
 }
 
 export function getPlexusFeatures(): PlexusFeatures {
-    return plexusFeatures;
+  return plexusFeatures;
 }

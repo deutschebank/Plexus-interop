@@ -14,41 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { InvocationMetaInfo, clientProtocol as plexus } from '@plexus-interop/protocol';
 import { UniqueId } from '@plexus-interop/transport-common';
-import { clientProtocol as plexus, InvocationMetaInfo } from '@plexus-interop/protocol';
-import { Invocation } from "./Invocation";
+
+import { AnonymousSubscription } from '../api/AnonymousSubscription';
 import { GenericInvocation } from './GenericInvocation';
-import { AnonymousSubscription } from "../api/AnonymousSubscription";
+import { Invocation } from './Invocation';
 import { InvocationChannelObserver } from './InvocationChannelObserver';
 
 export class RequestedInvocation implements Invocation {
+  constructor(private readonly genericInvocation: GenericInvocation, private readonly metaInfo: InvocationMetaInfo) {}
 
-    constructor(
-        private readonly genericInvocation: GenericInvocation,
-        private readonly metaInfo: InvocationMetaInfo) { }
+  public uuid(): UniqueId {
+    return this.genericInvocation.uuid();
+  }
 
-    public uuid(): UniqueId {
-        return this.genericInvocation.uuid();
-    }
+  public sendMessage(data: ArrayBuffer): Promise<void> {
+    return this.genericInvocation.sendMessage(data);
+  }
 
-    public sendMessage(data: ArrayBuffer): Promise<void> {
-        return this.genericInvocation.sendMessage(data);
-    }
+  public open(observer: InvocationChannelObserver<AnonymousSubscription, ArrayBuffer>): void {
+    return this.genericInvocation.start(this.metaInfo, observer);
+  }
 
-    public open(observer: InvocationChannelObserver<AnonymousSubscription, ArrayBuffer>): void {
-        return this.genericInvocation.start(this.metaInfo, observer);
-    }
+  public async sendCompleted(): Promise<void> {
+    return this.genericInvocation.sendCompleted();
+  }
 
-    public async sendCompleted(): Promise<void> {
-        return this.genericInvocation.sendCompleted();
-    }
+  public close(completion?: plexus.ICompletion): Promise<plexus.ICompletion> {
+    return this.genericInvocation.close(completion);
+  }
 
-    public close(completion?: plexus.ICompletion): Promise<plexus.ICompletion> {
-        return this.genericInvocation.close(completion);
-    }
-
-    public getMetaInfo(): InvocationMetaInfo {
-        return this.genericInvocation.getMetaInfo();
-    }
-
+  public getMetaInfo(): InvocationMetaInfo {
+    return this.genericInvocation.getMetaInfo();
+  }
 }

@@ -14,81 +14,84 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TransportChannel, BufferedObserver } from '@plexus-interop/transport-common';
-import { Completion, ClientProtocolHelper } from '@plexus-interop/protocol';
-import { LoggerFactory, Logger } from '@plexus-interop/common';
-import { InvocationRequestHandler } from './InvocationRequestHandler';
+import { Logger, LoggerFactory } from '@plexus-interop/common';
+import { ClientProtocolHelper, Completion } from '@plexus-interop/protocol';
+import { BufferedObserver, TransportChannel } from '@plexus-interop/transport-common';
+
 import { ApplicationConnection } from '../lifecycle/ApplicationConnection';
 import { DiscoveryRequestHandler } from './DiscoveryRequestHandler';
+import { InvocationRequestHandler } from './InvocationRequestHandler';
 
 export class ClientRequestProcessor {
+  private readonly log: Logger = LoggerFactory.getLogger('ClientRequestProcessor');
 
-    private readonly log: Logger = LoggerFactory.getLogger('ClientRequestProcessor');
+  constructor(
+    private readonly invocationRequestProcessor: InvocationRequestHandler,
+    private readonly discoveryRequestHandler: DiscoveryRequestHandler
+  ) {}
 
-    constructor(
-        private readonly invocationRequestProcessor: InvocationRequestHandler,
-        private readonly discoveryRequestHandler: DiscoveryRequestHandler) { }
+  public async handle(channel: TransportChannel, sourceConnection: ApplicationConnection): Promise<Completion> {
+    const channelStrId = channel.uuid().toString();
+    const log = LoggerFactory.getLogger(`Client Request Processor [${channelStrId}]`);
 
-    public async handle(channel: TransportChannel, sourceConnection: ApplicationConnection): Promise<Completion> {
+    return new Promise((resolve, reject) => {
+      let channelObserver: BufferedObserver<ArrayBuffer> | undefined;
 
-        const channelStrId = channel.uuid().toString();
-        const log = LoggerFactory.getLogger(`Client Request Processor [${channelStrId}]`);
-
-        return new Promise((resolve, reject) => {
-
-            let channelObserver: BufferedObserver<ArrayBuffer> | undefined;
-
-            channel.open({
-                started: () => log.trace('Channel started'),
-                startFailed: e => {
-                    log.error('Start failed', e);
-                    reject(e);
-                },
-                next: async messagePayload => {
-                    if (!channelObserver) {
-                        const clientToBrokerRequest = ClientProtocolHelper.decodeClientToBrokerRequest(messagePayload);
-                        if (clientToBrokerRequest.invocationStartRequest) {
-                            channelObserver = new BufferedObserver<ArrayBuffer>();
-                            try {
-                                const result = await this.invocationRequestProcessor.handleRequest(
-                                    channelObserver,
-                                    clientToBrokerRequest.invocationStartRequest,
-                                    channel,
-                                    sourceConnection.descriptor);
-                                resolve(result);
-                            } catch (error) {
-                                reject(error);
-                            }
-                        } else if (clientToBrokerRequest.methodDiscoveryRequest) {
-                            try {
-                                await this.discoveryRequestHandler.handleMethodDiscovery(clientToBrokerRequest.methodDiscoveryRequest, channel, sourceConnection);
-                                resolve({} as Completion);
-                            } catch (error) {
-                                reject(error);
-                            }
-                        } else {
-                            // TODO support service discovery
-                            this.log.error('Not supported request received', JSON.stringify(clientToBrokerRequest));
-                        }
-                    } else {
-                        channelObserver.next(messagePayload);
-                    }
-                },
-                error: e => {
-                    log.error('Error from source channel received', e);
-                    if (channelObserver) {
-                        channelObserver.error(e);
-                    }
-                    reject(e);
-                },
-                complete: completion => {
-                    if (channelObserver) {
-                        channelObserver.complete(completion);
-                    }
-                    log.trace('Channel completed');
-                }
-            });
-        });
-    }
-
+      channel.open({
+        started: () => log.trace('Channel started'),
+        startFailed: (e) => {
+          log.error('Start failed', e);
+          reject(e);
+        },
+        next: async (messagePayload) => {
+          if (!channelObserver) {
+            const clientToBrokerRequest = ClientProtocolHelper.decodeClientToBrokerRequest(messagePayload);
+            if (clientToBrokerRequest.invocationStartRequest) {
+              channelObserver = new BufferedObserver<ArrayBuffer>();
+              try {
+                const result = await this.invocationRequestProcessor.handleRequest(
+                  channelObserver,
+                  clientToBrokerRequest.invocationStartRequest,
+                  channel,
+                  sourceConnection.descriptor
+                );
+                resolve(result);
+              } catch (error) {
+                reject(error);
+              }
+            } else if (clientToBrokerRequest.methodDiscoveryRequest) {
+              try {
+                await this.discoveryRequestHandler.handleMethodDiscovery(
+                  clientToBrokerRequest.methodDiscoveryRequest,
+                  channel,
+                  sourceConnection
+                );
+                resolve({} as Completion);
+              } catch (error) {
+                reject(error);
+              }
+            } else {
+              // TODO support service discovery
+              this.log.error('Not supported request received', JSON.stringify(clientToBrokerRequest));
+            }
+          } else {
+            channelObserver.next(messagePayload);
+          }
+        },
+        error: (e) => {
+          log.error('Error from source channel received', e);
+          if (channelObserver) {
+            channelObserver.error(e);
+          }
+          reject(e);
+        },
+        complete: (completion) => {
+          if (channelObserver) {
+            channelObserver.complete(completion);
+          }
+          log.trace('Channel completed');
+        },
+      });
+    });
+  }
 }

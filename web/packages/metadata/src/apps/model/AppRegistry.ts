@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 import { ExtendedMap } from '@plexus-interop/common';
+
 import { Application } from './Application';
 
 export interface AppRegistry {
-    apps: ExtendedMap<string, Application>;
+  apps: ExtendedMap<string, Application>;
 }

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 export enum MethodType {
-    Unary = 0,
-    ServerStreaming = 1,
-    ClientStreaming = 2,
-    DuplexStreaming = 3
+  Unary = 0,
+  ServerStreaming = 1,
+  ClientStreaming = 2,
+  DuplexStreaming = 3,
 }

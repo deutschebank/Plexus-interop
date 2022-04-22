@@ -20,49 +20,45 @@ import { readWsUrl } from '../common/utils';
 import { DiscoveryTests } from '../echo/DiscoveryTests';
 
 describe('Client: Web Socket Discovery', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
+  const wsUrl = readWsUrl();
 
-    const wsUrl = readWsUrl();    
-    
-    const discoveryTests = new DiscoveryTests(
-        transportsSetup.createWebSocketTransportProvider(wsUrl),
-        clientsSetup);
+  const discoveryTests = new DiscoveryTests(transportsSetup.createWebSocketTransportProvider(wsUrl), clientsSetup);
 
-    it('Receives discovered methods by input message id', function() {
-        this.timeout(3000);
-        return discoveryTests.testMethodDiscoveredByInputMessageId();
-    });
+  it('Receives discovered methods by input message id', function () {
+    this.timeout(3000);
+    return discoveryTests.testMethodDiscoveredByInputMessageId();
+  });
 
-    it('Receives discovered methods by output message id', function() {
-        return discoveryTests.testMethodDiscoveredByOutputMessageId();
-    });
+  it('Receives discovered methods by output message id', function () {
+    return discoveryTests.testMethodDiscoveredByOutputMessageId();
+  });
 
-    it('Receives discovered methods by method reference', function() {
-        return discoveryTests.testMethodDiscoveredByReference();
-    });
+  it('Receives discovered methods by method reference', function () {
+    return discoveryTests.testMethodDiscoveredByReference();
+  });
 
-    it('Receives discovered service by service ID', function() {
-        return discoveryTests.testServiceDiscoveredById();
-    });
+  it('Receives discovered service by service ID', function () {
+    return discoveryTests.testServiceDiscoveredById();
+  });
 
-    it('Can invoke discovered unary method passing serialized data', function() {
-        this.timeout(3000);
-        return discoveryTests.testClientCanInvokeDiscoveredMethodPassingRawData();
-    });
+  it('Can invoke discovered unary method passing serialized data', function () {
+    this.timeout(3000);
+    return discoveryTests.testClientCanInvokeDiscoveredMethodPassingRawData();
+  });
 
-    it('Can invoke discovered unary method passing plain object', function() {
-        this.timeout(3000);
-        return discoveryTests.testClientCanInvokeDiscoveredMethodPassingObject();
-    });
+  it('Can invoke discovered unary method passing plain object', function () {
+    this.timeout(3000);
+    return discoveryTests.testClientCanInvokeDiscoveredMethodPassingObject();
+  });
 
-    it('Can invoke discovered server streaming method passing serialized data', function() {
-        return discoveryTests.testClientCanInvokeDiscoveredServerStreamingRequest();
-    });
+  it('Can invoke discovered server streaming method passing serialized data', function () {
+    return discoveryTests.testClientCanInvokeDiscoveredServerStreamingRequest();
+  });
 
-    it('Can invoke discovered bidi streaming method passing serialized data', function() {
-        return discoveryTests.testClientCanInvokeDiscoveredBidiStreamingRequest();
-    });
-
+  it('Can invoke discovered bidi streaming method passing serialized data', function () {
+    return discoveryTests.testClientCanInvokeDiscoveredBidiStreamingRequest();
+  });
 });

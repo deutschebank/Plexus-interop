@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {plexus} from '../gen/internal-client-protocol';
+import { plexus } from '../gen/internal-client-protocol';
 
 export class ClientError implements plexus.IError {
-    public constructor(
-        public readonly message: string = 'Unknown message', 
-        public readonly details: string = 'Unknown details') { }
+  public constructor(
+    public readonly message: string = 'Unknown message',
+    public readonly details: string = 'Unknown details'
+  ) {}
 }

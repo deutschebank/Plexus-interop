@@ -15,39 +15,37 @@
  * limitations under the License.
  */
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { ConnectionDetailsService } from './ConnectionDetailsService';
+
 import { ConnectionDetails } from './ConnectionDetails';
+import { ConnectionDetailsService } from './ConnectionDetailsService';
 import { getBaseWsUrl } from './WsConnectionDetails';
 
 export class DefaultConnectionDetailsService implements ConnectionDetailsService {
+  private readonly log: Logger = LoggerFactory.getLogger('DefaultConnectionDetailsService');
 
-    private readonly log: Logger = LoggerFactory.getLogger('DefaultConnectionDetailsService');
+  public constructor(private readonly connectionDetailsFactory?: () => Promise<ConnectionDetails>) {}
 
-    public constructor(private readonly connectionDetailsFactory?: () => Promise<ConnectionDetails>) {
+  public getConnectionDetails(): Promise<ConnectionDetails> {
+    return this.getConnectionDetailsFactory()();
+  }
+
+  public getMetadataUrl(): Promise<string> {
+    return this.getConnectionDetails().then((details) => this.getDefaultUrl(getBaseWsUrl(details.ws)));
+  }
+
+  public getDefaultUrl(baseUrl: string): string {
+    return `${baseUrl}/metadata/interop`;
+  }
+
+  private getConnectionDetailsFactory(): () => Promise<ConnectionDetails> {
+    if (this.connectionDetailsFactory) {
+      return this.connectionDetailsFactory;
     }
-
-    public getConnectionDetails(): Promise<ConnectionDetails> {
-        return this.getConnectionDetailsFactory()();
+    const globalObj = window.self as any;
+    if (globalObj.plexus && globalObj.plexus.getConnectionDetails) {
+      this.log.info('Detected connection details service, provided by container');
+      return globalObj.plexus.getConnectionDetails;
     }
-
-    public getMetadataUrl(): Promise<string> {
-        return this.getConnectionDetails()
-            .then(details => this.getDefaultUrl(getBaseWsUrl(details.ws)));
-    }
-
-    public getDefaultUrl(baseUrl: string): string {
-        return `${baseUrl}/metadata/interop`;
-    }
-
-    private getConnectionDetailsFactory(): () => Promise<ConnectionDetails> {
-        if (this.connectionDetailsFactory) {
-            return this.connectionDetailsFactory;
-        }
-        const globalObj = window.self as any;
-        if (globalObj.plexus && globalObj.plexus.getConnectionDetails) {
-            this.log.info('Detected connection details service, provided by container');
-            return globalObj.plexus.getConnectionDetails;
-        }
-        throw new Error('Container is not providing \'self.plexus.getConnectionDetails(): Promise<ConnectionDetails>\' API');
-    }
+    throw new Error("Container is not providing 'self.plexus.getConnectionDetails(): Promise<ConnectionDetails>' API");
+  }
 }

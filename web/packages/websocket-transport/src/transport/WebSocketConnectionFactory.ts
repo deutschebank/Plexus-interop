@@ -14,25 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ClientConnectionFactory, TransportConnection, FramedTransportConnection, ConnectionDetails } from '@plexus-interop/transport-common';
+import {
+  ClientConnectionFactory,
+  ConnectionDetails,
+  FramedTransportConnection,
+  TransportConnection,
+} from '@plexus-interop/transport-common';
+
 import { WebSocketFramedTransport } from './WebSocketFramedTransport';
 
 export class WebSocketConnectionFactory implements ClientConnectionFactory {
+  constructor(private readonly socket: WebSocket) {}
 
-    constructor(private readonly socket: WebSocket) { }
-
-    public connect(connectionDetails?: ConnectionDetails): Promise<TransportConnection> {
-        return new Promise((resolve, reject) => {
-            const webSocketTransport = new WebSocketFramedTransport(this.socket);
-            webSocketTransport.connectionEstablished().then(() => {
-                const connection = new FramedTransportConnection(webSocketTransport);
-                connection.connect(connectionDetails ? connectionDetails.incomingChannelsObserver : undefined)
-                    .then(() => resolve(connection))
-                    .catch(reject);
-            }, (error) => {
-                reject(error);
-            });
-        });
-    }
-
+  public connect(connectionDetails?: ConnectionDetails): Promise<TransportConnection> {
+    return new Promise((resolve, reject) => {
+      const webSocketTransport = new WebSocketFramedTransport(this.socket);
+      webSocketTransport.connectionEstablished().then(
+        () => {
+          const connection = new FramedTransportConnection(webSocketTransport);
+          connection
+            .connect(connectionDetails ? connectionDetails.incomingChannelsObserver : undefined)
+            .then(() => resolve(connection))
+            .catch(reject);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
 }

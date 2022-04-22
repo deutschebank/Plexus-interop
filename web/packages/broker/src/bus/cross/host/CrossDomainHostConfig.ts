@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface CrossDomainHostConfig {
-    whiteListedUrls: string[];
+  whiteListedUrls: string[];
 }

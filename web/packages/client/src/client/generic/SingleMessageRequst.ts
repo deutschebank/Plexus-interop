@@ -14,57 +14,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TransportConnection } from '@plexus-interop/transport-common';
 import { Logger } from '@plexus-interop/common';
 import { ClientProtocolHelper } from '@plexus-interop/protocol';
+import { TransportConnection } from '@plexus-interop/transport-common';
 
 /**
  * Represents Single Request to Broker
  */
 export class SingleMessageRequest<R> {
+  constructor(private readonly transportConnection: TransportConnection, private readonly log: Logger) {}
 
-    constructor(
-        private readonly transportConnection: TransportConnection,
-        private readonly log: Logger) { }
-
-    public async execute(requestPayload: ArrayBuffer, decodeFn: (responsePayload: ArrayBuffer) => R): Promise<R> {
-        return new Promise<R>((resolve, reject) => {
-            (async () => {
-                try {
-                    const channel = await this.transportConnection.createChannel();
-                    channel.open({
-                        startFailed: e => reject(e),
-                        started: () => {
-                            this.log.debug('Channel is open, sending connection request');
-                            channel.sendLastMessage(requestPayload)
-                                .then(completion => {
-                                    if (!ClientProtocolHelper.isSuccessCompletion(completion)) {
-                                        /* istanbul ignore if */
-                                        if (this.log.isDebugEnabled()) {
-                                            this.log.debug('Received non successful completion', completion);
-                                        }
-                                        reject(completion.error);
-                                    }  
-                                });
-                        },
-                        next: data => {
-                            try {
-                                this.log.trace('Received single message response');
-                                const message = decodeFn(data);
-                                resolve(message);
-                            } catch (decodingError) {
-                                this.log.error('Unable to decode message', decodingError);
-                                reject(decodingError);
-                            }
-                        },
-                        complete: () => this.log.debug('Channel closed'),
-                        error: e => reject(e)
-                    });
-                } catch (error) {
-                    this.log.error('Unable to open channel', error);
-                    reject(error);
+  public async execute(requestPayload: ArrayBuffer, decodeFn: (responsePayload: ArrayBuffer) => R): Promise<R> {
+    return new Promise<R>((resolve, reject) => {
+      (async () => {
+        try {
+          const channel = await this.transportConnection.createChannel();
+          channel.open({
+            startFailed: (e) => reject(e),
+            started: () => {
+              this.log.debug('Channel is open, sending connection request');
+              channel.sendLastMessage(requestPayload).then((completion) => {
+                if (!ClientProtocolHelper.isSuccessCompletion(completion)) {
+                  /* istanbul ignore if */
+                  if (this.log.isDebugEnabled()) {
+                    this.log.debug('Received non successful completion', completion);
+                  }
+                  reject(completion.error);
                 }
-            })();
-        });
-    }
+              });
+            },
+            next: (data) => {
+              try {
+                this.log.trace('Received single message response');
+                const message = decodeFn(data);
+                resolve(message);
+              } catch (decodingError) {
+                this.log.error('Unable to decode message', decodingError);
+                reject(decodingError);
+              }
+            },
+            complete: () => this.log.debug('Channel closed'),
+            error: (e) => reject(e),
+          });
+        } catch (error) {
+          this.log.error('Unable to open channel', error);
+          reject(error);
+        }
+      })();
+    });
+  }
 }

@@ -17,9 +17,9 @@
 import { Action } from '@ngrx/store';
 
 export interface TypedAction<P> extends Action {
-    payload: P;
-};
+  payload: P;
+}
 
 export function getPayload<T>(action: Action): T {
-    return (<TypedAction<T>>action).payload;
-};
+  return (<TypedAction<T>>action).payload;
+}

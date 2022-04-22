@@ -14,33 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { ClientConnectRequest, GenericClientApi, GenericClientApiBase, GenericClientApiBuilder, MethodInvocationContext } from '@plexus-interop/client';
+import {
+  ClientConnectRequest,
+  GenericClientApi,
+  GenericClientApiBase,
+  GenericClientApiBuilder,
+  MethodInvocationContext,
+} from '@plexus-interop/client';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import * as plexus from './gen/plexus-messages';
 
+import * as plexus from './gen/plexus-messages';
 
 /**
  * Main client API
  *
  */
-export abstract class WebGreetingServerClient {
-
-}
+export abstract class WebGreetingServerClient {}
 
 /**
  * Client's API internal implementation
  *
  */
 class WebGreetingServerClientImpl extends GenericClientApiBase implements WebGreetingServerClient {
-
-    public constructor(
-        private readonly genericClient: GenericClientApi
-    ) {
-        super(genericClient);
-    }
-
-
+  public constructor(private readonly genericClient: GenericClientApi) {
+    super(genericClient);
+  }
 }
 
 /**
@@ -48,9 +46,10 @@ class WebGreetingServerClientImpl extends GenericClientApiBase implements WebGre
  *
  */
 export abstract class GreetingServiceInvocationHandler {
-
-    public abstract onUnary(invocationContext: MethodInvocationContext, request: plexus.interop.samples.IGreetingRequest): Promise<plexus.interop.samples.IGreetingResponse>;
-
+  public abstract onUnary(
+    invocationContext: MethodInvocationContext,
+    request: plexus.interop.samples.IGreetingRequest
+  ): Promise<plexus.interop.samples.IGreetingResponse>;
 }
 
 /**
@@ -58,45 +57,48 @@ export abstract class GreetingServiceInvocationHandler {
  *
  */
 export class WebGreetingServerClientBuilder {
+  private clientDetails: ClientConnectRequest = {
+    applicationId: 'interop.samples.WebGreetingServer',
+    applicationInstanceId: UniqueId.generateNew(),
+  };
 
-    private clientDetails: ClientConnectRequest = {
-        applicationId: 'interop.samples.WebGreetingServer',
-        applicationInstanceId: UniqueId.generateNew()
-    };
+  private transportConnectionProvider: () => Promise<TransportConnection>;
 
-    private transportConnectionProvider: () => Promise<TransportConnection>;
+  private greetingServiceHandler: GreetingServiceInvocationHandler;
 
-    private greetingServiceHandler: GreetingServiceInvocationHandler;
+  public withClientDetails(clientId: ClientConnectRequest): WebGreetingServerClientBuilder {
+    this.clientDetails = clientId;
+    return this;
+  }
 
-    public withClientDetails(clientId: ClientConnectRequest): WebGreetingServerClientBuilder {
-        this.clientDetails = clientId;
-        return this;
-    }
+  public withGreetingServiceInvocationsHandler(
+    invocationsHandler: GreetingServiceInvocationHandler
+  ): WebGreetingServerClientBuilder {
+    this.greetingServiceHandler = invocationsHandler;
+    return this;
+  }
 
-    public withGreetingServiceInvocationsHandler(invocationsHandler: GreetingServiceInvocationHandler): WebGreetingServerClientBuilder {
-        this.greetingServiceHandler = invocationsHandler;
-        return this;
-    }
+  public withTransportConnectionProvider(provider: () => Promise<TransportConnection>): WebGreetingServerClientBuilder {
+    this.transportConnectionProvider = provider;
+    return this;
+  }
 
-    public withTransportConnectionProvider(provider: () => Promise<TransportConnection>): WebGreetingServerClientBuilder {
-        this.transportConnectionProvider = provider;
-        return this;
-    }
-
-    public connect(): Promise<WebGreetingServerClient> {
-        return new GenericClientApiBuilder()
-            .withTransportConnectionProvider(this.transportConnectionProvider)
-            .withClientDetails(this.clientDetails)
-            .withTypeAwareUnaryHandler({
-                serviceInfo: {
-                    serviceId: 'interop.samples.GreetingService'
-                },
-                methodId: 'Unary',
-                handle: this.greetingServiceHandler.onUnary.bind(this.greetingServiceHandler)
-            }, plexus.interop.samples.GreetingRequest, plexus.interop.samples.GreetingResponse)
-            .connect()
-            .then(genericClient => new WebGreetingServerClientImpl(
-                genericClient
-));
-    }
+  public connect(): Promise<WebGreetingServerClient> {
+    return new GenericClientApiBuilder()
+      .withTransportConnectionProvider(this.transportConnectionProvider)
+      .withClientDetails(this.clientDetails)
+      .withTypeAwareUnaryHandler(
+        {
+          serviceInfo: {
+            serviceId: 'interop.samples.GreetingService',
+          },
+          methodId: 'Unary',
+          handle: this.greetingServiceHandler.onUnary.bind(this.greetingServiceHandler),
+        },
+        plexus.interop.samples.GreetingRequest,
+        plexus.interop.samples.GreetingResponse
+      )
+      .connect()
+      .then((genericClient) => new WebGreetingServerClientImpl(genericClient));
+  }
 }

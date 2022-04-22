@@ -14,45 +14,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
-import { WebBrokerConnectionBuilder, EventBus , CrossDomainEventBusProvider, CrossDomainEventBus } from '@plexus-interop/broker';
+import {
+  CrossDomainEventBus,
+  CrossDomainEventBusProvider,
+  EventBus,
+  WebBrokerConnectionBuilder,
+} from '@plexus-interop/broker';
 import { JsonAppRegistryProvider, JsonInteropRegistryProvider } from '@plexus-interop/metadata';
 import { TransportConnection } from '@plexus-interop/transport-common';
+import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+
 import { ConnectionProvider } from './ConnectionProvider';
 import { RawMetadata } from './RawMetadata';
 
 export class TransportsSetup {
+  public createWebSocketTransportProvider(url: string): ConnectionProvider {
+    return async () => {
+      const socket = new WebSocket(url);
+      const connection = await new WebSocketConnectionFactory(socket).connect();
+      return {
+        getConnection: () => connection,
+        dropConnection: () => socket.close(),
+      };
+    };
+  }
 
-    public createWebSocketTransportProvider(url: string): ConnectionProvider {
-        return async () => {
-            const socket = new WebSocket(url);
-            const connection = await new WebSocketConnectionFactory(socket).connect();
-            return {
-                getConnection: () => connection,
-                dropConnection: () => socket.close()
-            };
-        };
-    }
+  public createCrossDomainTransportProvider(proxyUrl: string): ConnectionProvider {
+    const eventBusProvider = async () => new CrossDomainEventBusProvider(async () => proxyUrl).connect();
+    return this.createWebBrokerTransportProvider(eventBusProvider);
+  }
 
-    public createCrossDomainTransportProvider(proxyUrl: string): ConnectionProvider {
-        const eventBusProvider = async () => new CrossDomainEventBusProvider(async () => proxyUrl).connect();
-        return this.createWebBrokerTransportProvider(eventBusProvider);
-    }
-
-    public createWebBrokerTransportProvider(eventBusProvider: () => Promise<EventBus>): ConnectionProvider {
-        return async () => {
-            let eventBus: CrossDomainEventBus;
-            const connection: TransportConnection = await new WebBrokerConnectionBuilder()
-                .withAppRegistryProviderFactory(async () => new JsonAppRegistryProvider(RawMetadata.appsJson))
-                .withInteropRegistryProviderFactory(async () => new JsonInteropRegistryProvider(RawMetadata.interopJson))
-                .withEventBusProvider(eventBusProvider)
-                .connect();
-            return {
-                getConnection: () => connection,
-                // eslint-disable-next-line no-console
-                dropConnection: () => eventBus.disconnect().catch(e => console.error('Failed to disconnect', e))
-            };
-        };
-    }
-
+  public createWebBrokerTransportProvider(eventBusProvider: () => Promise<EventBus>): ConnectionProvider {
+    return async () => {
+      let eventBus: CrossDomainEventBus;
+      const connection: TransportConnection = await new WebBrokerConnectionBuilder()
+        .withAppRegistryProviderFactory(async () => new JsonAppRegistryProvider(RawMetadata.appsJson))
+        .withInteropRegistryProviderFactory(async () => new JsonInteropRegistryProvider(RawMetadata.interopJson))
+        .withEventBusProvider(eventBusProvider)
+        .connect();
+      return {
+        getConnection: () => connection,
+        // eslint-disable-next-line no-console
+        dropConnection: () => eventBus.disconnect().catch((e) => console.error('Failed to disconnect', e)),
+      };
+    };
+  }
 }

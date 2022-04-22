@@ -15,41 +15,41 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
+
 import { ClientsSetup } from '../common/ClientsSetup';
 import { TransportsSetup } from '../common/TransportsSetup';
 import { readHostUrl } from '../common/utils';
 import { ClientConnectivityTests } from '../echo/ClientConnectivityTests';
 
 describe('Web Broker: Client connectivity', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
+  const proxyHost = readHostUrl();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
-    const proxyHost = readHostUrl();
+  const connectivityTests = new ClientConnectivityTests(
+    transportsSetup.createCrossDomainTransportProvider(proxyHost),
+    clientsSetup
+  );
 
-    const connectivityTests = new ClientConnectivityTests(
-        transportsSetup.createCrossDomainTransportProvider(proxyHost),
-        clientsSetup);
+  it('Can receive Proxy Host from Broker', () => {
+    expect(proxyHost).is.not.empty;
+  });
 
-    it('Can receive Proxy Host from Broker', () => {
-        expect(proxyHost).is.not.empty;
-    });
+  it('Can connect/disconnect from running Broker instance', async function () {
+    this.timeout(5000);
+    return clientsSetup
+      .createEchoClient(transportsSetup.createCrossDomainTransportProvider(proxyHost))
+      .then((client) => {
+        expect(client).to.not.be.undefined;
+        return client.disconnect();
+      })
+      .catch((e) => {
+        console.error('Failed', e);
+        throw e;
+      });
+  });
 
-    it('Can connect/disconnect from running Broker instance', async function () {
-        this.timeout(5000);
-        return clientsSetup
-            .createEchoClient(transportsSetup.createCrossDomainTransportProvider(proxyHost))
-            .then(client => {
-                expect(client).to.not.be.undefined;
-                return client.disconnect();
-            })
-            .catch(e => {
-                console.error('Failed', e);
-                throw e;
-            });
-    });
-
-    it('Receives error if provide wrong client id to Broker', function () {
-        return connectivityTests.testClientReceiveErrorIfProvideWrongId();
-    });
-
+  it('Receives error if provide wrong client id to Broker', function () {
+    return connectivityTests.testClientReceiveErrorIfProvideWrongId();
+  });
 });

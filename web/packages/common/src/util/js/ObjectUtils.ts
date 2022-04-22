@@ -21,29 +21,27 @@
 /* eslint-disable no-underscore-dangle */
 // TODO update these methods
 export class ObjectUtils {
-
-    public static setPrototypeOf: (object: any, prototype: any) => any = setProtoImpl();
-
+  public static setPrototypeOf: (object: any, prototype: any) => any = setProtoImpl();
 }
 
 function setProtoImpl(): (x: any, y: any) => any {
-    return Object.setPrototypeOf || _proto_supported() ? set_proto_ : copyProperties;
+  return Object.setPrototypeOf || _proto_supported() ? set_proto_ : copyProperties;
 }
 
 function set_proto_(obj: any, proto: any): any {
-    obj.__proto__ = proto;
-    return obj;
+  obj.__proto__ = proto;
+  return obj;
 }
 
 function _proto_supported(): boolean {
-    return { __proto__: [] } instanceof Array;
+  return { __proto__: [] } instanceof Array;
 }
 
 function copyProperties(obj: any, proto: any): any {
-    for (const prop in proto) {
-        if (!obj.hasOwnProperty(prop)) {
-            obj[prop] = proto[prop];
-        }
+  for (const prop in proto) {
+    if (!obj.hasOwnProperty(prop)) {
+      obj[prop] = proto[prop];
     }
-    return obj;
+  }
+  return obj;
 }

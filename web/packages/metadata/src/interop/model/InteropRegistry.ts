@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 import { ExtendedMap } from '@plexus-interop/common';
-import { Application, Service } from './ServiceTypes';
-import { Message } from './Message';
+
 import { MessagesNamespace } from '../json/MessagesNamespace';
 import { Enum } from './Enum';
+import { Message } from './Message';
+import { Application, Service } from './ServiceTypes';
 
 export interface InteropRegistry {
+  applications: ExtendedMap<string, Application>;
 
-    applications: ExtendedMap<string, Application>;
+  messages: ExtendedMap<string, Message>;
 
-    messages: ExtendedMap<string, Message>;
+  enums?: ExtendedMap<string, Enum>;
 
-    enums?: ExtendedMap<string, Enum>;
+  services: ExtendedMap<string, Service>;
 
-    services: ExtendedMap<string, Service>;
-
-    rawMessages: MessagesNamespace;
-    
+  rawMessages: MessagesNamespace;
 }

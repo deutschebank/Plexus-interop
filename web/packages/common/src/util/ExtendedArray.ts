@@ -14,38 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { join, distinct, toMap, concat } from './Arrays';
+import { concat, distinct, join, toMap } from './Arrays';
 import { ExtendedMap } from './collections/ExtendedMap';
 
 /**
  * Provides few additional utility methods for array modification, immutable, all operations create new instance
  */
 export class ExtendedArray<T> {
+  constructor(private readonly values: T[]) {}
 
-    constructor(private readonly values: T[]) {}
+  public static of<T>(values: T[]): ExtendedArray<T> {
+    return new ExtendedArray<T>(values);
+  }
 
-    public static of<T>(values: T[]): ExtendedArray<T> {
-        return new ExtendedArray<T>(values);
-    }
+  public joinWith<R, Y>(
+    second: R[],
+    joinFn: (x: T, y: R) => Y,
+    predicate: (x: T, y: R) => boolean = () => true
+  ): ExtendedArray<Y> {
+    return ExtendedArray.of<Y>(join(this.values, second, joinFn, predicate));
+  }
 
-    public joinWith<R, Y>(second: R[], joinFn: (x: T, y: R) => Y, predicate: (x: T, y: R) => boolean = () => true): ExtendedArray<Y> {
-        return ExtendedArray.of<Y>(join(this.values, second, joinFn, predicate));
-    }
+  public distinct(key: (x: T) => any = (x) => x): ExtendedArray<T> {
+    return ExtendedArray.of(distinct(this.values, key));
+  }
 
-    public distinct(key: (x: T) => any = x => x ): ExtendedArray<T> {
-        return ExtendedArray.of(distinct(this.values, key));
-    }
+  public toArray(): T[] {
+    return this.values;
+  }
 
-    public toArray(): T[] {
-        return this.values;
-    }
+  public flatMap<R>(f: (el: T) => R[]): ExtendedArray<R> {
+    return ExtendedArray.of(this.values.map(f).reduce<R[]>(concat, []));
+  }
 
-    public flatMap<R>(f: (el: T) => R[]): ExtendedArray<R> {
-        return ExtendedArray.of(this.values.map(f).reduce<R[]>(concat, []));
-    }
-
-    public toMap<K, V>(keyFn: (v: T) => K, vFn: (v: T) => V): ExtendedMap<K, V> {
-        return toMap(this.values, keyFn, vFn);
-    }
-
+  public toMap<K, V>(keyFn: (v: T) => K, vFn: (v: T) => V): ExtendedMap<K, V> {
+    return toMap(this.values, keyFn, vFn);
+  }
 }

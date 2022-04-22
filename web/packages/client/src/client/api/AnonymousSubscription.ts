@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface AnonymousSubscription {
-    unsubscribe(): void;
+  unsubscribe(): void;
 }

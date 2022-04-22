@@ -14,88 +14,87 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DynamicProtoMarshallerFactory } from '../../src/dynamic/DynamicProtoMarshallerFactory';
 import * as fs from 'fs';
+
 import { JsonInteropRegistryProvider } from '@plexus-interop/metadata';
 
+import { DynamicProtoMarshallerFactory } from '../../src/dynamic/DynamicProtoMarshallerFactory';
+
 describe('DynamicMarshallerFactory', () => {
+  const metadataJson = fs.readFileSync('../metadata/tests/json/test-interop.json', 'utf8');
+  const registry = new JsonInteropRegistryProvider(metadataJson).getCurrent();
 
-    const metadataJson = fs.readFileSync('../metadata/tests/json/test-interop.json', 'utf8');
-    const registry = new JsonInteropRegistryProvider(metadataJson).getCurrent();
+  const messageId = 'plexus.interop.testing.EchoRequest';
 
-    const messageId = 'plexus.interop.testing.EchoRequest';
+  const validMessage = {
+    stringField: 'stringData',
+    boolField: true,
+    enumField: 1,
+    repeatedDoubleField: [1, 2, 3],
+    subMessageField: {
+      stringField: 'stringData',
+    },
+  };
 
-    const validMessage = {
-        stringField: 'stringData',
-        boolField: true,
-        enumField: 1,
-        repeatedDoubleField: [1, 2, 3],
-        subMessageField: {
-            stringField: 'stringData'
-        }
-    };
+  const invalidTypeMessage = {
+    stringField: 'stringData',
+    boolField: 'true',
+  };
 
-    const invalidTypeMessage = {
-        stringField: 'stringData',
-        boolField: 'true'
-    };
+  const invalidEnumValueMessage = {
+    stringField: 'stringData',
+    enumField: 10,
+  };
 
-    const invalidEnumValueMessage = {
-        stringField: 'stringData',
-        enumField: 10
-    };
+  const undefinedEnumValueMessage = {
+    stringField: 'stringData',
+  };
 
-    const undefinedEnumValueMessage = {
-        stringField: 'stringData'
-    };
+  const sut = new DynamicProtoMarshallerFactory(registry);
 
-    const sut = new DynamicProtoMarshallerFactory(registry);
+  it('Creates Marshaller for existing Message', () => {
+    const marshaller = sut.getMarshaller(messageId);
+    expect(marshaller).toBeDefined();
+  });
 
-    it('Creates Marshaller for existing Message', () => {
-        const marshaller = sut.getMarshaller(messageId);
-        expect(marshaller).toBeDefined();
-    });
+  it('Reuse same Marshaller for next calls', () => {
+    expect(sut.getMarshaller(messageId)).toBe(sut.getMarshaller(messageId));
+  });
 
-    it('Reuse same Marshaller for next calls', () => {
-        expect(sut.getMarshaller(messageId))
-            .toBe(sut.getMarshaller(messageId));
-    });
+  it('It creates Marshaller with validation support', () => {
+    const marshaller = sut.getMarshaller(messageId);
+    marshaller.validate(validMessage);
+  });
 
-    it('It creates Marshaller with validation support', () => {
-        const marshaller = sut.getMarshaller(messageId);
-        marshaller.validate(validMessage);
-    });
+  it('Raises an Error for Marshaller request on not existing Message', () => {
+    try {
+      sut.getMarshaller('Do not exist');
+      fail('Should fail');
+    } catch (error) {}
+  });
 
-    it('Raises an Error for Marshaller request on not existing Message', () => {
-        try {
-            sut.getMarshaller('Do not exist');
-            fail('Should fail');
-        } catch (error) {
-        }
-    });
+  it('Creates Marshaller which fail on messages with wrong type', () => {
+    const marshaller = sut.getMarshaller(messageId);
+    expect(() => marshaller.validate(invalidTypeMessage)).toThrowError();
+  });
 
-    it('Creates Marshaller which fail on messages with wrong type', () => {
-        const marshaller = sut.getMarshaller(messageId);
-        expect(() => marshaller.validate(invalidTypeMessage)).toThrowError();
-    });
+  it('Creates Marshaller which fail on messages with wrong enum value', () => {
+    const marshaller = sut.getMarshaller(messageId);
+    expect(() => marshaller.validate(invalidEnumValueMessage)).toThrowError();
+  });
 
-    it('Creates Marshaller which fail on messages with wrong enum value', () => {
-        const marshaller = sut.getMarshaller(messageId);
-        expect(() => marshaller.validate(invalidEnumValueMessage)).toThrowError();
-    });
+  it('Creates Marshaller encoding/decoding support', () => {
+    const marshaller = sut.getMarshaller(messageId);
+    const encoded = marshaller.encode(validMessage);
+    expect(encoded).toBeDefined();
+    const decoded = marshaller.decode(encoded);
+    expect(decoded).toMatchObject(validMessage);
+  });
 
-    it('Creates Marshaller encoding/decoding support', () => {
-        const marshaller = sut.getMarshaller(messageId);
-        const encoded = marshaller.encode(validMessage);
-        expect(encoded).toBeDefined();
-        const decoded = marshaller.decode(encoded);
-        expect(decoded).toMatchObject(validMessage);
-    });
-
-    it('Decodes undefined enum value to default', () => {
-        const marshaller = sut.getMarshaller(messageId);
-        const encoded = marshaller.encode(undefinedEnumValueMessage);
-        const decoded = marshaller.decode(encoded);
-        expect(decoded.enumField).toBe(0);
-    });
+  it('Decodes undefined enum value to default', () => {
+    const marshaller = sut.getMarshaller(messageId);
+    const encoded = marshaller.encode(undefinedEnumValueMessage);
+    const decoded = marshaller.decode(encoded);
+    expect(decoded.enumField).toBe(0);
+  });
 });

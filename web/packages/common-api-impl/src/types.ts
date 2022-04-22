@@ -17,5 +17,5 @@
 import { Method } from './api/client-api';
 
 export function isMethod(m: Method | string): m is Method {
-    return !!(m as Method).peer;
+  return !!(m as Method).peer;
 }

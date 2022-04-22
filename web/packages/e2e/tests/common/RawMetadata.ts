@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 export class RawMetadata {
-
-    public static appsJson: string = `   
+  public static appsJson: string = `   
     {
         "apps": [
             {
@@ -39,7 +38,7 @@ export class RawMetadata {
     }
     `;
 
-    public static interopJson: string = `   
+  public static interopJson: string = `   
     {
         "messages": {
           "nested": {

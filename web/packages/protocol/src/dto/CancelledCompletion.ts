@@ -17,5 +17,5 @@
 import { plexus } from '../gen/internal-client-protocol';
 
 export class CancelledCompletion implements plexus.ICompletion {
-    public readonly status: plexus.Completion.Status = plexus.Completion.Status.Canceled;
+  public readonly status: plexus.Completion.Status = plexus.Completion.Status.Canceled;
 }

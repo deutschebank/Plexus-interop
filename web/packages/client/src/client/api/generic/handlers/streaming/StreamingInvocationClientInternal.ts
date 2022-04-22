@@ -17,7 +17,5 @@
 import { StreamingInvocationClient } from './StreamingInvocationClient';
 
 export interface StreamingInvocationClientInternal<T> extends StreamingInvocationClient<T> {
-
-    sendCompleted(): Promise<void>;
-
+  sendCompleted(): Promise<void>;
 }

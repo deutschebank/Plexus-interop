@@ -14,29 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { debounceTime, combineLatest, map } from "rxjs/operators";
-import { SubscriptionsRegistry } from "./../services/ui/SubscriptionsRegistry";
-import { OnDestroy } from "@angular/core";
-import { LoggerFactory } from "@plexus-interop/common";
-import { Application } from "@plexus-interop/metadata";
-import { Observable } from "rxjs";
-import { AppActions } from "../services/ui/AppActions";
-import { Component, OnInit } from "@angular/core";
-import * as fromRoot from "../services/ui/RootReducers";
-import { Router, ActivatedRoute } from "@angular/router";
-import { Store } from "@ngrx/store";
-import { FormControl } from "@angular/forms";
+import { OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { combineLatest, debounceTime, map } from 'rxjs/operators';
 
-import { containsFilter } from "../services/ui/filters";
+import { LoggerFactory } from '@plexus-interop/common';
+import { Application } from '@plexus-interop/metadata';
+
+import { AppActions } from '../services/ui/AppActions';
+import { containsFilter } from '../services/ui/filters';
+import * as fromRoot from '../services/ui/RootReducers';
+import { SubscriptionsRegistry } from './../services/ui/SubscriptionsRegistry';
 
 interface AppUiInfo extends Application {
   label: string;
 }
 
 @Component({
-  selector: "app-app-list",
-  templateUrl: "./app-list.component.html",
-  styleUrls: ["./app-list.component.css"],
+  selector: 'app-app-list',
+  templateUrl: './app-list.component.html',
+  styleUrls: ['./app-list.component.css'],
   providers: [SubscriptionsRegistry],
 })
 export class AppListComponent implements OnInit, OnDestroy {
@@ -44,7 +45,7 @@ export class AppListComponent implements OnInit, OnDestroy {
 
   searchFilterValue: Observable<string>;
 
-  searchFilterControl: FormControl = new FormControl("");
+  searchFilterControl: FormControl = new FormControl('');
 
   private logger = LoggerFactory.getLogger(AppListComponent.name);
 
@@ -57,44 +58,30 @@ export class AppListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.searchFilterValue = this.store.select(
-      (state) => state.plexus.appsFilter || ""
-    );
+    this.searchFilterValue = this.store.select((state) => state.plexus.appsFilter || '');
     this.apps = this.store
-      .select((state) =>
-        this.applyFilter(state.plexus.apps, state.plexus.appsFilter)
-      )
-      .pipe(
-        map(this.sortApps.bind(this)),
-        map(this.sortApps.bind(this)),
-        map(this.toAppInfos.bind(this))
-      );
+      .select((state) => this.applyFilter(state.plexus.apps, state.plexus.appsFilter))
+      .pipe(map(this.sortApps.bind(this)), map(this.sortApps.bind(this)), map(this.toAppInfos.bind(this)));
     this.subsctiptionsRegistry.add(
-      this.activatedRoute.queryParams
-        .pipe(combineLatest(this.apps))
-        .subscribe(([params, apps]) => {
-          const appId = params["appId"];
-          if (appId) {
-            const expectedApp = apps.find((app) => app.id === appId);
-            if (!expectedApp) {
-              this.logger.warn(
-                `Params provided app with Id='${appId}' not found. Please, select from the list`
-              );
-            } else {
-              this.connectToApp(expectedApp);
-            }
+      this.activatedRoute.queryParams.pipe(combineLatest(this.apps)).subscribe(([params, apps]) => {
+        const appId = params['appId'];
+        if (appId) {
+          const expectedApp = apps.find((app) => app.id === appId);
+          if (!expectedApp) {
+            this.logger.warn(`Params provided app with Id='${appId}' not found. Please, select from the list`);
+          } else {
+            this.connectToApp(expectedApp);
           }
-        })
+        }
+      })
     );
     this.subsctiptionsRegistry.add(
-      this.searchFilterControl.valueChanges
-        .pipe(debounceTime(150))
-        .subscribe((newFilter) => {
-          this.store.dispatch({
-            type: AppActions.APPS_FILTER_UPDATED,
-            payload: newFilter,
-          });
-        })
+      this.searchFilterControl.valueChanges.pipe(debounceTime(150)).subscribe((newFilter) => {
+        this.store.dispatch({
+          type: AppActions.APPS_FILTER_UPDATED,
+          payload: newFilter,
+        });
+      })
     );
   }
 

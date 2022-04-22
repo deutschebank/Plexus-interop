@@ -15,28 +15,29 @@
  * limitations under the License.
  */
 import { Command } from 'src/commands/Command';
-import { GenTsCommand } from './GenTsCommand';
+
+import { GenCSharpCommand } from './GenCSharpCommand';
 import { GenJsonCommand } from './GenJsonCommand';
 import { GenProtoCommand } from './GenProtoCommand';
-import { GenCSharpCommand } from './GenCSharpCommand';
+import { GenTsCommand } from './GenTsCommand';
+import { ListMetaFilesCommand } from './ListMetaFilesCommand';
 import { ValidateMetadataCommand } from './ValidateMetadataCommand';
 import { ValidateMetadataPatchCommand } from './ValidateMetadataPatchCommand';
-import { ListMetaFilesCommand } from './ListMetaFilesCommand';
 
 export function commands(): Command[] {
-    return [
-        new GenTsCommand(), 
-        new GenJsonCommand(), 
-        new GenProtoCommand(), 
-        new GenCSharpCommand(), 
-        new ValidateMetadataCommand(),
-        new ValidateMetadataPatchCommand(),
-        new ListMetaFilesCommand()
-    ];
+  return [
+    new GenTsCommand(),
+    new GenJsonCommand(),
+    new GenProtoCommand(),
+    new GenCSharpCommand(),
+    new ValidateMetadataCommand(),
+    new ValidateMetadataPatchCommand(),
+    new ListMetaFilesCommand(),
+  ];
 }
 
 export function printGeneralHelp(): void {
-    console.log('');    
-    console.log('  Help for specific command:  plexus [command] --help');
-    console.log('');
+  console.log('');
+  console.log('  Help for specific command:  plexus [command] --help');
+  console.log('');
 }

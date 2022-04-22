@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export enum HostState {
-    CREATED = 'CREATED',
-    CONNECTED = 'CONNECTED',
-    CLOSED = 'CLOSED'
+  CREATED = 'CREATED',
+  CONNECTED = 'CONNECTED',
+  CLOSED = 'CLOSED',
 }

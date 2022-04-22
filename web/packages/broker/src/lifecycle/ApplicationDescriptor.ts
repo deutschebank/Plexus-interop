@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 export interface ApplicationDescriptor {
-    
-    applicationId: string;
+  applicationId: string;
 
-    instanceId: string;
-    
+  instanceId: string;
 }

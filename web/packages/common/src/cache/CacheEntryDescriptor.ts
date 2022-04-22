@@ -17,9 +17,9 @@
 import { CacheEntry } from './CacheEntry';
 
 export class CacheEntryDescriptor<T> {
-    constructor(
-        public readonly entry: CacheEntry<T>,
-        public readonly expirationTime: number,
-        public cleanUpTimeOutId: number
-    ) {}
+  constructor(
+    public readonly entry: CacheEntry<T>,
+    public readonly expirationTime: number,
+    public cleanUpTimeOutId: number
+  ) {}
 }

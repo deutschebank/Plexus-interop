@@ -17,9 +17,7 @@
 import { TransportConnection } from '@plexus-interop/transport-common';
 
 export interface ConnectionSetup {
+  getConnection(): TransportConnection;
 
-    getConnection(): TransportConnection;
-    
-    dropConnection(): void;
-    
+  dropConnection(): void;
 }

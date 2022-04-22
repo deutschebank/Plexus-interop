@@ -17,10 +17,7 @@
 import { FramedTransport } from './FramedTransport';
 
 export interface ConnectableFramedTransport extends FramedTransport {
+  disconnect(): Promise<void>;
 
-    disconnect(): Promise<void>;
-
-    connected(): boolean;
-
+  connected(): boolean;
 }
-

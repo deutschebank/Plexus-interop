@@ -17,9 +17,7 @@
 import { InvocationClient } from '../../../InvocationClient';
 
 export interface StreamingInvocationClient<T> extends InvocationClient {
+  next(value: T): Promise<void>;
 
-    next(value: T): Promise<void>;
-
-    complete(): Promise<void>;
-
+  complete(): Promise<void>;
 }

@@ -17,5 +17,5 @@
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
 
 export interface CloseChannelResponse {
-    completion: plexus.ICompletion;
+  completion: plexus.ICompletion;
 }

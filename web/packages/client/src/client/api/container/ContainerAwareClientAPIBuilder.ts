@@ -16,34 +16,36 @@
  */
 import { UniqueId } from '@plexus-interop/transport-common';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
-import { GenericClientApiBuilder, GenericClientApi } from '../generic';
+
+import { GenericClientApi, GenericClientApiBuilder } from '../generic';
 import { ConnectionDetailsService } from './ConnectionDetailsService';
-import { getBaseWsUrl } from './WsConnectionDetails';
 import { DefaultConnectionDetailsService } from './DefaultConnectionDetailsService';
+import { getBaseWsUrl } from './WsConnectionDetails';
 
 export class ContainerAwareClientAPIBuilder extends GenericClientApiBuilder {
+  public constructor(
+    private readonly connectionDetailsService: ConnectionDetailsService = new DefaultConnectionDetailsService()
+  ) {
+    super();
+  }
 
-    public constructor(private readonly connectionDetailsService: ConnectionDetailsService = new DefaultConnectionDetailsService()) {
-        super();
-    }
-
-    public async connect(): Promise<GenericClientApi> {
-        if (!this.applicationInstanceId || !this.transportConnectionProvider) {
-            try {
-                const details = await this.connectionDetailsService.getConnectionDetails();
-                if (!this.applicationInstanceId && details.appInstanceId) {
-                    this.log.info('Using App instance ID from container');
-                    this.applicationInstanceId = UniqueId.fromString(details.appInstanceId);
-                }
-                if (!this.transportConnectionProvider && (details.ws && details.ws.port)) {
-                    this.log.info('Transport connection provider from container');
-                    this.transportConnectionProvider = () => new WebSocketConnectionFactory(new WebSocket(getBaseWsUrl(details.ws))).connect();
-                }
-            } catch (e) {
-                this.log.info('Failed to discover container connection details', e);
-            }
+  public async connect(): Promise<GenericClientApi> {
+    if (!this.applicationInstanceId || !this.transportConnectionProvider) {
+      try {
+        const details = await this.connectionDetailsService.getConnectionDetails();
+        if (!this.applicationInstanceId && details.appInstanceId) {
+          this.log.info('Using App instance ID from container');
+          this.applicationInstanceId = UniqueId.fromString(details.appInstanceId);
         }
-        return super.connect();
+        if (!this.transportConnectionProvider && details.ws && details.ws.port) {
+          this.log.info('Transport connection provider from container');
+          this.transportConnectionProvider = () =>
+            new WebSocketConnectionFactory(new WebSocket(getBaseWsUrl(details.ws))).connect();
+        }
+      } catch (e) {
+        this.log.info('Failed to discover container connection details', e);
+      }
     }
-
+    return super.connect();
+  }
 }

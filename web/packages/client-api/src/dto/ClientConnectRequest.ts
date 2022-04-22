@@ -17,9 +17,7 @@
 import { UniqueId } from '@plexus-interop/transport-common';
 
 export interface ClientConnectRequest {
+  applicationId: string;
 
-    applicationId: string;
-
-    applicationInstanceId?: UniqueId;
-
+  applicationInstanceId?: UniqueId;
 }

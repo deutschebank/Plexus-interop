@@ -17,16 +17,14 @@
 import { BlockingQueueBase } from '../../src/util/collections/BlockingQueue';
 
 describe('BlockingQueue', () => {
+  const sut = new BlockingQueueBase();
 
-    const sut = new BlockingQueueBase();
-
-    it('Should wait until element appears', (done) => {
-        const el = 'test';
-        sut.blockingDequeue().then(res => {
-            expect(res).toBe(el);
-            done();
-        });
-        setTimeout(() => sut.enqueue(el), 30);
+  it('Should wait until element appears', (done) => {
+    const el = 'test';
+    sut.blockingDequeue().then((res) => {
+      expect(res).toBe(el);
+      done();
     });
-
+    setTimeout(() => sut.enqueue(el), 30);
+  });
 });

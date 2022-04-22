@@ -14,31 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { baseDir, out, plexusEntryPoint, namespace, verbose } from './DefaultOptions';
-import { Option } from './Option';
 import { getJavaExecPath, getJavaGenLibPath } from '../common/java';
-import { BaseCommand } from './BaseCommand';
 import { simpleSpawn } from '../common/process';
 import { getProtocExecPath } from '../common/protoc';
+import { BaseCommand } from './BaseCommand';
+import { baseDir, namespace, out, plexusEntryPoint, verbose } from './DefaultOptions';
+import { Option } from './Option';
 
 export class GenCSharpCommand extends BaseCommand {
-    
-    public clientGenArgs: (opts: any) => string[] = opts => ['--type=csharp', ...this.optionArgs(opts)]
+  public clientGenArgs: (opts: any) => string[] = (opts) => ['--type=csharp', ...this.optionArgs(opts)];
 
-    public name = () => 'gen-csharp';
+  public name = () => 'gen-csharp';
 
-    public generalDescription = () => 'generate C# client and messages definitions for specified entry point';
+  public generalDescription = () => 'generate C# client and messages definitions for specified entry point';
 
-    public options: () => Option[] = () => [baseDir(), out('Generated'), plexusEntryPoint(), namespace('Plexus.Interop.Testing.Generated'), verbose()];
+  public options: () => Option[] = () => [
+    baseDir(),
+    out('Generated'),
+    plexusEntryPoint(),
+    namespace('Plexus.Interop.Testing.Generated'),
+    verbose(),
+  ];
 
-    public async action(opts: any): Promise<void> {
-
-        this.log('Generating interop client');
-        const javaExecPath = await getJavaExecPath();
-        const protocExecPath = getProtocExecPath();
-        const javaLibPath = getJavaGenLibPath();
-        await simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.clientGenArgs(opts), `--protoc=${protocExecPath}`], this.isVerbose(opts));
-        
-    }
-
+  public async action(opts: any): Promise<void> {
+    this.log('Generating interop client');
+    const javaExecPath = await getJavaExecPath();
+    const protocExecPath = getProtocExecPath();
+    const javaLibPath = getJavaGenLibPath();
+    await simpleSpawn(
+      javaExecPath,
+      ['-jar', javaLibPath, ...this.clientGenArgs(opts), `--protoc=${protocExecPath}`],
+      this.isVerbose(opts)
+    );
+  }
 }

@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export enum DiscoveryMode {
-    Offline = 0,
-    Online = 1
+  Offline = 0,
+  Online = 1,
 }

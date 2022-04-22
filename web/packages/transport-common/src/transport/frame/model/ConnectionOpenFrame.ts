@@ -14,31 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable no-underscore-dangle */
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+
 import { ServiceFrame } from './ServiceFrame';
 
 export class ConnectionOpenFrame extends ServiceFrame<plexus.interop.transport.protocol.IConnectionOpenHeader> {
+  public constructor(header: plexus.interop.transport.protocol.IHeader) {
+    super();
+    this._header = header;
+  }
 
-    public constructor(header: plexus.interop.transport.protocol.IHeader) {
-        super();
-        this._header = header;
-    }
+  public static fromHeaderData(
+    headerData: plexus.interop.transport.protocol.IConnectionOpenHeader
+  ): ConnectionOpenFrame {
+    return new ConnectionOpenFrame({
+      open: headerData,
+    });
+  }
 
-    public static fromHeaderData(headerData: plexus.interop.transport.protocol.IConnectionOpenHeader): ConnectionOpenFrame {
-        return new ConnectionOpenFrame({
-            open: headerData
-        });
-    }
+  public getInternalHeader(): plexus.interop.transport.protocol.Header {
+    return new plexus.interop.transport.protocol.Header({
+      open: this.getHeaderData(),
+    });
+  }
 
-    public getInternalHeader(): plexus.interop.transport.protocol.Header {
-        return new plexus.interop.transport.protocol.Header({
-            open: this.getHeaderData()
-        });
-    }
-
-    public getHeaderData(): plexus.interop.transport.protocol.IConnectionOpenHeader {
-        return this._header.open as plexus.interop.transport.protocol.IConnectionOpenHeader;
-    }
-
+  public getHeaderData(): plexus.interop.transport.protocol.IConnectionOpenHeader {
+    return this._header.open as plexus.interop.transport.protocol.IConnectionOpenHeader;
+  }
 }

@@ -17,14 +17,13 @@
 import { BinaryMarshaller, Marshaller } from '../api';
 
 export class DynamicBinaryProtoMarshaller implements BinaryMarshaller {
-    
-    public constructor(private readonly internal: Marshaller<any, ArrayBuffer>) {}
-    
-    public encode(messageObj: any): Uint8Array {
-        return new Uint8Array(this.internal.encode(messageObj));
-    }
-    
-    public decode(messagePayload: Uint8Array): any {
-        return this.internal.decode(messagePayload.buffer);
-    }
+  public constructor(private readonly internal: Marshaller<any, ArrayBuffer>) {}
+
+  public encode(messageObj: any): Uint8Array {
+    return new Uint8Array(this.internal.encode(messageObj));
+  }
+
+  public decode(messagePayload: Uint8Array): any {
+    return this.internal.decode(messagePayload.buffer);
+  }
 }

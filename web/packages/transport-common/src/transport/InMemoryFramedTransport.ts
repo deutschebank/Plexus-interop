@@ -14,60 +14,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ReadWriteCancellationToken, Observer, Logger, LoggerFactory } from '@plexus-interop/common';
+import { Logger, LoggerFactory, Observer, ReadWriteCancellationToken } from '@plexus-interop/common';
 import { UniqueId } from '@plexus-interop/protocol';
+
 import { BufferedObserver, Defaults } from '../common';
 import { ConnectableFramedTransport } from './frame/ConnectableFramedTransport';
 import { Frame } from './frame/model/Frame';
 
 export class InMemoryFramedTransport implements ConnectableFramedTransport {
+  private id: UniqueId = UniqueId.generateNew();
 
-    private id: UniqueId = UniqueId.generateNew();
+  private cancellationToken: ReadWriteCancellationToken = new ReadWriteCancellationToken();
 
-    private cancellationToken: ReadWriteCancellationToken = new ReadWriteCancellationToken();
+  private readonly log: Logger;
 
-    private readonly log: Logger;
+  constructor(private inObserver: BufferedObserver<Frame>, private outObserver: Observer<Frame>) {
+    this.log = LoggerFactory.getLogger(`InMemoryFramedTransport [${this.id.toString()}]`);
+    this.log.trace('Created');
+  }
 
-    constructor(
-        private inObserver: BufferedObserver<Frame>,
-        private outObserver: Observer<Frame>
-    ) {
-        this.log = LoggerFactory.getLogger(`InMemoryFramedTransport [${this.id.toString()}]`);
-        this.log.trace('Created');
+  public connected(): boolean {
+    return !this.cancellationToken.isCancelled();
+  }
+
+  public async disconnect(): Promise<void> {
+    this.log.trace('Received disconnect');
+    this.cancellationToken.cancel();
+    this.inObserver.complete();
+  }
+
+  public uuid(): UniqueId {
+    return this.id;
+  }
+
+  public getMaxFrameSize(): number {
+    return Defaults.DEFAULT_FRAME_SIZE;
+  }
+
+  public async writeFrame(frame: Frame): Promise<void> {
+    this.cancellationToken.throwIfCanceled();
+    if (this.log.isTraceEnabled()) {
+      if (frame.isDataFrame()) {
+        this.log.trace(`Received data frame`);
+      } else {
+        this.log.trace(`Received header frame`);
+      }
     }
+    this.outObserver.next(frame);
+  }
 
-    public connected(): boolean {
-        return !this.cancellationToken.isCancelled();
-    }
-
-    public async disconnect(): Promise<void> {
-        this.log.trace('Received disconnect');
-        this.cancellationToken.cancel();
-        this.inObserver.complete();
-    }
-
-    public uuid(): UniqueId {
-        return this.id;
-    }
-
-    public getMaxFrameSize(): number {
-        return Defaults.DEFAULT_FRAME_SIZE;
-    }
-
-    public async writeFrame(frame: Frame): Promise<void> {
-        this.cancellationToken.throwIfCanceled();
-        if (this.log.isTraceEnabled()) {
-            if (frame.isDataFrame()) {
-                this.log.trace(`Received data frame`);
-            } else {
-                this.log.trace(`Received header frame`);
-            }
-        }
-        this.outObserver.next(frame);
-    }
-
-    public async open(observer: Observer<Frame>): Promise<void> {
-        this.log.trace('Transport opened');
-        this.inObserver.setObserver(observer);
-    }
+  public async open(observer: Observer<Frame>): Promise<void> {
+    this.log.trace('Transport opened');
+    this.inObserver.setObserver(observer);
+  }
 }

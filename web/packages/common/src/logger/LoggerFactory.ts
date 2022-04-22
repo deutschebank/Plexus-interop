@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 import * as log from 'loglevel';
+
 import { TimeUtils } from '../util/time/TimeUtils';
 import { Logger, LoggerDelegate } from './Logger';
 import { LoggerBase } from './LoggerBase';
@@ -23,7 +24,6 @@ import { LogLevel } from './LogLevel';
 const logPrefixer: any = require('loglevel-plugin-prefix');
 
 export class LoggerFactory {
-  
   private static additionalRecipients: LoggerDelegate[] = [];
 
   public static registerDelegate(logger: LoggerDelegate): { unregister: () => void } {
@@ -33,7 +33,7 @@ export class LoggerFactory {
     return {
       unregister: () => {
         LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1);
-      }
+      },
     };
   }
 
@@ -46,12 +46,11 @@ export class LoggerFactory {
     if (level <= LogLevel.DEBUG) {
       logPrefixer.apply(log, {
         template: '%t | [%l] ',
-        timestampFormatter: (date: Date) => TimeUtils.format(date)
+        timestampFormatter: (date: Date) => TimeUtils.format(date),
       });
     }
     log.setLevel(level as any);
   }
-
 }
 
 LoggerFactory.setLogLevel(LogLevel.INFO);

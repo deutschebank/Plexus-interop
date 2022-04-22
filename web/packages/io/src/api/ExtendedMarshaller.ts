@@ -17,7 +17,5 @@
 import { Marshaller } from './Marshaller';
 
 export interface ExtendedMarshaller<BaseType, EncodedType> extends Marshaller<BaseType, EncodedType> {
-
-    validate(messageObj: BaseType): void;
-
+  validate(messageObj: BaseType): void;
 }

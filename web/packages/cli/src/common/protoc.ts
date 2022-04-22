@@ -14,79 +14,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as path from 'path';
 import * as os from 'os';
-import { getDistDir, iterateFiles, mkdirsSync, copyFile, removeSync, exists } from './files';
+import * as path from 'path';
+
 import { downloadPackage } from './download';
+import { copyFile, exists, getDistDir, iterateFiles, mkdirsSync, removeSync } from './files';
 
 const getDownloadDir = () => path.join(getDistDir(), 'protoc');
 
 export async function downloadProtoc(): Promise<string> {
-    const url = getProtocDownloadUrl();
-    const downloadDir = getDownloadDir();
-    const title = 'Protoc';
-    await downloadPackage(url, downloadDir, title);
-    if (url.endsWith('.exe')) {
-        // direct file link to exe file, move it to bin/proto.exe
-        const downloadedExe = await new Promise<string>((resolve, reject) => {
-            let temp: string | null = null;
-            iterateFiles(downloadDir, /protoc.*\.exe/g, f => {
-                temp = f;
-            });
-            if (temp) {
-                resolve(temp);
-            } else {
-                reject(new Error('Protoc EXE not found'));
-            }
-        });
-        console.log('Downloaded exe file', downloadedExe); 
-        mkdirsSync(path.join(downloadDir, 'bin'));
-        const targetFile = path.join(downloadDir, 'bin', 'protoc.exe');
-        console.log('Copying to', targetFile);        
-        await copyFile(downloadedExe, targetFile);
-        console.log(`Clearing ${downloadedExe}`);
-        removeSync(downloadedExe);
-    }
-    return downloadDir;
+  const url = getProtocDownloadUrl();
+  const downloadDir = getDownloadDir();
+  const title = 'Protoc';
+  await downloadPackage(url, downloadDir, title);
+  if (url.endsWith('.exe')) {
+    // direct file link to exe file, move it to bin/proto.exe
+    const downloadedExe = await new Promise<string>((resolve, reject) => {
+      let temp: string | null = null;
+      iterateFiles(downloadDir, /protoc.*\.exe/g, (f) => {
+        temp = f;
+      });
+      if (temp) {
+        resolve(temp);
+      } else {
+        reject(new Error('Protoc EXE not found'));
+      }
+    });
+    console.log('Downloaded exe file', downloadedExe);
+    mkdirsSync(path.join(downloadDir, 'bin'));
+    const targetFile = path.join(downloadDir, 'bin', 'protoc.exe');
+    console.log('Copying to', targetFile);
+    await copyFile(downloadedExe, targetFile);
+    console.log(`Clearing ${downloadedExe}`);
+    removeSync(downloadedExe);
+  }
+  return downloadDir;
 }
 
 export async function protocExecProvided(): Promise<string> {
-    const execPath = getProtocExecPath();
-    const execExists = await exists(execPath);
-    if (execExists) {
-        return execPath;
-    } 
-        throw new Error(`Do not exist ${execPath}`);
-    
+  const execPath = getProtocExecPath();
+  const execExists = await exists(execPath);
+  if (execExists) {
+    return execPath;
+  }
+  throw new Error(`Do not exist ${execPath}`);
 }
 
 export function getProtocExecPath(): string {
-    if (process.env.PLEXUS_CLI_PROTOC_EXE_PATH) {
-        console.log(`Using protoc from env variable ${process.env.PLEXUS_CLI_PROTOC_EXE_PATH}`);
-        return process.env.PLEXUS_CLI_PROTOC_EXE_PATH as string;
-    }
-    const baseDir = getDownloadDir();
-    return path.join(baseDir, ...getExePath());
+  if (process.env.PLEXUS_CLI_PROTOC_EXE_PATH) {
+    console.log(`Using protoc from env variable ${process.env.PLEXUS_CLI_PROTOC_EXE_PATH}`);
+    return process.env.PLEXUS_CLI_PROTOC_EXE_PATH as string;
+  }
+  const baseDir = getDownloadDir();
+  return path.join(baseDir, ...getExePath());
 }
 
 export function getProtocDownloadUrl(): string {
-    const platform = `${os.platform()}-${os.arch()}`;
-    return process.env[`PLEXUS_PROTOC_DOWNLOAD_URL_${platform.toUpperCase()}`]
-        || process.env.PLEXUS_PROTOC_DOWNLOAD_URL
-        || getDefaultDownloadUrl(platform);
+  const platform = `${os.platform()}-${os.arch()}`;
+  return (
+    process.env[`PLEXUS_PROTOC_DOWNLOAD_URL_${platform.toUpperCase()}`] ||
+    process.env.PLEXUS_PROTOC_DOWNLOAD_URL ||
+    getDefaultDownloadUrl(platform)
+  );
 }
 
 function getExePath(): string[] {
-    return os.platform() === 'win32' ? ['bin', 'protoc.exe'] : ['bin', 'protoc'];
+  return os.platform() === 'win32' ? ['bin', 'protoc.exe'] : ['bin', 'protoc'];
 }
 
 function getDefaultDownloadUrl(platform: string): string {
-    switch (platform) {
-        case 'win32-ia32':
-        case 'win32-x32':
-        case 'win32-x64':
-            return 'https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-win32.zip';
-        default:
-            throw new Error(`${platform} is not supported`);
-    }
+  switch (platform) {
+    case 'win32-ia32':
+    case 'win32-x32':
+    case 'win32-x64':
+      return 'https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-win32.zip';
+    default:
+      throw new Error(`${platform} is not supported`);
+  }
 }

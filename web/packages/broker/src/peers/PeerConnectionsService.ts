@@ -14,42 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Subscription, Logger, LoggerFactory } from '@plexus-interop/common';
-import { PartialObserver,  Observable, share } from 'rxjs';
+import { Observable, PartialObserver, share } from 'rxjs';
+
+import { Logger, LoggerFactory, Subscription } from '@plexus-interop/common';
+
 import { AppConnectionHeartBit } from './events/AppConnectionHeartBit';
 import { EventType } from './events/EventType';
-
 import { RemoteBrokerService } from './remote/RemoteBrokerService';
 
 export class PeerConnectionsService {
+  private readonly log: Logger = LoggerFactory.getLogger('PeerConnectionService');
 
-    private readonly log: Logger = LoggerFactory.getLogger('PeerConnectionService');
+  private $heartbits: Observable<AppConnectionHeartBit>;
 
-    private $heartbits: Observable<AppConnectionHeartBit>;
+  constructor(private remoteBrokerService: RemoteBrokerService) {
+    this.init();
+  }
 
-    constructor(private remoteBrokerService: RemoteBrokerService) {
-        this.init();
-    }
+  public subscribeToConnectionsHearBits(observer: PartialObserver<AppConnectionHeartBit>): Subscription {
+    return this.$heartbits.subscribe(observer);
+  }
 
-    public subscribeToConnectionsHearBits(observer: PartialObserver<AppConnectionHeartBit>): Subscription {
-        return this.$heartbits.subscribe(observer);
-    }
+  public sendHeartBit(heartBit: AppConnectionHeartBit): void {
+    this.remoteBrokerService.publish<AppConnectionHeartBit>(EventType.AppConnectionHearBit, heartBit);
+  }
 
-    public sendHeartBit(heartBit: AppConnectionHeartBit): void {
-        this.remoteBrokerService.publish<AppConnectionHeartBit>(EventType.AppConnectionHearBit, heartBit);
-    }
-
-    private init(): void {
-        this.$heartbits = new Observable<AppConnectionHeartBit>(observer => {
-            this.log.debug('Subscribing to app heartbits');
-            const sourceSubscription = this.remoteBrokerService.subscribe(EventType.AppConnectionHearBit, observer);
-            return () => {
-                this.log.debug('Unsubscribing from app hearbits');
-                sourceSubscription.unsubscribe();
-            };
-        }).pipe(
-            // important, make observable shared between multiple subscriptions
-            share());
-    }
-
+  private init(): void {
+    this.$heartbits = new Observable<AppConnectionHeartBit>((observer) => {
+      this.log.debug('Subscribing to app heartbits');
+      const sourceSubscription = this.remoteBrokerService.subscribe(EventType.AppConnectionHearBit, observer);
+      return () => {
+        this.log.debug('Unsubscribing from app hearbits');
+        sourceSubscription.unsubscribe();
+      };
+    }).pipe(
+      // important, make observable shared between multiple subscriptions
+      share()
+    );
+  }
 }

@@ -17,10 +17,8 @@
 import { Observer } from '@plexus-interop/common';
 
 export interface InvocationObserver<T> extends Observer<T> {
-
-    /**
-     * Indicates that incoming messages stream completed
-     */
-    streamCompleted: () => void;
-
+  /**
+   * Indicates that incoming messages stream completed
+   */
+  streamCompleted: () => void;
 }

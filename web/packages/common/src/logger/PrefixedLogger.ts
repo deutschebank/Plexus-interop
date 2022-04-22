@@ -18,39 +18,37 @@ import { Logger } from './Logger';
 import { LogLevel } from './LogLevel';
 
 export class PrefixedLogger implements Logger {
+  public constructor(private readonly base: Logger, private readonly prefix: string = '') {}
 
-    public constructor(private readonly base: Logger, private readonly prefix: string = '') { }
+  public trace(msg: string, ...args: any[]): void {
+    this.base.trace(`${this.prefix} ${msg}`, args);
+  }
 
-    public trace(msg: string, ...args: any[]): void {
-        this.base.trace(`${this.prefix} ${msg}`, args);
-    }
+  public warn(msg: string, ...args: any[]): void {
+    this.base.trace(`${this.prefix} ${msg}`, args);
+  }
 
-    public warn(msg: string, ...args: any[]): void {
-        this.base.trace(`${this.prefix} ${msg}`, args);
-    }
+  public error(msg: string, ...args: any[]): void {
+    this.base.error(`${this.prefix} ${msg}`, args);
+  }
 
-    public error(msg: string, ...args: any[]): void {
-        this.base.error(`${this.prefix} ${msg}`, args);
-    }
+  public info(msg: string, ...args: any[]): void {
+    this.base.info(`${this.prefix} ${msg}`, args);
+  }
 
-    public info(msg: string, ...args: any[]): void {
-        this.base.info(`${this.prefix} ${msg}`, args);
-    }
+  public debug(msg: string, ...args: any[]): void {
+    this.base.debug(`${this.prefix} ${msg}`, args);
+  }
 
-    public debug(msg: string, ...args: any[]): void {
-        this.base.debug(`${this.prefix} ${msg}`, args);
-    }
+  public getLogLevel(): LogLevel {
+    return this.base.getLogLevel();
+  }
 
-    public getLogLevel(): LogLevel {
-        return this.base.getLogLevel();
-    }
+  public isDebugEnabled(): boolean {
+    return this.base.getLogLevel() <= LogLevel.DEBUG;
+  }
 
-    public isDebugEnabled(): boolean {
-        return this.base.getLogLevel() <= LogLevel.DEBUG;
-    }
-
-    public isTraceEnabled(): boolean {
-        return this.base.getLogLevel() <= LogLevel.TRACE;
-    }
-
+  public isTraceEnabled(): boolean {
+    return this.base.getLogLevel() <= LogLevel.TRACE;
+  }
 }

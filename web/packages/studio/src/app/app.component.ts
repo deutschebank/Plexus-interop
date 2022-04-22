@@ -14,35 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppActions } from "./services/ui/AppActions";
-import { Store } from "@ngrx/store";
-import {
-  LoggerFactory,
-  LogLevel,
-  Logger,
-  TimeUtils,
-} from "@plexus-interop/common";
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  Renderer2,
-  AfterViewChecked,
-} from "@angular/core";
-import { State } from "./services/ui/RootReducers";
+import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Store } from '@ngrx/store';
+
+import { Logger, LoggerFactory, LogLevel, TimeUtils } from '@plexus-interop/common';
+
+import { AppActions } from './services/ui/AppActions';
+import { State } from './services/ui/RootReducers';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
-  @ViewChild("plexusLogsArea", { static: true }) logsTextArea: ElementRef;
+  @ViewChild('plexusLogsArea', { static: true }) logsTextArea: ElementRef;
 
-  title = "Plexus Studio";
-  plexusLogs = "";
+  title = 'Plexus Studio';
+  plexusLogs = '';
   autoScrollEnabled: boolean = true;
   logsEnabled: boolean = true;
 
@@ -56,8 +45,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     LoggerFactory.setLogLevel(LogLevel.INFO);
     this.loggerDelegateRegistration = this.createUiLoggerDelegate();
     this.logger = LoggerFactory.getLogger();
-    this.logger.info("Welcome to Plexus Studio!");
-    this.logger.info("Trying to detect connection to Plexus ...");
+    this.logger.info('Welcome to Plexus Studio!');
+    this.logger.info('Trying to detect connection to Plexus ...');
     this.store.dispatch({ type: AppActions.AUTO_CONNECT });
   }
 
@@ -73,15 +62,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   public scrollLogsBottom(): void {
     try {
-      this.logsTextArea.nativeElement.scrollTop =
-        this.logsTextArea.nativeElement.scrollHeight;
+      this.logsTextArea.nativeElement.scrollTop = this.logsTextArea.nativeElement.scrollHeight;
     } catch (e) {
-      console.log("Unable to scroll", e);
+      console.log('Unable to scroll', e);
     }
   }
 
   public clearLogs(): void {
-    this.plexusLogs = "";
+    this.plexusLogs = '';
   }
 
   private filterEmptyArgs(arr: any[]): any[] {
@@ -99,12 +87,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
           // Too many logs in output
           return;
         }
-        let message = `[${TimeUtils.format(new Date())}] ${
-          LogLevel[logLevel]
-        } ${msg}`;
+        let message = `[${TimeUtils.format(new Date())}] ${LogLevel[logLevel]} ${msg}`;
         args = this.filterEmptyArgs(args);
         if (args.length > 0) {
-          message += "\nArguments: " + JSON.stringify(args);
+          message += '\nArguments: ' + JSON.stringify(args);
         }
         if (this.plexusLogs) {
           this.plexusLogs = `${this.plexusLogs}\n${message}`;

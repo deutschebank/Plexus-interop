@@ -14,54 +14,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Application, ConsumedMethodReference, InteropRegistryService, Option, ProvidedMethod } from '@plexus-interop/metadata';
+import {
+  Application,
+  ConsumedMethodReference,
+  InteropRegistryService,
+  Option,
+  ProvidedMethod,
+} from '@plexus-interop/metadata';
+
 import { Method } from './api/client-api';
 import { PartialPeerDescriptor } from './PartialPeerDescriptor';
 
 const isAliasOption = (o: Option) => o.id.endsWith('alias');
 
-export function getProvidedMethodByAlias(actionAlias: string, registryService: InteropRegistryService, consumerAppMetadata?: Application): ProvidedMethod {
-    const methods = consumerAppMetadata ?
-        registryService.getMatchingProvidedMethodsForApp(consumerAppMetadata)
-        : registryService.getProvidedMethods();
-    const provideMethod = methods.find(pm => !!pm.options && !!pm.options.find(o => isAliasOption(o) && o.value === actionAlias));
-    if (!provideMethod) {
-        throw new Error(`Provided Method not found for ${actionAlias}`);
-    }
-    return provideMethod;
+export function getProvidedMethodByAlias(
+  actionAlias: string,
+  registryService: InteropRegistryService,
+  consumerAppMetadata?: Application
+): ProvidedMethod {
+  const methods = consumerAppMetadata
+    ? registryService.getMatchingProvidedMethodsForApp(consumerAppMetadata)
+    : registryService.getProvidedMethods();
+  const provideMethod = methods.find(
+    (pm) => !!pm.options && !!pm.options.find((o) => isAliasOption(o) && o.value === actionAlias)
+  );
+  if (!provideMethod) {
+    throw new Error(`Provided Method not found for ${actionAlias}`);
+  }
+  return provideMethod;
 }
 
 export function getAppAliasById(appId: string, registryService: InteropRegistryService): string | undefined {
-    const app = registryService.getApplication(appId);
-    return getAlias(app.options);
+  const app = registryService.getApplication(appId);
+  return getAlias(app.options);
 }
 
 export function toConsumedMethodRef(providedMethod: ProvidedMethod): ConsumedMethodReference {
-    return {
-        consumedService: {
-            serviceId: providedMethod.providedService.service.id,
-            serviceAlias: providedMethod.providedService.service.serviceAlias
-        },
-        methodId: providedMethod.method.name
-    };
+  return {
+    consumedService: {
+      serviceId: providedMethod.providedService.service.id,
+      serviceAlias: providedMethod.providedService.service.serviceAlias,
+    },
+    methodId: providedMethod.method.name,
+  };
 }
 
 export function toMethodDefinition(providedMethod: ProvidedMethod): Method {
-    return {
-        name: providedMethod.method.name,
-        peer: new PartialPeerDescriptor(
-            providedMethod.providedService.application.id,
-            providedMethod.providedService.application.id,
-            false)
-    };
+  return {
+    name: providedMethod.method.name,
+    peer: new PartialPeerDescriptor(
+      providedMethod.providedService.application.id,
+      providedMethod.providedService.application.id,
+      false
+    ),
+  };
 }
 
 export function getAlias(options?: Option[]): string | undefined {
-    if (options) {
-        const option = options.find(isAliasOption);
-        if (option) {
-            return option.value;
-        }
+  if (options) {
+    const option = options.find(isAliasOption);
+    if (option) {
+      return option.value;
     }
-    return undefined;
+  }
+  return undefined;
 }

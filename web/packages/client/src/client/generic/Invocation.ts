@@ -16,5 +16,4 @@
  */
 import { BaseInvocation } from './BaseInvocation';
 
-export interface Invocation extends BaseInvocation<ArrayBuffer, ArrayBuffer> {
-}
+export interface Invocation extends BaseInvocation<ArrayBuffer, ArrayBuffer> {}

@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface Subscription {
-    unsubscribe(): void;
+  unsubscribe(): void;
 }

@@ -15,36 +15,35 @@
  * limitations under the License.
  */
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { GenericClient } from "../../generic/GenericClient";
-import { Invocation } from "../../generic/Invocation";
+
+import { GenericClient } from '../../generic/GenericClient';
+import { Invocation } from '../../generic/Invocation';
 import { InvocationHandlersRegistry } from './handlers/InvocationHandlersRegistry';
 import { InvocationExecutor } from './InvocationExecutor';
 
 export class GenericInvocationsHost {
+  private log: Logger = LoggerFactory.getLogger('GenericInvocationHost');
 
-    private log: Logger = LoggerFactory.getLogger('GenericInvocationHost');
+  constructor(
+    private readonly genericClient: GenericClient,
+    private readonly handlersRegistry: InvocationHandlersRegistry
+  ) {}
 
-    constructor(
-        private readonly genericClient: GenericClient,
-        private readonly handlersRegistry: InvocationHandlersRegistry
-    ) {
-    }
+  public start(): Promise<void> {
+    return this.genericClient
+      .acceptInvocations({
+        next: (invocation: Invocation) => this.handleInvocation(invocation),
+        error: (e) => this.log.error('Error on invocations subscription', e),
+        complete: () => this.log.debug('Invocations subscription completed'),
+      })
+      .then(() => this.log.debug('Started to listen invocations'))
+      .catch((e) => {
+        this.log.error('Error on opening invocations subscription', e);
+        throw e;
+      });
+  }
 
-    public start(): Promise<void> {
-        return this.genericClient.acceptInvocations({
-            next: (invocation: Invocation) => this.handleInvocation(invocation),
-            error: (e) => this.log.error('Error on invocations subscription', e),
-            complete: () => this.log.debug('Invocations subscription completed')
-        })
-            .then(() => this.log.debug('Started to listen invocations'))
-            .catch((e) => {
-                this.log.error('Error on opening invocations subscription', e);
-                throw e;
-            });
-    }
-
-    private handleInvocation(invocation: Invocation): void {
-        new InvocationExecutor(this.handlersRegistry).handleGenericInvocation(invocation);
-    }
-
+  private handleInvocation(invocation: Invocation): void {
+    new InvocationExecutor(this.handlersRegistry).handleGenericInvocation(invocation);
+  }
 }

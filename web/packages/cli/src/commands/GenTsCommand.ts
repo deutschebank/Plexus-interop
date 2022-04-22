@@ -15,62 +15,69 @@
  * limitations under the License.
  */
 import * as path from 'path';
-import { baseDir, out, plexusEntryPoint, namespace, verbose, excludePattern } from './DefaultOptions';
-import { Option } from './Option';
+
+import { listFiles, mkdirsSync, removeSync } from '../common/files';
 import { getJavaExecPath, getJavaGenLibPath } from '../common/java';
-import { BaseCommand } from './BaseCommand';
 import { simpleSpawn } from '../common/process';
 import { genJsStaticModule, genTsStaticModule } from '../common/protoJs';
-import { removeSync, mkdirsSync, listFiles } from '../common/files';
+import { BaseCommand } from './BaseCommand';
+import { baseDir, excludePattern, namespace, out, plexusEntryPoint, verbose } from './DefaultOptions';
 import { GenProtoCommand } from './GenProtoCommand';
+import { Option } from './Option';
 
 export class GenTsCommand extends BaseCommand {
+  public readonly protoRegexp: RegExp = /.+\.proto$/;
+  public readonly descriptorPathRegexp: RegExp =
+    /.*google[/\\]+protobuf[/\\]+descriptor.proto|.*interop[/\\]+options.proto$/;
 
-    public readonly protoRegexp: RegExp = /.+\.proto$/;
-    public readonly descriptorPathRegexp: RegExp = /.*google[/\\]+protobuf[/\\]+descriptor.proto|.*interop[/\\]+options.proto$/;
-    
-    public clientGenArgs: (opts: any) => string[] = opts => ['--type=ts', ...this.optionArgs(opts)]
+  public clientGenArgs: (opts: any) => string[] = (opts) => ['--type=ts', ...this.optionArgs(opts)];
 
-    public name = () => 'gen-ts';
+  public name = () => 'gen-ts';
 
-    public generalDescription = () => 'generate Typescript client and messages definitions for specified entry point';
+  public generalDescription = () => 'generate Typescript client and messages definitions for specified entry point';
 
-    public options: () => Option[] = () => [baseDir(), out(), plexusEntryPoint(), namespace(), verbose(), excludePattern()];
+  public options: () => Option[] = () => [
+    baseDir(),
+    out(),
+    plexusEntryPoint(),
+    namespace(),
+    verbose(),
+    excludePattern(),
+  ];
 
-    public async action(opts: any): Promise<void> {
-        
-        this.log('Generating proto definitions');
-        const protoFilesDir = path.join(opts.out, 'tmp');
-        mkdirsSync(protoFilesDir);
-        const protoGenCommand = new GenProtoCommand();
-        await protoGenCommand.action({
-            ...opts,
-            out: protoFilesDir
-        });
-        const excludePatternString: string = opts.excludePattern;
-        this.log('Generating proto messages JS definitions');
-        const jsFilePath =  path.join(opts.out, 'plexus-messages.js');
-        const protoFiles = (await listFiles(protoFilesDir, this.protoRegexp))
-            .filter(f => !this.isProtoDescriptorPath(f))
-            .filter(f => !excludePatternString || excludePatternString.length === 0 || !new RegExp(excludePatternString).test(f));
-        await genJsStaticModule(jsFilePath, protoFiles, opts.namespace);
+  public async action(opts: any): Promise<void> {
+    this.log('Generating proto definitions');
+    const protoFilesDir = path.join(opts.out, 'tmp');
+    mkdirsSync(protoFilesDir);
+    const protoGenCommand = new GenProtoCommand();
+    await protoGenCommand.action({
+      ...opts,
+      out: protoFilesDir,
+    });
+    const excludePatternString: string = opts.excludePattern;
+    this.log('Generating proto messages JS definitions');
+    const jsFilePath = path.join(opts.out, 'plexus-messages.js');
+    const protoFiles = (await listFiles(protoFilesDir, this.protoRegexp))
+      .filter((f) => !this.isProtoDescriptorPath(f))
+      .filter(
+        (f) => !excludePatternString || excludePatternString.length === 0 || !new RegExp(excludePatternString).test(f)
+      );
+    await genJsStaticModule(jsFilePath, protoFiles, opts.namespace);
 
-        this.log('Deleting proto definitions');
-        removeSync(protoFilesDir);
+    this.log('Deleting proto definitions');
+    removeSync(protoFilesDir);
 
-        this.log('Generating proto messages TS definitions');
-        const tsFileName = 'plexus-messages.d.ts';
-        await genTsStaticModule(path.join(opts.out, tsFileName), jsFilePath);
+    this.log('Generating proto messages TS definitions');
+    const tsFileName = 'plexus-messages.d.ts';
+    await genTsStaticModule(path.join(opts.out, tsFileName), jsFilePath);
 
-        this.log('Generating interop client');
-        const javaExecPath = await getJavaExecPath();
-        const javaLibPath = getJavaGenLibPath();
-        await simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.clientGenArgs(opts)], opts.verbose === 'true');
-        
-    }
+    this.log('Generating interop client');
+    const javaExecPath = await getJavaExecPath();
+    const javaLibPath = getJavaGenLibPath();
+    await simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.clientGenArgs(opts)], opts.verbose === 'true');
+  }
 
-    public isProtoDescriptorPath(testPath: string): boolean {
-        return this.descriptorPathRegexp.test(testPath);
-    }
-
+  public isProtoDescriptorPath(testPath: string): boolean {
+    return this.descriptorPathRegexp.test(testPath);
+  }
 }

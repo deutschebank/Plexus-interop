@@ -20,20 +20,16 @@ import { InteropPeerDescriptor } from './api/client-api';
  * Temporary Mock Implementation before we agree on final state of returned Remote Peers
  */
 export class PartialPeerDescriptor implements InteropPeerDescriptor {
-    
-    public constructor(
-        public applicationName: string,
-        public id: string,
-        public isConnected: boolean = true) {}
-    
-    public getApiMetadata(): Promise<string> {
-        // TODO
-        throw new Error('Method not implemented.');
-    }
-    
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public onApiMetadataChanged(callback: (metadata: string) => void): void {
-        // TODO
-        throw new Error('Method not implemented.');
-    }
+  public constructor(public applicationName: string, public id: string, public isConnected: boolean = true) {}
+
+  public getApiMetadata(): Promise<string> {
+    // TODO
+    throw new Error('Method not implemented.');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onApiMetadataChanged(callback: (metadata: string) => void): void {
+    // TODO
+    throw new Error('Method not implemented.');
+  }
 }

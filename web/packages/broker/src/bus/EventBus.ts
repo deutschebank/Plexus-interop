@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 import { Subscription } from '@plexus-interop/common';
+
 import { Event } from './Event';
 
 export interface EventBus {
+  subscribe(key: string, handler: (event: Event) => void): Subscription;
 
-    subscribe(key: string, handler: (event: Event) => void): Subscription;
+  publish(key: string, event: Event): void;
 
-    publish(key: string, event: Event): void;
-
-    init(): Promise<EventBus>;
-
+  init(): Promise<EventBus>;
 }

@@ -14,31 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InvocationMetaInfo , clientProtocol } from '@plexus-interop/protocol';
+import {
+  MethodDiscoveryRequest,
+  MethodDiscoveryResponse,
+  ProvidedMethodReference,
+  ServiceDiscoveryRequest,
+  ServiceDiscoveryResponse,
+} from '@plexus-interop/client-api';
 import { Observer } from '@plexus-interop/common';
-import { ServiceDiscoveryRequest , ServiceDiscoveryResponse , MethodDiscoveryRequest , MethodDiscoveryResponse , ProvidedMethodReference } from '@plexus-interop/client-api';
+import { clientProtocol, InvocationMetaInfo } from '@plexus-interop/protocol';
 import { UniqueId } from '@plexus-interop/transport-common';
+
 import { AnonymousSubscription } from '../api/AnonymousSubscription';
 import { Invocation } from './Invocation';
 
 export interface GenericClient {
+  getApplicationId(): string;
 
-    getApplicationId(): string;
+  getApplicationInstanceId(): UniqueId;
 
-    getApplicationInstanceId(): UniqueId;
+  getConnectionId(): UniqueId;
 
-    getConnectionId(): UniqueId;
+  requestInvocation(invocationInfo: InvocationMetaInfo): Promise<Invocation>;
 
-    requestInvocation(invocationInfo: InvocationMetaInfo): Promise<Invocation>;
+  requestDiscoveredInvocation(methodReference: ProvidedMethodReference): Promise<Invocation>;
 
-    requestDiscoveredInvocation(methodReference: ProvidedMethodReference): Promise<Invocation>;
+  acceptInvocations(observer: Observer<Invocation>): Promise<AnonymousSubscription>;
 
-    acceptInvocations(observer: Observer<Invocation>): Promise<AnonymousSubscription>;
+  discoverService(discoveryRequest: ServiceDiscoveryRequest): Promise<ServiceDiscoveryResponse>;
 
-    discoverService(discoveryRequest: ServiceDiscoveryRequest): Promise<ServiceDiscoveryResponse>;
+  discoverMethod(discoveryRequest: MethodDiscoveryRequest): Promise<MethodDiscoveryResponse>;
 
-    discoverMethod(discoveryRequest: MethodDiscoveryRequest): Promise<MethodDiscoveryResponse>;
-
-    disconnect(completion?: clientProtocol.ICompletion): Promise<void>;
-
+  disconnect(completion?: clientProtocol.ICompletion): Promise<void>;
 }

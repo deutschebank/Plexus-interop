@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 export interface CrossDomainBusConfig {
-    hostIFrameId: string;
-    hostUrl: string;
+  hostIFrameId: string;
+  hostUrl: string;
 }

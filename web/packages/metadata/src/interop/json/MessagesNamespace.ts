@@ -14,29 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { EnumDto } from './EnumDto';
 import { Fields } from './Fields';
 import { Options } from './Options';
-import { EnumDto } from './EnumDto';
 
 export interface MessageDto {
-    fields: Fields;
-    options?: Options;
-    nested?: MessagesNamespaceContent;
+  fields: Fields;
+  options?: Options;
+  nested?: MessagesNamespaceContent;
 }
 
 export type MessagesNamespace = {
-    options?: Options;
-    nested?: MessagesNamespaceContent;
+  options?: Options;
+  nested?: MessagesNamespaceContent;
 };
 
 export type MessagesNamespaceContent = {
-    [key: string]: MessageDto | MessagesNamespace | EnumDto;
+  [key: string]: MessageDto | MessagesNamespace | EnumDto;
 };
 
 export function isMessage(o: MessageDto | MessagesNamespace | EnumDto): o is MessageDto {
-    return !!(o as MessageDto).fields;
+  return !!(o as MessageDto).fields;
 }
 
 export function isEnum(o: MessageDto | MessagesNamespace | EnumDto): o is EnumDto {
-    return !!(o as EnumDto).values;
+  return !!(o as EnumDto).values;
 }

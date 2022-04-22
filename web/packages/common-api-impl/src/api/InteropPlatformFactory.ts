@@ -14,14 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPlatform } from './client-api';
 import { PlexusInteropPlatform } from '../PlexusInteropPlatform';
+import { InteropPlatform } from './client-api';
 import { InteropPlatformConfig } from './InteropPlatformConfig';
 
 export class InteropPlatformFactory {
-
-    public createPlatform(config: InteropPlatformConfig): InteropPlatform {
-        return new PlexusInteropPlatform(config);
-    }
-
+  public createPlatform(config: InteropPlatformConfig): InteropPlatform {
+    return new PlexusInteropPlatform(config);
+  }
 }

@@ -15,27 +15,28 @@
  * limitations under the License.
  */
 import * as protobuf from 'protobufjs/light';
+
 import { Arrays, getPlexusFeatures } from '@plexus-interop/common';
+
 import { ExtendedMarshaller } from '../api/ExtendedMarshaller';
 
 export class DynamicProtoMarshaller implements ExtendedMarshaller<any, ArrayBuffer> {
+  public constructor(private readonly protoType: protobuf.Type) {}
 
-    public constructor(private readonly protoType: protobuf.Type) { }
-
-    public validate(messageObj: any): void {
-        const error = this.protoType.verify(messageObj);
-        if (error) {
-            throw new Error(error);
-        }
+  public validate(messageObj: any): void {
+    const error = this.protoType.verify(messageObj);
+    if (error) {
+      throw new Error(error);
     }
+  }
 
-    public decode(messagePayload: ArrayBuffer): any {
-        const features = getPlexusFeatures();
-        const decoded = this.protoType.decode(new Uint8Array(messagePayload));
-        return this.protoType.toObject(decoded, { defaults: features.decodeUndefinedToDefault });
-    }
+  public decode(messagePayload: ArrayBuffer): any {
+    const features = getPlexusFeatures();
+    const decoded = this.protoType.decode(new Uint8Array(messagePayload));
+    return this.protoType.toObject(decoded, { defaults: features.decodeUndefinedToDefault });
+  }
 
-    public encode(messageObj: any): ArrayBuffer {
-        return Arrays.toArrayBuffer(this.protoType.encode(messageObj).finish());
-    }
+  public encode(messageObj: any): ArrayBuffer {
+    return Arrays.toArrayBuffer(this.protoType.encode(messageObj).finish());
+  }
 }

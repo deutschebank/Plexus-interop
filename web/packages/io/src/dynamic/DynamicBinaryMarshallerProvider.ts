@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 import { InteropRegistry } from '@plexus-interop/metadata';
-import { BinaryMarshallerProvider, BinaryMarshaller } from '../api';
-import { DynamicProtoMarshallerFactory } from './DynamicProtoMarshallerFactory';
+
+import { BinaryMarshaller, BinaryMarshallerProvider } from '../api';
 import { DynamicBinaryProtoMarshaller } from './DynamicBinaryProtoMarshaller';
+import { DynamicProtoMarshallerFactory } from './DynamicProtoMarshallerFactory';
 
 export class DynamicBinaryMarshallerProvider implements BinaryMarshallerProvider {
+  private internalProvider: DynamicProtoMarshallerFactory;
 
-    private internalProvider: DynamicProtoMarshallerFactory;
+  public constructor(private readonly registry: InteropRegistry) {
+    this.internalProvider = new DynamicProtoMarshallerFactory(this.registry);
+  }
 
-    public constructor(private readonly registry: InteropRegistry) {
-        this.internalProvider = new DynamicProtoMarshallerFactory(this.registry);
-    }
-
-    public getMarshaller(messageType: any): BinaryMarshaller {
-        return new DynamicBinaryProtoMarshaller(this.internalProvider.getMarshaller(messageType));
-    }
+  public getMarshaller(messageType: any): BinaryMarshaller {
+    return new DynamicBinaryProtoMarshaller(this.internalProvider.getMarshaller(messageType));
+  }
 }

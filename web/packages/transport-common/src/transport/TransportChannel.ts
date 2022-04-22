@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
+
 import { Channel } from '../common/Channel';
 
 export interface TransportChannel extends Channel {
-
-    sendLastMessage(data: ArrayBuffer): Promise<plexus.ICompletion>;
-
+  sendLastMessage(data: ArrayBuffer): Promise<plexus.ICompletion>;
 }

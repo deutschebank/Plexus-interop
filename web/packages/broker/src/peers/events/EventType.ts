@@ -18,9 +18,9 @@ import { AppConnectionHeartBit } from './AppConnectionHeartBit';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class EventType<PayloadType> {
-    
-    public static readonly AppConnectionHearBit: EventType<AppConnectionHeartBit> = new EventType<AppConnectionHeartBit>('AppConnection');
+  public static readonly AppConnectionHearBit: EventType<AppConnectionHeartBit> = new EventType<AppConnectionHeartBit>(
+    'AppConnection'
+  );
 
-    constructor(public readonly id: string) {}
-    
+  constructor(public readonly id: string) {}
 }

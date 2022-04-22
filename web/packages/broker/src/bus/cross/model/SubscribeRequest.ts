@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface SubscribeRequest {
-    topic: string;
+  topic: string;
 }

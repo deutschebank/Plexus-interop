@@ -17,18 +17,18 @@
 import { UniqueId } from '@plexus-interop/transport-common';
 
 export interface ProvidedServiceReference {
-    /** ProvidedServiceReference serviceId */
-    serviceId?: string;
+  /** ProvidedServiceReference serviceId */
+  serviceId?: string;
 
-    /** ProvidedServiceReference serviceAlias */
-    serviceAlias?: string;
+  /** ProvidedServiceReference serviceAlias */
+  serviceAlias?: string;
 
-    /** ProvidedServiceReference applicationId */
-    applicationId?: string;
+  /** ProvidedServiceReference applicationId */
+  applicationId?: string;
 
-    /** ProvidedServiceReference connectionId */
-    connectionId?: UniqueId;
+  /** ProvidedServiceReference connectionId */
+  connectionId?: UniqueId;
 
-    /** ProvidedServiceReference appInstanceId */
-    applicationInstanceId?: UniqueId;
+  /** ProvidedServiceReference appInstanceId */
+  applicationInstanceId?: UniqueId;
 }

@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 import * as Long from 'long';
-import { util, configure } from 'protobufjs/minimal';
+import { configure, util } from 'protobufjs/minimal';
+
 // make sure protobufjs uses Long implementation, to keep guids compatible with .Net broker
 // https://github.com/dcodeIO/protobuf.js/issues/730
 util.Long = Long;
@@ -23,4 +24,4 @@ configure();
 
 export * from './protocols';
 export * from './util/ClientProtocolHelper';
-export * from './dto';;
+export * from './dto';

@@ -14,14 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceInfo, MethodInvocationContext } from '@plexus-interop/client-api';
- 
+import { MethodInvocationContext, ServiceInfo } from '@plexus-interop/client-api';
+
 export interface UnaryInvocationHandler<Req, Res> {
+  serviceInfo: ServiceInfo;
 
-    serviceInfo: ServiceInfo;
+  methodId: string;
 
-    methodId: string;
-
-    handle(invocationContext: MethodInvocationContext, request: Req): Promise<Res>;
-
+  handle(invocationContext: MethodInvocationContext, request: Req): Promise<Res>;
 }

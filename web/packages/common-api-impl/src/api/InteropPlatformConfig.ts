@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 export interface InteropPlatformConfig {
-    webSocketUrl: string;
+  webSocketUrl: string;
 }

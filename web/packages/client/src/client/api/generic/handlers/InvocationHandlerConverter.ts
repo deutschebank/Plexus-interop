@@ -17,5 +17,5 @@
 import { BidiStreamingInvocationHandler } from './streaming/BidiStreamingInvocationHandler';
 
 export interface InvocationHandlerConverter<T, Req, Res> {
-    convert(baseHandler: T): BidiStreamingInvocationHandler<Req, Res>;
+  convert(baseHandler: T): BidiStreamingInvocationHandler<Req, Res>;
 }

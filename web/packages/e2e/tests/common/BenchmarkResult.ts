@@ -17,9 +17,9 @@
 import { MethodType } from '@plexus-interop/client';
 
 export interface BenchmarkResult {
-    methodType: MethodType;
-    messagesSent: number;
-    periodInMillis: number;
-    bytesSent: number;
-    millisPerMessage: number;
+  methodType: MethodType;
+  messagesSent: number;
+  periodInMillis: number;
+  bytesSent: number;
+  millisPerMessage: number;
 }

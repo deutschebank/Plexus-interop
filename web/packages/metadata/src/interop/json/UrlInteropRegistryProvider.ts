@@ -15,71 +15,77 @@
  * limitations under the License.
  */
 import { Observable, throttleTime, throwError } from 'rxjs';
+
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { HttpDataLoader , WebSocketDataProvider } from '@plexus-interop/remote';
-import { InteropRegistry } from '../model/InteropRegistry';
+import { HttpDataLoader, WebSocketDataProvider } from '@plexus-interop/remote';
+
 import { InteropRegistryProvider } from '../InteropRegistryProvider';
+import { InteropRegistry } from '../model/InteropRegistry';
 import { JsonInteropRegistryProvider } from './JsonInteropRegistryProvider';
 
-
 export class UrlInteropRegistryProvider implements InteropRegistryProvider {
+  private readonly log: Logger = LoggerFactory.getLogger('UrlInteropRegistryProvider');
 
-    private readonly log: Logger = LoggerFactory.getLogger('UrlInteropRegistryProvider');
+  private urlDataLoader: HttpDataLoader = new HttpDataLoader();
 
-    private urlDataLoader: HttpDataLoader = new HttpDataLoader();
-    
-    private jsonInteropRegistryProvider: JsonInteropRegistryProvider;
+  private jsonInteropRegistryProvider: JsonInteropRegistryProvider;
 
-    private started: boolean = false;
+  private started: boolean = false;
 
-    public constructor(
-        private readonly url: string,
-        private readonly interval: number = -1,
-        private webSocketDataProvider: WebSocketDataProvider = new WebSocketDataProvider()) { }
+  public constructor(
+    private readonly url: string,
+    private readonly interval: number = -1,
+    private webSocketDataProvider: WebSocketDataProvider = new WebSocketDataProvider()
+  ) {}
 
-    public getRegistry(): Observable<InteropRegistry> {
-        return this.started ? this.jsonInteropRegistryProvider.getRegistry() : throwError(() => new Error('Not started'));
+  public getRegistry(): Observable<InteropRegistry> {
+    return this.started ? this.jsonInteropRegistryProvider.getRegistry() : throwError(() => new Error('Not started'));
+  }
+
+  public getCurrent(): InteropRegistry {
+    if (!this.started) {
+      throw new Error('Not started');
     }
+    return this.jsonInteropRegistryProvider.getCurrent();
+  }
 
-    public getCurrent(): InteropRegistry {
-        if (!this.started) {
-            throw new Error('Not started');
-        }
-        return this.jsonInteropRegistryProvider.getCurrent();
+  public async start(): Promise<void> {
+    if (this.started) {
+      return Promise.reject(new Error('Already started'));
     }
-
-    public async start(): Promise<void> {
-        if (this.started) {
-            return Promise.reject(new Error('Already started'));
-        }
-        this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
-        const isWebSocket = this.url.startsWith('ws');
-        if (isWebSocket) {
-            await this.startWithWebSocket();
-        } else {
-            await this.startWithHttp();
-        }
-        return undefined;
+    this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
+    const isWebSocket = this.url.startsWith('ws');
+    if (isWebSocket) {
+      await this.startWithWebSocket();
+    } else {
+      await this.startWithHttp();
     }
+    return undefined;
+  }
 
-    private async startWithHttp(): Promise<void> {
-        const response = await this.urlDataLoader.fetchData(this.url);
-        if (this.interval > 0) {
-            this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response, this.urlDataLoader.fetchWithInterval(this.url, this.interval));
-        } else {
-            this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response);
-        }
-        this.started = true;
+  private async startWithHttp(): Promise<void> {
+    const response = await this.urlDataLoader.fetchData(this.url);
+    if (this.interval > 0) {
+      this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(
+        response,
+        this.urlDataLoader.fetchWithInterval(this.url, this.interval)
+      );
+    } else {
+      this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response);
     }
+    this.started = true;
+  }
 
-    private async startWithWebSocket(): Promise<void> {
-        const response = await this.webSocketDataProvider.getSingleMessage(this.url);
-        if (this.interval > 0) {
-            this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response, this.webSocketDataProvider.getData(this.url).pipe(throttleTime(this.interval)));
-        } else {
-            this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response);
-        }
-        this.started = true;
+  private async startWithWebSocket(): Promise<void> {
+    const response = await this.webSocketDataProvider.getSingleMessage(this.url);
+    if (this.interval > 0) {
+      this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(
+        response,
+        this.webSocketDataProvider.getData(this.url).pipe(throttleTime(this.interval))
+      );
+    } else {
+      this.jsonInteropRegistryProvider = new JsonInteropRegistryProvider(response);
     }
-
+    this.started = true;
+  }
 }

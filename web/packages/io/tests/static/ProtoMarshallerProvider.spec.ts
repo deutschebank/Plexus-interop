@@ -14,33 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ProtoMarshallerProvider } from '../../src/static/ProtoMarshallerProvider';
 import { clientProtocol as plexus } from '@plexus-interop/protocol';
 
+import { ProtoMarshallerProvider } from '../../src/static/ProtoMarshallerProvider';
+
 describe('Proto Marshaller Provider', () => {
+  const sut = new ProtoMarshallerProvider();
 
-    const sut = new ProtoMarshallerProvider();
+  it('Provides Marshaller by Message Type', () => {
+    const marshaller = sut.getMarshaller(plexus.interop.protocol.ConnectRequest);
+    expect(marshaller).toBeDefined();
+  });
 
-    it('Provides Marshaller by Message Type', () => {
-        const marshaller = sut.getMarshaller(plexus.interop.protocol.ConnectRequest);
-        expect(marshaller).toBeDefined();
+  it('Decodes valid message', () => {
+    const marshaller = sut.getMarshaller(plexus.interop.protocol.ConnectRequest);
+
+    const encoded = marshaller.encode({
+      applicationId: 'ID',
     });
+    const decoded = marshaller.decode(encoded);
+    expect(decoded.applicationId).toEqual('ID');
+  });
 
-    it('Decodes valid message', () => {
-        const marshaller = sut.getMarshaller(plexus.interop.protocol.ConnectRequest);
+  it('Decodes undefined to default', () => {
+    const marshaller = sut.getMarshaller(plexus.interop.protocol.ConnectRequest);
 
-        const encoded = marshaller.encode({
-            applicationId: 'ID'
-        });
-        const decoded = marshaller.decode(encoded);
-        expect(decoded.applicationId).toEqual('ID');
-    });
-
-    it('Decodes undefined to default', () => {
-        const marshaller = sut.getMarshaller(plexus.interop.protocol.ConnectRequest);
-
-        const encoded = marshaller.encode({});
-        const decoded = marshaller.decode(encoded);
-        expect(decoded.applicationId).toBe("");
-    });
+    const encoded = marshaller.encode({});
+    const decoded = marshaller.decode(encoded);
+    expect(decoded.applicationId).toBe('');
+  });
 });

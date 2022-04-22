@@ -18,38 +18,36 @@ import { Observable } from 'rxjs';
 import { webSocket, WebSocketSubjectConfig } from 'rxjs/webSocket';
 
 export class WebSocketDataProvider {
+  public constructor(private readonly wsCtor: any = WebSocket) {}
 
-    public constructor(private readonly wsCtor: any = WebSocket) {}
+  public getData(url: string): Observable<string> {
+    return webSocket<string>(this.config(url));
+  }
 
-    public getData(url: string): Observable<string> {
-        return webSocket<string>(this.config(url));
-    }
+  public getSingleMessage(url: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      let resolved = false;
+      this.getData(url).subscribe({
+        next: (message: string) => {
+          resolved = true;
+          resolve(message);
+        },
+        error: (e) => reject(e),
+        complete: () => {
+          if (!resolved) {
+            reject(new Error('No data received'));
+          }
+        },
+      });
+    });
+  }
 
-    public getSingleMessage(url: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            let resolved = false;
-            this.getData(url).subscribe({
-                next: (message: string) => {
-                    resolved = true;
-                    resolve(message);
-                },
-                error: e => reject(e),
-                complete: () => {
-                    if (!resolved) {
-                        reject(new Error('No data received'));
-                    }
-                }
-            });
-        });
-    }
-
-    private config(url: string): WebSocketSubjectConfig<string> {
-        return {
-            url,
-            WebSocketCtor: this.wsCtor,
-            // override default behavior, which invokes JSON.parse
-            resultSelector: (e: MessageEvent) => e.data
-        };
-    }
-
+  private config(url: string): WebSocketSubjectConfig<string> {
+    return {
+      url,
+      WebSocketCtor: this.wsCtor,
+      // override default behavior, which invokes JSON.parse
+      resultSelector: (e: MessageEvent) => e.data,
+    };
+  }
 }

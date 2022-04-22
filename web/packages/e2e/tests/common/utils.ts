@@ -14,43 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable no-underscore-dangle */
 import isElectronRenderer from 'is-electron-renderer';
 
 const globalObj: any = global || window;
 
 export function readEncodedConfig(): any {
+  if (globalObj.__karma__) {
+    return globalObj.__karma__.config;
+  }
 
-    if (globalObj.__karma__) {
-        return globalObj.__karma__.config;
-    }
-
-    let env: any;
-    if (isElectronRenderer) {
-        env = globalObj.require('electron').remote.process.env;
-    } else {
-        env = process.env;
-    }
-    return {
-        wsUrl: env.PLEXUS_BROKER_WEBSOCKET_URL,
-        hostPath: env.PLEXUS_BROKER_HOST_URL
-    }
+  let env: any;
+  if (isElectronRenderer) {
+    env = globalObj.require('electron').remote.process.env;
+  } else {
+    env = process.env;
+  }
+  return {
+    wsUrl: env.PLEXUS_BROKER_WEBSOCKET_URL,
+    hostPath: env.PLEXUS_BROKER_HOST_URL,
+  };
 }
 
 export function readWsUrl(): string {
-    const {wsUrl} = readEncodedConfig();
-    if (wsUrl) {
-        return wsUrl;
-    } 
-        throw Error('wsUrl is undefined');
-    
+  const { wsUrl } = readEncodedConfig();
+  if (wsUrl) {
+    return wsUrl;
+  }
+  throw Error('wsUrl is undefined');
 }
 
 export function readHostUrl(): string {
-    const hostUrl = readEncodedConfig().hostPath;
-    if (hostUrl) {
-        return hostUrl;
-    } 
-        throw Error('hostUrl is undefined');
-    
+  const hostUrl = readEncodedConfig().hostPath;
+  if (hostUrl) {
+    return hostUrl;
+  }
+  throw Error('hostUrl is undefined');
 }

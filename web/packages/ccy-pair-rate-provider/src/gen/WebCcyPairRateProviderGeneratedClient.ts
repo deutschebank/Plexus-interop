@@ -14,95 +14,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ClientConnectRequest, ContainerAwareClientAPIBuilder, GenericClientApi, GenericClientApiBase, MethodInvocationContext } from "@plexus-interop/client";
-import { TransportConnection, UniqueId } from "@plexus-interop/transport-common";
-import * as plexus from "./plexus-messages";
+import {
+  ClientConnectRequest,
+  ContainerAwareClientAPIBuilder,
+  GenericClientApi,
+  GenericClientApiBase,
+  MethodInvocationContext,
+} from '@plexus-interop/client';
+import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 
-
-
+import * as plexus from './plexus-messages';
 
 /**
  * Main client API
  */
-export interface WebCcyPairRateProviderClient extends GenericClientApi  {
-
-
-}
+export interface WebCcyPairRateProviderClient extends GenericClientApi {}
 
 /**
  * Client's API internal implementation
  */
 class WebCcyPairRateProviderClientImpl extends GenericClientApiBase implements WebCcyPairRateProviderClient {
-
-    public constructor(
-        private readonly genericClient: GenericClientApi,
-    ) {
-        super(genericClient);
-    }
-
-
+  public constructor(private readonly genericClient: GenericClientApi) {
+    super(genericClient);
+  }
 }
 
 /**
  * Client invocation handler for CcyPairRateService, to be implemented by Client
  */
 export abstract class CcyPairRateServiceInvocationHandler {
-
-    public abstract onGetRate(invocationContext: MethodInvocationContext, request: plexus.fx.ICcyPair): Promise<plexus.fx.ICcyPairRate>;
+  public abstract onGetRate(
+    invocationContext: MethodInvocationContext,
+    request: plexus.fx.ICcyPair
+  ): Promise<plexus.fx.ICcyPairRate>;
 }
 
 /**
  * Client API builder
  */
 export class WebCcyPairRateProviderClientBuilder {
+  private clientDetails: ClientConnectRequest = {
+    applicationId: 'vendor_a.fx.WebCcyPairRateProvider',
+  };
 
-    private clientDetails: ClientConnectRequest = {
-        applicationId: "vendor_a.fx.WebCcyPairRateProvider"
-    };
+  private transportConnectionProvider: () => Promise<TransportConnection>;
 
-    private transportConnectionProvider: () => Promise<TransportConnection>;
+  private ccyPairRateServiceHandler: CcyPairRateServiceInvocationHandler;
 
-    private ccyPairRateServiceHandler: CcyPairRateServiceInvocationHandler;
+  public withClientDetails(clientId: ClientConnectRequest): WebCcyPairRateProviderClientBuilder {
+    this.clientDetails = clientId;
+    return this;
+  }
 
-    public withClientDetails(clientId: ClientConnectRequest): WebCcyPairRateProviderClientBuilder {
-        this.clientDetails = clientId;
-        return this;
-    }
+  public withAppInstanceId(appInstanceId: UniqueId): WebCcyPairRateProviderClientBuilder {
+    this.clientDetails.applicationInstanceId = appInstanceId;
+    return this;
+  }
 
-    public withAppInstanceId(appInstanceId: UniqueId): WebCcyPairRateProviderClientBuilder {
-        this.clientDetails.applicationInstanceId = appInstanceId;
-        return this;
-    }
+  public withAppId(appId: string): WebCcyPairRateProviderClientBuilder {
+    this.clientDetails.applicationId = appId;
+    return this;
+  }
 
-    public withAppId(appId: string): WebCcyPairRateProviderClientBuilder {
-        this.clientDetails.applicationId = appId;
-        return this;
-    }
+  public withCcyPairRateServiceInvocationsHandler(
+    invocationsHandler: CcyPairRateServiceInvocationHandler
+  ): WebCcyPairRateProviderClientBuilder {
+    this.ccyPairRateServiceHandler = invocationsHandler;
+    return this;
+  }
 
-    public withCcyPairRateServiceInvocationsHandler(invocationsHandler: CcyPairRateServiceInvocationHandler): WebCcyPairRateProviderClientBuilder {
-        this.ccyPairRateServiceHandler = invocationsHandler;
-        return this;
-    }
+  public withTransportConnectionProvider(
+    provider: () => Promise<TransportConnection>
+  ): WebCcyPairRateProviderClientBuilder {
+    this.transportConnectionProvider = provider;
+    return this;
+  }
 
-    public withTransportConnectionProvider(provider: () => Promise<TransportConnection>): WebCcyPairRateProviderClientBuilder {
-        this.transportConnectionProvider = provider;
-        return this;
-    }
-
-    public connect(): Promise<WebCcyPairRateProviderClient> {
-        return new ContainerAwareClientAPIBuilder()
-            .withTransportConnectionProvider(this.transportConnectionProvider)
-            .withClientDetails(this.clientDetails)
-            .withTypeAwareUnaryHandler({
-                serviceInfo: {
-                    serviceId: "fx.CcyPairRateService"
-                },
-                methodId: "GetRate",
-                handle: this.ccyPairRateServiceHandler.onGetRate.bind(this.ccyPairRateServiceHandler)
-            }, plexus.fx.CcyPair, plexus.fx.CcyPairRate)
-            .connect()
-            .then((genericClient: GenericClientApi) => new WebCcyPairRateProviderClientImpl(
-                genericClient
-));
-    }
+  public connect(): Promise<WebCcyPairRateProviderClient> {
+    return new ContainerAwareClientAPIBuilder()
+      .withTransportConnectionProvider(this.transportConnectionProvider)
+      .withClientDetails(this.clientDetails)
+      .withTypeAwareUnaryHandler(
+        {
+          serviceInfo: {
+            serviceId: 'fx.CcyPairRateService',
+          },
+          methodId: 'GetRate',
+          handle: this.ccyPairRateServiceHandler.onGetRate.bind(this.ccyPairRateServiceHandler),
+        },
+        plexus.fx.CcyPair,
+        plexus.fx.CcyPairRate
+      )
+      .connect()
+      .then((genericClient: GenericClientApi) => new WebCcyPairRateProviderClientImpl(genericClient));
+  }
 }

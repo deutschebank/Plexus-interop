@@ -16,4 +16,4 @@
  */
 import { clientProtocol } from '@plexus-interop/protocol';
 
-export abstract class Completion implements clientProtocol.ICompletion {} 
+export abstract class Completion implements clientProtocol.ICompletion {}

@@ -20,22 +20,29 @@ import { ActionReference, MethodInvocationContext } from '@plexus-interop/client
  * Invokes registered action handlers on behalf of other app
  */
 export interface InternalActionInvoker {
+  /**
+   * Invokes registered action handler, applying serialization/deserialization logic on request/response
+   *
+   * @param invocationContext Method invocation context
+   * @param actionReference Action reference
+   * @param requestPayload Request Payload (structured object)
+   */
+  invokeUnaryHandler(
+    invocationContext: MethodInvocationContext,
+    actionReference: ActionReference,
+    requestPayload: any
+  ): Promise<any>;
 
-    /**
-     * Invokes registered action handler, applying serialization/deserialization logic on request/response
-     * 
-     * @param invocationContext Method invocation context
-     * @param actionReference Action reference
-     * @param requestPayload Request Payload (structured object)
-     */
-    invokeUnaryHandler(invocationContext: MethodInvocationContext, actionReference: ActionReference, requestPayload: any): Promise<any>;
-
-    /**
-     * Invokes registered action handler
-     * 
-     * @param invocationContext Method invocation context
-     * @param actionReference Action reference
-     * @param requestPayloadBuffer Request payload  
-     */
-    invokeRawUnaryHandler(invocationContext: MethodInvocationContext, actionReference: ActionReference, requestPayloadBuffer: ArrayBuffer): Promise<ArrayBuffer>;
+  /**
+   * Invokes registered action handler
+   *
+   * @param invocationContext Method invocation context
+   * @param actionReference Action reference
+   * @param requestPayloadBuffer Request payload
+   */
+  invokeRawUnaryHandler(
+    invocationContext: MethodInvocationContext,
+    actionReference: ActionReference,
+    requestPayloadBuffer: ArrayBuffer
+  ): Promise<ArrayBuffer>;
 }

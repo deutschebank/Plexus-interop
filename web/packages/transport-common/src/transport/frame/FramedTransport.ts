@@ -14,19 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UniqueId } from '@plexus-interop/protocol';
 import { Observer } from '@plexus-interop/common';
+import { UniqueId } from '@plexus-interop/protocol';
+
 import { Frame } from './model/Frame';
 
 export interface FramedTransport {
+  open(observer: Observer<Frame>): Promise<void>;
 
-    open(observer: Observer<Frame>): Promise<void>;
+  writeFrame(frame: Frame): Promise<void>;
 
-    writeFrame(frame: Frame): Promise<void>;
+  getMaxFrameSize(): number;
 
-    getMaxFrameSize(): number;
-
-    uuid(): UniqueId;
-
+  uuid(): UniqueId;
 }
-
