@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,114 +14,113 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { MethodInvocationContext, Completion, ClientConnectRequest, StreamingInvocationClient, GenericClientApi, InvocationRequestInfo, InvocationClient, GenericRequest, GenericClientApiBase } from "@plexus-interop/client";
-import { ProvidedMethodReference, ServiceDiscoveryRequest, ServiceDiscoveryResponse, MethodDiscoveryRequest, MethodDiscoveryResponse, GenericClientApiBuilder, ValueHandler } from "@plexus-interop/client";
-import { TransportConnection, UniqueId } from "@plexus-interop/transport-common";
-import { Arrays, Observer } from "@plexus-interop/common";
-import { InvocationObserver, InvocationObserverConverter, ContainerAwareClientAPIBuilder } from "@plexus-interop/client";
+import {
+  ClientConnectRequest,
+  ContainerAwareClientAPIBuilder,
+  GenericClientApi,
+  GenericClientApiBase,
+  InvocationRequestInfo,
+} from '@plexus-interop/client';
+import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 
-import * as plexus from "./plexus-messages";
+import * as plexus from './plexus-messages';
 
 /**
  *  Proxy interface of CcyPairRateService service, to be consumed by Client API
  */
 export abstract class CcyPairRateServiceProxy {
-
-    public abstract getRate(request: plexus.fx.ICcyPair): Promise<plexus.fx.ICcyPairRate>;
-
+  public abstract getRate(request: plexus.fx.ICcyPair): Promise<plexus.fx.ICcyPairRate>;
 }
 
 /**
  *  Internal Proxy implementation for CcyPairRateService service
  */
 export class CcyPairRateServiceProxyImpl implements CcyPairRateServiceProxy {
+  constructor(private readonly genericClient: GenericClientApi) {}
 
-    constructor(private readonly genericClient: GenericClientApi) { }
-
-    public getRate(request: plexus.fx.ICcyPair): Promise<plexus.fx.ICcyPairRate> {
-        const invocationInfo: InvocationRequestInfo = {
-            methodId: "GetRate",
-            serviceId: "fx.CcyPairRateService"
-        };
-        return new Promise((resolve, reject) => {
-            this.genericClient.sendUnaryRequest(invocationInfo, request, {
-                value: responsePayload => resolve(responsePayload),
-                error: e => reject(e)
-            }, plexus.fx.CcyPair, plexus.fx.CcyPairRate);
-        });
-    }
-
+  public getRate(request: plexus.fx.ICcyPair): Promise<plexus.fx.ICcyPairRate> {
+    const invocationInfo: InvocationRequestInfo = {
+      methodId: 'GetRate',
+      serviceId: 'fx.CcyPairRateService',
+    };
+    return new Promise((resolve, reject) => {
+      this.genericClient.sendUnaryRequest(
+        invocationInfo,
+        request,
+        {
+          value: (responsePayload) => resolve(responsePayload),
+          error: (e) => reject(e),
+        },
+        plexus.fx.CcyPair,
+        plexus.fx.CcyPairRate
+      );
+    });
+  }
 }
 
 /**
  * Main client API
  */
-export interface WebCcyPairRateViewerClient extends GenericClientApi  {
-
-    getCcyPairRateServiceProxy(): CcyPairRateServiceProxy;
-
+export interface WebCcyPairRateViewerClient extends GenericClientApi {
+  getCcyPairRateServiceProxy(): CcyPairRateServiceProxy;
 }
 
 /**
  * Client's API internal implementation
  */
 class WebCcyPairRateViewerClientImpl extends GenericClientApiBase implements WebCcyPairRateViewerClient {
+  public constructor(
+    private readonly genericClient: GenericClientApi,
+    private readonly ccyPairRateServiceProxy: CcyPairRateServiceProxy
+  ) {
+    super(genericClient);
+  }
 
-    public constructor(
-        private readonly genericClient: GenericClientApi,
-        private readonly ccyPairRateServiceProxy: CcyPairRateServiceProxy
-    ) {
-        super(genericClient);
-    }
-
-    public getCcyPairRateServiceProxy(): CcyPairRateServiceProxy {
-        return this.ccyPairRateServiceProxy;
-    }
-
+  public getCcyPairRateServiceProxy(): CcyPairRateServiceProxy {
+    return this.ccyPairRateServiceProxy;
+  }
 }
-
 
 /**
  * Client API builder
  */
 export class WebCcyPairRateViewerClientBuilder {
+  private clientDetails: ClientConnectRequest = {
+    applicationId: 'vendor_b.fx.WebCcyPairRateViewer',
+  };
 
-    private clientDetails: ClientConnectRequest = {
-        applicationId: "vendor_b.fx.WebCcyPairRateViewer"
-    };
+  private transportConnectionProvider: () => Promise<TransportConnection>;
 
-    private transportConnectionProvider: () => Promise<TransportConnection>;
+  public withClientDetails(clientId: ClientConnectRequest): WebCcyPairRateViewerClientBuilder {
+    this.clientDetails = clientId;
+    return this;
+  }
 
+  public withAppInstanceId(appInstanceId: UniqueId): WebCcyPairRateViewerClientBuilder {
+    this.clientDetails.applicationInstanceId = appInstanceId;
+    return this;
+  }
 
-    public withClientDetails(clientId: ClientConnectRequest): WebCcyPairRateViewerClientBuilder {
-        this.clientDetails = clientId;
-        return this;
-    }
+  public withAppId(appId: string): WebCcyPairRateViewerClientBuilder {
+    this.clientDetails.applicationId = appId;
+    return this;
+  }
 
-    public withAppInstanceId(appInstanceId: UniqueId): WebCcyPairRateViewerClientBuilder {
-        this.clientDetails.applicationInstanceId = appInstanceId;
-        return this;
-    }
+  public withTransportConnectionProvider(
+    provider: () => Promise<TransportConnection>
+  ): WebCcyPairRateViewerClientBuilder {
+    this.transportConnectionProvider = provider;
+    return this;
+  }
 
-    public withAppId(appId: string): WebCcyPairRateViewerClientBuilder {
-        this.clientDetails.applicationId = appId;
-        return this;
-    }
-
-
-    public withTransportConnectionProvider(provider: () => Promise<TransportConnection>): WebCcyPairRateViewerClientBuilder {
-        this.transportConnectionProvider = provider;
-        return this;
-    }
-
-    public connect(): Promise<WebCcyPairRateViewerClient> {
-        return new ContainerAwareClientAPIBuilder()
-            .withTransportConnectionProvider(this.transportConnectionProvider)
-            .withClientDetails(this.clientDetails)
-            .connect()
-            .then((genericClient: GenericClientApi) => new WebCcyPairRateViewerClientImpl(
-                genericClient,
-                new CcyPairRateServiceProxyImpl(genericClient)
-                ));
-    }
+  public connect(): Promise<WebCcyPairRateViewerClient> {
+    return new ContainerAwareClientAPIBuilder()
+      .withTransportConnectionProvider(this.transportConnectionProvider)
+      .withClientDetails(this.clientDetails)
+      .connect()
+      .then(
+        (genericClient: GenericClientApi) =>
+          new WebCcyPairRateViewerClientImpl(genericClient, new CcyPairRateServiceProxyImpl(genericClient))
+      );
+  }
 }

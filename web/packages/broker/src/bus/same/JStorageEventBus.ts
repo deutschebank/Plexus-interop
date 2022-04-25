@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,48 +14,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../EventBus';
-import { Event } from '../Event';
 import 'ya-js-storage';
-import { Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
+
+import { AnonymousSubscription, Logger, LoggerFactory, Subscription } from '@plexus-interop/common';
+
+import { Event } from '../Event';
+import { EventBus } from '../EventBus';
 
 const globalObj: any = global || window;
-const yaJsStorage = globalObj.$.yaJsStorage;
+const { yaJsStorage } = globalObj.$;
 
 export class JStorageEventBus implements EventBus {
+  private readonly log: Logger;
 
-    private readonly log: Logger;
+  private yaStorage: JStorageStatic = yaJsStorage;
 
-    private yaStorage: JStorageStatic = yaJsStorage;
+  public constructor(readonly namespace: string = 'plexus-bus') {
+    this.log = LoggerFactory.getLogger(`JStorageEventBus [${namespace}]`);
+  }
 
-    public constructor(readonly namespace: string = 'plexus-bus') {
-        this.log = LoggerFactory.getLogger(`JStorageEventBus [${namespace}]`);
-    }
+  public async init(): Promise<EventBus> {
+    return this;
+  }
 
-    public async init(): Promise<EventBus> {
-        return this;
-    }
+  public publish(key: string, event: Event): void {
+    const topic = this.internalKey(key);
+    this.log.trace(`Publishing event to ${topic}`);
+    this.yaStorage.publish(topic, event.payload);
+  }
 
-    public publish(key: string, event: Event): void {
-        const topic = this.internalKey(key);
-        this.log.trace(`Publishing event to ${topic}`);
-        this.yaStorage.publish(topic, event.payload);
-    }
+  public subscribe(key: string, handler: (event: Event) => void): Subscription {
+    const topic = this.internalKey(key);
+    this.log.trace(`Subscribing to ${topic}`);
+    const unsubscribe: any = this.yaStorage.subscribe(this.internalKey(key), (channel: string, value: any) => {
+      this.log.trace(`Received update for ${topic}`);
+      handler({ payload: value });
+    });
+    return new AnonymousSubscription(() => {
+      this.log.trace(`Unsubscribing from internal ${key} channel`);
+      unsubscribe();
+    });
+  }
 
-    public subscribe(key: string, handler: (event: Event) => void): Subscription {
-        const topic = this.internalKey(key);
-        this.log.trace(`Subscribing to ${topic}`);        
-        const unsubscribe: any = this.yaStorage.subscribe(this.internalKey(key), (channel: string, value: any) => {
-            this.log.trace(`Received update for ${topic}`);
-            handler({ payload: value });
-        });
-        return new AnonymousSubscription(() => {
-            this.log.trace(`Unsubscribing from internal ${key} channel`);
-            unsubscribe();
-        });
-    }
-
-    private internalKey(key: string): string {
-        return `${this.namespace}:${key}`;
-    }
+  private internalKey(key: string): string {
+    return `${this.namespace}:${key}`;
+  }
 }

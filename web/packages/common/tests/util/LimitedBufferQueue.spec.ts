@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,20 @@
 import { LimitedBufferQueue } from '../../src/util/collections/LimitedBufferQueue';
 
 describe('LimitedBufferQueue', () => {
+  it('Should enqueue and dequeue element if buffer size is enough', () => {
+    const sut = new LimitedBufferQueue(1);
+    const el = 'test';
+    sut.enqueue(el);
+    expect(sut.dequeue()).toEqual(el);
+  });
 
-    it('Should enqueue and dequeue element if buffer size is enough', () => {
-        const sut = new LimitedBufferQueue(1);
-        const el = 'test';
-        sut.enqueue(el)
-        expect(sut.dequeue()).toEqual(el);
-    });
-
-    it('Should reject enqueue if buffer size is not enough', (done) => {
-        const sut = new LimitedBufferQueue(0);
-        const el = 'test';
-        try {
-            sut.enqueue(el);
-        } catch (error) {
-            done();
-        }
-    });
-
+  it('Should reject enqueue if buffer size is not enough', (done) => {
+    const sut = new LimitedBufferQueue(0);
+    const el = 'test';
+    try {
+      sut.enqueue(el);
+    } catch (error) {
+      done();
+    }
+  });
 });

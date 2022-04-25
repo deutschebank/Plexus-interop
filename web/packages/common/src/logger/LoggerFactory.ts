@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,32 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerDelegate } from './index';
 import * as log from 'loglevel';
-import { Logger } from './Logger';
-import { LoggerBase } from './LoggerBase';
+
 import { TimeUtils } from '../util/time/TimeUtils';
+import { Logger, LoggerDelegate } from './Logger';
+import { LoggerBase } from './LoggerBase';
+import { LogLevel } from './LogLevel';
+
 const logPrefixer: any = require('loglevel-plugin-prefix');
 
-export enum LogLevel {
-  TRACE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  SILENT
-}
-
 export class LoggerFactory {
-  
   private static additionalRecipients: LoggerDelegate[] = [];
 
   public static registerDelegate(logger: LoggerDelegate): { unregister: () => void } {
-    let newRecipientsLen = LoggerFactory.additionalRecipients.push(logger);
-    let registeredRecipientIndex = newRecipientsLen - 1;
+    const newRecipientsLen = LoggerFactory.additionalRecipients.push(logger);
+    const registeredRecipientIndex = newRecipientsLen - 1;
 
     return {
-      unregister: () => LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1)
+      unregister: () => {
+        LoggerFactory.additionalRecipients = LoggerFactory.additionalRecipients.splice(registeredRecipientIndex, 1);
+      },
     };
   }
 
@@ -52,12 +46,11 @@ export class LoggerFactory {
     if (level <= LogLevel.DEBUG) {
       logPrefixer.apply(log, {
         template: '%t | [%l] ',
-        timestampFormatter: (date: Date) => TimeUtils.format(date)
+        timestampFormatter: (date: Date) => TimeUtils.format(date),
       });
     }
     log.setLevel(level as any);
   }
-
 }
 
 LoggerFactory.setLogLevel(LogLevel.INFO);

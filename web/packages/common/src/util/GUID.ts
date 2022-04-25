@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* eslint-disable no-bitwise */
 export class GUID {
+  private str: string;
 
-    private str: string;
+  constructor(str?: string) {
+    this.str = str || GUID.getNewGUIDString();
+  }
 
-    constructor(str?: string) {
-        this.str = str || GUID.getNewGUIDString();
-    }
+  public static getNewGUIDString(): string {
+    let d = new Date().getTime();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+  }
 
-    public static getNewGUIDString(): string {
-        let d = new Date().getTime();
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            let r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    }
-
-    public toString(): string {
-        return this.str;
-    }
+  public toString(): string {
+    return this.str;
+  }
 }

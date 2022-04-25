@@ -2,70 +2,52 @@
   "name": "@plexus-interop/common",
   "version": "0.1.0",
   "sideEffects": true,
-  "types": "dist/main/src/index.d.ts",
-  "main": "dist/main/src/index.js",
   "description": "Common functionality for Plexus Interop Web",
   "license": "Apache-2.0",
+  "main": "./dist/main/src/index.js",
+  "module": "./dist/esm5/src/index.js",
+  "es2015": "./dist/esm/src/index.js",
+  "types": "./dist/main/src/index.d.ts",
+  "exports": {
+    ".": {
+      "node": "./dist/main/src/index.js",
+      "es2015": "./dist/esm/src/index.js",
+      "default": "./dist/esm5/src/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "prebuild": "yarn lint && trash dist",
-    "build": "yarn build:main",
-    "postbuild": "yarn test",
-    "build:main": "tsc -p tsconfig.json",
-    "build:watch": "tsc -w -p tsconfig.json",
-    "lint": "tslint src/**/*.ts",
+    "build": "npm run build:main",
+    "build:main": "tsc",
+    "build:watch": "tsc -w",
     "unit": "jest --coverage",
-    "test": "yarn unit"
+    "test": "npm run unit"
   },
   "dependencies": {
-    "@types/loglevel": "^1.4.29",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
-    "loglevel-plugin-prefix": "^0.5.3",
+    "loglevel-plugin-prefix": "^0.8.4",
     "long": "^4.0.0",
     "reflect-metadata": "^0.1.10",
-    "tslib": "^1.10.0",
+    "tslib": "^2.3.1",
     "typescript-collections": "1.2.3"
   },
-  "devDependencies": {
-    "trash": "^4.1.0",
-    "@types/chai": "^4.0.2",
-    "@types/jest": "^23.1.3",
-    "@types/mocha": "^2.2.43",
-    "@types/node": "^7.0.5",
-    "babel-register": "^6.23.0",
-    "browserify": "^14.5.0",
-    "chai": "^4.1.0",
-    "copyfiles": "^1.2.0",
-    "glob": "^7.1.2",
-    "jasmine-reporters": "^2.2.0",
-    "jest": "^23.5.0",
-    "jest-cli": "^23.0.0",
-    "karma": "^1.7.1",
-    "minimist": "^1.2.0",
-    "mocha": "^3.5.0",
-    "path": "^0.12.7",
-    "sinon": "^2.4.1",
-    "trash-cli": "^1.4.0",
-    "ts-mockito": "2.0.2",
-    "tslint": "5.8.0",
-    "typescript": "3.7.2",
-    "yarn": "^1.17.3"
+  "publishConfig": {
+    "access": "public"
   },
   "jest": {
+    "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupTestFrameworkScriptFile": "<rootDir>/setup-jasmine.js",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
+    "testRunner": "jest-jasmine2",
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jasmine.js"
     ],
-    "testRegex": ".+/dist/main/tests/.+spec.js$",
-    "coverageDirectory": "coverage",
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
     "collectCoverageFrom": [
-      "dist/main/src/**/*.js",
-      "!dist/main/src/gen/**/*.js",
-      "!src/*.d.ts",
-      "!src/**/*.d.ts",
-      "!src/**/*.spec.ts"
+      "src/**/*.ts",
+      "!src/**/*.d.ts"
     ]
   }
 }

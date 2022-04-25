@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Frame, MessageFrame, ConnectionCloseFrame, ChannelOpenFrame, ChannelCloseFrame } from './model';
-import { ConnectionOpenFrame } from './model/ConnectionOpenFrame';
 import { Logger } from '@plexus-interop/common';
+
+import { ChannelCloseFrame, ChannelOpenFrame, ConnectionCloseFrame, Frame, MessageFrame } from './model';
+import { ConnectionOpenFrame } from './model/ConnectionOpenFrame';
 import { TransportFrameListener } from './TransportFrameListener';
 
 export class TransportFrameHandler {
-
-    public handleFrame(baseFrame: Frame, log: Logger, typedFramesListener: TransportFrameListener): void {
-        if (!baseFrame) {
-            log.warn('Empty frame header, dropping frame');
-        } else if (baseFrame.internalHeaderProperties.messageFrame) {
-            typedFramesListener.handleMessageFrame(baseFrame as MessageFrame);
-        } else if (baseFrame.internalHeaderProperties.close) {
-            typedFramesListener.handleConnectionCloseFrame(baseFrame as ConnectionCloseFrame);
-        } else if (baseFrame.internalHeaderProperties.channelOpen) {
-            typedFramesListener.handleChannelOpenFrame(baseFrame as ChannelOpenFrame);
-        } else if (baseFrame.internalHeaderProperties.channelClose) {
-            typedFramesListener.handleChannelCloseFrame(baseFrame as ChannelCloseFrame);
-        } else if (baseFrame.internalHeaderProperties.open) {
-            typedFramesListener.handleConnectionOpenFrame(baseFrame as ConnectionOpenFrame);
-        } else {
-            throw new Error('Unsupported frame type');
-        }
+  public handleFrame(baseFrame: Frame, log: Logger, typedFramesListener: TransportFrameListener): void {
+    if (!baseFrame) {
+      log.warn('Empty frame header, dropping frame');
+    } else if (baseFrame.internalHeaderProperties.messageFrame) {
+      typedFramesListener.handleMessageFrame(baseFrame as MessageFrame);
+    } else if (baseFrame.internalHeaderProperties.close) {
+      typedFramesListener.handleConnectionCloseFrame(baseFrame as ConnectionCloseFrame);
+    } else if (baseFrame.internalHeaderProperties.channelOpen) {
+      typedFramesListener.handleChannelOpenFrame(baseFrame as ChannelOpenFrame);
+    } else if (baseFrame.internalHeaderProperties.channelClose) {
+      typedFramesListener.handleChannelCloseFrame(baseFrame as ChannelCloseFrame);
+    } else if (baseFrame.internalHeaderProperties.open) {
+      typedFramesListener.handleConnectionOpenFrame(baseFrame as ConnectionOpenFrame);
+    } else {
+      throw new Error('Unsupported frame type');
     }
-
+  }
 }

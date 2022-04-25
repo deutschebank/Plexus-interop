@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +17,18 @@
 import { UniqueId } from '@plexus-interop/transport-common';
 
 export interface ProvidedServiceReference {
-    /** ProvidedServiceReference serviceId */
-    serviceId?: string;
+  /** ProvidedServiceReference serviceId */
+  serviceId?: string;
 
-    /** ProvidedServiceReference serviceAlias */
-    serviceAlias?: string;
+  /** ProvidedServiceReference serviceAlias */
+  serviceAlias?: string;
 
-    /** ProvidedServiceReference applicationId */
-    applicationId?: string;
+  /** ProvidedServiceReference applicationId */
+  applicationId?: string;
 
-    /** ProvidedServiceReference connectionId */
-    connectionId?: UniqueId;
+  /** ProvidedServiceReference connectionId */
+  connectionId?: UniqueId;
 
-    /** ProvidedServiceReference appInstanceId */
-    applicationInstanceId?: UniqueId;
+  /** ProvidedServiceReference appInstanceId */
+  applicationInstanceId?: UniqueId;
 }

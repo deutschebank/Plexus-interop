@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Plexus Interop Cross Domain Host</title>
+    <script src="polyfills.legacy.js" nomodule></script>
+    <script src="CrossDomainHostBuilder.bundle.legacy.js" nomodule></script>
+    <script type="text/javascript" nomodule>
+      new window.proxyHost.CrossDomainHostBuilder()
+        .withCrossDomainConfig({
+          whiteListedUrls: ['*'],
+        })
+        .build();
+    </script>
+
+    <script type="module">
+      import('./CrossDomainHostBuilder.bundle.js').then(() => {
+        new window.proxyHost.CrossDomainHostBuilder()
+          .withCrossDomainConfig({
+            whiteListedUrls: ['*'],
+          })
+          .build();
+      });
+    </script>
+  </head>
+  <body>
+    No content required
+  </body>
+</html>

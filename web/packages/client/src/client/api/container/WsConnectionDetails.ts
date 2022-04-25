@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 export interface WsConnectionDetails {
-    port: number;
-    wssPort?: number;
+  port: number;
+  wssPort?: number;
 }
 
 export function getBaseWsUrl(details: WsConnectionDetails): string {
-    return details.wssPort
-        ? `wss://127.0.0.1:${details.wssPort}`
-        : `ws://127.0.0.1:${details.port}`;
+  return details.wssPort ? `wss://127.0.0.1:${details.wssPort}` : `ws://127.0.0.1:${details.port}`;
 }

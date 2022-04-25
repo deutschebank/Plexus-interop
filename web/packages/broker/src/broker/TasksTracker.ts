@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Completion, ClientProtocolUtils } from '@plexus-interop/protocol';
+import { ClientProtocolUtils, Completion } from '@plexus-interop/protocol';
 
 export class TasksTracker {
+  private readonly tasks = new Map<string, Promise<Completion>>();
 
-    // tslint:disable-next-line:typedef
-    private readonly tasks = new Map<string, Promise<Completion>>();
-
-    public async start(id: string, task: () => Promise<Completion>): Promise<Completion> {
-        const resultPromise = task();
-        this.tasks.set(id, resultPromise);
-        try {
-            return await resultPromise;
-        } finally {
-            this.tasks.delete(id);
-        }
+  public async start(id: string, task: () => Promise<Completion>): Promise<Completion> {
+    const resultPromise = task();
+    this.tasks.set(id, resultPromise);
+    try {
+      return await resultPromise;
+    } finally {
+      this.tasks.delete(id);
     }
+  }
 
-    public async completePending(): Promise<Completion> {
-        const pendingTasks = this.tasks.values();
-        const results = await Promise.all(pendingTasks);
-        return ClientProtocolUtils.createSummarizedCompletion(...results);
-    }
-
+  public async completePending(): Promise<Completion> {
+    const pendingTasks = this.tasks.values();
+    const results = await Promise.all(pendingTasks);
+    return ClientProtocolUtils.createSummarizedCompletion(...results);
+  }
 }

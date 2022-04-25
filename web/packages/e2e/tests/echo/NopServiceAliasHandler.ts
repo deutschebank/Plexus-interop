@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MethodInvocationContext } from '@plexus-interop/client';
-import { Observer } from '@plexus-interop/common';
 
 import * as plexus from '../../src/echo/gen/plexus-messages';
+import { ServiceAliasInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
 
 export class NopServiceAliasHandler implements ServiceAliasInvocationHandler {
-
-    public onUnary(context: MethodInvocationContext, request: plexus.plexus.interop.testing.IEchoRequest): Promise<plexus.plexus.interop.testing.IEchoRequest> {
-        throw new Error('Not implemented');
-    }
-
+  public onUnary(
+    context: MethodInvocationContext,
+    request: plexus.plexus.interop.testing.IEchoRequest
+  ): Promise<plexus.plexus.interop.testing.IEchoRequest> {
+    throw new Error('Not implemented');
+  }
 }

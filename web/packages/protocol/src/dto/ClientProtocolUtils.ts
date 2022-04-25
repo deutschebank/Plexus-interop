@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,38 +17,38 @@
 import { plexus } from '../gen/internal-client-protocol';
 
 export class ClientProtocolUtils {
-
-    public static createSummarizedCompletion(...completions: plexus.ICompletion[]): plexus.ICompletion {
-        const errors: string[] = completions
-            .filter(completion => !!completion && completion.status === plexus.Completion.Status.Failed)
-            .map(completion => {
-                return completion.error || {
-                    message: `Unknown error, completion status ${status}`
-                };
-            })
-            .map(error => error.message || 'Unknown error');
-        if (errors.length > 0) {
-            return {
-                status: plexus.Completion.Status.Failed,
-                error: {
-                    message: errors.join('\n')
-                }
-            };
-        } else {
-            return { status: plexus.Completion.Status.Completed };
-        }
+  public static createSummarizedCompletion(...completions: plexus.ICompletion[]): plexus.ICompletion {
+    const errors: string[] = completions
+      .filter((completion) => !!completion && completion.status === plexus.Completion.Status.Failed)
+      .map(
+        (completion) =>
+          completion.error || {
+            message: `Unknown error, completion status ${completion.status}`,
+          }
+      )
+      .map((error) => error.message || 'Unknown error');
+    if (errors.length > 0) {
+      return {
+        status: plexus.Completion.Status.Failed,
+        error: {
+          message: errors.join('\n'),
+        },
+      };
     }
+    return { status: plexus.Completion.Status.Completed };
+  }
 
-    public static isSuccessCompletion(completion: plexus.ICompletion): boolean {
-        return !!completion && (completion.status === undefined || completion.status === plexus.Completion.Status.Completed);
-    }
+  public static isSuccessCompletion(completion: plexus.ICompletion): boolean {
+    return (
+      !!completion && (completion.status === undefined || completion.status === plexus.Completion.Status.Completed)
+    );
+  }
 
-    public static isCancelCompletion(completion: plexus.ICompletion): boolean {
-        return !!completion && (completion.status === plexus.Completion.Status.Canceled);
-    }
+  public static isCancelCompletion(completion: plexus.ICompletion): boolean {
+    return !!completion && completion.status === plexus.Completion.Status.Canceled;
+  }
 
-    public static isErrorCompletion(completion: plexus.ICompletion): boolean {
-        return !!completion && (completion.status === plexus.Completion.Status.Failed);
-    }
-
+  public static isErrorCompletion(completion: plexus.ICompletion): boolean {
+    return !!completion && completion.status === plexus.Completion.Status.Failed;
+  }
 }

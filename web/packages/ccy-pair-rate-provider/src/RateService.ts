@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,20 @@
 import * as plexus from './gen/plexus-messages';
 
 export class RateService {
-    
-    public getRate(ccyPair: string): plexus.fx.ICcyPairRate {
-         switch (ccyPair)  {
-            case 'EURUSD':
-                return {
-                    ccyPairName: ccyPair,
-                    rate: parseFloat((1.15 + 0.1 * Math.random()).toFixed(3))
-                };
-            case 'EURGBP':
-                return {
-                    ccyPairName: ccyPair,
-                    rate: parseFloat((0.87 + 0.1 * Math.random()).toFixed(3))
-                };
-            default:
-                throw new Error(`Unsupported CCY Pair name ${ccyPair}`);
-        }
+  public getRate(ccyPair: string): plexus.fx.ICcyPairRate {
+    switch (ccyPair) {
+      case 'EURUSD':
+        return {
+          ccyPairName: ccyPair,
+          rate: parseFloat((1.15 + 0.1 * Math.random()).toFixed(3)),
+        };
+      case 'EURGBP':
+        return {
+          ccyPairName: ccyPair,
+          rate: parseFloat((0.87 + 0.1 * Math.random()).toFixed(3)),
+        };
+      default:
+        throw new Error(`Unsupported CCY Pair name ${ccyPair}`);
     }
-
+  }
 }

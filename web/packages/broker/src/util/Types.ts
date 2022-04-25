@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,37 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+
 import { isString } from '@plexus-interop/common';
-import { ProvidedMethodReference } from '@plexus-interop/metadata';
-import { ConsumedMethodReference } from '@plexus-interop/metadata';
+import { ConsumedMethodReference, ProvidedMethodReference } from '@plexus-interop/metadata';
 import { ClientError } from '@plexus-interop/protocol';
 
 export class Types {
+  public static isObservable<T>(obj: any): obj is Observable<T> {
+    return (obj as Observable<T>).subscribe !== undefined;
+  }
 
-    public static isObservable<T>(obj: any): obj is Observable<T> {
-        return (obj as Observable<T>).subscribe !== undefined;
+  public static isConsumedMethodReference(
+    methodReference: ConsumedMethodReference | ProvidedMethodReference
+  ): methodReference is ConsumedMethodReference {
+    return !!(methodReference as ConsumedMethodReference).consumedService;
+  }
+
+  public static isError(value: any): value is Error {
+    return value && value.stack && value.message;
+  }
+
+  public static toClientError(e: any): ClientError {
+    if (Types.isError(e)) {
+      return new ClientError(e.message, e.stack);
     }
-
-    public static isConsumedMethodReference(methodReference: ConsumedMethodReference | ProvidedMethodReference): methodReference is ConsumedMethodReference {
-        return !!(methodReference as ConsumedMethodReference).consumedService;
+    if (isString(e)) {
+      return new ClientError(e);
     }
-
-    public static isError(value: any): value is Error {
-        return value && value.stack && value.message;
+    if (e.message && e.details) {
+      return new ClientError(e.message, e.details);
     }
-
-    public static toClientError(e: any): ClientError {
-        if (Types.isError(e)) {
-            return new ClientError(e.message, e.stack);
-        } else if (isString(e)) {
-            return new ClientError(e);
-        } else if (e.message && e.details) {
-            return new ClientError(e.message, e.details);
-        } else {
-            e = new Error('Unknown error received');
-            return Types.toClientError(e);
-        }
-    }
-
+    e = new Error('Unknown error received');
+    return Types.toClientError(e);
+  }
 }

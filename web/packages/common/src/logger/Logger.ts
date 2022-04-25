@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,27 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LogLevel } from './LoggerFactory';
+import { LogLevel } from './LogLevel';
 
 export interface Logger {
+  debug(msg: string, ...args: any[]): void;
 
-    debug(msg: string, ...args: any[]): void;
+  info(msg: string, ...args: any[]): void;
 
-    info(msg: string, ...args: any[]): void;
+  error(msg: string, ...args: any[]): void;
 
-    error(msg: string, ...args: any[]): void;
+  warn(msg: string, ...args: any[]): void;
 
-    warn(msg: string, ...args: any[]): void;
+  trace(msg: string, ...args: any[]): void;
 
-    trace(msg: string, ...args: any[]): void;
+  getLogLevel(): LogLevel;
 
-    getLogLevel(): LogLevel;
+  isDebugEnabled(): boolean;
 
-    isDebugEnabled(): boolean;
-
-    isTraceEnabled(): boolean;
+  isTraceEnabled(): boolean;
 }
 
 export interface LoggerDelegate {
-    log(logLevel: LogLevel, msg: string, ...args: any[]): void;
+  log(logLevel: LogLevel, msg: string, ...args: any[]): void;
 }

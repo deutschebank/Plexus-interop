@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UniqueId } from '@plexus-interop/transport-common';
-import { InvocationMetaInfo } from '@plexus-interop/protocol';
 import { AnonymousSubscription } from '@plexus-interop/common';
+import { InvocationMetaInfo, clientProtocol as plexus } from '@plexus-interop/protocol';
+import { UniqueId } from '@plexus-interop/transport-common';
+
 import { InvocationChannelObserver } from './InvocationChannelObserver';
-import { clientProtocol as plexus } from '@plexus-interop/protocol';
 
 export interface BaseInvocation<Req, Res> {
-    uuid(): UniqueId;
-    sendMessage(data: Req): Promise<void>;
-    sendCompleted(): Promise<void>;
-    open(observer: InvocationChannelObserver<AnonymousSubscription, Res>): void;
-    close(completion?: plexus.ICompletion): Promise<plexus.ICompletion>;
-    getMetaInfo(): InvocationMetaInfo;
+  uuid(): UniqueId;
+  sendMessage(data: Req): Promise<void>;
+  sendCompleted(): Promise<void>;
+  open(observer: InvocationChannelObserver<AnonymousSubscription, Res>): void;
+  close(completion?: plexus.ICompletion): Promise<plexus.ICompletion>;
+  getMetaInfo(): InvocationMetaInfo;
 }

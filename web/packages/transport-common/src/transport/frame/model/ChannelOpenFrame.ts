@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-underscore-dangle */
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+
 import { ServiceFrame } from './ServiceFrame';
 
 export class ChannelOpenFrame extends ServiceFrame<plexus.interop.transport.protocol.IChannelOpenHeader> {
+  constructor(header: plexus.interop.transport.protocol.IHeader) {
+    super();
+    this._header = header;
+  }
 
-    constructor(header: plexus.interop.transport.protocol.IHeader) {
-        super();
-        this._header = header;
-    }
+  public static fromHeaderData(headerData: plexus.interop.transport.protocol.IChannelOpenHeader): ChannelOpenFrame {
+    return new ChannelOpenFrame({
+      channelOpen: headerData,
+    });
+  }
 
-    public static fromHeaderData(headerData: plexus.interop.transport.protocol.IChannelOpenHeader): ChannelOpenFrame {
-        return new ChannelOpenFrame({
-            channelOpen: headerData
-        });
-    }
-
-    public getHeaderData(): plexus.interop.transport.protocol.IChannelOpenHeader {
-        return this._header.channelOpen as plexus.interop.transport.protocol.IChannelOpenHeader;
-    }
-
+  public getHeaderData(): plexus.interop.transport.protocol.IChannelOpenHeader {
+    return this._header.channelOpen as plexus.interop.transport.protocol.IChannelOpenHeader;
+  }
 }

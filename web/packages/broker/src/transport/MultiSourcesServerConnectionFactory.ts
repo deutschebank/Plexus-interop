@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AnonymousSubscription, Observer, Subscription } from '@plexus-interop/common';
 import { ServerConnectionFactory, TransportConnection } from '@plexus-interop/transport-common';
-import { Observer, Subscription, AnonymousSubscription } from '@plexus-interop/common';
 
 export class MultiSourcesServerConnectionFactory implements ServerConnectionFactory {
+  private readonly sources: ServerConnectionFactory[];
 
-    private readonly sources: ServerConnectionFactory[];
+  constructor(...sources: ServerConnectionFactory[]) {
+    this.sources = sources;
+  }
 
-    constructor(...sources: ServerConnectionFactory[]) {
-        this.sources = sources;
-    }
-
-    public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
-        const subscriptions: Subscription[] = [];
-        this.sources.forEach(s => subscriptions.push(s.acceptConnections(connectionsObserver)));
-        return new AnonymousSubscription(() => {
-            subscriptions.forEach(s => s.unsubscribe());
-        });
-    }
+  public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
+    const subscriptions: Subscription[] = [];
+    this.sources.forEach((s) => subscriptions.push(s.acceptConnections(connectionsObserver)));
+    return new AnonymousSubscription(() => {
+      subscriptions.forEach((s) => s.unsubscribe());
+    });
+  }
 }

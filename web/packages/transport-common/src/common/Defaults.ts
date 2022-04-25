@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 export abstract class Defaults {
-    public static readonly OPERATION_TIMEOUT: number = 60000;
-    public static readonly STATUS_CHECK_INTERVAL: number = 0;
-    public static readonly DEFAULT_BUFFER_SIZE: number = 10240;
-    public static readonly DEFAULT_FRAME_SIZE: number = 60000;
+  public static readonly OPERATION_TIMEOUT: number = 60000;
+  public static readonly STATUS_CHECK_INTERVAL: number = 0;
+  public static readonly DEFAULT_BUFFER_SIZE: number = 10240;
+  public static readonly DEFAULT_FRAME_SIZE: number = 60000;
 }

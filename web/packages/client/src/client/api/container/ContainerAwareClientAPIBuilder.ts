@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,36 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GenericClientApiBuilder, GenericClientApi } from '../generic';
-import { ConnectionDetailsService } from './ConnectionDetailsService';
-import { getBaseWsUrl } from './WsConnectionDetails';
-import { DefaultConnectionDetailsService } from './DefaultConnectionDetailsService';
 import { UniqueId } from '@plexus-interop/transport-common';
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 
+import { GenericClientApi, GenericClientApiBuilder } from '../generic';
+import { ConnectionDetailsService } from './ConnectionDetailsService';
+import { DefaultConnectionDetailsService } from './DefaultConnectionDetailsService';
+import { getBaseWsUrl } from './WsConnectionDetails';
+
 export class ContainerAwareClientAPIBuilder extends GenericClientApiBuilder {
+  public constructor(
+    private readonly connectionDetailsService: ConnectionDetailsService = new DefaultConnectionDetailsService()
+  ) {
+    super();
+  }
 
-    public constructor(private readonly connectionDetailsService: ConnectionDetailsService = new DefaultConnectionDetailsService()) {
-        super();
-    }
-
-    public async connect(): Promise<GenericClientApi> {
-        if (!this.applicationInstanceId || !this.transportConnectionProvider) {
-            try {
-                const details = await this.connectionDetailsService.getConnectionDetails();
-                if (!this.applicationInstanceId && details.appInstanceId) {
-                    this.log.info('Using App instance ID from container');
-                    this.applicationInstanceId = UniqueId.fromString(details.appInstanceId);
-                }
-                if (!this.transportConnectionProvider && (details.ws && details.ws.port)) {
-                    this.log.info('Transport connection provider from container');
-                    this.transportConnectionProvider = () => new WebSocketConnectionFactory(new WebSocket(getBaseWsUrl(details.ws))).connect();
-                }
-            } catch (e) {
-                this.log.info('Failed to discover container connection details', e);
-            }
+  public async connect(): Promise<GenericClientApi> {
+    if (!this.applicationInstanceId || !this.transportConnectionProvider) {
+      try {
+        const details = await this.connectionDetailsService.getConnectionDetails();
+        if (!this.applicationInstanceId && details.appInstanceId) {
+          this.log.info('Using App instance ID from container');
+          this.applicationInstanceId = UniqueId.fromString(details.appInstanceId);
         }
-        return super.connect();
+        if (!this.transportConnectionProvider && details.ws && details.ws.port) {
+          this.log.info('Transport connection provider from container');
+          this.transportConnectionProvider = () =>
+            new WebSocketConnectionFactory(new WebSocket(getBaseWsUrl(details.ws))).connect();
+        }
+      } catch (e) {
+        this.log.info('Failed to discover container connection details', e);
+      }
     }
-
+    return super.connect();
+  }
 }

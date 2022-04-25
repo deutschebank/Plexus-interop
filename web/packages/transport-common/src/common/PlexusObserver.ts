@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,33 +17,33 @@
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
 
 /**
- * Same as RxJS Observer, with optional Plexus completion 
+ * Same as RxJS Observer, with optional Plexus completion
  */
 export interface PlexusObserver<T> {
-    next: (value: T) => void;
-    error: (err: any) => void;
-    complete: (completion?: plexus.ICompletion) => void;
+  next: (value: T) => void;
+  error: (err: any) => void;
+  complete: (completion?: plexus.ICompletion) => void;
 }
 
 export interface PlexusNextObserver<T> {
-    closed?: boolean;
-    next: (value: T) => void;
-    error?: (err: any) => void;
-    complete: (completion?: plexus.ICompletion) => void;
+  closed?: boolean;
+  next: (value: T) => void;
+  error?: (err: any) => void;
+  complete: (completion?: plexus.ICompletion) => void;
 }
 
 export interface PlexusErrorObserver<T> {
-    closed?: boolean;
-    next?: (value: T) => void;
-    error: (err: any) => void;
-    complete: (completion?: plexus.ICompletion) => void;
+  closed?: boolean;
+  next?: (value: T) => void;
+  error: (err: any) => void;
+  complete: (completion?: plexus.ICompletion) => void;
 }
 
 export interface CompletionObserver<T> {
-    closed?: boolean;
-    next?: (value: T) => void;
-    error?: (err: any) => void;
-    complete: (completion?: plexus.ICompletion) => void;
+  closed?: boolean;
+  next?: (value: T) => void;
+  error?: (err: any) => void;
+  complete: (completion?: plexus.ICompletion) => void;
 }
 
 export declare type PlexusPartialObserver<T> = PlexusNextObserver<T> | PlexusErrorObserver<T> | CompletionObserver<T>;

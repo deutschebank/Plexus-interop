@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EventBus } from '../bus/EventBus';
-import { Logger, LoggerFactory, DomUtils } from '@plexus-interop/common';
+import { DomUtils, Logger, LoggerFactory } from '@plexus-interop/common';
+
 import { CrossDomainEventBus } from '../bus/cross/CrossDomainEventBus';
+import { EventBus } from '../bus/EventBus';
 
 export class CrossDomainEventBusProvider {
+  private readonly log: Logger = LoggerFactory.getLogger('CrossDomainEventBusProvider');
 
-    private readonly log: Logger = LoggerFactory.getLogger('CrossDomainEventBusProvider');
+  public constructor(
+    private readonly proxyUrlProvider: () => Promise<string>,
+    private readonly id: string = 'plexus-proxy-iframe'
+  ) {}
 
-    public constructor(private readonly proxyUrlProvider: () => Promise<string>, private readonly id: string = 'plexus-proxy-iframe') { }
+  public async connect(): Promise<EventBus> {
+    this.log.info('Resolving Proxy Iframe URL');
+    const proxyIframeUrl = await this.proxyUrlProvider();
 
-    public async connect(): Promise<EventBus> {
+    this.log.info(`Initialyzing proxy iFrame with url [${proxyIframeUrl}]`);
+    const proxyiFrame = await DomUtils.getOrCreateHiddenIFrame(this.id, proxyIframeUrl);
 
-        this.log.info('Resolving Proxy Iframe URL');
-        const proxyIframeUrl = await this.proxyUrlProvider();
-
-        this.log.info(`Initialyzing proxy iFrame with url [${proxyIframeUrl}]`);
-        const proxyiFrame = await DomUtils.getOrCreateHiddenIFrame(this.id, proxyIframeUrl);
-
-        this.log.info('Initialyzing Event Bus');
-        const crossDomainBus: CrossDomainEventBus = new CrossDomainEventBus(proxyiFrame, DomUtils.getOrigin(proxyIframeUrl));
-        await crossDomainBus.init();
-        return crossDomainBus;
-
-    }
-
+    this.log.info('Initialyzing Event Bus');
+    const crossDomainBus: CrossDomainEventBus = new CrossDomainEventBus(
+      proxyiFrame,
+      DomUtils.getOrigin(proxyIframeUrl)
+    );
+    await crossDomainBus.init();
+    return crossDomainBus;
+  }
 }

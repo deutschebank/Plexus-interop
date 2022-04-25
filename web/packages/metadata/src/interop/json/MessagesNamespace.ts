@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Options } from './Options';
-import { MessageDto } from './MessageDto';
 import { EnumDto } from './EnumDto';
+import { Fields } from './Fields';
+import { Options } from './Options';
+
+export interface MessageDto {
+  fields: Fields;
+  options?: Options;
+  nested?: MessagesNamespaceContent;
+}
 
 export type MessagesNamespace = {
-    options?: Options;
-    nested?: MessagesNamespaceContent;
+  options?: Options;
+  nested?: MessagesNamespaceContent;
 };
 
 export type MessagesNamespaceContent = {
-    [key: string]: MessageDto | MessagesNamespace | EnumDto;
+  [key: string]: MessageDto | MessagesNamespace | EnumDto;
 };
 
 export function isMessage(o: MessageDto | MessagesNamespace | EnumDto): o is MessageDto {
-    return !!(o as MessageDto).fields;
+  return !!(o as MessageDto).fields;
 }
 
 export function isEnum(o: MessageDto | MessagesNamespace | EnumDto): o is EnumDto {
-    return !!(o as EnumDto).values;
+  return !!(o as EnumDto).values;
 }

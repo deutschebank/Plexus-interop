@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 export interface PlexusFeatures {
-    readonly decodeUndefinedToDefault: boolean;
+  readonly decodeUndefinedToDefault: boolean;
 }
 
 const plexusFeatures = {
-    decodeUndefinedToDefault: true
+  decodeUndefinedToDefault: true,
 };
 
 export function setDecodeUndefinedToDefault(value: boolean): void {
-    plexusFeatures.decodeUndefinedToDefault = value;
+  plexusFeatures.decodeUndefinedToDefault = value;
 }
 
 export function getPlexusFeatures(): PlexusFeatures {
-    return plexusFeatures;
+  return plexusFeatures;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,22 @@
 /**
  * Call source fn only once, even if source promise is rejected
  */
-export const once = <Req, Res>(fn: (req?: Req) => Promise<Res>): (req?: Req) => Promise<Res> => {
-    let promise: Promise<Res> | undefined;
-    return (req?: Req) => {
-        if (!promise) {
-            promise = fn(req);
-        }
-        return promise;
-    };
+export const once = <Req, Res>(fn: (req?: Req) => Promise<Res>): ((req?: Req) => Promise<Res>) => {
+  let promise: Promise<Res> | undefined;
+  return (req?: Req) => {
+    if (!promise) {
+      promise = fn(req);
+    }
+    return promise;
+  };
 };
 
 export function onceVoid(fn: () => void): () => void {
-    let called = false;
-    return () => {
-        if (!called) {
-            called = true;
-            fn();
-        }
-    };
+  let called = false;
+  return () => {
+    if (!called) {
+      called = true;
+      fn();
+    }
+  };
 }

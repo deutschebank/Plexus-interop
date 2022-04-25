@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,78 +14,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AsyncHandler } from '../AsyncHandler';
-import { TransportChannel, TransportConnection, UniqueId } from '@plexus-interop/transport-common';
-import { ClientProtocolHelper, clientProtocol as plexus, ErrorCompletion, ClientError } from '@plexus-interop/protocol';
 import { Logger, LoggerFactory } from '@plexus-interop/common';
-import { ApplicationDescriptor } from '../lifecycle/ApplicationDescriptor';
 import { AppRegistryService } from '@plexus-interop/metadata';
+import { ClientError, ClientProtocolHelper, ErrorCompletion, clientProtocol as plexus } from '@plexus-interop/protocol';
+import { TransportChannel, TransportConnection, UniqueId } from '@plexus-interop/transport-common';
+
+import { AsyncHandler } from '../AsyncHandler';
+import { ApplicationDescriptor } from '../lifecycle/ApplicationDescriptor';
 
 /**
  * Responsible for handling of first channel with Authentication Details
  */
-export class AuthenticationHandler implements AsyncHandler<[TransportConnection, TransportChannel], ApplicationDescriptor> {
+export class AuthenticationHandler
+  implements AsyncHandler<[TransportConnection, TransportChannel], ApplicationDescriptor>
+{
+  constructor(private readonly appService: AppRegistryService) {}
 
-    constructor(private readonly appService: AppRegistryService) { }
+  public handle(connectionDetails: [TransportConnection, TransportChannel]): Promise<ApplicationDescriptor> {
+    const [connection, channel] = connectionDetails;
+    const channelId = channel.uuid().toString();
 
-    public handle(connectionDetails: [TransportConnection, TransportChannel]): Promise<ApplicationDescriptor> {
+    const log: Logger = LoggerFactory.getLogger(`AuthenticationHandler [${channelId}]`);
 
-        const [connection, channel] = connectionDetails;
-        const channelId = channel.uuid().toString();
+    return new Promise((resolve, reject) => {
+      channel.open({
+        started: () => {},
 
-        const log: Logger = LoggerFactory.getLogger(`AuthenticationHandler [${channelId}]`);
+        startFailed: (e) => reject(e),
 
-        return new Promise((resolve, reject) => {
+        next: async (message) => {
+          if (log.isDebugEnabled()) {
+            log.debug(`Connect message received`);
+          }
 
-            channel.open({
+          const clientToBrokerMessage = ClientProtocolHelper.decodeConnectRequest(message);
 
-                started: () => { },
+          const appId = clientToBrokerMessage.applicationId as string;
 
-                startFailed: (e) => reject(e),
+          if (log.isDebugEnabled()) {
+            log.debug(`Connect request from [${appId}] application received`);
+          }
 
-                next: async message => {
-
-                    if (log.isDebugEnabled()) {
-                        log.debug(`Connect message received`);
-                    }
-
-                    const clientToBrokerMessage = ClientProtocolHelper.decodeConnectRequest(message);
-
-                    const appId = clientToBrokerMessage.applicationId as string;
-
-                    if (log.isDebugEnabled()) {
-                        log.debug(`Connect request from [${appId}] application received`);
-                    }
-
-                    if (!this.appService.isAppExist(appId)) {
-                        const errorMsg = `App [${appId}] doesn't exist`;
-                        log.warn(errorMsg);
-                        channel.close(new ErrorCompletion(new ClientError(errorMsg)));
-                        reject(new Error(errorMsg));
-                    } else {
-                        channel.sendLastMessage(ClientProtocolHelper.connectResponsePayload({ connectionId: connection.uuid() }))
-                            .catch(e => log.error('Failed to sent connection details', e));
-                        const instanceId = UniqueId.fromProperties(clientToBrokerMessage.applicationInstanceId as plexus.IUniqueId);
-                        log.debug(`Received connection request with instance ID ${instanceId.toString()}`);
-                        resolve({
-                            applicationId: clientToBrokerMessage.applicationId as string,
-                            instanceId: UniqueId.fromProperties(clientToBrokerMessage.applicationInstanceId as plexus.IUniqueId).toString()
-                        });
-                    }
-                    
-                },
-
-                error: e => {
-                    log.error('Error from source channel received', e);
-                    reject(e);
-                },
-
-                complete: () => {
-                    log.debug(`Channel closed`);
-                }
-
+          if (!this.appService.isAppExist(appId)) {
+            const errorMsg = `App [${appId}] doesn't exist`;
+            log.warn(errorMsg);
+            channel.close(new ErrorCompletion(new ClientError(errorMsg)));
+            reject(new Error(errorMsg));
+          } else {
+            channel
+              .sendLastMessage(ClientProtocolHelper.connectResponsePayload({ connectionId: connection.uuid() }))
+              .catch((e) => log.error('Failed to sent connection details', e));
+            const instanceId = UniqueId.fromProperties(clientToBrokerMessage.applicationInstanceId as plexus.IUniqueId);
+            log.debug(`Received connection request with instance ID ${instanceId.toString()}`);
+            resolve({
+              applicationId: clientToBrokerMessage.applicationId as string,
+              instanceId: UniqueId.fromProperties(
+                clientToBrokerMessage.applicationInstanceId as plexus.IUniqueId
+              ).toString(),
             });
-        });
-    }
+          }
+        },
 
+        error: (e) => {
+          log.error('Error from source channel received', e);
+          reject(e);
+        },
+
+        complete: () => {
+          log.debug(`Channel closed`);
+        },
+      });
+    });
+  }
 }

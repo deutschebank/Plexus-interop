@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { getJavaExecPath, getJavaGenLibPath } from '../common/java';
+import { simpleSpawn } from '../common/process';
 import { BaseJavaGenCommand } from './BaseJavaGenCommand';
 import { baseDir, outFile, verbose } from './DefaultOptions';
 import { Option } from './Option';
-import { getJavaExecPath, getJavaGenLibPath } from '../common/java';
-import { simpleSpawn } from '../common/process';
 
 export class ValidateMetadataCommand extends BaseJavaGenCommand {
+  public plexusGenArgs: (opts: any) => string[] = (opts) => [
+    '--type=validate',
+    ...this.optionArgs(opts, '=', (name) => (name === 'out' ? 'outFile' : name)),
+  ];
 
-    public plexusGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=validate', ...this.optionArgs(opts, '=', name => name === 'out' ? 'outFile' : name)];
-    }
+  public generalDescription = () => 'validate metadata';
 
-    public generalDescription = () => 'validate metadata';
+  public name = () => 'validate';
 
-    public name = () => 'validate';
+  public options: () => Option[] = () => [baseDir(), outFile(), verbose()];
 
-    public options: () => Option[] = () => [baseDir(), outFile(), verbose()];
-
-    public async action(opts: any): Promise<void> {
-        const javaExecPath = await getJavaExecPath();
-        const javaLibPath = getJavaGenLibPath();
-        await simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.plexusGenArgs(opts)], true);
-        this.log('No validation errors found');
-    }
-
+  public async action(opts: any): Promise<void> {
+    const javaExecPath = await getJavaExecPath();
+    const javaLibPath = getJavaGenLibPath();
+    await simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.plexusGenArgs(opts)], true);
+    this.log('No validation errors found');
+  }
 }

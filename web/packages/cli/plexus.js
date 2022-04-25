@@ -4,7 +4,7 @@ Node.js ignore shebang only if it is the very first line of the file.
 It won't work even if there's an empty line or comment line before it.
 */
 /*
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,8 @@ It won't work even if there's an empty line or comment line before it.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const main = require('./dist/main/src/index').main;
-const version = require('./package.json').version;
+
+const { main } = require('./dist/main/src/index');
+const { version } = require('./package.json');
+
 main(process.argv, version);

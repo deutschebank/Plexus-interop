@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 import { TransportConnection } from '@plexus-interop/transport-common';
+
 import { ApplicationConnectionDescriptor } from './ApplicationConnectionDescriptor';
 
 export interface ApplicationConnection {
-    descriptor: ApplicationConnectionDescriptor;
-    connection: TransportConnection;
+  descriptor: ApplicationConnectionDescriptor;
+  connection: TransportConnection;
 }

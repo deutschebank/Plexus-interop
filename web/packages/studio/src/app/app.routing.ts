@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ProvidedServiceComponent } from './provided-service/provided-service.component';
-import { ConsumedServiceComponent } from './consumed-service/consumed-service.component';
-import { AppServicesComponent } from './app-services/app-services.component';
-import { AppListComponent } from './app-list/app-list.component';
-import { MetadataLoaderComponent } from './metadata-loader/metadata-loader.component';
 import { Routes } from '@angular/router';
+
+import { AppListComponent } from './app-list/app-list.component';
+import { AppServicesComponent } from './app-services/app-services.component';
+import { ConsumedServiceComponent } from './consumed-service/consumed-service.component';
+import { MetadataLoaderComponent } from './metadata-loader/metadata-loader.component';
+import { ProvidedServiceComponent } from './provided-service/provided-service.component';
 
 export const AppRoutes: Routes = [
   { path: '', component: MetadataLoaderComponent },
@@ -27,5 +28,5 @@ export const AppRoutes: Routes = [
   { path: 'apps', component: AppListComponent, resolve: [] },
   { path: 'app', component: AppServicesComponent },
   { path: 'consumed', component: ConsumedServiceComponent },
-  { path: 'provided', component: ProvidedServiceComponent }
+  { path: 'provided', component: ProvidedServiceComponent },
 ];

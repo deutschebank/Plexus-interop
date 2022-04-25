@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,7 @@
 import { PlexusObserver } from './PlexusObserver';
 
 export interface ChannelObserver<S, D> extends PlexusObserver<D> {
+  started(subscription: S): void;
 
-    started(subscription: S): void;
-
-    startFailed(error: any): void;
-
+  startFailed(error: any): void;
 }

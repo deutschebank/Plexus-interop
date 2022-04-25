@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,99 +15,119 @@
  * limitations under the License.
  */
 const argv = require('minimist')(process.argv.slice(2));
-const { spawn, exec } = require('child_process');
-const kill = require('tree-kill');
+const { exec } = require('child_process');
+const killP = require('kill-port');
+const fs = require('fs');
+
 const log = console.log.bind(console);
 
 let httpServerProcess;
 
-function main() {
+async function main() {
+  log(`Passed arguments${JSON.stringify(argv)}`);
 
-    log('Passed arguments' + JSON.stringify(argv));
-    
-    const port = argv.port || 3001;
-    const baseDir = argv.baseUrl || `${__dirname}/../dist`;  
-    const proxyPagePath = argv.path || `main/src/views/proxyHost.html`;
+  const port = argv.port || 3001;
+  const baseDir = argv.baseUrl || `${__dirname}/../dist`;
+  const proxyPagePath = argv.path || `main/src/views/proxyHost.html`;
 
-    const proxyHostUrl = `http://localhost:${port}/${proxyPagePath}`;
+  const proxyHostUrl = `http://localhost:${port}/${proxyPagePath}`;
 
-    log(`Starting http-server in ${baseDir}, listening on ${port} port`);
+  log(`Killing anything on port ${port}...`);
+  await killP(port);
 
-    httpServerProcess = exec(`http-server ${baseDir} -p ${port}`, {
-        cwd: process.cwd()
-    }, (error, stdout, stderr) => {
-        log("http-server stopped");
-        if (error || stderr) {
-            console.error('Std Error:', stderr);
-            console.error('Error: ', error);
-        }
-        killHttpServerProcess();
-    });
+  log(`Starting http-server in ${baseDir}, listening on port ${port}`);
 
-    setTimeout(() => {
+  httpServerProcess = exec(
+    `http-server ${baseDir} -p ${port}`,
+    {
+      cwd: process.cwd(),
+    },
+    (error, stdout, stderr) => {
+      log('http-server stopped');
+      if ((error && error?.signal !== 'SIGKILL') || stderr) {
+        console.error('http-server std Error:', stderr);
+        console.error('http-server error: ', error);
+      }
+      killHttpServerProcess();
+    }
+  );
 
-        const browser = argv.browser;        
-        switch (browser) {
-            case 'ie':
-                runIETest(proxyHostUrl);
-                break;
-            case 'chrome':
-                runChromeTest(proxyHostUrl);
-                break;
-            case 'electron':
-            default:
-                runElectronTest(proxyHostUrl);
-                break;
-        }
-
-    }, 1000);
+  setTimeout(() => {
+    const { browser } = argv;
+    switch (browser) {
+      case 'ie':
+        runIETest(proxyHostUrl);
+        break;
+      case 'chrome':
+        runChromeTest(proxyHostUrl);
+        break;
+      case 'electron':
+      default:
+        runElectronTest(proxyHostUrl);
+        break;
+    }
+  }, 1000);
 }
 
-function killHttpServerProcess() {
-    if (httpServerProcess) {
-        log("Killing broker process ...");
-        kill(httpServerProcess.pid);
-        log("Kill signal sent");
-    }
+async function killHttpServerProcess() {
+  if (httpServerProcess) {
+    log('Killing http-server broker process ...');
+    await killP(argv.port || 3001);
+    log('Kill signal sent');
+  }
 }
 
 function runChromeTest(path) {
-    log("Starting Web Broker Chrome Tests ...");
-    exec(`karma start --hostPath=${path} --browsers=Chrome`, {
-        cwd: process.cwd()
-    }, testsFinishedHandler);
+  log('Starting Web Broker Chrome Tests ...');
+  exec(
+    `karma start --hostPath=${path} --browsers=Chrome`,
+    {
+      cwd: process.cwd(),
+    },
+    testsFinishedHandler
+  );
 }
 
 function runIETest(path) {
-    log("Starting Web Broker IE Tests ...");
-    exec(`karma start --hostPath=${path} --browsers=IE_no_addons`, {
-        cwd: process.cwd()
-    }, testsFinishedHandler);
+  log('Starting Web Broker IE Tests ...');
+  exec(
+    `karma start --hostPath=${path} --browsers=IE_no_addons`,
+    {
+      cwd: process.cwd(),
+    },
+    testsFinishedHandler
+  );
 }
 
 function testsFinishedHandler(error, stdout, stderr) {
-    log("Tests exection process completed, killing HTTP Server");
-    let exitCode = 0;
-    if (error || stderr) {
-        console.error('Std Error:', stderr);
-        console.error('Error: ', error);
-        exitCode = 1;
-    }
-    log('StdOut', stdout);
-    killHttpServerProcess();
-    process.exit(exitCode);
+  log('Tests exection process completed, killing HTTP Server');
+  if (error || stderr) {
+    console.error('karma std Error:', stderr);
+    console.error('karma error: ', error);
+    process.exitCode = 1;
+  }
+  log('karma stdOut', stdout);
+  killHttpServerProcess();
 }
 
 function runElectronTest(path) {
-    log("Starting Web Broker Electron Tests ...");
-    exec(`electron-mocha --require scripts/coverage ${argv.file} ${argv.debug ? "--debug" : ""} --renderer --reporter spec --colors`, {
-        cwd: process.cwd(),
-        env: {
-            PLEXUS_BROKER_HOST_URL: path
-        }
-    }, testsFinishedHandler);
+  log(`Starting Web Broker Electron Tests on ${path} ...`);
+  if (!fs.existsSync(argv.file)) {
+    throw new Error(`${argv.file} does not exist`);
+  }
+  exec(
+    `electron-mocha --require scripts/coverage ${argv.file} ${
+      argv.debug ? '--debug' : ''
+    } --renderer --reporter spec --colors --window-config scripts/window-config.json`,
+    {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        PLEXUS_BROKER_HOST_URL: path,
+      },
+    },
+    testsFinishedHandler
+  );
 }
 
 main();
-
-

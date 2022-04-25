@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,225 +14,244 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { map, Observable, of } from 'rxjs';
+
+import { ExtendedArray, ExtendedMap, Logger, LoggerFactory, toMap } from '@plexus-interop/common';
+
 import { InteropRegistryProvider } from '../InteropRegistryProvider';
-import { InteropRegistry } from '../model/InteropRegistry';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
-import { RegistryDto } from './RegistryDto';
-import { ExtendedArray, Logger, LoggerFactory, ExtendedMap, toMap } from '@plexus-interop/common';
-import { Message } from '../model/Message';
-import { ServiceDto } from './ServiceDto';
-import { Service } from '../model/Service';
-import { Method } from '../model/Method';
-import { MethodType } from '../model/MethodType';
-import { MethodTypeDto } from './MethodTypeDto';
-import { Application } from '../model/Application';
-import { ConsumedServiceDto } from './ConsumedServiceDto';
-import { ConsumedService } from '../model/ConsumedService';
-import { MatchPatternFactory } from '../model/MatchPatternFactory';
-import { ConsumedMethod } from '../model/ConsumedMethod';
-import { ProvidedMethod } from '../model/ProvidedMethod';
-import { ProvidedServiceDto } from './ProvidedServiceDto';
-import { ProvidedService } from '../model/ProvidedService';
-import { ApplicationDto } from './ApplicationDto';
-import { OptionDto } from './OptionDto';
-import { MessagesNamespace, isMessage, isEnum } from './MessagesNamespace';
 import { Enum } from '../model/Enum';
-import { Option } from '../model/Option';
+import { InteropRegistry } from '../model/InteropRegistry';
+import { MatchPatternFactory } from '../model/MatchPatternFactory';
+import { Message } from '../model/Message';
+import { MethodType } from '../model/MethodType';
+import {
+  Application,
+  ConsumedMethod,
+  ConsumedService,
+  Method,
+  ProvidedMethod,
+  ProvidedService,
+  Service,
+} from '../model/ServiceTypes';
+import { ApplicationDto } from './ApplicationDto';
+import { ConsumedServiceDto } from './ConsumedServiceDto';
+import { isEnum, isMessage, MessagesNamespace } from './MessagesNamespace';
+import { MethodTypeDto } from './MethodTypeDto';
+import { OptionDto } from './OptionDto';
+import { ProvidedServiceDto } from './ProvidedServiceDto';
+import { RegistryDto } from './RegistryDto';
+import { ServiceDto } from './ServiceDto';
 
 export class JsonInteropRegistryProvider implements InteropRegistryProvider {
+  private log: Logger;
 
-    private log: Logger;
+  private readonly $registry: Observable<InteropRegistry>;
+  private current: InteropRegistry;
 
-    private readonly $registry: Observable<InteropRegistry>;
-    private current: InteropRegistry;
+  public constructor(jsonMetadata: string, $jsonMetadata?: Observable<string>) {
+    this.log = LoggerFactory.getLogger('JsonInteropRegistryProvider');
+    this.current = this.parseRegistry(jsonMetadata);
+    this.$registry = ($jsonMetadata || of(jsonMetadata)).pipe(map(this.parseRegistry.bind(this)));
+    this.$registry.subscribe({
+      next: (update) => {
+        this.current = update;
+      },
+    });
+  }
 
-    public constructor(jsonMetadata: string, $jsonMetadata?: Observable<string>) {
-        this.log = LoggerFactory.getLogger('JsonInteropRegistryProvider');
-        this.current = this.parseRegistry(jsonMetadata);
-        this.$registry = ($jsonMetadata || Observable.of(jsonMetadata))
-            .map(this.parseRegistry.bind(this));
-        this.$registry.subscribe({
-            next: update => this.current = update
-        });
+  public getCurrent(): InteropRegistry {
+    return this.current;
+  }
+
+  public getRegistry(): Observable<InteropRegistry> {
+    return this.$registry;
+  }
+
+  private parseRegistry(jsonRegistry: string): InteropRegistry {
+    this.log.trace(`Parsing JSON registry of ${jsonRegistry.length} length`);
+    const registryDto: RegistryDto = JSON.parse(jsonRegistry);
+    this.log.trace(`Finished parsing ${jsonRegistry.length} length`);
+
+    const messages = ExtendedMap.create<string, Message>();
+    const enums = ExtendedMap.create<string, Enum>();
+
+    this.collectMessagesMetadata(registryDto.messages, null, messages, enums);
+
+    const services = ExtendedArray.of(registryDto.services.map((s) => this.convertService(messages, s))).toMap(
+      (s) => s.id,
+      (s) => s
+    );
+
+    const applications = ExtendedArray.of(
+      registryDto.applications.map((appDto) => this.convertApplication(services, appDto))
+    ).toMap(
+      (a) => a.id,
+      (a) => a
+    );
+
+    return {
+      messages,
+      enums,
+      services,
+      applications,
+      rawMessages: registryDto.messages,
+    };
+  }
+
+  private collectMessagesMetadata(
+    rawEnries: MessagesNamespace,
+    // eslint-disable-next-line @typescript-eslint/default-param-last
+    namespaceId: string | null = null,
+    messagesMap: ExtendedMap<string, Message>,
+    enumsMap: ExtendedMap<string, Enum>
+  ): void {
+    const { nested } = rawEnries;
+    if (!nested) {
+      return;
     }
 
-    public getCurrent(): InteropRegistry {
-        return this.current;
+    // eslint-disable-next-line guard-for-in, no-restricted-syntax
+    for (const key in nested) {
+      const namespaceEntry = nested[key];
+      const id = namespaceId ? `${namespaceId}.${key}` : key;
+      if (isMessage(namespaceEntry)) {
+        messagesMap.set(id, { id, fields: namespaceEntry.fields });
+      } else if (isEnum(namespaceEntry)) {
+        enumsMap.set(id, { id, values: namespaceEntry.values });
+      }
+      this.collectMessagesMetadata(namespaceEntry, id, messagesMap, enumsMap);
     }
+  }
 
-    public getRegistry(): Observable<InteropRegistry> {
-        return this.$registry;
+  private convertApplication(services: ExtendedMap<string, Service>, appDto: ApplicationDto): Application {
+    const providedServices: ProvidedService[] = [];
+    const consumedServices: ConsumedService[] = [];
+    const application: Application = {
+      id: appDto.id,
+      providedServices,
+      consumedServices,
+      options: [],
+    };
+    appDto.consumes = appDto.consumes || [];
+    appDto.consumes.forEach((consumedDto) => {
+      consumedServices.push(
+        this.convertConsumedService(consumedDto, application, services.get(consumedDto.service) as Service)
+      );
+    });
+    appDto.provides = appDto.provides || [];
+    appDto.provides.forEach((providedDto) => {
+      providedServices.push(
+        this.convertProvidedService(providedDto, application, services.get(providedDto.service) as Service)
+      );
+    });
+    if (appDto.options) {
+      application.options = appDto.options.map((optDto) => ({ id: optDto.id, value: optDto.value }));
     }
+    return application;
+  }
 
-    private parseRegistry(jsonRegistry: string): InteropRegistry {
+  private convertConsumedService(
+    serviceDto: ConsumedServiceDto,
+    application: Application,
+    service: Service
+  ): ConsumedService {
+    const methods = ExtendedMap.create<string, ConsumedMethod>();
+    const consumedService: ConsumedService = {
+      service,
+      application,
+      alias: serviceDto.alias,
+      from: MatchPatternFactory.createMatcher(serviceDto.from),
+      methods,
+    };
+    serviceDto.methods = serviceDto.methods || [];
+    serviceDto.methods
+      .map(
+        (m) =>
+          ({
+            method: service.methods.get(m.name) as Method,
+            consumedService,
+          } as ConsumedMethod)
+      )
+      .forEach((cm) => methods.set(cm.method.name, cm));
+    return consumedService;
+  }
 
-        this.log.trace(`Parsing JSON registry of ${jsonRegistry.length} length`);
-        const registryDto: RegistryDto = JSON.parse(jsonRegistry);
-        this.log.trace(`Finished parsing ${jsonRegistry.length} length`);
+  private convertProvidedService(
+    serviceDto: ProvidedServiceDto,
+    application: Application,
+    service: Service
+  ): ProvidedService {
+    const methods = ExtendedMap.create<string, ProvidedMethod>();
 
-        const messages = ExtendedMap.create<string, Message>();
-        const enums = ExtendedMap.create<string, Enum>();
+    const providedService: ProvidedService = {
+      service,
+      application,
+      alias: serviceDto.alias,
+      to: MatchPatternFactory.createMatcher(serviceDto.to),
+      methods,
+    };
 
-        this.collectMessagesMetadata(registryDto.messages, null, messages, enums);
+    serviceDto.methods
+      .map(
+        (pm) =>
+          ({
+            method: service.methods.get(pm.name) as Method,
+            providedService,
+            title: this.getOptionValueOrDefault(pm.options, 'interop.ProvidedMethodOptions.title', null),
+            options: pm.options,
+          } as ProvidedMethod)
+      )
+      .forEach((pm) => methods.set(pm.method.name, pm));
 
-        const services = ExtendedArray.of(
-            registryDto.services.map(s => this.convertService(messages, s)))
-            .toMap(s => s.id, s => s);
+    return providedService;
+  }
 
-        const applications = ExtendedArray.of(
-            registryDto.applications.map(
-                appDto => this.convertApplication(services, appDto)))
-            .toMap(a => a.id, a => a);
-
-        return {
-            messages,
-            enums,
-            services,
-            applications,
-            rawMessages: registryDto.messages
-        };
-    }
-
-    private collectMessagesMetadata(
-        rawEnries: MessagesNamespace,
-        namespaceId: string | null = null,
-        messagesMap: ExtendedMap<string, Message>,
-        enumsMap: ExtendedMap<string, Enum>): void {
-
-        const nested = rawEnries.nested;
-        if (!nested) {
-            return;
+  private getOptionValueOrDefault(options: OptionDto[], id: string, defaultValue: string | null): string | null {
+    if (options) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const o of options) {
+        if (o.id === id) {
+          return o.value;
         }
-
-        for (let key in nested) {
-            const namespaceEntry = nested[key];
-            const id = namespaceId ? `${namespaceId}.${key}` : key;
-            if (isMessage(namespaceEntry)) {
-                messagesMap.set(id, { id, fields: namespaceEntry.fields });
-            } else if (isEnum(namespaceEntry)) {
-                enumsMap.set(id, { id, values: namespaceEntry.values });
-            }
-            this.collectMessagesMetadata(namespaceEntry, id, messagesMap, enumsMap);
-        }
-
+      }
     }
+    return defaultValue;
+  }
 
-    private convertApplication(services: ExtendedMap<string, Service>, appDto: ApplicationDto): Application {
-        const providedServices: ProvidedService[] = [];
-        const consumedServices: ConsumedService[] = [];
-        const application: Application = {
-            id: appDto.id,
-            providedServices,
-            consumedServices,
-            options: []
-        };
-        appDto.consumes = appDto.consumes || [];
-        appDto.consumes.forEach(consumedDto => {
-            consumedServices.push(
-                this.convertConsumedService(consumedDto, application, services.get(consumedDto.service) as Service));
-        });
-        appDto.provides = appDto.provides || [];
-        appDto.provides.forEach(providedDto => {
-            providedServices.push(this.convertProvidedService(providedDto, application, services.get(providedDto.service) as Service));
-        });
-        if (appDto.options) {
-            application.options = appDto.options.map(optDto => {
-                return { id: optDto.id, value: optDto.value };
-            });
-        }
-        return application;
-    }
-
-    private convertConsumedService(serviceDto: ConsumedServiceDto, application: Application, service: Service): ConsumedService {
-        const methods = ExtendedMap.create<string, ConsumedMethod>();
-        const consumedService: ConsumedService = {
+  private convertService(messagesMap: Map<string, Message>, serviceDto: ServiceDto): Service {
+    const service: Service = {
+      id: serviceDto.id,
+      methods: ExtendedMap.create<string, Method>(),
+    };
+    service.methods = toMap(
+      serviceDto.methods.map(
+        (methodDto) =>
+          ({
+            name: methodDto.name,
+            type: this.convertMethodType(methodDto.type),
+            requestMessage: messagesMap.get(methodDto.request) as Message,
+            responseMessage: messagesMap.get(methodDto.response) as Message,
             service,
-            application,
-            alias: serviceDto.alias,
-            from: MatchPatternFactory.createMatcher(serviceDto.from),
-            methods
-        };
-        serviceDto.methods = serviceDto.methods || [];
-        serviceDto.methods
-            .map(m => {
-                return {
-                    method: service.methods.get(m.name) as Method,
-                    consumedService
-                } as ConsumedMethod;
-            })
-            .forEach(cm => methods.set(cm.method.name, cm));
-        return consumedService;
+          } as Method)
+      ),
+      (m) => m.name,
+      (m) => m
+    );
+    return service;
+  }
+
+  private convertMethodType(methodTypeDto: MethodTypeDto): MethodType {
+    switch (methodTypeDto) {
+      case MethodTypeDto.ClientStreaming:
+        return MethodType.ClientStreaming;
+      case MethodTypeDto.ServerStreaming:
+        return MethodType.ServerStreaming;
+      case MethodTypeDto.Unary:
+        return MethodType.Unary;
+      case MethodTypeDto.DuplexStreaming:
+        return MethodType.DuplexStreaming;
+      default:
+        throw new Error(`Unsupported method type: ${methodTypeDto}`);
     }
-
-    private convertProvidedService(serviceDto: ProvidedServiceDto, application: Application, service: Service): ProvidedService {
-
-        const methods = ExtendedMap.create<string, ProvidedMethod>();
-
-        const providedService: ProvidedService = {
-            service,
-            application,
-            alias: serviceDto.alias,
-            to: MatchPatternFactory.createMatcher(serviceDto.to),
-            methods
-        };
-
-        serviceDto.methods.map(pm => {
-            return {
-                method: service.methods.get(pm.name) as Method,
-                providedService,
-                title: this.getOptionValueOrDefault(pm.options, 'interop.ProvidedMethodOptions.title', null),
-                options: pm.options
-            } as ProvidedMethod;
-        })
-            .forEach(pm => methods.set(pm.method.name, pm));
-
-        return providedService;
-    }
-
-    private getOptionValueOrDefault(options: OptionDto[], id: string, defaultValue: string | null): string | null {
-        if (options) {
-            for (let o of options) {
-                if (o.id === id) {
-                    return o.value;
-                }
-            }
-        }
-        return defaultValue;
-    }
-
-    private convertService(messagesMap: Map<string, Message>, serviceDto: ServiceDto): Service {
-        const service: Service = {
-            id: serviceDto.id,
-            methods: ExtendedMap.create<string, Method>()
-        };
-        service.methods = toMap(
-            serviceDto.methods.map(methodDto => {
-                return {
-                    name: methodDto.name,
-                    type: this.convertMethodType(methodDto.type),
-                    requestMessage: messagesMap.get(methodDto.request) as Message,
-                    responseMessage: messagesMap.get(methodDto.response) as Message,
-                    service
-                } as Method;
-            }), m => m.name, m => m);
-        return service;
-    }
-
-    private convertMethodType(methodTypeDto: MethodTypeDto): MethodType {
-        switch (methodTypeDto) {
-            case MethodTypeDto.ClientStreaming:
-                return MethodType.ClientStreaming;
-            case MethodTypeDto.ServerStreaming:
-                return MethodType.ServerStreaming;
-            case MethodTypeDto.Unary:
-                return MethodType.Unary;
-            case MethodTypeDto.DuplexStreaming:
-                return MethodType.DuplexStreaming;
-            default:
-                throw new Error('Unsupported method type: ' + methodTypeDto);
-        }
-    }
-
+  }
 }

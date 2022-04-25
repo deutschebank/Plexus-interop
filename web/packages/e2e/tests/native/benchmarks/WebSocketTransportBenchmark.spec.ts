@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,37 +15,37 @@
  * limitations under the License.
  */
 import { expect } from 'chai';
+
 import { ClientsSetup } from '../../common/ClientsSetup';
 import { TransportsSetup } from '../../common/TransportsSetup';
 import { readWsUrl } from '../../common/utils';
 import { EchoClientBenchmark } from '../../echo/EchoClientBenchmark';
 
 describe('Web Socket Client Benchmarks', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
+  const wsUrl = readWsUrl();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
-    const wsUrl = readWsUrl();
+  const echoServiceBenchmark = new EchoClientBenchmark(
+    transportsSetup.createWebSocketTransportProvider(wsUrl),
+    clientsSetup
+  );
 
-    const echoServiceBenchmark = new EchoClientBenchmark(
-        transportsSetup.createWebSocketTransportProvider(wsUrl), 
-        clientsSetup);
+  it('Sends ~35 point to point requests in 1 second', function () {
+    this.timeout(5000);
+    return (async () => {
+      const result = await echoServiceBenchmark.testUnaryMessagesSentWithinPeriod(1024, 3000);
+      console.log('Benchmark result:', JSON.stringify(result));
+      expect(result.messagesSent).to.be.greaterThan(100);
+    })();
+  });
 
-    it('Sends ~35 point to point requests in 1 second', function() {
-        this.timeout(5000);
-        return (async () => {
-            const result = await echoServiceBenchmark.testUnaryMessagesSentWithinPeriod(1024, 3000);
-            console.log('Benchmark result:', JSON.stringify(result));
-            expect(result.messagesSent).to.be.greaterThan(100);
-        })();
-    });
-
-    it('Sends ~200 streaming messages in 1 second', function() {
-        this.timeout(5000);
-        return (async () => {
-            const result = await echoServiceBenchmark.testStreamingEventsSentWithinPeriod(1024, 3000);
-            console.log('Benchmark result:', JSON.stringify(result));
-            expect(result.messagesSent).to.be.greaterThan(600);
-        })();
-    });
-
+  it('Sends ~200 streaming messages in 1 second', function () {
+    this.timeout(5000);
+    return (async () => {
+      const result = await echoServiceBenchmark.testStreamingEventsSentWithinPeriod(1024, 3000);
+      console.log('Benchmark result:', JSON.stringify(result));
+      expect(result.messagesSent).to.be.greaterThan(600);
+    })();
+  });
 });

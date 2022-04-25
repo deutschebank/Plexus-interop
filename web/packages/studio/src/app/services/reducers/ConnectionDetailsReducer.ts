@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,25 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ConnectionDetails, ConnectionSetupActionParams, PlexusConnectedActionParams } from '../ui/AppModel';
 import { Action } from '@ngrx/store';
+
 import { AppActions } from '../ui/AppActions';
+import { ConnectionDetails, ConnectionSetupActionParams, PlexusConnectedActionParams } from '../ui/AppModel';
 import { getPayload } from './TypedAction';
 
 export function connectionDetailsReducer(state: ConnectionDetails, action: Action): ConnectionDetails {
-    switch (action.type) {
-        case AppActions.CONNECTION_SETUP_START:
-            const payload = getPayload<ConnectionSetupActionParams>(action).connectionDetails;
-            return {
-                ...payload,
-                connected: false
-            };
-        case AppActions.CONNECTION_SETUP_SUCCESS:
-            return {
-                ...state,
-                connected: true
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+    case AppActions.CONNECTION_SETUP_START:
+      const payload = getPayload<ConnectionSetupActionParams>(action).connectionDetails;
+      return {
+        ...payload,
+        connected: false,
+      };
+    case AppActions.CONNECTION_SETUP_SUCCESS:
+      return {
+        ...state,
+        connected: true,
+      };
+    default:
+      return state;
+  }
 }

@@ -5,12 +5,12 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "prebuild": "trash dist",
-    "compile": "tsc -p tsconfig.json",
-    "package": "browserify ./dist/main/src/greeting/server/Main.js --outfile ./dist/greetingServer.bundle.js",
+    "build:main": "tsc",
+    "package": "webpack",
     "copy-assets": "copyfiles -f src/greeting/views/* ./dist && copyfiles -f ./dist/greetingServer* ../../../bin/win-x86/samples/greeting/apps/WebGreetingServer",
     "copy-gen-folders": "copyfiles src/greeting/server/gen/* dist/main",
-    "build": "npm run compile && npm run copy-gen-folders && npm run package && npm run copy-assets",
+    "build": "npm run build:main && npm run build:bundle",
+    "build:bundle": "npm run copy-gen-folders && npm run package && npm run copy-assets",
     "gen-server-js": "pbjs --force-long -t static-module -r launcher -w commonjs -o src/greeting/server/gen/plexus-messages.js ../../../plexus-desktop/src/Plexus.Interop.Samples.Configuration/metadata/interop/samples.proto ../../../plexus-desktop/src/Plexus.Interop.Samples.Configuration/metadata/interop/common.proto",
     "gen-server-ts": "pbts --force-long -o src/greeting/server/gen/plexus-messages.d.ts src/greeting/server/gen/plexus-messages.js",
     "gen-server-protocol": "npm run gen-server-js && npm run gen-server-ts",
@@ -24,19 +24,10 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "protobufjs": "6.11.2",
-    "@plexus-interop/client": "0.1.0",
-    "@plexus-interop/websocket-transport": "0.1.0",
-    "@plexus-interop/transport-common": "0.1.0",
-    "@plexus-interop/common": "0.1.0"
-  },
-  "devDependencies": {
-    "@types/long": "^4.0.0",
-    "browserify": "^14.5.0",
-    "copyfiles": "^1.2.0",
-    "electron": "1.8.8",
-    "http-server": "^0.11.1",
-    "trash-cli": "^1.4.0",
-    "typescript": "3.7.2"
+    "@plexus-interop/client": "file:../client",
+    "@plexus-interop/common": "file:../common",
+    "@plexus-interop/transport-common": "file:../transport-common",
+    "@plexus-interop/websocket-transport": "file:../websocket-transport",
+    "protobufjs": "6.11.2"
   }
 }

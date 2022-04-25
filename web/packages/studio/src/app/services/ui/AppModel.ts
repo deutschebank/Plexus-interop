@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,97 +14,100 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
 import { ProvidedMethod } from '@plexus-interop/metadata';
-import { InteropClient } from '../core/InteropClient';
-import { TransportConnectionProvider } from '../core/TransportConnectionProvider';
 import { Application, ConsumedMethod } from '@plexus-interop/metadata';
 import { InteropRegistryService } from '@plexus-interop/metadata';
 import { TransportConnection } from '@plexus-interop/transport-common';
-import { MethodDiscoveryResponse } from '@plexus-interop/client-api';
+
+import { InteropClient } from '../core/InteropClient';
+import { TransportConnectionProvider } from '../core/TransportConnectionProvider';
 
 export interface ServicesSnapshot {
-    interopRegistryService: InteropRegistryService,
-    connectionProvider: TransportConnectionProvider,
-    interopClient: InteropClient
+  interopRegistryService: InteropRegistryService;
+  connectionProvider: TransportConnectionProvider;
+  interopClient: InteropClient;
 }
 
 export interface StudioState {
-    connectionDetails: ConnectionDetails;
-    loading: boolean,
-    connectedApp: Application;
-    consumedMethod: ConsumedMethodState,
-    providedMethod: ProvidedMethodState,
-    appsFilter?: string,
-    serviceFilter?: string,
-    apps: Application[],
-    services: ServicesSnapshot
+  connectionDetails: ConnectionDetails;
+  loading: boolean;
+  connectedApp: Application;
+  consumedMethod: ConsumedMethodState;
+  providedMethod: ProvidedMethodState;
+  appsFilter?: string;
+  serviceFilter?: string;
+  apps: Application[];
+  services: ServicesSnapshot;
 }
 
 export interface ConnectionDetails {
-    generalConfig: GeneralConnectionConfig;
-    webConfig?: WebConnectionConfig;
-    wsConfig?: WebSocketConnectionConfig;
-    connected: boolean;
+  generalConfig: GeneralConnectionConfig;
+  webConfig?: WebConnectionConfig;
+  wsConfig?: WebSocketConnectionConfig;
+  connected: boolean;
 }
 
 export interface GeneralConnectionConfig {
-    transportType: TransportType;
-    metadataUrl: string;
+  transportType: TransportType;
+  metadataUrl: string;
 }
 
 export interface WebSocketConnectionConfig {
-    wsUrl: string
+  wsUrl: string;
 }
 
 export interface WebConnectionConfig {
-    proxyHostUrl: string,
-    // TODO deprecated, interop json + launcher should be used instead
-    appsMetadataUrl: string
+  proxyHostUrl: string;
+  // TODO deprecated, interop json + launcher should be used instead
+  appsMetadataUrl: string;
 }
 
 export interface ConsumedMethodState {
-    method: ConsumedMethod;
-    discoveredMethods: MethodDiscoveryResponse;
+  method: ConsumedMethod;
+  discoveredMethods: MethodDiscoveryResponse;
 }
 
 export interface ProvidedMethodState {
-    method: ProvidedMethod;
+  method: ProvidedMethod;
 }
 
 export interface PlexusConnectedActionParams {
-    apps: Application[],
-    interopRegistryService: InteropRegistryService,
-    connectionProvider: TransportConnectionProvider
+  apps: Application[];
+  interopRegistryService: InteropRegistryService;
+  connectionProvider: TransportConnectionProvider;
 }
 
 export interface AppConnectedActionParams {
-    interopClient: InteropClient,
-    application: Application
+  interopClient: InteropClient;
+  application: Application;
 }
 
 export interface ConnectionSetupActionParams {
-    connectionDetails: ConnectionDetails,
-    silentOnFailure: boolean
+  connectionDetails: ConnectionDetails;
+  silentOnFailure: boolean;
 }
 
 export interface Alert {
-    message: string,
-    type: AlertType
-};
-
-export enum TransportType {
-    WEB_SAME_BROADCAST = 'web-same-broadcast',
-    WEB_CROSS = 'web-cross',
-    NATIVE_WS = 'native-ws'
+  message: string;
+  type: AlertType;
 }
 
-export const transportTypes: { key: TransportType, label: string }[] = [
-    { key: TransportType.NATIVE_WS, label: 'Web Socket Transport' },
-    { key: TransportType.WEB_CROSS, label: 'Cross Domain Web Transport' },
-    { key: TransportType.WEB_SAME_BROADCAST, label: 'Same Domain Web Transport' }
+export enum TransportType {
+  WEB_SAME_BROADCAST = 'web-same-broadcast',
+  WEB_CROSS = 'web-cross',
+  NATIVE_WS = 'native-ws',
+}
+
+export const transportTypes: { key: TransportType; label: string }[] = [
+  { key: TransportType.NATIVE_WS, label: 'Web Socket Transport' },
+  { key: TransportType.WEB_CROSS, label: 'Cross Domain Web Transport' },
+  { key: TransportType.WEB_SAME_BROADCAST, label: 'Same Domain Web Transport' },
 ];
 
 export enum AlertType {
-    INFO, SUCCESS, USER_FAIL, ERROR
+  INFO,
+  SUCCESS,
+  USER_FAIL,
+  ERROR,
 }
-

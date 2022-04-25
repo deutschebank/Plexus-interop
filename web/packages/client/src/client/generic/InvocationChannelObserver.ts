@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelObserver } from '@plexus-interop/transport-common';
-import { InvocationObserver } from '.';
 import { transportProtocol as plexus } from '@plexus-interop/protocol';
+import { ChannelObserver } from '@plexus-interop/transport-common';
+
+import { InvocationObserver } from './InvocationObserver';
 
 export interface InvocationChannelObserver<S, D> extends ChannelObserver<S, D>, InvocationObserver<D> {
-    complete: (completion?: plexus.ICompletion) => void;
-} 
+  complete: (completion?: plexus.ICompletion) => void;
+}

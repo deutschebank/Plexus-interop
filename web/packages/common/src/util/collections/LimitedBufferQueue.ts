@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { default as Queue } from 'typescript-collections/dist/lib/Queue';
+import Queue from 'typescript-collections/dist/lib/Queue';
 
 export class LimitedBufferQueue<T> extends Queue<T> {
+  constructor(private readonly maxBufferSize: number = 1024) {
+    super();
+  }
 
-    constructor(
-        private readonly maxBufferSize: number = 1024) {
-        super();
+  public enqueue(elem: T): boolean {
+    if (this.size() >= this.maxBufferSize) {
+      throw new Error(`Buffer reached the limit ${this.maxBufferSize}`);
+    } else {
+      return super.enqueue(elem);
     }
-
-    public enqueue(elem: T): boolean {
-        if (this.size() >= this.maxBufferSize) {
-            throw new Error(`Buffer reached the limit ${this.maxBufferSize}`);
-        } else {
-            return super.enqueue(elem);
-        }
-    }
-
+  }
 }

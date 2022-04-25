@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2021 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,8 @@ public class ImportContentProvider extends IdeContentProposalProvider {
     private ProtoLangImportResolver importResolver;
 
     @Override
-    protected void _createProposals(Assignment assignment, ContentAssistContext context, IIdeContentProposalAcceptor acceptor) {
+    protected void _createProposals(Assignment assignment, ContentAssistContext context,
+            IIdeContentProposalAcceptor acceptor) {
         final AbstractElement terminal = assignment.getTerminal();
         if (terminal instanceof RuleCallImpl) {
             final String feature = assignment.getFeature();

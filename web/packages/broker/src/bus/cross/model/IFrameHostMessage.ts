@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@ import { MessageType } from './MessageType';
 import { ResponseType } from './ResponseType';
 
 export interface IFrameHostMessage<Req, Res> {
-    id: string;
-    type: MessageType<Req, Res>;
-    responseType: ResponseType;
-    requestPayload?: Req;
-    responsePayload?: Res;
+  id: string;
+  type: MessageType<Req, Res>;
+  responseType: ResponseType;
+  requestPayload?: Req;
+  responsePayload?: Res;
 }

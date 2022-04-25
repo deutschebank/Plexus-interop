@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InvocationClient } from './InvocationClient';
-import { Invocation } from '../generic/Invocation';
-import { clientProtocol as plexus, SuccessCompletion, ClientError, CancelledCompletion, ErrorCompletion } from '@plexus-interop/protocol';
 import { Logger } from '@plexus-interop/common';
+import {
+  CancelledCompletion,
+  ClientError,
+  ErrorCompletion,
+  clientProtocol as plexus,
+  SuccessCompletion,
+} from '@plexus-interop/protocol';
+
+import { Invocation } from '../generic/Invocation';
+import { InvocationClient } from './InvocationClient';
 
 export abstract class BaseInvocationClientImpl implements InvocationClient {
+  constructor(protected invocation: Invocation, protected log: Logger) {}
 
-    constructor(protected invocation: Invocation, protected log: Logger) { }
-
-    public async error(clientError: ClientError): Promise<void> {
-        /* istanbul ignore if */
-        if (this.log.isDebugEnabled()) {
-            this.log.debug(`Client reported error, closing invocation`, JSON.stringify(clientError));
-        }
-        await this.close(new ErrorCompletion(clientError));
+  public async error(clientError: ClientError): Promise<void> {
+    /* istanbul ignore if */
+    if (this.log.isDebugEnabled()) {
+      this.log.debug(`Client reported error, closing invocation`, JSON.stringify(clientError));
     }
+    await this.close(new ErrorCompletion(clientError));
+  }
 
-    public async cancel(): Promise<void> {
-        this.log.debug(`Client cancelled operation, closing invocation`);
-        await this.close(new CancelledCompletion());
-    }
+  public async cancel(): Promise<void> {
+    this.log.debug(`Client cancelled operation, closing invocation`);
+    await this.close(new CancelledCompletion());
+  }
 
-    protected async close(completion: plexus.ICompletion = new SuccessCompletion()): Promise<void> {
-        await this.invocation.close(completion);
-    }
+  protected async close(completion: plexus.ICompletion = new SuccessCompletion()): Promise<void> {
+    await this.invocation.close(completion);
+  }
 }

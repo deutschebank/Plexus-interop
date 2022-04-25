@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,21 +18,21 @@ import { MethodType } from './MethodType';
 import { Option } from './Option';
 
 export interface DiscoveredServiceMethod {
-    /** DiscoveredServiceMethod methodId */
-    methodId?: string;
+  /** DiscoveredServiceMethod methodId */
+  methodId?: string;
 
-    /** DiscoveredServiceMethod methodTitle */
-    methodTitle?: string;
+  /** DiscoveredServiceMethod methodTitle */
+  methodTitle?: string;
 
-    /** DiscoveredServiceMethod inputMessageId */
-    inputMessageId?: string;
+  /** DiscoveredServiceMethod inputMessageId */
+  inputMessageId?: string;
 
-    /** DiscoveredServiceMethod outputMessageId */
-    outputMessageId?: string;
+  /** DiscoveredServiceMethod outputMessageId */
+  outputMessageId?: string;
 
-    /** DiscoveredServiceMethod methodType */
-    methodType?: MethodType;
+  /** DiscoveredServiceMethod methodType */
+  methodType?: MethodType;
 
-    /** DiscoveredServiceMethod options */
-    options?: Option[];
+  /** DiscoveredServiceMethod options */
+  options?: Option[];
 }

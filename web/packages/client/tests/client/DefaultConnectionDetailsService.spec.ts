@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,32 +18,31 @@ import { ConnectionDetails } from '../../src/client/api/container/ConnectionDeta
 import { DefaultConnectionDetailsService } from '../../src/client/api/container/DefaultConnectionDetailsService';
 
 describe('DefaultConnectionDetailsService', () => {
-
-    it('getConnectionDetails returns correct result', async (done) => {
-        const service = new DefaultConnectionDetailsService(getConnectionDetails);
-        service.getConnectionDetails().then(r => {
-            expect(r.ws.port).toBe(42);
-            expect(r.ws.wssPort).toBe(24);
-            expect(r.appInstanceId).toBe('007');
-            done();
-        });
+  it('getConnectionDetails returns correct result', (done) => {
+    const service = new DefaultConnectionDetailsService(getConnectionDetails);
+    service.getConnectionDetails().then((r) => {
+      expect(r.ws.port).toBe(42);
+      expect(r.ws.wssPort).toBe(24);
+      expect(r.appInstanceId).toBe('007');
+      done();
     });
+  });
 
-    it('getMetadataUrl returns correct result', async (done) => {
-        const service = new DefaultConnectionDetailsService(getConnectionDetails);
-        service.getMetadataUrl().then(r => {
-            expect(r).toBe('wss://127.0.0.1:24/metadata/interop');
-            done();
-        });
+  it('getMetadataUrl returns correct result', (done) => {
+    const service = new DefaultConnectionDetailsService(getConnectionDetails);
+    service.getMetadataUrl().then((r) => {
+      expect(r).toBe('wss://127.0.0.1:24/metadata/interop');
+      done();
     });
+  });
 
-    function getConnectionDetails(): Promise<ConnectionDetails> {
-        return Promise.resolve<ConnectionDetails>({
-            ws: {
-                port: 42,
-                wssPort: 24
-            },
-            appInstanceId: '007'
-        });
-    }
+  function getConnectionDetails(): Promise<ConnectionDetails> {
+    return Promise.resolve<ConnectionDetails>({
+      ws: {
+        port: 42,
+        wssPort: 24,
+      },
+      appInstanceId: '007',
+    });
+  }
 });

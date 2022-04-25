@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 export class RawMetadata {
-
-    public static appsJson: string = `   
+  public static appsJson: string = `   
     {
         "apps": [
             {
@@ -39,7 +38,7 @@ export class RawMetadata {
     }
     `;
 
-    public static interopJson: string = `   
+  public static interopJson: string = `   
     {
         "messages": {
           "nested": {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,7 @@
 import { InvocationClient } from '../../../InvocationClient';
 
 export interface StreamingInvocationClient<T> extends InvocationClient {
+  next(value: T): Promise<void>;
 
-    next(value: T): Promise<void>;
-
-    complete(): Promise<void>;
-
+  complete(): Promise<void>;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,34 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-underscore-dangle */
+
+/* eslint-disable no-console */
 import { Observer } from '@plexus-interop/common';
 import { UniqueId } from '@plexus-interop/transport-common';
 
 export class LogInvocationObserver<T> implements Observer<T> {
+  constructor(private _next?: (data: T) => void, private id: UniqueId = UniqueId.generateNew()) {}
 
-    constructor(private _next?: (data: T) => void, private id: UniqueId = UniqueId.generateNew()) { }
+  public streamCompleted(): void {
+    console.log('Stream completed');
+  }
 
-    public streamCompleted(): void {
-        // tslint:disable-next-line:no-console
-        console.log('Stream completed');
+  public complete(): void {
+    console.log(`${this.id.toString()} - Complete`);
+  }
+
+  public next(data: T): void {
+    console.log(`${this.id.toString()} - Next`, data);
+    if (this._next) {
+      this._next(data);
     }
+  }
 
-    public complete(): void {
-        // tslint:disable-next-line:no-console
-        console.log(`${this.id.toString()} - Complete`);
-    }
-
-    public next(data: T): void {
-        // tslint:disable-next-line:no-console
-        console.log(`${this.id.toString()} - Next`, data);
-        if (this._next) {
-            this._next(data);
-        }
-    }
-
-    public error(error: any): void {
-        // tslint:disable-next-line:no-console
-        console.log(`${this.id.toString()} - Error`);
-    }
-
+  public error(): void {
+    console.log(`${this.id.toString()} - Error`);
+  }
 }

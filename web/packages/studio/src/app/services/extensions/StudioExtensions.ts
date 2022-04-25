@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,38 +17,40 @@
 import { TransportConnectionProvider } from '../transport/TransportConnectionProvider';
 
 export class StudioExtensions {
+  private static connectionProvider?: TransportConnectionProvider;
+  private static proxyHostUrlProvider?: () => Promise<string>;
+  private static metadataUrlProvider?: () => Promise<string>;
+  private static appsUrlProvider?: () => Promise<string>;
 
-    private static connectionProvider?: TransportConnectionProvider;
-    private static proxyHostUrlProvider?: () => Promise<string>;
-    private static metadataUrlProvider?: () => Promise<string>;
-    private static appsUrlProvider?: () => Promise<string>;
+  public static setMetadataUrlProvider(provider: () => Promise<string>): void {
+    StudioExtensions.metadataUrlProvider = provider;
+  }
 
-    public static setMetadataUrlProvider(provider: () => Promise<string>): void {
-        StudioExtensions.metadataUrlProvider = provider;
-    }
+  public static setConnectionProvider(connectionProvider: TransportConnectionProvider): void {
+    StudioExtensions.connectionProvider = connectionProvider;
+  }
 
-    public static setConnectionProvider(connectionProvider: TransportConnectionProvider): void {
-        StudioExtensions.connectionProvider = connectionProvider;
-    }
+  public static setProxyHostUrlProvider(provider: () => Promise<string>): void {
+    StudioExtensions.proxyHostUrlProvider = provider;
+  }
 
-    public static setProxyHostUrlProvider(provider: () => Promise<string>): void {
-        StudioExtensions.proxyHostUrlProvider = provider;
-    }
+  public static async getConnectionProvider(): Promise<TransportConnectionProvider> {
+    return StudioExtensions.connectionProvider || Promise.reject('Not provided');
+  }
 
-    public static async getConnectionProvider(): Promise<TransportConnectionProvider> {
-        return StudioExtensions.connectionProvider || Promise.reject('Not provided');
-    }
+  public static async getProxyHostUrl(): Promise<string> {
+    return StudioExtensions.proxyHostUrlProvider
+      ? StudioExtensions.proxyHostUrlProvider()
+      : Promise.reject('Not provider');
+  }
 
-    public static async getProxyHostUrl(): Promise<string> {
-        return StudioExtensions.proxyHostUrlProvider ? StudioExtensions.proxyHostUrlProvider() : Promise.reject('Not provider');
-    }
+  public static async getMetadataUrl(): Promise<string> {
+    return StudioExtensions.metadataUrlProvider
+      ? StudioExtensions.metadataUrlProvider()
+      : Promise.reject('Not provided');
+  }
 
-    public static async getMetadataUrl(): Promise<string> {
-        return StudioExtensions.metadataUrlProvider ? StudioExtensions.metadataUrlProvider() : Promise.reject('Not provided');
-    }
-
-    public static async getAppsUrl(): Promise<string> {
-        return StudioExtensions.appsUrlProvider ? StudioExtensions.appsUrlProvider() : Promise.reject('Not provided');
-    }
-
+  public static async getAppsUrl(): Promise<string> {
+    return StudioExtensions.appsUrlProvider ? StudioExtensions.appsUrlProvider() : Promise.reject('Not provided');
+  }
 }

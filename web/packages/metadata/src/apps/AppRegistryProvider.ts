@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Observable } from 'rxjs';
+
 import { AppRegistry } from './model/AppRegistry';
-import { Observable } from 'rxjs/Observable';
 
 export interface AppRegistryProvider {
+  getCurrent(): AppRegistry;
 
-    getCurrent(): AppRegistry;
-
-    getAppRegistry(): Observable<AppRegistry>;
-
+  getAppRegistry(): Observable<AppRegistry>;
 }

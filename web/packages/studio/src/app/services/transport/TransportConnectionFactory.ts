@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,43 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TransportConnectionProvider } from './TransportConnectionProvider';
 import { Injectable } from '@angular/core';
-import { CrossDomainEventBus, WebBrokerConnectionBuilder, CrossDomainEventBusProvider } from '@plexus-interop/broker';
-import { TransportConnection } from '@plexus-interop/transport-common';
-import { InteropServiceFactory } from '../core/InteropServiceFactory';
-import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+
+import { CrossDomainEventBus, CrossDomainEventBusProvider, WebBrokerConnectionBuilder } from '@plexus-interop/broker';
 import { DomUtils } from '@plexus-interop/common';
+import { TransportConnection } from '@plexus-interop/transport-common';
+import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+
+import { InteropServiceFactory } from '../core/InteropServiceFactory';
 import { ConnectionDetails } from '../ui/AppModel';
+import { TransportConnectionProvider } from './TransportConnectionProvider';
 
 @Injectable()
 export class TransportConnectionFactory {
+  private readonly serviceFactory: InteropServiceFactory = new InteropServiceFactory();
 
-    private readonly serviceFactory: InteropServiceFactory = new InteropServiceFactory();
+  public createWebTransportProvider(connectionDetails: ConnectionDetails): TransportConnectionProvider {
+    return async () => {
+      let eventBus: CrossDomainEventBus;
+      const proxyHostUrl = connectionDetails.webConfig.proxyHostUrl;
+      const appsMetadataUrl = connectionDetails.webConfig.appsMetadataUrl;
+      const metadataUrl = connectionDetails.generalConfig.metadataUrl;
+      const iFrameId = 'plexus-' + DomUtils.getOrigin(proxyHostUrl).replace(/\.\/\:/g, '-');
+      const connection: TransportConnection = await new WebBrokerConnectionBuilder()
+        .withAppRegistryProviderFactory(async () => this.serviceFactory.createAppRegistryProvider(appsMetadataUrl))
+        .withInteropRegistryProviderFactory(async () => this.serviceFactory.createInteropRegistryProvider(metadataUrl))
+        .withEventBusProvider(async () => {
+          eventBus = (await new CrossDomainEventBusProvider(
+            async () => proxyHostUrl,
+            iFrameId
+          ).connect()) as CrossDomainEventBus;
+          return eventBus;
+        })
+        .connect();
+      return connection;
+    };
+  }
 
-    public createWebTransportProvider(connectionDetails: ConnectionDetails): TransportConnectionProvider {
-        return async () => {
-            let eventBus: CrossDomainEventBus;
-            const proxyHostUrl = connectionDetails.webConfig.proxyHostUrl;
-            const appsMetadataUrl = connectionDetails.webConfig.appsMetadataUrl;
-            const metadataUrl = connectionDetails.generalConfig.metadataUrl;
-            const iFrameId = 'plexus-' + DomUtils.getOrigin(proxyHostUrl).replace(/\.\/\:/g, '-');
-            const connection: TransportConnection = await new WebBrokerConnectionBuilder()
-                .withAppRegistryProviderFactory(async () => this.serviceFactory.createAppRegistryProvider(appsMetadataUrl))
-                .withInteropRegistryProviderFactory(async () => this.serviceFactory.createInteropRegistryProvider(metadataUrl))
-                .withEventBusProvider(async () => {
-                    eventBus = await new CrossDomainEventBusProvider(
-                        async () => proxyHostUrl, iFrameId)
-                        .connect() as CrossDomainEventBus;
-                    return eventBus;
-                })
-                .connect();
-            return connection;
-        };
-    }
-
-    public createWebSocketTransportProvider(wsUrl: string): TransportConnectionProvider {
-        return () => new WebSocketConnectionFactory(new WebSocket(wsUrl)).connect();
-    }
-
+  public createWebSocketTransportProvider(wsUrl: string): TransportConnectionProvider {
+    return () => new WebSocketConnectionFactory(new WebSocket(wsUrl)).connect();
+  }
 }

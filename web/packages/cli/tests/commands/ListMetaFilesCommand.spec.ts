@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,46 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { prepareOutDir, getTestBaseDir, getInvalidTestBaseDir } from './setup';
 import * as path from 'path';
+
 import { ListMetaFilesCommand } from '../../src/commands/ListMetaFilesCommand';
 import { readTextFile } from '../../src/common/files';
+import { getInvalidTestBaseDir, getTestBaseDir, prepareOutDir } from './setup';
 
 describe('List metadata files CLI command', () => {
+  it('Generates files based on proto file', async () => {
+    const testName = 'generated-file-list-proto';
+    const genCommand = new ListMetaFilesCommand();
+    const outDir = prepareOutDir(testName);
 
-    it('Generates files based on proto file', async () => {
+    console.log(getInvalidTestBaseDir());
 
-        const testName = 'generated-file-list-proto';
-        const genCommand = new ListMetaFilesCommand();
-        const outDir = prepareOutDir(testName);
-        
+    await genCommand.action({
+      out: outDir + '/files.json',
+      baseDir: getInvalidTestBaseDir(),
+      input: 'services.proto',
+    });
 
-        console.log(getInvalidTestBaseDir());
-        
-        await genCommand.action({
-            out: outDir + '/files.json',
-            baseDir: getInvalidTestBaseDir(),
-            input: 'services.proto'
-        });
+    expect(await readTextFile(path.join(outDir, 'files.json'))).toMatch('messages');
+  }, 15000);
 
-        expect(await readTextFile(path.join(outDir, 'files.json'))).toMatch('messages');
+  it('Generates files based on interop file', async () => {
+    const testName = 'generated-file-list-interop';
+    const genCommand = new ListMetaFilesCommand();
+    const outDir = prepareOutDir(testName);
 
-    }, 15000);
+    await genCommand.action({
+      out: outDir + '/files.json',
+      baseDir: getTestBaseDir(),
+      input: 'greeting_client.interop',
+    });
 
-    it('Generates files based on interop file', async () => {
-
-        const testName = 'generated-file-list-interop';
-        const genCommand = new ListMetaFilesCommand();
-        const outDir = prepareOutDir(testName);
-        
-        await genCommand.action({
-            out: outDir + '/files.json',
-            baseDir: getTestBaseDir(),
-            input: 'greeting_client.interop'
-        });
-
-        expect(await readTextFile(path.join(outDir, 'files.json'))).toMatch('greeting_service');
-
-    }, 15000);
-
+    expect(await readTextFile(path.join(outDir, 'files.json'))).toMatch('greeting_service');
+  }, 15000);
 });

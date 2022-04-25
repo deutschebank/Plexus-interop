@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,29 +17,27 @@
 import { ObjectUtils } from '../js/ObjectUtils';
 
 export class ExtendedMap<K, V> extends Map<K, V> {
+  private constructor() {
+    super();
+  }
 
-    private constructor() {
-        super();
+  public static create<K, V>(): ExtendedMap<K, V> {
+    const instance = ObjectUtils.setPrototypeOf(new Map<K, V>(), ExtendedMap.prototype);
+    return instance as ExtendedMap<K, V>;
+  }
+
+  public valuesArray(): V[] {
+    const res: V[] = [];
+    this.forEach((v) => res.push(v));
+    return res;
+  }
+
+  public getOrAdd(key: K, producer: () => V): V {
+    let res = this.get(key);
+    if (res === undefined) {
+      res = producer();
+      this.set(key, res);
     }
-
-    public static create<K, V>(): ExtendedMap<K, V> {
-        const instance = ObjectUtils.setPrototypeOf(new Map<K, V>(), ExtendedMap.prototype);
-        return instance as ExtendedMap<K, V>;
-    }
-
-    public valuesArray(): V[] {
-        const res: V[] = [];
-        this.forEach(v => res.push(v));
-        return res;
-    }
-
-    public getOrAdd(key: K, producer: () => V): V {
-        let res = this.get(key);
-        if (res === undefined) {
-            res = producer();
-            this.set(key, res);
-        }
-        return res;
-    }
-
+    return res;
+  }
 }

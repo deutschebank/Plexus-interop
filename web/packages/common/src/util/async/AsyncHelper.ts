@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,43 +17,42 @@
 import { CancellationToken } from './CancellationToken';
 
 export class AsyncHelper {
+  public static readonly STATUS_CHECK_INTERVAL: number = 0;
 
-    public static readonly STATUS_CHECK_INTERVAL: number = 0;
-
-    public static waitFor(
-        condition: (() => boolean),
-        cancellationToken: CancellationToken = new CancellationToken(),
-        interval: number = AsyncHelper.STATUS_CHECK_INTERVAL,
-        timeout: number = -1): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            let rejectTimeout: any;
-            let checkTimeout: any;
-            if (timeout > 0) {
-                rejectTimeout = setTimeout(() => {
-                    if (checkTimeout) {
-                        clearTimeout(checkTimeout);
-                    }
-                    reject(`Waiting timeout ${timeout}ms passed`);
-                }, timeout);
-            }
-            function success(): void {
-                if (rejectTimeout) {
-                    clearTimeout(rejectTimeout);
-                }
-                resolve();
-            }
-            function check(): void {
-                const result = condition();
-                if (result) {
-                    success();
-                } else if (cancellationToken.isCancelled()) {
-                    reject(cancellationToken.getReason());
-                } else {
-                    checkTimeout = setTimeout(check, interval);
-                }
-            }
-            check();
-        });
-    }
-
+  public static waitFor(
+    condition: () => boolean,
+    cancellationToken: CancellationToken = new CancellationToken(),
+    interval: number = AsyncHelper.STATUS_CHECK_INTERVAL,
+    timeout: number = -1
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let rejectTimeout: any;
+      let checkTimeout: any;
+      if (timeout > 0) {
+        rejectTimeout = setTimeout(() => {
+          if (checkTimeout) {
+            clearTimeout(checkTimeout);
+          }
+          reject(new Error(`Waiting timeout ${timeout}ms passed`));
+        }, timeout);
+      }
+      function success(): void {
+        if (rejectTimeout) {
+          clearTimeout(rejectTimeout);
+        }
+        resolve();
+      }
+      function check(): void {
+        const result = condition();
+        if (result) {
+          success();
+        } else if (cancellationToken.isCancelled()) {
+          reject(cancellationToken.getReason());
+        } else {
+          checkTimeout = setTimeout(check, interval);
+        }
+      }
+      check();
+    });
+  }
 }

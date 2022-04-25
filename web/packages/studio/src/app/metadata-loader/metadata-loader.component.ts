@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
-import { AppActions } from '../services/ui/AppActions';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+
+import { AppActions } from '../services/ui/AppActions';
+import { ConnectionDetails, TransportType, transportTypes as types } from '../services/ui/AppModel';
 import * as fromRoot from '../services/ui/RootReducers';
-import { FormGroup, FormControl, FormBuilder, Validators, ValidationErrors } from '@angular/forms';
-import 'rxjs/add/operator/first';
-import { TransportType, ConnectionDetails, transportTypes as types } from '../services/ui/AppModel';
+import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
 
 @Component({
   selector: 'app-metadata-loader',
   templateUrl: './metadata-loader.component.html',
   styleUrls: ['./metadata-loader.component.css'],
-  providers: [SubscriptionsRegistry]
+  providers: [SubscriptionsRegistry],
 })
 export class MetadataLoaderComponent implements OnInit, OnDestroy {
-
   transportType: FormControl = new FormControl(TransportType.NATIVE_WS, [Validators.required]);
   metadataUrl: FormControl = new FormControl('', [Validators.required, Validators.minLength(1)]);
   appsUrl: FormControl = new FormControl('', [this.requiredWebConfig.bind(this)]);
@@ -45,7 +44,7 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
     appsUrl: this.appsUrl,
     proxyHostUrl: this.proxyHostUrl,
     transportType: this.transportType,
-    wsUrl: this.wsUrl
+    wsUrl: this.wsUrl,
   });
 
   constructor(
@@ -53,18 +52,20 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
     private store: Store<fromRoot.State>,
     private router: Router,
     private subscriptions: SubscriptionsRegistry,
-    private builder: FormBuilder) {
-  }
+    private builder: FormBuilder
+  ) {}
 
   ngOnInit() {
-    const connectionDetailsObs = this.store.select(state => state.plexus.connectionDetails);
-    this.subscriptions.add(connectionDetailsObs.subscribe(details => {
-      this.metadataUrl.setValue(details.generalConfig ? details.generalConfig.metadataUrl : '');
-      this.appsUrl.setValue(details.webConfig ? details.webConfig.appsMetadataUrl : '');
-      this.proxyHostUrl.setValue(details.webConfig ? details.webConfig.proxyHostUrl : '');
-      this.transportType.setValue(details.generalConfig ? details.generalConfig.transportType : '');
-      this.wsUrl.setValue(details.wsConfig ? details.wsConfig.wsUrl : '');
-    }));
+    const connectionDetailsObs = this.store.select((state) => state.plexus.connectionDetails);
+    this.subscriptions.add(
+      connectionDetailsObs.subscribe((details) => {
+        this.metadataUrl.setValue(details.generalConfig ? details.generalConfig.metadataUrl : '');
+        this.appsUrl.setValue(details.webConfig ? details.webConfig.appsMetadataUrl : '');
+        this.proxyHostUrl.setValue(details.webConfig ? details.webConfig.proxyHostUrl : '');
+        this.transportType.setValue(details.generalConfig ? details.generalConfig.transportType : '');
+        this.wsUrl.setValue(details.wsConfig ? details.wsConfig.wsUrl : '');
+      })
+    );
   }
 
   triggerValidation(): void {
@@ -95,13 +96,15 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
     return valid ? null : { required: true };
   }
 
-  connect(metadataUrl: string) {
+  connect(metadataUrl?: string) {
     const wsConfig = !!this.wsUrl.value ? { wsUrl: this.wsUrl.value } : null;
-    const webConfig = (this.appsUrl.value || this.proxyHostUrl.value)
-      ? {
-        proxyHostUrl: this.proxyHostUrl.value,
-        appsMetadataUrl: this.appsUrl.value
-      } : null;
+    const webConfig =
+      this.appsUrl.value || this.proxyHostUrl.value
+        ? {
+            proxyHostUrl: this.proxyHostUrl.value,
+            appsMetadataUrl: this.appsUrl.value,
+          }
+        : null;
     const connectionDetails: ConnectionDetails = {
       generalConfig: {
         metadataUrl: this.metadataUrl.value,
@@ -109,14 +112,14 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
       },
       wsConfig,
       webConfig,
-      connected: false
+      connected: false,
     };
     this.store.dispatch({
       type: AppActions.CONNECTION_SETUP_START,
       payload: {
         connectionDetails,
-        silentOnFailure: false
-      }
+        silentOnFailure: false,
+      },
     });
   }
 }

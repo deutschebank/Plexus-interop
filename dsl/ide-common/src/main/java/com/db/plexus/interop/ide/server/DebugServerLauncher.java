@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2021 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,8 @@ import java.util.function.Function;
 
 public class DebugServerLauncher {
 
-    public static void launch(LanguageServerImpl languageServer, int port) throws InterruptedException, ExecutionException, IOException {
+    public static void launch(LanguageServerImpl languageServer, int port)
+            throws InterruptedException, ExecutionException, IOException {
         Launcher<LanguageClient> launcher = createSocketLauncher(
                 languageServer,
                 LanguageClient.class,
@@ -47,7 +48,10 @@ public class DebugServerLauncher {
         future.get();
     }
 
-    static <T> Launcher<T> createSocketLauncher(Object localService, Class<T> remoteInterface, SocketAddress socketAddress, ExecutorService executorService, Function<MessageConsumer, MessageConsumer> wrapper) throws IOException, ExecutionException, InterruptedException {
+    static <T> Launcher<T> createSocketLauncher(Object localService, Class<T> remoteInterface,
+            SocketAddress socketAddress, ExecutorService executorService,
+            Function<MessageConsumer, MessageConsumer> wrapper)
+            throws IOException, ExecutionException, InterruptedException {
         final AsynchronousServerSocketChannel serverSocket = AsynchronousServerSocketChannel.open().bind(socketAddress);
         final AsynchronousSocketChannel socketChannel = serverSocket.accept().get();
         return Launcher.createIoLauncher(

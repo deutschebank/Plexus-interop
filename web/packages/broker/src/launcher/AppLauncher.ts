@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,8 @@ import { AppLaunchResponse } from './AppLaunchResponse';
 import { LaunchInvocationContext } from './LaunchInvocationContext';
 
 export interface AppLauncher {
-
-    /**
-     * Launches new application, returns instance Id
-     */
-    launch(invocationContext: LaunchInvocationContext, request: AppLaunchRequest): Promise<AppLaunchResponse>;
+  /**
+   * Launches new application, returns instance Id
+   */
+  launch(invocationContext: LaunchInvocationContext, request: AppLaunchRequest): Promise<AppLaunchResponse>;
 }

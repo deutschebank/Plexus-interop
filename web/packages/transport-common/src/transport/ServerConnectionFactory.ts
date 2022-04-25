@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 import { Observer, Subscription } from '@plexus-interop/common';
-import { TransportConnection } from  './TransportConnection';
+
+import { TransportConnection } from './TransportConnection';
 
 export interface ServerConnectionFactory {
-
-    acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription;
-
+  acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription;
 }

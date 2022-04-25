@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BaseCommand } from './BaseCommand';
 import { getJavaExecPath, getJavaGenLibPath } from '../common/java';
 import { simpleSpawn } from '../common/process';
+import { BaseCommand } from './BaseCommand';
 
 export abstract class BaseJavaGenCommand extends BaseCommand {
+  public abstract plexusGenArgs: (opts: any) => string[];
 
-    public abstract plexusGenArgs: (opts: any) => string[];
-
-    public async action(opts: any): Promise<void> {
-        const javaExecPath = await getJavaExecPath();
-        const javaLibPath = getJavaGenLibPath();
-        return simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.plexusGenArgs(opts)], this.isVerbose(opts));
-    }
-
+  public async action(opts: any): Promise<void> {
+    const javaExecPath = await getJavaExecPath();
+    const javaLibPath = getJavaGenLibPath();
+    return simpleSpawn(javaExecPath, ['-jar', javaLibPath, ...this.plexusGenArgs(opts)], this.isVerbose(opts));
+  }
 }

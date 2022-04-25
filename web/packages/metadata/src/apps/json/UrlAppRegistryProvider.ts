@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,50 +14,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
+import { Observable, throwError } from 'rxjs';
+
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 import { HttpDataLoader } from '@plexus-interop/remote';
-import { JsonAppRegistryProvider } from './JsonAppRegistryProvider';
+
 import { AppRegistryProvider } from '../AppRegistryProvider';
 import { AppRegistry } from '../model/AppRegistry';
+import { JsonAppRegistryProvider } from './JsonAppRegistryProvider';
 
 export class UrlAppRegistryProvider implements AppRegistryProvider {
+  private readonly log: Logger = LoggerFactory.getLogger('UrlAppRegistryProvider');
 
-    private readonly log: Logger = LoggerFactory.getLogger('UrlAppRegistryProvider');
+  protected urlDataLoader: HttpDataLoader = new HttpDataLoader();
 
-    protected urlDataLoader: HttpDataLoader = new HttpDataLoader();
+  protected started: boolean = false;
 
-    protected started: boolean = false;    
+  protected jsonAppRegistryProvider: JsonAppRegistryProvider;
 
-    protected jsonAppRegistryProvider: JsonAppRegistryProvider;
+  public constructor(private readonly url: string, private readonly interval: number = -1) {}
 
-    public constructor(
-        private readonly url: string,
-        private readonly interval: number = -1) { }
+  public getAppRegistry(): Observable<AppRegistry> {
+    return this.started ? this.jsonAppRegistryProvider.getAppRegistry() : throwError(() => new Error('Not started'));
+  }
 
-    public getAppRegistry(): Observable<AppRegistry> {
-        return this.started ? this.jsonAppRegistryProvider.getAppRegistry() : Observable.throw(new Error('Not started'));
+  public getCurrent(): AppRegistry {
+    if (!this.started) {
+      throw new Error('Not started');
     }
+    return this.jsonAppRegistryProvider.getCurrent();
+  }
 
-    public getCurrent(): AppRegistry {
-        if (!this.started) {
-            throw new Error('Not started');
-        }
-        return this.jsonAppRegistryProvider.getCurrent();
+  public async start(): Promise<void> {
+    if (this.started) {
+      return Promise.reject(new Error('Already started'));
     }
-
-    public async start(): Promise<void> {
-        if (this.started) {
-            return Promise.reject('Already started');
-        }
-        this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
-        const response = await this.urlDataLoader.fetchData(this.url);
-        if (this.interval > 0) {
-            this.jsonAppRegistryProvider = new JsonAppRegistryProvider(response, this.urlDataLoader.fetchWithInterval(this.url, this.interval));
-        } else {
-            this.jsonAppRegistryProvider = new JsonAppRegistryProvider(response);
-        }
-        this.started = true;
+    this.log.debug(`Starting to load metadata from [${this.url}] with ${this.interval} interval`);
+    const response = await this.urlDataLoader.fetchData(this.url);
+    if (this.interval > 0) {
+      this.jsonAppRegistryProvider = new JsonAppRegistryProvider(
+        response,
+        this.urlDataLoader.fetchWithInterval(this.url, this.interval)
+      );
+    } else {
+      this.jsonAppRegistryProvider = new JsonAppRegistryProvider(response);
     }
-
+    this.started = true;
+    return undefined;
+  }
 }

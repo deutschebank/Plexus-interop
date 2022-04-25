@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,10 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path = require('path');
 const reporters = require('jasmine-reporters');
+
 const reporter = new reporters.JUnitXmlReporter({
-    consolidateAll: false,
-    filePrefix: 'jest-junit-result-',
-    savePath: __dirname + '/target/surefire-reports/',
+  consolidateAll: false,
+  filePrefix: 'jest-junit-result-',
+  savePath: path.resolve(__dirname, '/target/surefire-reports/'),
 });
 jasmine.getEnv().addReporter(reporter);

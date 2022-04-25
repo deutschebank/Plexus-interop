@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LogObserver } from './LogObserver';
 import { BlockingQueueBase, CancellationToken } from '@plexus-interop/common';
 
+import { LogObserver } from './LogObserver';
+
 export class BufferedObserver<T> extends LogObserver<T> {
+  constructor(
+    private cancellationToken?: CancellationToken,
+    private buffer: BlockingQueueBase<T> = new BlockingQueueBase<T>()
+  ) {
+    super();
+  }
 
-    constructor(private cancellationToken?: CancellationToken, private buffer: BlockingQueueBase<T> = new BlockingQueueBase<T>()) {
-        super();
-    }
+  public next(data: T): void {
+    super.next(data);
+    this.buffer.enqueue(data);
+  }
 
-    public next(data: T): void {
-        super.next(data);
-        this.buffer.enqueue(data);
-    }
-
-    public pullData(): Promise<T> {
-        return this.buffer.blockingDequeue(this.cancellationToken);
-    }
+  public pullData(): Promise<T> {
+    return this.buffer.blockingDequeue(this.cancellationToken);
+  }
 }

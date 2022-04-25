@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,44 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ProvidedMethodReference, InteropRegistryService } from '@plexus-interop/metadata';
 import { GenericClientApi } from '@plexus-interop/client';
-import { Method } from '../api';
-import { DiscoveryMode, ProvidedServiceReference, DiscoveredMethod, MethodType } from '@plexus-interop/client-api';
+import { DiscoveredMethod, DiscoveryMode, MethodType, ProvidedServiceReference } from '@plexus-interop/client-api';
+import { InteropRegistryService, ProvidedMethodReference } from '@plexus-interop/metadata';
+import { clientProtocol as plexus, UniqueId } from '@plexus-interop/protocol';
+
+import { Method } from '../api/client-api';
 import { getAlias, getAppAliasById } from '../metadata';
 import { PartialPeerDescriptor } from '../PartialPeerDescriptor';
-import { clientProtocol as plexus } from '@plexus-interop/protocol';
-import { UniqueId } from '@plexus-interop/protocol';
 
 export class DiscoverMethodsHandler {
+  public constructor(
+    private readonly genericClienApi: GenericClientApi,
+    private readonly registryService: InteropRegistryService
+  ) {}
 
-    public constructor(
-        private readonly genericClienApi: GenericClientApi,
-        private readonly registryService: InteropRegistryService
-    ) { }
+  public async discoverMethods(type?: MethodType): Promise<Method[]> {
+    const provided = await this.genericClienApi.discoverMethod({
+      discoveryMode: DiscoveryMode.Online,
+    });
+    const methods = provided.methods || [];
+    return methods.filter((m) => !type || type === m.methodType).map((m) => this.plexusMethodToCommon(m));
+  }
 
-    public async discoverMethods(type?: MethodType): Promise<Method[]> {
-        const provided = await this.genericClienApi.discoverMethod({
-            discoveryMode: DiscoveryMode.Online
-        });
-        const methods = provided.methods || [];
-        return methods
-            .filter(m => !type || type === m.methodType)
-            .map(m => this.plexusMethodToCommon(m));
-    }
-
-    private plexusMethodToCommon(pm: DiscoveredMethod): Method {
-        const providedMethod = pm.providedMethod as ProvidedMethodReference;
-        const providedService = providedMethod.providedService as ProvidedServiceReference;
-        const appId = providedService.applicationId as string;
-        const connectionId = UniqueId.fromProperties(providedService.connectionId as plexus.IUniqueId).toString();
-        return {
-            name: getAlias(pm.options) || providedMethod.methodId as string,
-            acceptType: pm.inputMessageId,
-            returnType: pm.outputMessageId,
-            peer: new PartialPeerDescriptor(
-                getAppAliasById(appId, this.registryService) || appId,
-                connectionId)
-        };
-    }
+  private plexusMethodToCommon(pm: DiscoveredMethod): Method {
+    const providedMethod = pm.providedMethod as ProvidedMethodReference;
+    const providedService = providedMethod.providedService as ProvidedServiceReference;
+    const appId = providedService.applicationId as string;
+    const connectionId = UniqueId.fromProperties(providedService.connectionId as plexus.IUniqueId).toString();
+    return {
+      name: getAlias(pm.options) || (providedMethod.methodId as string),
+      acceptType: pm.inputMessageId,
+      returnType: pm.outputMessageId,
+      peer: new PartialPeerDescriptor(getAppAliasById(appId, this.registryService) || appId, connectionId),
+    };
+  }
 }

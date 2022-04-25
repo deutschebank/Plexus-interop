@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,86 +15,80 @@
  * limitations under the License.
  */
 import * as log from 'loglevel';
+
 import { Logger, LoggerDelegate } from './Logger';
-import { LogLevel } from './LoggerFactory';
+import { LogLevel } from './LogLevel';
 
 export class LoggerBase implements Logger, LoggerDelegate {
+  constructor(public name: string, private loggerDelegates: LoggerDelegate[]) {}
 
-    constructor(
-        public name: string,
-        private loggerDelegates: LoggerDelegate[]
-    ) { }
-
-    public debug(msg: string, ...args: any[]): void {
-        /* istanbul ignore if */
-        if (log.getLevel() <= LogLevel.DEBUG) {
-            this.log(LogLevel.DEBUG, msg, args);
-        }
+  public debug(msg: string, ...args: any[]): void {
+    /* istanbul ignore if */
+    if (log.getLevel() <= LogLevel.DEBUG) {
+      this.log(LogLevel.DEBUG, msg, args);
     }
+  }
 
-    public info(msg: string, ...args: any[]): void {
-        this.log(LogLevel.INFO, msg, args);
+  public info(msg: string, ...args: any[]): void {
+    this.log(LogLevel.INFO, msg, args);
+  }
+
+  public error(msg: string, ...args: any[]): void {
+    this.log(LogLevel.ERROR, msg, args);
+  }
+
+  public warn(msg: string, ...args: any[]): void {
+    this.log(LogLevel.INFO, msg, args);
+  }
+
+  public trace(msg: string, ...args: any[]): void {
+    /* istanbul ignore if */
+    if (log.getLevel() <= LogLevel.TRACE) {
+      this.log(LogLevel.TRACE, msg, args);
     }
+  }
 
-    public error(msg: string, ...args: any[]): void {
-        this.log(LogLevel.ERROR, msg, args);
+  public log(logLevel: LogLevel, msg: string, args: any[]): void {
+    const actualMessage = `${this.name} ${msg}`;
+
+    switch (logLevel) {
+      case LogLevel.TRACE:
+        log.trace(actualMessage, args);
+        break;
+      case LogLevel.DEBUG:
+        log.debug(actualMessage, args);
+        break;
+      case LogLevel.INFO:
+        log.info(actualMessage, args);
+        break;
+      case LogLevel.WARN:
+        log.warn(actualMessage, args);
+        break;
+      case LogLevel.ERROR:
+        log.warn(actualMessage, args);
+        break;
+      case LogLevel.SILENT:
+        /* be silent */
+        break;
+      default:
+        throw new Error(`Unkown LogLevel: ${logLevel}`);
     }
-
-    public warn(msg: string, ...args: any[]): void {
-        this.log(LogLevel.INFO, msg, args);
+    try {
+      this.loggerDelegates.forEach((logger) => logger.log(logLevel, msg, args));
+    } catch (error) {
+      this.error(`Error in log delegates: ${error}. Swallowed.`);
     }
+  }
 
-    public trace(msg: string, ...args: any[]): void {
-        /* istanbul ignore if */
-        if (log.getLevel() <= LogLevel.TRACE) {
-            this.log(LogLevel.TRACE, msg, args);
-        }
-    }
+  public getLogLevel(): LogLevel {
+    return log.getLevel();
+  }
 
-    public log(logLevel: LogLevel, msg: string, args: any[]): void {
+  public isDebugEnabled(): boolean {
+    return this.getLogLevel() <= LogLevel.DEBUG;
+  }
 
-        let actualMessage = `${this.name} ${msg}`;
-
-        switch (logLevel) {
-            case LogLevel.TRACE: 
-                log.trace(actualMessage, args); 
-                break;
-            case LogLevel.DEBUG: 
-                log.debug(actualMessage, args); 
-                break;
-            case LogLevel.INFO: 
-                log.info(actualMessage, args); 
-                break;
-            case LogLevel.WARN: 
-                log.warn(actualMessage, args); 
-                break;
-            case LogLevel.ERROR: 
-                log.warn(actualMessage, args); 
-                break;
-            case LogLevel.SILENT: 
-                /* be silent */
-                break;
-            default: 
-                throw `Unkown LogLevel: ${logLevel}`;
-        }
-        try {
-            this.loggerDelegates.forEach(logger => logger.log(logLevel, msg, args));
-        }
-        catch (error) {
-            this.error(`Error in log delegates: ${error}. Swallowed.`);
-        }
-        
-    }
-
-    public getLogLevel(): LogLevel {
-        return log.getLevel();
-    }
-
-    public isDebugEnabled(): boolean {
-        return this.getLogLevel() <= LogLevel.DEBUG;
-    }
-
-    public isTraceEnabled(): boolean {
-        return this.getLogLevel() <= LogLevel.TRACE;
-    }
+  public isTraceEnabled(): boolean {
+    return this.getLogLevel() <= LogLevel.TRACE;
+  }
 }

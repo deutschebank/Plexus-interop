@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 const idCounters: Map<string, number> = new Map();
 
 export function uniqueId(prefix: string = ''): string {
-    const prevIdx = idCounters.get(prefix) || 0;
-    const nextIdx = prevIdx + 1;
-    idCounters.set(prefix, nextIdx);
-    return `${prefix + nextIdx}`;
+  const prevIdx = idCounters.get(prefix) || 0;
+  const nextIdx = prevIdx + 1;
+  idCounters.set(prefix, nextIdx);
+  return `${prefix + nextIdx}`;
 }

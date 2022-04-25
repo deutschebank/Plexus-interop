@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InternalGenericClientApi } from './internal';
-import { GenericClientApi } from './GenericClientApi';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 
+import { GenericClientApi } from './GenericClientApi';
+import { InternalGenericClientApi } from './internal/InternalGenericClientApi';
+
 export interface ClientApiBuilder<ClientType, BuilderType extends ClientApiBuilder<ClientType, any>> {
-    connect(): Promise<ClientType>;
-    withClientApiDecorator(clientApiDecorator: (client: InternalGenericClientApi) => Promise<GenericClientApi>): BuilderType;
-    withClientExtension(extension: (builder: ClientApiBuilder<ClientType, BuilderType>) => void): BuilderType;
-    withTransportConnectionProvider(provider: () => Promise<TransportConnection>): BuilderType;
-    withAppInstanceId(appInstanceId: UniqueId): BuilderType;
-    withAppId(appId: string): BuilderType;
+  connect(): Promise<ClientType>;
+  withClientApiDecorator(
+    clientApiDecorator: (client: InternalGenericClientApi) => Promise<GenericClientApi>
+  ): BuilderType;
+  withClientExtension(extension: (builder: ClientApiBuilder<ClientType, BuilderType>) => void): BuilderType;
+  withTransportConnectionProvider(provider: () => Promise<TransportConnection>): BuilderType;
+  withAppInstanceId(appInstanceId: UniqueId): BuilderType;
+  withAppId(appId: string): BuilderType;
 }

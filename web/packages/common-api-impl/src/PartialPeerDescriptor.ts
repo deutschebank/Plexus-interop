@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,25 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPeerDescriptor } from './api';
+import { InteropPeerDescriptor } from './api/client-api';
 
 /**
  * Temporary Mock Implementation before we agree on final state of returned Remote Peers
  */
 export class PartialPeerDescriptor implements InteropPeerDescriptor {
-    
-    public constructor(
-        public applicationName: string,
-        public id: string,
-        public isConnected: boolean = true) {}
-    
-    public getApiMetadata(): Promise<string> {
-        // TODO
-        throw new Error('Method not implemented.');
-    }
-    
-    public onApiMetadataChanged(callback: (metadata: string) => void): void {
-        // TODO
-        throw new Error('Method not implemented.');
-    }
+  public constructor(public applicationName: string, public id: string, public isConnected: boolean = true) {}
+
+  public getApiMetadata(): Promise<string> {
+    // TODO
+    throw new Error('Method not implemented.');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onApiMetadataChanged(callback: (metadata: string) => void): void {
+    // TODO
+    throw new Error('Method not implemented.');
+  }
 }

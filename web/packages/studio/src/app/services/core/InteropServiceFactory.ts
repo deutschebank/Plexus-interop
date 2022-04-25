@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,31 +15,37 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { InteropRegistryService, UrlInteropRegistryProvider, AppRegistryService, UrlAppRegistryProvider, AppRegistryProvider, InteropRegistryProvider } from
-    '@plexus-interop/metadata';
+
+import {
+  AppRegistryProvider,
+  AppRegistryService,
+  InteropRegistryProvider,
+  InteropRegistryService,
+  UrlAppRegistryProvider,
+  UrlInteropRegistryProvider,
+} from '@plexus-interop/metadata';
 
 @Injectable()
 export class InteropServiceFactory {
+  public async getInteropRegistryService(metadataUrl: string): Promise<InteropRegistryService> {
+    const provider = await this.createInteropRegistryProvider(metadataUrl);
+    return new InteropRegistryService(provider);
+  }
 
-    public async getInteropRegistryService(metadataUrl: string): Promise<InteropRegistryService> {
-        const provider = await this.createInteropRegistryProvider(metadataUrl);
-        return new InteropRegistryService(provider);
-    }
+  public async getAppRegistryService(appsUrl: string): Promise<AppRegistryService> {
+    const provider = await this.createAppRegistryProvider(appsUrl);
+    return new AppRegistryService(provider);
+  }
 
-    public async getAppRegistryService(appsUrl: string): Promise<AppRegistryService> {
-        const provider = await this.createAppRegistryProvider(appsUrl);
-        return new AppRegistryService(provider);
-    }
+  public async createInteropRegistryProvider(metadataUrl: string): Promise<InteropRegistryProvider> {
+    const provider = new UrlInteropRegistryProvider(metadataUrl);
+    await provider.start();
+    return provider;
+  }
 
-    public async createInteropRegistryProvider(metadataUrl: string): Promise<InteropRegistryProvider> {
-        const provider = new UrlInteropRegistryProvider(metadataUrl);
-        await provider.start();
-        return provider;
-    }
-
-    public async createAppRegistryProvider(appsUrl: string): Promise<AppRegistryProvider> {
-        const provider = new UrlAppRegistryProvider(appsUrl);
-        await provider.start();
-        return provider;
-    }
+  public async createAppRegistryProvider(appsUrl: string): Promise<AppRegistryProvider> {
+    const provider = new UrlAppRegistryProvider(appsUrl);
+    await provider.start();
+    return provider;
+  }
 }

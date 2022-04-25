@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,5 @@
 import * as program from 'commander';
 
 export interface Command {
-
-    register(builder: program.CommanderStatic): void;
-
+  register(builder: program.CommanderStatic): void;
 }

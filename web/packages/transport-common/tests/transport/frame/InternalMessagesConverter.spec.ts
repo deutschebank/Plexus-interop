@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InternalMessagesConverter, ChannelOpenFrame } from '../../../src/transport/frame';
 import { UniqueId } from '../../../src/transport';
+import { ChannelOpenFrame, InternalMessagesConverter } from '../../../src/transport/frame';
 
 describe('InternalMessagesConverter', () => {
+  const sut = new InternalMessagesConverter();
 
-    const sut = new InternalMessagesConverter();
+  it('Should convert header frames to and from binary format', () => {
+    const before = ChannelOpenFrame.fromHeaderData({ channelId: UniqueId.generateNew() });
+    const binary = sut.serialize(before);
+    const after = sut.deserialize(new Uint8Array(binary));
 
-    it('Should convert header frames to and from binary format', () => {
-
-        const before = ChannelOpenFrame.fromHeaderData({channelId: UniqueId.generateNew()});
-        const binary = sut.serialize(before);
-        const after = sut.deserialize(new Uint8Array(binary));
-
-        expect(before).toEqual(after); 
-
-    });
-
+    expect(before).toEqual(after);
+  });
 });

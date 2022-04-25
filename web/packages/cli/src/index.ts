@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 import * as program from 'commander';
+
 import { commands } from './commands';
 import { printGeneralHelp } from './commands/commands';
 
 export function main(args: string[], version: string): void {
-    program.on('--help', printGeneralHelp);
-    commands().forEach(c => c.register(program));
-    program
-        .version(version)
-        .parse(args);
+  program.on('--help', printGeneralHelp);
+  commands().forEach((c) => c.register(program));
+  program.version(version).parse(args);
 }

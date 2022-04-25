@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,61 +14,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { InvocationRequestInfo } from '@plexus-interop/client';
+import { MethodInvocationContext } from '@plexus-interop/client-api';
+import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io';
+import { UrlInteropRegistryProvider } from '@plexus-interop/metadata';
+
 import { ClientsSetup } from '../common/ClientsSetup';
 import { TransportsSetup } from '../common/TransportsSetup';
 import { readWsUrl } from '../common/utils';
-import { PointToPointInvocationTests } from '../echo/PointToPointInvocationTests';
-import { UnaryServiceHandler } from '../echo/UnaryServiceHandler';
-import { MethodInvocationContext } from '@plexus-interop/client-api';
-import { InvocationRequestInfo } from '@plexus-interop/client';
 import { BaseEchoTest } from '../echo/BaseEchoTest';
-import { UrlInteropRegistryProvider } from '@plexus-interop/metadata';
-import { DynamicBinaryMarshallerProvider } from '@plexus-interop/io/dist/main/src/dynamic';
+import { UnaryServiceHandler } from '../echo/UnaryServiceHandler';
 
 describe('Client: Web Socket Send Plain JS Object', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
+  const wsUrl = readWsUrl();
+  const metadataWsUrl = `${wsUrl}/metadata/interop`;
+  const connectionProvider = transportsSetup.createWebSocketTransportProvider(wsUrl);
+  const testUtils = new BaseEchoTest();
 
-    const wsUrl = readWsUrl();    
-    const metadataWsUrl = `${wsUrl}/metadata/interop`;
-    const connectionProvider = transportsSetup.createWebSocketTransportProvider(wsUrl);
-    const testUtils = new BaseEchoTest();
+  it('Sends invocation request and receives response', async () => {
+    const echoRequest = clientsSetup.createRequestDto();
+    const interopProvider = new UrlInteropRegistryProvider(metadataWsUrl);
+    await interopProvider.start();
+    const marshallerProvider = new DynamicBinaryMarshallerProvider(interopProvider.getCurrent());
 
-    it('Sends invocation request and receives response', async () => {
-        const echoRequest = clientsSetup.createRequestDto();
-        const interopProvider = new UrlInteropRegistryProvider(metadataWsUrl);
-        await interopProvider.start();
-        const marshallerProvider = new DynamicBinaryMarshallerProvider(interopProvider.getCurrent());
-
-        return new Promise<void>((resolve, reject) => {
-            const handler = new UnaryServiceHandler(async (context: MethodInvocationContext, request) => {
-                try {
-                    testUtils.assertEqual(request, echoRequest);
-                } catch (error) {
-                    reject(error);
-                }
-                return request;
-            });
-            clientsSetup.createGenericClientAndStaticServer(marshallerProvider, connectionProvider, handler)
-                .then(clients => {
-                    const [genericClient, genericServer] = clients;
-                    const invocationInfo: InvocationRequestInfo = {
-                        methodId: 'Unary',
-                        serviceId: 'plexus.interop.testing.EchoService'
-                    };
-                    genericClient.sendUnaryRequest(invocationInfo, echoRequest, {
-                        value: echoResponse => {
-                            testUtils.assertEqual(echoRequest, echoResponse);
-                            genericClient.disconnect()
-                                .then(() => genericServer.disconnect())
-                                .then(() => resolve());
-                        },
-                        error: e => reject(e)
-                    }, 'plexus.interop.testing.EchoRequest', 'plexus.interop.testing.EchoRequest');
-                })
-                .catch(error => reject(error));
-        });      
+    return new Promise<void>((resolve, reject) => {
+      const handler = new UnaryServiceHandler(async (context: MethodInvocationContext, request) => {
+        try {
+          testUtils.assertEqual(request, echoRequest);
+        } catch (error) {
+          reject(error);
+        }
+        return request;
+      });
+      clientsSetup
+        .createGenericClientAndStaticServer(marshallerProvider, connectionProvider, handler)
+        .then((clients) => {
+          const [genericClient, genericServer] = clients;
+          const invocationInfo: InvocationRequestInfo = {
+            methodId: 'Unary',
+            serviceId: 'plexus.interop.testing.EchoService',
+          };
+          genericClient.sendUnaryRequest(
+            invocationInfo,
+            echoRequest,
+            {
+              value: (echoResponse) => {
+                testUtils.assertEqual(echoRequest, echoResponse);
+                genericClient
+                  .disconnect()
+                  .then(() => genericServer.disconnect())
+                  .then(() => resolve());
+              },
+              error: (e) => reject(e),
+            },
+            'plexus.interop.testing.EchoRequest',
+            'plexus.interop.testing.EchoRequest'
+          );
+        })
+        .catch((error) => reject(error));
     });
-
+  });
 });

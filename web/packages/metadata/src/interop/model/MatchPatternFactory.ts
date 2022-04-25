@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,59 +14,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable max-classes-per-file */
 import { MatchPattern } from './MatchPattern';
 
 export class MatchPatternFactory {
+  private static all: MatchPattern = {
+    isMatch: () => true,
+  };
 
-    private static all: MatchPattern = {
-        isMatch: () => true
-    };
+  public static createMatcher(patterns: string[]): MatchPattern {
+    return patterns && patterns.length > 0
+      ? new MultipleMatchersHolder(patterns.map((p) => MatchPatternFactory.createSingleMatcher(p)))
+      : MatchPatternFactory.all;
+  }
 
-    public static createMatcher(patterns: string[]): MatchPattern {
-        return patterns && patterns.length > 0 ?
-            new MultipleMatchersHolder(patterns.map(p => MatchPatternFactory.createSingleMatcher(p)))
-            : MatchPatternFactory.all;
+  private static createSingleMatcher(pattern: string): MatchPattern {
+    if (pattern === '*') {
+      return MatchPatternFactory.all;
     }
-
-    private static createSingleMatcher(pattern: string): MatchPattern {
-        if (pattern === '*') {
-            return MatchPatternFactory.all;
-        }
-        if (pattern.endsWith('*')) {
-            return new StartsWithMatcher(pattern.substr(0, pattern.length - 1));
-        }
-        return new ExactMatcher(pattern);
+    if (pattern.endsWith('*')) {
+      return new StartsWithMatcher(pattern.substr(0, pattern.length - 1));
     }
-
+    return new ExactMatcher(pattern);
+  }
 }
 
 class MultipleMatchersHolder implements MatchPattern {
+  constructor(private matchers: MatchPattern[]) {}
 
-    constructor(private matchers: MatchPattern[]) { }
-
-    public isMatch(s: string): boolean {
-        return !!this.matchers.find(m => m.isMatch(s));
-    }
-
+  public isMatch(s: string): boolean {
+    return !!this.matchers.find((m) => m.isMatch(s));
+  }
 }
 
 class StartsWithMatcher implements MatchPattern {
+  constructor(private readonly base: string) {}
 
-    constructor(private readonly base: string) { }
-
-    public isMatch(s: string): boolean {
-        return s.startsWith(this.base);
-    }
-
+  public isMatch(s: string): boolean {
+    return s.startsWith(this.base);
+  }
 }
 
 class ExactMatcher implements MatchPattern {
+  constructor(private readonly base: string) {}
 
-    constructor(private readonly base: string) { }
-
-    public isMatch(s: string): boolean {
-        return s === this.base;
-    }
-
+  public isMatch(s: string): boolean {
+    return s === this.base;
+  }
 }
-

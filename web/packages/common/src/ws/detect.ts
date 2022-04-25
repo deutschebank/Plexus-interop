@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function webSocketCtor(): any {
-    if (typeof window !== 'undefined') {
-        const _window: any = window;
-        if (_window && _window.WebSocket) {
-            return _window.WebSocket;
-        }    
+export function webSocketCtor(wsProvider?: () => any): any {
+  if (typeof window !== 'undefined') {
+    const anyWindow: any = window;
+    if (anyWindow && anyWindow.WebSocket) {
+      return anyWindow.WebSocket;
     }
-    const isNode = typeof global !== 'undefined' && ({}).toString.call(global) === '[object global]';    
-    if (isNode) {
-        const _global: any = global;
-        if (_global && _global.WebSocket) {
-            return _global.WebSocket;
-        }
-        return require('websocket').w3cwebsocket;          
+  }
+  const isNode = typeof global !== 'undefined' && {}.toString.call(global) === '[object global]';
+  if (isNode) {
+    const anyGlobal: any = global;
+    if (anyGlobal && anyGlobal.WebSocket) {
+      return anyGlobal.WebSocket;
     }
-    throw new Error('WebSocket API is not found');
+    if (wsProvider) {
+      return wsProvider();
+    }
+  }
+  throw new Error('WebSocket API is not found');
 }

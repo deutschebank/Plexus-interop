@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,77 +14,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InMemoryCache } from '../../src/cache/InMemoryCache';
-import { CacheEntry } from '../../src/cache/CacheEntry';
 import { expect } from 'chai';
 
+import { CacheEntry } from '../../src/cache/CacheEntry';
+import { InMemoryCache } from '../../src/cache/InMemoryCache';
+
 describe('InMemoryCache', () => {
-    
-    const key = 'key';
-    const value = {
-        x: 10
-    };
+  const key = 'key';
+  const value = {
+    x: 10,
+  };
 
-    it('It can store element without expiration', (done) => {
-        const sut = new InMemoryCache();
-        sut.set(key, new CacheEntry(value));
-        setTimeout(() => {
-            expect(sut.get(key)).to.deep.eq(value);
-            done();
-        }, 50);
-    });
+  it('It can store element without expiration', (done) => {
+    const sut = new InMemoryCache();
+    sut.set(key, new CacheEntry(value));
+    setTimeout(() => {
+      expect(sut.get(key)).to.deep.eq(value);
+      done();
+    }, 50);
+  });
 
-    it('I evicts value on expiration time', (done) => {
-        const sut = new InMemoryCache();
-        sut.set(key, new CacheEntry(value, 1));
-        setTimeout(() => {
-            expect(sut.get(key)).to.be.undefined;
-            done();
-        }, 50);
-    });
+  it('I evicts value on expiration time', (done) => {
+    const sut = new InMemoryCache();
+    sut.set(key, new CacheEntry(value, 1));
+    setTimeout(() => {
+      expect(sut.get(key)).to.be.undefined;
+      done();
+    }, 50);
+  });
 
-    it('It calls callback on value eviction', (done) => {
-        const sut = new InMemoryCache();
-        sut.set(key, new CacheEntry(value, 5, () => {
-            done();
-        }));
-    });
+  it('It calls callback on value eviction', (done) => {
+    const sut = new InMemoryCache();
+    sut.set(
+      key,
+      new CacheEntry(value, 5, () => {
+        done();
+      })
+    );
+  });
 
-    it('It can check whether value exist or not', () => {
-        const sut = new InMemoryCache();
-        sut.set(key, new CacheEntry(value));
-        expect(sut.has(key)).to.be.true;
-        expect(sut.has('123')).to.be.false;
-    });
+  it('It can check whether value exist or not', () => {
+    const sut = new InMemoryCache();
+    sut.set(key, new CacheEntry(value));
+    expect(sut.has(key)).to.be.true;
+    expect(sut.has('123')).to.be.false;
+  });
 
-    it('It returns all not expired keys', () => {
+  it('It returns all not expired keys', () => {
+    const sut = new InMemoryCache();
+    const keys = ['k', 'k2'];
 
-        const sut = new InMemoryCache();
-        const keys = ['k', 'k2'];
+    keys.forEach((k) => sut.set(k, new CacheEntry(value)));
 
-        keys.forEach(k => sut.set(k, new CacheEntry(value)))
-        
-        const receivedKeys = sut.keys();
+    const receivedKeys = sut.keys();
 
-        expect(receivedKeys.length).to.eq(2);
-        expect(receivedKeys.indexOf('k') > -1).to.be.true;
-        expect(receivedKeys.indexOf('k2') > -1).to.be.true;
+    expect(receivedKeys.length).to.eq(2);
+    expect(receivedKeys.indexOf('k') > -1).to.be.true;
+    expect(receivedKeys.indexOf('k2') > -1).to.be.true;
+  });
 
-    });
-
-    it('It can restart eviction timer with ttl reset', (done) => {
-        const sut = new InMemoryCache();
-        sut.set(key, new CacheEntry(value, 150));
-        setTimeout(() => {
-            expect(sut.get(key)).to.not.be.undefined;
-            sut.resetTtl(key);
-            setTimeout(() => {
-                // still must be there
-                expect(sut.get(key)).to.not.be.undefined;
-                done();            
-            }, 100);
-        }, 100);
-    });
-
-
+  it('It can restart eviction timer with ttl reset', (done) => {
+    const sut = new InMemoryCache();
+    sut.set(key, new CacheEntry(value, 150));
+    setTimeout(() => {
+      expect(sut.get(key)).to.not.be.undefined;
+      sut.resetTtl(key);
+      setTimeout(() => {
+        // still must be there
+        expect(sut.get(key)).to.not.be.undefined;
+        done();
+      }, 100);
+    }, 100);
+  });
 });

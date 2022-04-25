@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UniqueId } from '@plexus-interop/protocol';
-import { clientProtocol as plexus } from '@plexus-interop/protocol';
+import { clientProtocol as plexus, UniqueId } from '@plexus-interop/protocol';
 
 export interface BaseChannel<ObserverType> {
+  uuid(): UniqueId;
 
-    uuid(): UniqueId;
+  sendMessage(data: ArrayBuffer): Promise<void>;
 
-    sendMessage(data: ArrayBuffer): Promise<void>;
+  open(observer: ObserverType): void;
 
-    open(observer: ObserverType): void;
-
-    close(completion?: plexus.ICompletion): Promise<plexus.ICompletion>;
-
+  close(completion?: plexus.ICompletion): Promise<plexus.ICompletion>;
 }

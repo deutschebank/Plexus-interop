@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,55 +14,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { AnonymousSubscription, Logger, LoggerFactory, Observer, Subscription } from '@plexus-interop/common';
+
+import { BufferedObserver, Defaults } from '../common';
 import { DuplexConnectionFactory } from './DuplexConnectionFactory';
-import { Observer, Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
-import { TransportConnection, Defaults, Frame, FramedTransportConnection } from '../.';
+import { FramedTransportConnection } from './frame/FramedTransportConnection';
+import { Frame } from './frame/model/Frame';
 import { InMemoryFramedTransport } from './InMemoryFramedTransport';
-import { BufferedObserver } from '../common';
+import { TransportConnection } from './TransportConnection';
 
 /**
  * Creates pair of coupled in memory connections for each Client's connect request
  */
 export class InMemoryConnectionFactory implements DuplexConnectionFactory {
+  private readonly log: Logger = LoggerFactory.getLogger('InMemoryConnectionFactory');
 
-    private readonly log: Logger = LoggerFactory.getLogger('InMemoryConnectionFactory');
+  private serverConnectionsObserver: BufferedObserver<TransportConnection> = new BufferedObserver<TransportConnection>(
+    Defaults.DEFAULT_BUFFER_SIZE,
+    this.log
+  );
 
-    private serverConnectionsObserver: BufferedObserver<TransportConnection> =
-        new BufferedObserver<TransportConnection>(Defaults.DEFAULT_BUFFER_SIZE, this.log);
+  public async connect(): Promise<TransportConnection> {
+    const [client] = await this.connectBoth();
+    return client;
+  }
 
-    public async connect(): Promise<TransportConnection> {
-        const [client] = await this.connectBoth();
-        return client;
-    }
+  public async connectBoth(): Promise<[TransportConnection, TransportConnection]> {
+    const clientInObserver: BufferedObserver<Frame> = new BufferedObserver(Defaults.DEFAULT_BUFFER_SIZE, this.log);
+    const serverInObserver: BufferedObserver<Frame> = new BufferedObserver(Defaults.DEFAULT_BUFFER_SIZE, this.log);
 
-    public async connectBoth(): Promise<[TransportConnection, TransportConnection]> {
-        const clientInObserver: BufferedObserver<Frame> = new BufferedObserver(Defaults.DEFAULT_BUFFER_SIZE, this.log);
-        const serverInObserver: BufferedObserver<Frame> = new BufferedObserver(Defaults.DEFAULT_BUFFER_SIZE, this.log);
+    const serverTransportConnection = new FramedTransportConnection(
+      new InMemoryFramedTransport(serverInObserver, clientInObserver)
+    );
 
-        const serverTransportConnection =
-            new FramedTransportConnection(new InMemoryFramedTransport(serverInObserver, clientInObserver));
+    const clientTransportConnection = new FramedTransportConnection(
+      new InMemoryFramedTransport(clientInObserver, serverInObserver)
+    );
 
-        const clientTransportConnection =
-            new FramedTransportConnection(new InMemoryFramedTransport(clientInObserver, serverInObserver));
-
-        if (this.log.isDebugEnabled()) {
-            this.log.debug(`Created pair of connections: 
+    if (this.log.isDebugEnabled()) {
+      this.log.debug(`Created pair of connections: 
                 Client [${clientTransportConnection.uuid().toString()}] 
                 Server [${serverTransportConnection.uuid().toString()}]`);
-        }
-
-        await clientTransportConnection.connect();
-        await serverTransportConnection.acceptingConnection();
-
-        this.serverConnectionsObserver.next(serverTransportConnection);
-
-        return [clientTransportConnection, serverTransportConnection];
     }
 
-    public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
-        this.log.debug('Received accept connections request');
-        this.serverConnectionsObserver.setObserver(connectionsObserver);
-        return new AnonymousSubscription();
-    }
+    await clientTransportConnection.connect();
+    await serverTransportConnection.acceptingConnection();
 
+    this.serverConnectionsObserver.next(serverTransportConnection);
+
+    return [clientTransportConnection, serverTransportConnection];
+  }
+
+  public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
+    this.log.debug('Received accept connections request');
+    this.serverConnectionsObserver.setObserver(connectionsObserver);
+    return new AnonymousSubscription();
+  }
 }

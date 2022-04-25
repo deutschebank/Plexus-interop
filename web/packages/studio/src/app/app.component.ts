@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { AppActions } from './services/ui/AppActions';
+import { AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { LoggerFactory, LogLevel, Logger, TimeUtils } from '@plexus-interop/common';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ElementRef, Renderer2 } from '@angular/core';
+
+import { Logger, LoggerFactory, LogLevel, TimeUtils } from '@plexus-interop/common';
+
+import { AppActions } from './services/ui/AppActions';
 import { State } from './services/ui/RootReducers';
-import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
-
-  @ViewChild('plexusLogsArea') logsTextArea: ElementRef;
+  @ViewChild('plexusLogsArea', { static: true }) logsTextArea: ElementRef;
 
   title = 'Plexus Studio';
   plexusLogs = '';
   autoScrollEnabled: boolean = true;
   logsEnabled: boolean = true;
 
-  constructor(private store: Store<State>) { }
+  constructor(private store: Store<State>) {}
 
   private loggerDelegateRegistration: { unregister: () => void };
 
@@ -75,7 +74,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private filterEmptyArgs(arr: any[]): any[] {
     arr = arr || [];
-    return arr.filter(el => !!el && !(Array.isArray(el) && el.length === 0));
+    return arr.filter((el) => !!el && !(Array.isArray(el) && el.length === 0));
   }
 
   private createUiLoggerDelegate(): { unregister: () => void } {
@@ -98,7 +97,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
         } else {
           this.plexusLogs = message;
         }
-      }
+      },
     });
   }
 }

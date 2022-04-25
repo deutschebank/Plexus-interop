@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,46 +14,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StreamingInvocationClient, ValueHandler, InvocationClient, MethodDiscoveryResponse, MethodDiscoveryRequest, DiscoveredMethod, InvocationObserver } from '@plexus-interop/client';
+import {
+  DiscoveredMethod,
+  InvocationClient,
+  InvocationObserver,
+  MethodDiscoveryRequest,
+  MethodDiscoveryResponse,
+  StreamingInvocationClient,
+  ValueHandler,
+} from '@plexus-interop/client';
 import { ConsumedMethod, ProvidedMethod } from '@plexus-interop/metadata';
-import { UnaryStringHandler, ServerStreamingStringHandler, BidiStreamingStringHandler } from './StringHandlers';
+
+import { BidiStreamingStringHandler, ServerStreamingStringHandler, UnaryStringHandler } from './StringHandlers';
 
 export interface InteropClient {
+  // core
 
-    // core
+  getConnectionStrId(): string;
 
-    getConnectionStrId(): string; 
+  discoverMethod(discoveryRequest: MethodDiscoveryRequest): Promise<MethodDiscoveryResponse>;
 
-    discoverMethod(discoveryRequest: MethodDiscoveryRequest): Promise<MethodDiscoveryResponse>;
+  discoverAllMethods(consumedMethod: ConsumedMethod): Promise<MethodDiscoveryResponse>;
 
-    discoverAllMethods(consumedMethod: ConsumedMethod): Promise<MethodDiscoveryResponse>;
+  disconnect(): Promise<void>;
 
-    disconnect(): Promise<void>;
+  createDefaultPayload(messageId: string): string;
 
-    createDefaultPayload(messageId: string): string;
+  createPayloadPreview(messageId: string, jsonPayload: string): string;
 
-    createPayloadPreview(messageId: string, jsonPayload: string): string;
+  validateRequest(methodToInvoke: DiscoveredMethod | ConsumedMethod | ProvidedMethod, payload: string): void;
 
-    validateRequest(methodToInvoke: DiscoveredMethod | ConsumedMethod | ProvidedMethod, payload: string): void;
+  resetInvocationHandlers(): void;
 
-    resetInvocationHandlers(): void;
+  // unary
 
-    // unary
+  sendUnaryRequest(
+    methodToInvoke: DiscoveredMethod | ConsumedMethod,
+    requestJson: string,
+    responseHandler: ValueHandler<string>
+  ): Promise<InvocationClient>;
 
-    sendUnaryRequest(methodToInvoke: DiscoveredMethod | ConsumedMethod, requestJson: string, responseHandler: ValueHandler<string>): Promise<InvocationClient>;
+  setUnaryActionHandler(serviceId: string, methodId: string, alias: string, handler: UnaryStringHandler): void;
 
-    setUnaryActionHandler(serviceId: string, methodId: string, alias: string, handler: UnaryStringHandler): void;
+  // server streaming
 
-    // server streaming
+  sendServerStreamingRequest(
+    methodToInvoke: DiscoveredMethod | ConsumedMethod,
+    requestJson: string,
+    responseObserver: InvocationObserver<string>
+  ): Promise<InvocationClient>;
 
-    sendServerStreamingRequest(methodToInvoke: DiscoveredMethod | ConsumedMethod, requestJson: string, responseObserver: InvocationObserver<string>): Promise<InvocationClient>;
+  setServerStreamingActionHandler(
+    serviceId: string,
+    methodId: string,
+    alias: string,
+    handler: ServerStreamingStringHandler
+  ): void;
 
-    setServerStreamingActionHandler(serviceId: string, methodId: string, alias: string, handler: ServerStreamingStringHandler): void;
+  // bidi streaming
 
-    // bidi streaming
+  sendBidiStreamingRequest(
+    methodToInvoke: DiscoveredMethod | ConsumedMethod,
+    responseObserver: InvocationObserver<string>
+  ): Promise<StreamingInvocationClient<string>>;
 
-    sendBidiStreamingRequest(methodToInvoke: DiscoveredMethod | ConsumedMethod, responseObserver: InvocationObserver<string>): Promise<StreamingInvocationClient<string>>;
-
-    setBidiStreamingActionHandler(serviceId: string, methodId: string, alias: string, handler: BidiStreamingStringHandler): void;    
-
+  setBidiStreamingActionHandler(
+    serviceId: string,
+    methodId: string,
+    alias: string,
+    handler: BidiStreamingStringHandler
+  ): void;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,34 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelObserver } from './ChannelObserver';
-import { AnonymousSubscription } from 'rxjs/Subscription';
+import { Unsubscribable as AnonymousSubscription } from 'rxjs';
+
 import { Observer } from '@plexus-interop/common';
 
+import { ChannelObserver } from './ChannelObserver';
+
 export class DelegateChannelObserver<T> implements ChannelObserver<AnonymousSubscription, T> {
+  constructor(
+    private baseObserver: Observer<T>,
+    private subscriptionHandler: (subscription: AnonymousSubscription) => void,
+    private startFailedHandler: (error: any) => void = () => {}
+  ) {}
 
-    constructor(private baseObserver: Observer<T>,
-                private subscriptionHandler: (subscription: AnonymousSubscription) => void,
-                private startFailedHandler: (error: any) => void = () => {}) {}
+  public started(subscription: AnonymousSubscription): void {
+    this.subscriptionHandler(subscription);
+  }
 
-    public started(subscription: AnonymousSubscription): void {
-        this.subscriptionHandler(subscription);
-    }
+  public next(value: T): void {
+    this.baseObserver.next(value);
+  }
 
-    public next(value: T): void {
-        this.baseObserver.next(value);
-    }
+  public error(err: any): void {
+    this.baseObserver.error(err);
+  }
 
-    public error(err: any): void {
-        this.baseObserver.error(err);
-    }
+  public complete(): void {
+    this.baseObserver.complete();
+  }
 
-    public complete(): void {
-        this.baseObserver.complete();
-    }
-
-    public startFailed(error: any): void {
-        this.startFailedHandler(error);
-    }
-
+  public startFailed(error: any): void {
+    this.startFailedHandler(error);
+  }
 }

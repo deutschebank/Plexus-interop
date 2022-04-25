@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropPlatform } from '.';
 import { PlexusInteropPlatform } from '../PlexusInteropPlatform';
-
-export interface InteropPlatformConfig {
-    webSocketUrl: string;
-}
+import { InteropPlatform } from './client-api';
+import { InteropPlatformConfig } from './InteropPlatformConfig';
 
 export class InteropPlatformFactory {
-
-    public createPlatform(config: InteropPlatformConfig): InteropPlatform {
-        return new PlexusInteropPlatform(config);
-    }
-
+  public createPlatform(config: InteropPlatformConfig): InteropPlatform {
+    return new PlexusInteropPlatform(config);
+  }
 }

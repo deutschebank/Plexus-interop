@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function randomPayload(length?: number): ArrayBuffer {
-    length = length || 10;
-    const array = new Array(length).fill('').map(_ => randomInt(1, 10));
-    return new Uint8Array(array).buffer;
+export function randomPayload(length: number = 10): ArrayBuffer {
+  const array = new Array(length).fill('').map(() => randomInt(1, 10));
+  return new Uint8Array(array).buffer;
 }
 
 export function randomInt(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
 }

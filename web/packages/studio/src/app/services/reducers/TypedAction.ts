@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,9 @@
 import { Action } from '@ngrx/store';
 
 export interface TypedAction<P> extends Action {
-    payload: P;
-};
+  payload: P;
+}
 
 export function getPayload<T>(action: Action): T {
-    return (<TypedAction<T>>action).payload;
-};
+  return (<TypedAction<T>>action).payload;
+}

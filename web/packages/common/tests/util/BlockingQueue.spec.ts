@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,14 @@
 import { BlockingQueueBase } from '../../src/util/collections/BlockingQueue';
 
 describe('BlockingQueue', () => {
+  const sut = new BlockingQueueBase();
 
-    const sut = new BlockingQueueBase();
-
-    it('Should wait until element appears', (done) => {
-        const el = 'test';
-        sut.blockingDequeue().then(res => {
-            expect(res).toBe(el);
-            done();
-        });
-        setTimeout(() => sut.enqueue(el), 30);
+  it('Should wait until element appears', (done) => {
+    const el = 'test';
+    sut.blockingDequeue().then((res) => {
+      expect(res).toBe(el);
+      done();
     });
-
+    setTimeout(() => sut.enqueue(el), 30);
+  });
 });

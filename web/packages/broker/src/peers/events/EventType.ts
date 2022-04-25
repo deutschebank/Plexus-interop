@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,11 @@
  */
 import { AppConnectionHeartBit } from './AppConnectionHeartBit';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class EventType<PayloadType> {
-    
-    // tslint:disable-next-line:variable-name
-    public static readonly AppConnectionHearBit: EventType<AppConnectionHeartBit> = new EventType<AppConnectionHeartBit>('AppConnection');
+  public static readonly AppConnectionHearBit: EventType<AppConnectionHeartBit> = new EventType<AppConnectionHeartBit>(
+    'AppConnection'
+  );
 
-    constructor(public readonly id: string) {}
-    
+  constructor(public readonly id: string) {}
 }

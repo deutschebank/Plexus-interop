@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { StreamingInvocationClient, InvocationObserver, MethodInvocationContext  } from '@plexus-interop/client';
+import { InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 import { Marshaller } from '@plexus-interop/io';
 
 export type UnaryStringHandler = (invocationContext: MethodInvocationContext, requestJson: string) => Promise<string>;
-export type ServerStreamingStringHandler = (invocationContext: MethodInvocationContext, request: string, invocationHostClient: StreamingInvocationClient<string>) => void;
-export type BidiStreamingStringHandler = (invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<string>) => InvocationObserver<string>;
+export type ServerStreamingStringHandler = (
+  invocationContext: MethodInvocationContext,
+  request: string,
+  invocationHostClient: StreamingInvocationClient<string>
+) => void;
+export type BidiStreamingStringHandler = (
+  invocationContext: MethodInvocationContext,
+  invocationHostClient: StreamingInvocationClient<string>
+) => InvocationObserver<string>;
 
-export function wrapGenericHostClient(base: StreamingInvocationClient<ArrayBuffer>, marshaller: Marshaller<any, ArrayBuffer>): StreamingInvocationClient<string> {
-    return {
-        complete: () => base.complete(),
-        next: async v => base.next(marshaller.encode(JSON.parse(v))),
-        error: e => base.error(e),
-        cancel: () => base.cancel()
-    };
+export function wrapGenericHostClient(
+  base: StreamingInvocationClient<ArrayBuffer>,
+  marshaller: Marshaller<any, ArrayBuffer>
+): StreamingInvocationClient<string> {
+  return {
+    complete: () => base.complete(),
+    next: async (v) => base.next(marshaller.encode(JSON.parse(v))),
+    error: (e) => base.error(e),
+    cancel: () => base.cancel(),
+  };
 }
 
-export function toGenericObserver(base: InvocationObserver<string>, decoder: Marshaller<any, ArrayBuffer>): InvocationObserver<ArrayBuffer> {
-    return {
-        next: v => base.next(JSON.stringify(decoder.decode(v))),
-        complete: () => base.complete(),
-        error: e => base.error(e),
-        streamCompleted: () => base.streamCompleted()
-    };
+export function toGenericObserver(
+  base: InvocationObserver<string>,
+  decoder: Marshaller<any, ArrayBuffer>
+): InvocationObserver<ArrayBuffer> {
+  return {
+    next: (v) => base.next(JSON.stringify(decoder.decode(v))),
+    complete: () => base.complete(),
+    error: (e) => base.error(e),
+    streamCompleted: () => base.streamCompleted(),
+  };
 }

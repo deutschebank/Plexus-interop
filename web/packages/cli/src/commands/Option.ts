@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 export interface Option {
-    shortName: string;
-    longName: string;
-    exampleValue?: string;
-    description?: string;
-    isFlag?: boolean;
-    isRequired?: boolean;
-    defaultValue?: any;
+  shortName: string;
+  longName: string;
+  exampleValue?: string;
+  description?: string;
+  isFlag?: boolean;
+  isRequired?: boolean;
+  defaultValue?: any;
 }
 
 export function getFlags(o: Option): string {
-    return !!o.isRequired ? `-${o.shortName}, --${o.longName} <${o.longName}>`
-            : !!o.isFlag ? `-${o.shortName}, --${o.longName}` 
-                : `-${o.shortName}, --${o.longName} [${o.longName}]`;
+  if (o.isRequired) {
+    return `-${o.shortName}, --${o.longName} <${o.longName}>`;
+  }
+  return o.isFlag ? `-${o.shortName}, --${o.longName}` : `-${o.shortName}, --${o.longName} [${o.longName}]`;
 }

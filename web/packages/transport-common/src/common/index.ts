@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,5 @@ export * from './BaseChannel';
 export * from './Defaults';
 export * from './ChannelObserver';
 export * from './DelegateChannelObserver';
-export * from './Defaults';
 export * from './BufferedObserver';
 export * from './PlexusObserver';

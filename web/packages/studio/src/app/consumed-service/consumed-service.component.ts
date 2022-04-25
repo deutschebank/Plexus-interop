@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,35 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InteropClient } from '../services/core/InteropClient';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AppActions } from '../services/ui/AppActions';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { filter, map } from 'rxjs/operators';
+
+import {
+  ConsumedService,
+  DiscoveredMethod,
+  InvocationClient,
+  MethodType,
+  StreamingInvocationClient,
+} from '@plexus-interop/client';
+import { Logger, LoggerFactory, pop, uniqueId } from '@plexus-interop/common';
+import { ConsumedMethod } from '@plexus-interop/metadata';
+import { UniqueId } from '@plexus-interop/protocol';
+
+import { InteropClient } from '../services/core/InteropClient';
+import { createInvocationLogger } from '../services/core/invocation-utils';
+import { AppActions } from '../services/ui/AppActions';
 import * as fromRoot from '../services/ui/RootReducers';
 import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
-import { ConsumedMethod } from '@plexus-interop/metadata';
-import { DiscoveredMethod, MethodType, StreamingInvocationClient, ConsumedService, InvocationClient } from '@plexus-interop/client';
-import { UniqueId } from '@plexus-interop/protocol';
-import { Logger, LoggerFactory, pop, uniqueId } from '@plexus-interop/common';
-import { createInvocationLogger } from '../services/core/invocation-utils';
-import { FormControl } from '@angular/forms';
 import { plexusMessageValidator } from '../services/ui/validators';
 
 type InvocationProfile = {
-  id: string,
-  client: InvocationClient,
-  logger: Logger,
-  started: number
+  id: string;
+  client: InvocationClient;
+  logger: Logger;
+  started: number;
 };
 
 @Component({
   selector: 'app-consumed-service',
   templateUrl: './consumed-service.component.html',
   styleUrls: ['./consumed-service.component.css'],
-  providers: [SubscriptionsRegistry]
+  providers: [SubscriptionsRegistry],
 })
 export class ConsumedServiceComponent implements OnInit, OnDestroy {
-
   private readonly log: Logger = LoggerFactory.getLogger('ConsumedServiceComponent');
 
   private interopClient: InteropClient;
@@ -51,7 +59,7 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   public title: string;
 
   private activeInvocationsMap: Map<string, InvocationProfile> = new Map();
-  private selectedDiscoveredMethod: DiscoveredMethod;
+  public selectedDiscoveredMethod: DiscoveredMethod;
 
   messageContent: string;
   messageContentControl: FormControl = new FormControl('{}');
@@ -59,21 +67,19 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   messagesToSend: number = 1;
   messagesPeriodInMillis: number = 200;
 
-  constructor(
-    private store: Store<fromRoot.State>,
-    private subscriptions: SubscriptionsRegistry) {
-  }
+  constructor(private store: Store<fromRoot.State>, private subscriptions: SubscriptionsRegistry) {}
 
   ngOnInit() {
-    this.messageContent = ''
-    const consumedMethod$ = this.store
-      .filter(state => !!state.plexus.consumedMethod)
-      .map(state => state.plexus);
+    this.messageContent = '';
+    const consumedMethod$ = this.store.pipe(
+      filter((state) => !!state.plexus.consumedMethod),
+      map((state) => state.plexus)
+    );
 
     this.subscriptions.add(
       consumedMethod$
-        .filter(state => !!state.consumedMethod && !!state.services.interopClient)
-        .subscribe(state => {
+        .pipe(filter((state) => !!state.consumedMethod && !!state.services.interopClient))
+        .subscribe((state) => {
           this.selectedDiscoveredMethod = undefined;
           this.interopClient = state.services.interopClient;
           this.discoveredMethods = state.consumedMethod.discoveredMethods.methods;
@@ -81,9 +87,10 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
           this.title = this.getTitle(this.consumedMethod);
           this.createDefaultMessage();
           this.messageContentControl.setValidators([
-            plexusMessageValidator('messageContentControl', this.interopClient, this.consumedMethod)
+            plexusMessageValidator('messageContentControl', this.interopClient, this.consumedMethod),
           ]);
-        }));
+        })
+    );
   }
 
   ngOnDestroy() {
@@ -91,7 +98,9 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   }
 
   getTitle(consumedMethod: ConsumedMethod): string {
-    return `Consumed Method - ${consumedMethod.consumedService.service.id}${this.getLabel(consumedMethod.consumedService.service)}.${consumedMethod.method.name}`;
+    return `Consumed Method - ${consumedMethod.consumedService.service.id}${this.getLabel(
+      consumedMethod.consumedService.service
+    )}.${consumedMethod.method.name}`;
   }
 
   getLabel(service: ConsumedService): string {
@@ -101,7 +110,8 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   handleResponse(responseJson: string, logger: Logger, started: number) {
     logger.info(
       `Message received after ${new Date().getTime() - started}ms:
-      ${responseJson}`);
+      ${responseJson}`
+    );
   }
 
   handleError(e: any, logger: Logger, invocationId: string) {
@@ -128,23 +138,32 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
 
   async discoverMethods() {
     const discovered = await this.interopClient.discoverAllMethods(this.consumedMethod);
-    this.store.dispatch({ type: AppActions.DISCOVER_METHODS_SUCCESS, payload: discovered });
+    this.store.dispatch({
+      type: AppActions.DISCOVER_METHODS_SUCCESS,
+      payload: discovered,
+    });
   }
 
   payloadPreview() {
     if ((!this.selectedDiscoveredMethod && !this.consumedMethod) || !this.interopClient) {
-      return "";
+      return '';
     }
-    const messageId = this.selectedDiscoveredMethod ? this.selectedDiscoveredMethod.inputMessageId : this.consumedMethod.method.requestMessage.id;
+    const messageId = this.selectedDiscoveredMethod
+      ? this.selectedDiscoveredMethod.inputMessageId
+      : this.consumedMethod.method.requestMessage.id;
     return this.interopClient.createPayloadPreview(messageId, this.messageContent);
   }
 
   async sendRequest() {
-
     const method = this.selectedDiscoveredMethod || this.consumedMethod;
 
     const invocationId = uniqueId();
-    const invocationLogger = createInvocationLogger(this.consumedMethod.method.type, invocationId, this.log, this.selectedDiscoveredMethod);
+    const invocationLogger = createInvocationLogger(
+      this.consumedMethod.method.type,
+      invocationId,
+      this.log,
+      this.selectedDiscoveredMethod
+    );
 
     invocationLogger.info(`Request JSON payload: ${this.messageContent}`);
     invocationLogger.info(`Request binary payload: ${this.payloadPreview()}`);
@@ -152,16 +171,16 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
     const started = new Date().getTime();
 
     const handler = {
-      value: v => this.handleResponse(v, invocationLogger, started),
-      error: e => this.handleError(e, invocationLogger, invocationId)
+      value: (v) => this.handleResponse(v, invocationLogger, started),
+      error: (e) => this.handleError(e, invocationLogger, invocationId),
     };
 
     const responseObserver = {
-      next: r => this.handleResponse(r, invocationLogger, started),
-      error: e => this.handleError(e, invocationLogger, invocationId),
+      next: (r) => this.handleResponse(r, invocationLogger, started),
+      error: (e) => this.handleError(e, invocationLogger, invocationId),
       complete: () => this.handleCompleted(invocationLogger, invocationId),
-      streamCompleted: () => this.handleStreamCompleted(invocationLogger)
-    }
+      streamCompleted: () => this.handleStreamCompleted(invocationLogger),
+    };
 
     invocationLogger.info('Starting invocation');
 
@@ -172,13 +191,23 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
           invocationClient = await this.interopClient.sendUnaryRequest(method, this.messageContent, handler);
           break;
         case MethodType.ServerStreaming:
-          invocationClient = await this.interopClient.sendServerStreamingRequest(method, this.messageContent, responseObserver);
+          invocationClient = await this.interopClient.sendServerStreamingRequest(
+            method,
+            this.messageContent,
+            responseObserver
+          );
           break;
         case MethodType.ClientStreaming:
         case MethodType.DuplexStreaming:
           const streamingClient = await this.interopClient.sendBidiStreamingRequest(method, responseObserver);
           invocationClient = streamingClient;
-          this.sendAndSchedule(this.messageContent, this.messagesToSend, this.messagesPeriodInMillis, streamingClient, invocationLogger);
+          this.sendAndSchedule(
+            this.messageContent,
+            this.messagesToSend,
+            this.messagesPeriodInMillis,
+            streamingClient,
+            invocationLogger
+          );
           break;
       }
       if (this.consumedMethod.method.type !== MethodType.Unary) {
@@ -186,13 +215,12 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
           id: invocationId,
           client: invocationClient,
           logger: invocationLogger,
-          started
+          started,
         });
       }
     } catch (error) {
       this.handleError(error, invocationLogger, invocationId);
     }
-
   }
 
   isUnary() {
@@ -200,11 +228,17 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   }
 
   isClientStreaming() {
-    return this.consumedMethod.method.type === MethodType.ClientStreaming || this.consumedMethod.method.type === MethodType.DuplexStreaming;
+    return (
+      this.consumedMethod.method.type === MethodType.ClientStreaming ||
+      this.consumedMethod.method.type === MethodType.DuplexStreaming
+    );
   }
 
   isServerStreaming() {
-    return this.consumedMethod.method.type === MethodType.ServerStreaming || this.consumedMethod.method.type === MethodType.DuplexStreaming;
+    return (
+      this.consumedMethod.method.type === MethodType.ServerStreaming ||
+      this.consumedMethod.method.type === MethodType.DuplexStreaming
+    );
   }
 
   public hasRunningInvocations() {
@@ -229,7 +263,8 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
     leftToSend: number,
     intervalInMillis: number,
     client: StreamingInvocationClient<string>,
-    logger: Logger) {
+    logger: Logger
+  ) {
     if (leftToSend > 0) {
       logger.info(`Sending:\n${message}`);
       client.next(message);
@@ -247,7 +282,7 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
     const aliasPostfix = alias ? ` (${alias})` : '';
     const connectionId = providedMethod.providedMethod.providedService.connectionId;
     const guidPostfix = connectionId && connectionId.hi ? ` - ${UniqueId.fromProperties(connectionId).toString()}` : '';
-    return `${providedMethod.providedMethod.providedService.applicationId}${aliasPostfix}${guidPostfix}`
+    return `${providedMethod.providedMethod.providedService.applicationId}${aliasPostfix}${guidPostfix}`;
   }
 
   format(data) {
@@ -263,5 +298,4 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   formatAndUpdateArea() {
     this.messageContent = this.format(this.messageContent);
   }
-
 }

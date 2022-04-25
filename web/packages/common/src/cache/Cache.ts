@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,30 +17,28 @@
 import { CacheEntry } from './CacheEntry';
 
 export interface Cache {
+  /*
+   * Sets new entry for specific key, if entry already exists - then it will be evicted with calling appropriate dispose method
+   */
+  set<T>(key: string, entry: CacheEntry<T>): Promise<void>;
 
-    /*
-    * Sets new entry for specific key, if entry already exists - then it will be evicted with calling appropriate dispose method
-    */
-    set<T>(key: string, entry: CacheEntry<T>): Promise<void>;
+  /**
+   * Gets current entry
+   */
+  get<T>(key: string): T | undefined;
 
-    /**
-     * Gets current entry
-     */
-    get<T>(key: string): T | undefined;
+  /**
+   * Resets ttl for corresponding entry
+   */
+  resetTtl(key: string): boolean;
 
-    /**
-     * Resets ttl for corresponding entry
-     */
-    resetTtl(key: string): boolean;
+  /*
+   * Gets all not expired keys
+   */
+  keys(): string[];
 
-    /*
-    * Gets all not expired keys
-    */
-    keys(): string[];
-
-    /**
-     * Checks if element exists in cache
-     */
-    has(key: string): boolean;
-
+  /**
+   * Checks if element exists in cache
+   */
+  has(key: string): boolean;
 }

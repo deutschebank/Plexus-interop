@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,22 +20,21 @@ import { readWsUrl } from '../common/utils';
 import { DynamicInvocationTests } from '../echo/DynamicInvocationTests';
 
 describe('Client: Web Socket Dynamic invocation', () => {
+  const clientsSetup = new ClientsSetup();
+  const transportsSetup = new TransportsSetup();
 
-    const clientsSetup = new ClientsSetup();
-    const transportsSetup = new TransportsSetup();
+  const wsUrl = readWsUrl();
 
-    const wsUrl = readWsUrl();    
-    
-    const dynamicInvocationTests = new DynamicInvocationTests(
-        transportsSetup.createWebSocketTransportProvider(wsUrl),
-        clientsSetup);
+  const dynamicInvocationTests = new DynamicInvocationTests(
+    transportsSetup.createWebSocketTransportProvider(wsUrl),
+    clientsSetup
+  );
 
-    it('Sends dynamic unary invocation and receives response', function() {
-        return dynamicInvocationTests.testClientCanSendDynamicPointToPointRequest();
-    });
+  it('Sends dynamic unary invocation and receives response', function () {
+    return dynamicInvocationTests.testClientCanSendDynamicPointToPointRequest();
+  });
 
-    it('Sends dynamic streaming invocation and receives response', function() {
-        return dynamicInvocationTests.testClientCanSendDynamicStreamingRequest();
-    });
-
+  it('Sends dynamic streaming invocation and receives response', function () {
+    return dynamicInvocationTests.testClientCanSendDynamicStreamingRequest();
+  });
 });

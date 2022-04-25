@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,18 @@
  * limitations under the License.
  */
 import { LoggerFactory, LogLevel } from '@plexus-interop/common';
+import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+
+import { DomLogger } from '../../common/DomLogger';
+import * as plexus from './gen/plexus-messages';
+import { WebGreetingServerClientBuilder } from './WebGreetingServerGeneratedClient';
 
 LoggerFactory.setLogLevel(LogLevel.TRACE);
 
-import { WebGreetingServerClientBuilder } from './WebGreetingServerGeneratedClient';
-import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
+declare let window: any;
 
-import * as plexus from './gen/plexus-messages';
-import { DomLogger } from '../../common/DomLogger';
-
-declare var window: any;
-
-const electron = window.require('electron')
-const remote = electron.remote;
+const electron = window.require('electron');
+const { remote } = electron;
 const log = new DomLogger('out');
 const windowAny: any = remote.getCurrentWindow();
 const wsUrl = windowAny.plexusBrokerWsUrl;
@@ -37,34 +36,32 @@ log.info(`Received Web Socket URL - ${wsUrl}`);
 log.info(`Received App Instance ID - ${instanceId.toString()}`);
 
 // Reload and Dev tools hot keys
-document.addEventListener('keydown', function (e) {
-    if (e.which === 123) {
-        // F12
-        windowAny.toggleDevTools();
-    } else if (e.which === 116) {
-        // F5
-        location.reload();
-    }
+document.addEventListener('keydown', (e) => {
+  if (e.which === 123) {
+    // F12
+    windowAny.toggleDevTools();
+  } else if (e.which === 116) {
+    // F5
+    location.reload();
+  }
 });
 
 new WebGreetingServerClientBuilder()
-    .withGreetingServiceInvocationsHandler({
-        onUnary: async (invocationContext, request: plexus.interop.samples.IGreetingRequest) => {
-            log.info(`Received greeting request - ${request.name}`);
-            return {
-                greeting: `Hey, ${request.name}!`
-            };
-        }
-    })
-    .withClientDetails({
-        applicationId: 'interop.samples.WebGreetingServer',
-        applicationInstanceId: instanceId
-    })
-    .withTransportConnectionProvider(() => new WebSocketConnectionFactory(new WebSocket(wsUrl)).connect())
-    .connect()
-    .then(() => log.info('Connected to Broker'))
-    .catch(e => {
-        log.error('Failed to connect');
-    });
-
-
+  .withGreetingServiceInvocationsHandler({
+    onUnary: async (invocationContext, request: plexus.interop.samples.IGreetingRequest) => {
+      log.info(`Received greeting request - ${request.name}`);
+      return {
+        greeting: `Hey, ${request.name}!`,
+      };
+    },
+  })
+  .withClientDetails({
+    applicationId: 'interop.samples.WebGreetingServer',
+    applicationInstanceId: instanceId,
+  })
+  .withTransportConnectionProvider(() => new WebSocketConnectionFactory(new WebSocket(wsUrl)).connect())
+  .connect()
+  .then(() => log.info('Connected to Broker'))
+  .catch(() => {
+    log.error('Failed to connect');
+  });

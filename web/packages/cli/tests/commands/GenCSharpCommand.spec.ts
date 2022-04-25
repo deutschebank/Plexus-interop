@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,41 +14,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { prepareOutDir, getTestBaseDir, getTestClientInput, getApprovalsBaseDir, filesEqual } from './setup';
 import * as path from 'path';
+
 import { GenCSharpCommand } from '../../src/commands/GenCSharpCommand';
+import { filesEqual, getApprovalsBaseDir, getTestBaseDir, getTestClientInput, prepareOutDir } from './setup';
 
 describe('C# Client generation CLI', () => {
+  it('Generates C# client and messages definitions', async () => {
+    const testName = 'generated-cs-client';
+    const genCommand = new GenCSharpCommand();
+    const outDir = prepareOutDir(testName);
 
-    it('Generates C# client and messages definitions', async () => {
-        
-        const testName = 'generated-cs-client';
-        const genCommand = new GenCSharpCommand();
-        const outDir = prepareOutDir(testName);
-        
-        await genCommand.action({
-            out: outDir,
-            baseDir: getTestBaseDir(),
-            input: getTestClientInput(),
-            namespace: 'plexus'
-        });
+    await genCommand.action({
+      out: outDir,
+      baseDir: getTestBaseDir(),
+      input: getTestClientInput(),
+      namespace: 'plexus',
+    });
 
-        expect(await filesEqual(
-            path.join(outDir, 'interop/samples/GreetingClient.app.g.cs'), 
-            path.join(getApprovalsBaseDir(), 'generated-cs-client.approved.txt'))).toBeTruthy();
+    expect(
+      await filesEqual(
+        path.join(outDir, 'interop/samples/GreetingClient.app.g.cs'),
+        path.join(getApprovalsBaseDir(), 'generated-cs-client.approved.txt')
+      )
+    ).toBeTruthy();
 
-        expect(await filesEqual(
-            path.join(outDir, 'interop/samples/GreetingService.msg.g.cs'), 
-            path.join(getApprovalsBaseDir(), 'generated-cs-messages.approved.txt'))).toBeTruthy();
+    expect(
+      await filesEqual(
+        path.join(outDir, 'interop/samples/GreetingService.msg.g.cs'),
+        path.join(getApprovalsBaseDir(), 'generated-cs-messages.approved.txt')
+      )
+    ).toBeTruthy();
 
-        expect(await filesEqual(
-            path.join(outDir, 'interop/samples/GreetingService.svc.g.cs'), 
-            path.join(getApprovalsBaseDir(), 'generated-cs-service.approved.txt'))).toBeTruthy();
+    expect(
+      await filesEqual(
+        path.join(outDir, 'interop/samples/GreetingService.svc.g.cs'),
+        path.join(getApprovalsBaseDir(), 'generated-cs-service.approved.txt')
+      )
+    ).toBeTruthy();
 
-        expect(await filesEqual(
-            path.join(outDir, 'interop/Options.msg.g.cs'), 
-            path.join(getApprovalsBaseDir(), 'generated-cs-options.approved.txt'))).toBeTruthy();
-
-    }, 15000);
-
+    expect(
+      await filesEqual(
+        path.join(outDir, 'interop/Options.msg.g.cs'),
+        path.join(getApprovalsBaseDir(), 'generated-cs-options.approved.txt')
+      )
+    ).toBeTruthy();
+  }, 15000);
 });

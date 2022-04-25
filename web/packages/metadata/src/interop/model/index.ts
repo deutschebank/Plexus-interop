@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './Application';
-export * from './ConsumedService';
+export * from './ServiceTypes';
 export * from './ConsumedServiceReference';
-export * from './ConsumedMethod';
 export * from './ConsumedMethodReference';
 export * from './InteropRegistry';
 export * from './Message';
-export * from './Method';
 export * from './MethodType';
-export * from './ProvidedMethod';
 export * from './ProvidedMethodReference';
-export * from './ProvidedService';
 export * from './ProvidedServiceReference';
-export * from './Service';
 export * from './Field';
 export * from './Option';
 export * from './Enum';
-export * from './Message';

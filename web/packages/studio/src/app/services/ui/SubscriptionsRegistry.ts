@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 import { Injectable } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class SubscriptionsRegistry {
-    private subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[] = [];
 
-    public add(...subscriptions: Subscription[]): void {
-        subscriptions.forEach(s => this.subscriptions.push(s));
-    }
+  public add(...subscriptions: Subscription[]): void {
+    subscriptions.forEach((s) => this.subscriptions.push(s));
+  }
 
-    public unsubscribeAll(): void {
-        this.subscriptions.forEach(s => s.unsubscribe());
-        this.subscriptions = [];
-    }
+  public unsubscribeAll(): void {
+    this.subscriptions.forEach((s) => s.unsubscribe());
+    this.subscriptions = [];
+  }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,41 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger, LoggerFactory } from '@plexus-interop/common';
+
 import { AppRegistryProvider } from './AppRegistryProvider';
 import { Application } from './model/Application';
 import { AppRegistry } from './model/AppRegistry';
-import { Logger, LoggerFactory } from '@plexus-interop/common';
 
 export class AppRegistryService {
+  private readonly log: Logger = LoggerFactory.getLogger('AppRegistryService');
 
-    private readonly log: Logger = LoggerFactory.getLogger('AppRegistryService');
+  private appsRegistry: AppRegistry;
 
-    private appsRegistry: AppRegistry;
+  constructor(private readonly appRegistryProvider: AppRegistryProvider) {
+    this.appsRegistry = appRegistryProvider.getCurrent();
+    this.appRegistryProvider.getAppRegistry().subscribe({
+      next: (update) => {
+        this.log.debug(`App registry updated, apps size [${update.apps.size}]`);
+        this.appsRegistry = update;
+      },
+    });
+  }
 
-    constructor(private readonly appRegistryProvider: AppRegistryProvider) {
-        this.appsRegistry = appRegistryProvider.getCurrent();
-        this.appRegistryProvider.getAppRegistry().subscribe({
-            next: update => {
-                this.log.debug(`App registry updated, apps size [${update.apps.size}]`);
-                this.appsRegistry = update;
-            }
-        });
+  public getApplication(id: string): Application {
+    const result = this.appsRegistry.apps.get(id);
+    if (!result) {
+      throw new Error(`Application with id [${id}] is not found in App Registry`);
     }
+    return result;
+  }
 
-    public getApplication(id: string): Application {
-        const result = this.appsRegistry.apps.get(id);
-        if (!result) {
-            throw new Error(`Application with id [${id}] is not found in App Registry`);
-        }
-        return result;
-    }
+  public getApplications(): Application[] {
+    return this.appsRegistry.apps.valuesArray();
+  }
 
-    public getApplications(): Application[] {
-        return this.appsRegistry.apps.valuesArray();
-    }
-
-    public isAppExist(id: string): boolean {
-        return this.appsRegistry.apps.has(id);
-    }
-
+  public isAppExist(id: string): boolean {
+    return this.appsRegistry.apps.has(id);
+  }
 }

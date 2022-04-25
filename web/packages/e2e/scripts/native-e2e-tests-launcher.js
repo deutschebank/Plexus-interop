@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,57 +15,66 @@
  * limitations under the License.
  */
 const argv = require('minimist')(process.argv.slice(2));
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 const kill = require('tree-kill');
+const fs = require('fs');
+
 const log = console.log.bind(console);
 const startNativeBroker = require('./native-broker-launcher').start;
 
 let brokerProcess;
 
 function main() {
-    log('Passed arguments' + JSON.stringify(argv));
-    startNativeBroker()
-        .then(brokerInfo => {
-            brokerProcess = brokerInfo.process;
-            runElectronTest(brokerInfo.workingDir);
-        });
+  log(`Passed arguments${JSON.stringify(argv)}`);
+  startNativeBroker().then((brokerInfo) => {
+    brokerProcess = brokerInfo.process;
+    runElectronTest(brokerInfo.workingDir);
+  });
 }
 
 function killBroker() {
-    if (brokerProcess) {
-        log("Killing broker process ...");
-        kill(brokerProcess.pid, "SIGTERM", error => {
-            if (error) {
-                log("Error on stopping of broker", error);
-            } else {
-                log("Broker stopped without error");
-            }
-        });
-        log("Kill signal sent");
-    }
+  if (brokerProcess) {
+    log('Killing broker process ...');
+    kill(brokerProcess.pid, 'SIGTERM', (error) => {
+      if (error) {
+        log('Error on stopping of broker', error);
+      } else {
+        log('Broker stopped without error');
+      }
+    });
+    log('Kill signal sent');
+  }
 }
 
 function runElectronTest(wsUrl) {
-    log("Starting Electron Tests ...");
-    exec(`electron-mocha --require scripts/coverage ${argv.file} ${argv.debug ? "--debug" : ""} --renderer --reporter spec --colors`, {
-        cwd: process.cwd(),
-        env: {
-            PLEXUS_BROKER_WEBSOCKET_URL: wsUrl
-        }
-    }, (error, stdout, stderr) => {
-        let exitCode = 0;
-        log("Electron tests stopped, killing Broker");
-        if (error || stderr) {
-            console.error('Std Error:', stderr);
-            console.error('Error: ', error);
-            exitCode = 1;
-        }
-        log('StdOut', stdout);
-        killBroker();
-        setTimeout(() => process.exit(exitCode), 3000);
-    });
+  log(`Starting Electron Tests on ${wsUrl} ...`);
+  if (!fs.existsSync(argv.file)) {
+    throw new Error(`${argv.file} does not exist`);
+  }
+  exec(
+    `electron-mocha --require scripts/coverage ${argv.file} ${
+      argv.debug ? '--debug' : ''
+    } --renderer --reporter spec --colors --window-config scripts/window-config.json`,
+    {
+      cwd: process.cwd(),
+      env: {
+        ...process.env,
+        PLEXUS_BROKER_WEBSOCKET_URL: wsUrl,
+      },
+    },
+    (error, stdout, stderr) => {
+      let exitCode = 0;
+      log('Electron tests stopped, killing Broker');
+      if (error || stderr) {
+        console.error('Std Error:', stderr);
+        console.error('Error: ', error);
+        exitCode = 1;
+      }
+      log('StdOut', stdout);
+      killBroker();
+      setTimeout(() => process.exit(exitCode), 3000);
+    }
+  );
 }
 
 main();
-
-

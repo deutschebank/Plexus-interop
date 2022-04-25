@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Event } from './Event';
 import { Subscription } from '@plexus-interop/common';
 
+import { Event } from './Event';
+
 export interface EventBus {
+  subscribe(key: string, handler: (event: Event) => void): Subscription;
 
-    subscribe(key: string, handler: (event: Event) => void): Subscription;
+  publish(key: string, event: Event): void;
 
-    publish(key: string, event: Event): void;
-
-    init(): Promise<EventBus>;
-
+  init(): Promise<EventBus>;
 }

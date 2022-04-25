@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,30 +18,32 @@
  * Adds hook to save coverage info (if any) after finishing of electron tests
  */
 
-'use strict'
-const glob = require('glob')
-const { resolve, join } = require('path')
+const { resolve, join } = require('path');
 const { writeFileSync, existsSync, mkdirSync } = require('fs');
 
-// write coverage info to root, so we can build report against all components 
+// write coverage info to root, so we can build report against all components
 const root = resolve(__dirname, '../../..');
 const tmpd = resolve(root, '.nyc_output');
 
-function report() {
-    console.log(`Writing coverage report to ${tmpd}`);
-    try {
-        if (!existsSync(tmpd)){
-            mkdirSync(tmpd);
-        }
-        writeFileSync(join(tmpd, `coverage.json`), JSON.stringify(coverageInfo), 'utf-8');
-    } catch (e) {
-        console.log("Error", e);
-    }
-}
+// eslint-disable-next-line no-multi-assign, no-underscore-dangle
+const coverageInfo = (global.__coverage__ = {});
 
-const coverageInfo = global.__coverage__ = {}
+function report() {
+  console.log(`Writing coverage report to ${tmpd}`);
+  try {
+    if (!existsSync(tmpd)) {
+      mkdirSync(tmpd);
+    }
+    writeFileSync(
+      join(tmpd, `coverage.json`),
+      JSON.stringify(coverageInfo),
+      'utf-8'
+    );
+  } catch (e) {
+    console.log('Error', e);
+  }
+}
 
 if (window) {
-    window.addEventListener('unload', report);
+  window.addEventListener('unload', report);
 }
-

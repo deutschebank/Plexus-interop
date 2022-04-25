@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UrlParamsProvider } from "@plexus-interop/common";
+import { UrlParamsProvider } from '@plexus-interop/common';
 
 export class ConnectionRequestParams {
+  public getWsUrl(): string {
+    return UrlParamsProvider.getParam('wsUrl');
+  }
 
-    public getWsUrl(): string {
-        return UrlParamsProvider.getParam('wsUrl');
-    }
+  public getHostProxyUrl(): string {
+    return UrlParamsProvider.getParam('hostProxyUrl');
+  }
 
-    public getHostProxyUrl(): string {
-        return UrlParamsProvider.getParam('hostProxyUrl');
-    }
+  public getMetadataUrl(): string {
+    return UrlParamsProvider.getParam('metadataUrl');
+  }
 
-    public getMetadataUrl(): string {
-        return UrlParamsProvider.getParam('metadataUrl');
-    }
-
-    public getAppsUrl(): string {
-        return UrlParamsProvider.getParam('appsUrl');
-    }
-
+  public getAppsUrl(): string {
+    return UrlParamsProvider.getParam('appsUrl');
+  }
 }

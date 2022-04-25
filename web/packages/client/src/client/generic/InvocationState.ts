@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// tslint:disable-next-line:variable-name
 export enum InvocationState {
-    CREATED = 'CREATED',
-    START_REQUESTED = 'START_REQUESTED',
-    REMOTE_STARTING = 'REMOTE_STARTING',
-    ACCEPTING_INVOCATION_INFO = 'ACCEPTING_INVOCATION_INFO',
-    OPEN = 'OPEN',
-    COMPLETION_RECEIVED = 'COMPLETION_RECEIVED',
-    SENT_COMPLETED = 'COMPLETION_SENT',
-    COMPLETION_HANDSHAKE = 'COMPLETION_HANDSHAKE',
-    COMPLETED = 'COMPLETED'
+  CREATED = 'CREATED',
+  START_REQUESTED = 'START_REQUESTED',
+  REMOTE_STARTING = 'REMOTE_STARTING',
+  ACCEPTING_INVOCATION_INFO = 'ACCEPTING_INVOCATION_INFO',
+  OPEN = 'OPEN',
+  COMPLETION_RECEIVED = 'COMPLETION_RECEIVED',
+  SENT_COMPLETED = 'COMPLETION_SENT',
+  COMPLETION_HANDSHAKE = 'COMPLETION_HANDSHAKE',
+  COMPLETED = 'COMPLETED',
 }

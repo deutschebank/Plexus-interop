@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 import { BinaryMarshaller, Marshaller } from '../api';
-import { DynamicProtoMarshaller } from './DynamicProtoMarshaller';
 
 export class DynamicBinaryProtoMarshaller implements BinaryMarshaller {
-    
-    public constructor(private readonly internal: Marshaller<any, ArrayBuffer>) {}
-    
-    public encode(messageObj: any): Uint8Array {
-        return new Uint8Array(this.internal.encode(messageObj));
-    }
-    
-    public decode(messagePayload: Uint8Array): any {
-        return this.internal.decode(messagePayload.buffer);
-    }
+  public constructor(private readonly internal: Marshaller<any, ArrayBuffer>) {}
+
+  public encode(messageObj: any): Uint8Array {
+    return new Uint8Array(this.internal.encode(messageObj));
+  }
+
+  public decode(messagePayload: Uint8Array): any {
+    return this.internal.decode(messagePayload.buffer);
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,46 +17,53 @@
 // Karma configuration
 // Generated on Fri Dec 29 2017 15:31:22 GMT+0300 (Russia TZ 2 Standard Time)
 
-module.exports = function (config) {
+module.exports = (config) => {
   config.set({
-
-    client: { 
-        // pass dynamic param to test
-        hostPath: config.hostPath,
-        runInParent: true,
-        useIframe: false
+    client: {
+      mocha: {},
+      // pass dynamic param to test
+      hostPath: config.hostPath,
+      runInParent: true,
+      useIframe: false,
     },
 
     basePath: '',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'browserify'],
+    frameworks: ['mocha', 'webpack'],
 
+    plugins: [
+      'karma-mocha',
+      'karma-mocha-reporter',
+      'karma-webpack',
+      'karma-ie-launcher',
+      'karma-chrome-launcher',
+    ],
 
     // list of files / patterns to load in the browser
     files: [
+      'dist/main/src/polyfills.js',
       '../../node_modules/long/dist/long.js',
       'scripts/karma-*.js',
       'dist/main/tests/web/*.spec.js',
-      'dist/main/src/polyfills.js'
     ],
 
     // list of files to exclude
-    exclude: [
-      'dist/main/tests/web/*Streaming.spec.js'
-    ],
+    exclude: ['dist/main/tests/web/*Streaming.spec.js'],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'dist/main/tests/web/*.spec.js': ['browserify'],
-      'scripts/karma-*.js': ['browserify'],
-      'dist/main/src/polyfills.js': ['browserify']
+      'dist/main/tests/web/*.spec.js': ['webpack'],
+      'scripts/karma-*.js': ['webpack'],
+      'dist/main/src/polyfills.js': ['webpack'],
     },
 
-    browserify: {
-      debug: true
+    webpack: {
+      // debug: true
+      target: ['web', 'es5'],
+      devtool: 'inline-source-map',
     },
 
     // test results reporter to use
@@ -65,23 +72,18 @@ module.exports = function (config) {
     // reporters: ['progress', "mocha"],
     reporters: ['progress', 'mocha'],
 
-
     // web server port
     port: 9876,
 
-
     // enable / disable colors in the output (reporters and logs)
     colors: true,
-
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_DEBUG,
 
-
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: false,
-
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
@@ -90,8 +92,8 @@ module.exports = function (config) {
     customLaunchers: {
       IE_no_addons: {
         base: 'IE',
-        flags: ['-extoff']
-      }
+        flags: ['-extoff'],
+      },
     },
 
     // Continuous Integration mode
@@ -100,6 +102,6 @@ module.exports = function (config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
-  })
-}
+    concurrency: Infinity,
+  });
+};

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { InternalActionInvoker } from './InternalActionInvoker';
-import { GenericClientApi } from '..';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
+
+import { GenericClientApi } from '../GenericClientApi';
+import { InternalActionInvoker } from './InternalActionInvoker';
 
 /**
  * Extends public client with additioanal features
  */
 export interface InternalGenericClientApi extends InternalActionInvoker, GenericClientApi {
-
-    getMarshallerProvider(): BinaryMarshallerProvider;
+  getMarshallerProvider(): BinaryMarshallerProvider;
 }

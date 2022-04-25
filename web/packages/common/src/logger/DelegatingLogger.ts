@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,49 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LogLevel } from './LoggerFactory';
 import { Logger } from './Logger';
+import { LogLevel } from './LogLevel';
 
 export class DelegatingLogger implements Logger {
+  constructor(private mainLogger: Logger, private additionalRecipients: Logger[]) {}
 
-    constructor(
-        private mainLogger: Logger,
-        private additionalRecipients: Logger[]
-    ) { }
+  public debug(msg: string, ...args: any[]): void {
+    this.recipients.forEach((logger) => logger.debug(msg, args));
+  }
 
-    public debug(msg: string, ...args: any[]): void {
-        this.recipients.forEach(logger => logger.debug(msg, args));
-    }
+  public info(msg: string, ...args: any[]): void {
+    this.recipients.forEach((logger) => logger.debug(msg, args));
+  }
 
-    public info(msg: string, ...args: any[]): void {
-        this.recipients.forEach(logger => logger.debug(msg, args));
-    }
+  public error(msg: string, ...args: any[]): void {
+    this.recipients.forEach((logger) => logger.error(msg, args));
+  }
 
-    public error(msg: string, ...args: any[]): void {
-        this.recipients.forEach(logger => logger.error(msg, args));
-    }
+  public warn(msg: string, ...args: any[]): void {
+    this.recipients.forEach((logger) => logger.warn(msg, args));
+  }
 
-    public warn(msg: string, ...args: any[]): void {
-        this.recipients.forEach(logger => logger.warn(msg, args));
-    }
+  public trace(msg: string, ...args: any[]): void {
+    this.recipients.forEach((logger) => logger.trace(msg, args));
+  }
 
-    public trace(msg: string, ...args: any[]): void {
-        this.recipients.forEach(logger => logger.trace(msg, args));
-    }
+  public getLogLevel(): LogLevel {
+    return this.mainLogger.getLogLevel();
+  }
 
-    public getLogLevel(): LogLevel {
-        return this.mainLogger.getLogLevel();
-    }
+  public isDebugEnabled(): boolean {
+    return this.mainLogger.isDebugEnabled();
+  }
 
-    public isDebugEnabled(): boolean {
-        return this.mainLogger.isDebugEnabled();
-    }
+  public isTraceEnabled(): boolean {
+    return this.mainLogger.isTraceEnabled();
+  }
 
-    public isTraceEnabled(): boolean {
-        return this.mainLogger.isTraceEnabled();
-    }
-
-    private get recipients(): Logger[] {
-        return [this.mainLogger, ...this.additionalRecipients];
-    }
+  private get recipients(): Logger[] {
+    return [this.mainLogger, ...this.additionalRecipients];
+  }
 }

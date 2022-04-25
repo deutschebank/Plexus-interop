@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,143 +14,167 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Observable } from 'rxjs';
+
+import { Logger, LoggerFactory, Observer, Subscription } from '@plexus-interop/common';
+import { PlexusObserver, PlexusPartialObserver } from '@plexus-interop/transport-common';
+
 import { EventBus } from '../../bus/EventBus';
-import { ActionType } from '../../peers/ActionType';
+import { ActionType } from '../ActionType';
 import { EventType } from '../events/EventType';
-import { Subscription, Observer, Logger, LoggerFactory } from '@plexus-interop/common';
-import { RemoteBrokerService } from './RemoteBrokerService';
-import { Observable } from 'rxjs/Observable';
-import { RemoteActionResult, isFailed, isCompleted, successResult, errorResult, completedResult } from './RemoteActionResult';
 import { EventBasedRequest } from './EventBasedRequest';
-import { PlexusPartialObserver, PlexusObserver } from '@plexus-interop/transport-common';
+import {
+  completedResult,
+  errorResult,
+  isCompleted,
+  isFailed,
+  RemoteActionResult,
+  successResult,
+} from './RemoteActionResult';
+import { RemoteBrokerService } from './RemoteBrokerService';
 
 export class EventBusRemoteBrokerService implements RemoteBrokerService {
+  private requestCounter: number = 0;
 
-    private requestCounter: number = 0;
+  private readonly log: Logger;
 
-    private readonly log: Logger;
+  public constructor(private readonly eventBus: EventBus, private readonly id: string) {
+    this.log = LoggerFactory.getLogger(`EventBusRemoteBrokerService [${id}]`);
+  }
 
-    public constructor(private readonly eventBus: EventBus, private readonly id: string) {
-        this.log = LoggerFactory.getLogger(`EventBusRemoteBrokerService [${id}]`);
-    }
+  public invokeUnary<Req, Res>(
+    actionType: ActionType<Req, Res>,
+    requestPayload: Req,
+    remoteBrokerId: string
+  ): Promise<Res> {
+    return new Promise((resolve, reject) => {
+      let res: Res | null = null;
+      this.invoke(actionType, requestPayload, remoteBrokerId, {
+        next: (update) => {
+          res = update;
+        },
+        complete: () => {
+          if (!res) {
+            this.log.trace(`[${actionType.id}] - No response, resolve with empty object`);
+          }
+          resolve(res || ({} as Res));
+        },
+        error: (e) => reject(e),
+      });
+    });
+  }
 
-    public invokeUnary<Req, Res>(actionType: ActionType<Req, Res>, requestPayload: Req, remoteBrokerId: string): Promise<Res> {
-        return new Promise((resolve, reject) => {
-            let res: Res | null = null;
-            this.invoke(actionType, requestPayload, remoteBrokerId, {
-                next: update => {
-                    res = update;
-                },
-                complete: () => {
-                    if (!res) {
-                        this.log.trace(`[${actionType.id}] - No response, resolve with empty object`);
-                    }
-                    resolve(res || {} as Res);
-                },
-                error: e => reject(e)
-            });
-        });
-    }
+  public host<Req, Res>(
+    actionType: ActionType<Req, Res>,
+    handler: (requestPaylaod: Req, observer: PlexusObserver<Res>) => Subscription,
+    hostId: string
+  ): void {
+    const requestTopic = this.requestTopic(hostId, actionType);
 
-    public host<Req, Res>(actionType: ActionType<Req, Res>, handler: (requestPaylaod: Req, observer: PlexusObserver<Res>) => Subscription, hostId: string): void {
+    this.eventBus.subscribe(requestTopic, (event) => {
+      const requestEvent = event.payload as EventBasedRequest;
+      const { senderId } = requestEvent;
+      if (this.log.isTraceEnabled()) {
+        this.log.trace(`Received [${actionType.id}.${requestEvent.requestId}] request from [${senderId}]`);
+      }
+      const responseTopic = this.responseUpdateTopic(senderId, actionType, requestEvent.requestId);
+      handler(requestEvent.payload, {
+        next: (update) => {
+          this.eventBus.publish(responseTopic, { payload: successResult(update) });
+        },
+        error: (e) => {
+          this.eventBus.publish(responseTopic, { payload: errorResult(e) });
+        },
+        complete: (completion) => {
+          this.eventBus.publish(responseTopic, { payload: completedResult({ completion }) });
+        },
+      });
+    });
+  }
 
-        const requestTopic = this.requestTopic(hostId, actionType);
+  public invoke<Req, Res>(
+    actionType: ActionType<Req, Res>,
+    requestPayload: Req,
+    remoteBrokerId: string,
+    observer: PlexusObserver<Res>
+  ): Subscription {
+    this.log.trace(`Sending invocation ${actionType.id} to ${remoteBrokerId}`);
 
-        this.eventBus.subscribe(requestTopic, event => {
-            const requestEvent = event.payload as EventBasedRequest;
-            const senderId = requestEvent.senderId;
-            if (this.log.isTraceEnabled()) {
-                this.log.trace(`Received [${actionType.id}.${requestEvent.requestId}] request from [${senderId}]`);
-            }
-            const responseTopic = this.responseUpdateTopic(senderId, actionType, requestEvent.requestId);
-            handler(requestEvent.payload, {
-                next: update => {
-                    this.eventBus.publish(responseTopic, { payload: successResult(update) });
-                },
-                error: e => {
-                    this.eventBus.publish(responseTopic, { payload: errorResult(e) });
-                },
-                complete: completion => {
-                    this.eventBus.publish(responseTopic, { payload: completedResult({ completion }) });
-                }
-            });
-        });
+    const requestId = this.newRequestId();
+    const requestTopic = this.requestTopic(remoteBrokerId, actionType);
+    const responseTopic = this.responseHandlingTopic(remoteBrokerId, actionType, requestId);
 
-    }
+    const subscription = this.eventBus.subscribe(responseTopic, (event) => {
+      this.log.trace(`Received update for ${responseTopic}`);
+      const invocationResult = event.payload as RemoteActionResult;
+      if (isFailed(invocationResult)) {
+        subscription.unsubscribe();
+        observer.error(invocationResult.error);
+      } else if (isCompleted(invocationResult)) {
+        subscription.unsubscribe();
+        observer.complete(invocationResult.completion);
+      } else {
+        observer.next(invocationResult.payload);
+      }
+    });
 
-    public invoke<Req, Res>(actionType: ActionType<Req, Res>, requestPayload: Req, remoteBrokerId: string, observer: PlexusObserver<Res>): Subscription {
+    this.log.trace(`Sending request to ${requestTopic}`);
+    const payload: EventBasedRequest = {
+      payload: requestPayload,
+      requestId: requestId.toString(),
+      senderId: this.id,
+    };
 
-        this.log.trace(`Sending invocation ${actionType.id} to ${remoteBrokerId}`);
+    this.eventBus.publish(requestTopic, {
+      payload,
+    });
 
-        const requestId = this.newRequestId();
-        const requestTopic = this.requestTopic(remoteBrokerId, actionType);
-        const responseTopic = this.responseHandlingTopic(remoteBrokerId, actionType, requestId);
+    return subscription;
+  }
 
-        const subscription = this.eventBus.subscribe(responseTopic, (event) => {
-            this.log.trace(`Received update for ${responseTopic}`);
-            const invocationResult = event.payload as RemoteActionResult;
-            if (isFailed(invocationResult)) {
-                subscription.unsubscribe();
-                observer.error(invocationResult.error);
-            } else if (isCompleted(invocationResult)) {
-                subscription.unsubscribe();
-                observer.complete(invocationResult.completion);
-            } else {
-                observer.next(invocationResult.payload);
-            }
-        });
+  public publish<T>(eventType: EventType<T>, payload: T, remoteBrokerId?: string): void {
+    const requestTopic = this.eventTopic(eventType, remoteBrokerId);
+    this.log.trace(`Publishing to ${requestTopic}`);
+    this.eventBus.publish(requestTopic, {
+      payload,
+    });
+  }
 
-        this.log.trace(`Sending request to ${requestTopic}`);
-        const payload: EventBasedRequest = {
-            payload: requestPayload,
-            requestId: requestId.toString(),
-            senderId: this.id
-        };
+  public subscribe<T>(
+    eventType: EventType<T>,
+    observer: PlexusPartialObserver<T>,
+    remoteBrokerId?: string
+  ): Subscription {
+    const requestTopic = this.eventTopic(eventType, remoteBrokerId);
+    this.log.trace(`Subscribing to ${requestTopic}`);
+    return new Observable((newObserver: Observer<T>) => {
+      this.eventBus.subscribe(requestTopic, (event) => {
+        newObserver.next(event.payload);
+      });
+    }).subscribe(observer);
+  }
 
-        this.eventBus.publish(requestTopic, {
-            payload
-        });
+  private responseHandlingTopic(
+    remoteId: string,
+    actionType: ActionType<any, any>,
+    requestId: number | string
+  ): string {
+    return `res.${requestId}.${actionType.id}.${remoteId}.${this.id}`;
+  }
 
-        return subscription;
+  private responseUpdateTopic(remoteId: string, actionType: ActionType<any, any>, requestId: number | string): string {
+    return `res.${requestId}.${actionType.id}.${this.id}.${remoteId}`;
+  }
 
-    }
+  private eventTopic(eventType: EventType<any>, remoteId?: string): string {
+    return `event.${eventType.id}${remoteId ? `.${remoteId}` : ''}`;
+  }
 
-    public publish<T>(eventType: EventType<T>, payload: T, remoteBrokerId?: string): void {
-        const requestTopic = this.eventTopic(eventType, remoteBrokerId);
-        this.log.trace(`Publishing to ${requestTopic}`);
-        this.eventBus.publish(requestTopic, {
-            payload
-        });
-    }
+  private requestTopic(remoteId: string, actionType: ActionType<any, any>): string {
+    return `req.${actionType.id}.${remoteId}`;
+  }
 
-    public subscribe<T>(eventType: EventType<T>, observer: PlexusPartialObserver<T>, remoteBrokerId?: string): Subscription {
-        const requestTopic = this.eventTopic(eventType, remoteBrokerId);
-        this.log.trace(`Subscribing to ${requestTopic}`);
-        return new Observable((observer: Observer<T>) => {
-            this.eventBus.subscribe(requestTopic, event => {
-                observer.next(event.payload);
-            });
-        }).subscribe(observer);
-    }
-
-    private responseHandlingTopic(remoteId: string, actionType: ActionType<any, any>, requestId: number | string): string {
-        return `res.${requestId}.${actionType.id}.${remoteId}.${this.id}`;
-    }
-
-    private responseUpdateTopic(remoteId: string, actionType: ActionType<any, any>, requestId: number | string): string {
-        return `res.${requestId}.${actionType.id}.${this.id}.${remoteId}`;
-    }
-
-    private eventTopic(eventType: EventType<any>, remoteId?: string): string {
-        return `event.${eventType.id}${remoteId ? '.' + remoteId : ''}`;
-    }
-
-    private requestTopic(remoteId: string, actionType: ActionType<any, any>): string {
-        return `req.${actionType.id}.${remoteId}`;
-    }
-
-    private newRequestId(): number {
-        return this.requestCounter++;
-    }
-
+  private newRequestId(): number {
+    return this.requestCounter++;
+  }
 }

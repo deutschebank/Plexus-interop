@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NopServiceHandler } from './NopServiceHandler';
+import { MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
+
 import * as plexus from '../../src/echo/gen/plexus-messages';
-import { StreamingInvocationClient, MethodInvocationContext } from '@plexus-interop/client';
+import { NopServiceHandler } from './NopServiceHandler';
 
 export class ServerStreamingHandler extends NopServiceHandler {
+  constructor(
+    private handler: (
+      context: MethodInvocationContext,
+      request: plexus.plexus.interop.testing.IEchoRequest,
+      hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+    ) => void
+  ) {
+    super();
+  }
 
-    constructor(private handler: (
-        context: MethodInvocationContext,
-        request: plexus.plexus.interop.testing.IEchoRequest, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>) => void) {
-        super();
-    }
-
-    public onServerStreaming(
-        context: MethodInvocationContext,        
-        request: plexus.plexus.interop.testing.IEchoRequest, 
-        hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>): void {
-        this.handler(context, request, hostClient);        
-    }
-
+  public onServerStreaming(
+    context: MethodInvocationContext,
+    request: plexus.plexus.interop.testing.IEchoRequest,
+    hostClient: StreamingInvocationClient<plexus.plexus.interop.testing.IEchoRequest>
+  ): void {
+    this.handler(context, request, hostClient);
+  }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,36 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LoggerFactory, LogLevel } from '../../src/logger/LoggerFactory';
+import { LoggerFactory } from '../../src/logger/LoggerFactory';
+import { LogLevel } from '../../src/logger/LogLevel';
 
 describe('Logger Factory', () => {
+  it('Should be able to register additional logger implementations', () => {
+    let called: { msg: string; args: any; logLevel: LogLevel }[] = [];
 
-    it('Should be able to register additional logger implementations', () => {
-        let called: { msg: string, args: any, logLevel: LogLevel }[] = [];
-
-        LoggerFactory.registerDelegate({
-            log: (logLevel, msg, args) => { called.push({ msg, args, logLevel }); }
-        });
-
-        let logger = LoggerFactory.getLogger('LoggerFactory.spec');
-        logger.error('test error', { arg: 'arg' });
-
-        expect(called).toEqual([{ msg: 'test error', args: [{ arg: 'arg' }], logLevel: LogLevel.ERROR }]);
+    LoggerFactory.registerDelegate({
+      log: (logLevel, msg, args) => {
+        called.push({ msg, args, logLevel });
+      },
     });
 
-    it('Should be able to removed registered logger implementations', () => {
-        let called: { msg: string, args: any, logLevel: LogLevel }[] = [];
+    let logger = LoggerFactory.getLogger('LoggerFactory.spec');
+    logger.error('test error', { arg: 'arg' });
 
-        let unregisterObj = LoggerFactory.registerDelegate({
-            log: (logLevel, msg, args) => { called.push({ msg, args, logLevel }); }
-        });
+    expect(called).toEqual([{ msg: 'test error', args: [{ arg: 'arg' }], logLevel: LogLevel.ERROR }]);
+  });
 
-        let logger = LoggerFactory.getLogger('LoggerFactory.spec');
-        logger.error('test error', { arg: 'arg' });
+  it('Should be able to removed registered logger implementations', () => {
+    let called: { msg: string; args: any; logLevel: LogLevel }[] = [];
 
-        unregisterObj.unregister();
-        logger.error('test error2', { arg: 'arg2' });
-
-        expect(called).toEqual([{ msg: 'test error', args: [{ arg: 'arg' }], logLevel: LogLevel.ERROR }]);
+    let unregisterObj = LoggerFactory.registerDelegate({
+      log: (logLevel, msg, args) => {
+        called.push({ msg, args, logLevel });
+      },
     });
+
+    let logger = LoggerFactory.getLogger('LoggerFactory.spec');
+    logger.error('test error', { arg: 'arg' });
+
+    unregisterObj.unregister();
+    logger.error('test error2', { arg: 'arg2' });
+
+    expect(called).toEqual([{ msg: 'test error', args: [{ arg: 'arg' }], logLevel: LogLevel.ERROR }]);
+  });
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 import { ExtendedMap } from '@plexus-interop/common';
+
 import { Application } from './Application';
 
 export interface AppRegistry {
-    apps: ExtendedMap<string, Application>;
+  apps: ExtendedMap<string, Application>;
 }

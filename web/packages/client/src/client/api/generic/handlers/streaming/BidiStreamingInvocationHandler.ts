@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { StreamingInvocationClient } from './StreamingInvocationClient';
 import { MethodInvocationContext, ServiceInfo } from '@plexus-interop/client-api';
-import { InvocationObserver } from '../../../../';
+
+import { InvocationObserver } from '../../../../generic/InvocationObserver';
+import { StreamingInvocationClient } from './StreamingInvocationClient';
 
 export interface BidiStreamingInvocationHandler<Req, Res> {
+  serviceInfo: ServiceInfo;
 
-    serviceInfo: ServiceInfo;
+  methodId: string;
 
-    methodId: string;
-
-    handle(invocationContext: MethodInvocationContext, invocationHostClient: StreamingInvocationClient<Res>): InvocationObserver<Req>;
-
+  handle(
+    invocationContext: MethodInvocationContext,
+    invocationHostClient: StreamingInvocationClient<Res>
+  ): InvocationObserver<Req>;
 }

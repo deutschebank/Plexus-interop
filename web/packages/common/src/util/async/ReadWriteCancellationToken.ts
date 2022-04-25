@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,49 +17,47 @@
 import { CancellationToken } from './CancellationToken';
 
 export class ReadWriteCancellationToken {
+  constructor(
+    private readonly readToken: CancellationToken = new CancellationToken(),
+    private readonly writeToken: CancellationToken = new CancellationToken()
+  ) {}
 
-    constructor(
-        private readonly readToken: CancellationToken = new CancellationToken(),
-        private readonly writeToken: CancellationToken = new CancellationToken()
-    ) {}
+  public cancelRead(reason: string = 'Read cancelled'): void {
+    this.readToken.cancel(reason);
+  }
 
-    public cancelRead(reason: string = 'Read cancelled'): void {
-        this.readToken.cancel(reason);
+  public cancelWrite(reason: string = 'Write cancelled'): void {
+    this.writeToken.cancel(reason);
+  }
+
+  public throwIfCanceled(): void {
+    if (this.isCancelled()) {
+      throw Error(this.readToken.getReason() || this.writeToken.getReason() || 'Cancelled');
     }
+  }
 
-    public cancelWrite(reason: string = 'Write cancelled'): void {
-        this.writeToken.cancel(reason);
-    }
+  public isCancelled(): boolean {
+    return this.readToken.isCancelled() && this.writeToken.isCancelled();
+  }
 
-    public throwIfCanceled(): void {
-        if (this.isCancelled()) {
-            throw Error(this.readToken.getReason() || this.writeToken.getReason() || 'Cancelled');
-        }
-    }
+  public cancel(reason: string = 'Cancelled'): void {
+    this.cancelRead(reason);
+    this.cancelWrite(reason);
+  }
 
-    public isCancelled(): boolean {
-        return this.readToken.isCancelled() && this.writeToken.isCancelled();
-    } 
+  public isReadCancelled(): boolean {
+    return this.readToken.isCancelled();
+  }
 
-    public cancel(reason: string = 'Cancelled'): void {
-        this.cancelRead(reason);
-        this.cancelWrite(reason);
-    }
+  public isWriteCancelled(): boolean {
+    return this.writeToken.isCancelled();
+  }
 
-    public isReadCancelled(): boolean {
-        return this.readToken.isCancelled();
-    }
+  public getReadToken(): CancellationToken {
+    return this.readToken;
+  }
 
-    public isWriteCancelled(): boolean {
-        return this.writeToken.isCancelled();
-    }
-
-    public getReadToken(): CancellationToken {
-        return this.readToken;
-    }
-
-    public getWriteToken(): CancellationToken {
-        return this.writeToken;
-    }
-
+  public getWriteToken(): CancellationToken {
+    return this.writeToken;
+  }
 }

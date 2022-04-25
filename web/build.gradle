@@ -12,10 +12,10 @@ def npmPackageVersion = System.getenv("PLEXUS_BUILD_NPM_PACKAGE_VERSION") ?: (Sy
 def npmRegistry = System.env['NPM_REGISTRY']
 def npmEmail = System.env['NPM_AUTH_USER']
 def npmAuth = System.env['NPM_AUTH_TOKEN']
-def customNpmVersion = '6.10.3'
+def customNpmVersion = '6.14.15'
 
 node {
-    version = '10.16.2'
+    version = '14.17.6'
     npmVersion = customNpmVersion
     nodeModulesDir = projectDir
     download = true

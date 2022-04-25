@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,54 +14,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observer, Subscription, Logger, LoggerFactory, AnonymousSubscription } from '@plexus-interop/common';
-import { TransportConnection, UniqueId, ServerConnectionFactory, BufferedObserver } from '@plexus-interop/transport-common';
-import { AppConnectionHeartBit } from '../peers/events/AppConnectionHeartBit';
-import { PeerConnectionsService } from '../peers/PeerConnectionsService';
+import { AnonymousSubscription, Logger, LoggerFactory, Observer, Subscription } from '@plexus-interop/common';
+import {
+  BufferedObserver,
+  ServerConnectionFactory,
+  TransportConnection,
+  UniqueId,
+} from '@plexus-interop/transport-common';
+
 import { ApplicationConnectionDescriptor } from '../lifecycle/ApplicationConnectionDescriptor';
-import { PeerProxyConnection } from '../peers/PeerProxyConnection';
+import { AppConnectionHeartBit } from './events/AppConnectionHeartBit';
+import { PeerConnectionsService } from './PeerConnectionsService';
+import { PeerProxyConnection } from './PeerProxyConnection';
 import { RemoteBrokerService } from './remote/RemoteBrokerService';
 
 export class PeerServerConnectionFactory implements ServerConnectionFactory {
+  private readonly log: Logger;
 
-    private readonly log: Logger;
+  private readonly processedConnections: Set<string> = new Set();
 
-    private readonly processedConnections: Set<string> = new Set();
+  private readonly connectionsObserver: BufferedObserver<TransportConnection>;
 
-    private readonly connectionsObserver: BufferedObserver<TransportConnection>;
+  constructor(
+    private readonly hostConnectionGuid: string,
+    private readonly peerConnectionsService: PeerConnectionsService,
+    private readonly remoteBrokerService: RemoteBrokerService
+  ) {
+    this.log = LoggerFactory.getLogger('PeerServerConnectionFactory');
+    this.connectionsObserver = new BufferedObserver(100, this.log);
+    this.listenForPeerConnections();
+  }
 
-    constructor(
-        private readonly hostConnectionGuid: string,
-        private readonly peerConnectionsService: PeerConnectionsService,
-        private readonly remoteBrokerService: RemoteBrokerService) {
-        this.log = LoggerFactory.getLogger('PeerServerConnectionFactory');
-        this.connectionsObserver = new BufferedObserver(100, this.log);
-        this.listenForPeerConnections();
-    }
+  public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
+    this.connectionsObserver.setObserver(connectionsObserver);
+    return new AnonymousSubscription();
+  }
 
-    public acceptConnections(connectionsObserver: Observer<TransportConnection>): Subscription {
-        this.connectionsObserver.setObserver(connectionsObserver);
-        return new AnonymousSubscription();
-    }
-
-    private listenForPeerConnections(): void {
-        this.log.debug('Starting to listen for connections');
-        this.peerConnectionsService.subscribeToConnectionsHearBits({
-            next: (connectionDescriptor: AppConnectionHeartBit) => {
-                // create proxy connection only once
-                if (!this.processedConnections.has(connectionDescriptor.connectionId)
-                    && connectionDescriptor.connectionId !== this.hostConnectionGuid) {
-                    this.log.debug(`Detected new connection, app id ${connectionDescriptor.applicationId} [${connectionDescriptor.connectionId}]`);
-                    this.processedConnections.add(connectionDescriptor.connectionId);
-                    const appConnectionDescriptor: ApplicationConnectionDescriptor = {
-                        applicationId: connectionDescriptor.applicationId,
-                        instanceId: connectionDescriptor.instanceId,
-                        connectionId: UniqueId.fromString(connectionDescriptor.connectionId)
-                    };
-                    this.connectionsObserver.next(new PeerProxyConnection(connectionDescriptor.connectionId, appConnectionDescriptor, this.remoteBrokerService));
-                }
-            }
-        });
-    }
-
+  private listenForPeerConnections(): void {
+    this.log.debug('Starting to listen for connections');
+    this.peerConnectionsService.subscribeToConnectionsHearBits({
+      next: (connectionDescriptor: AppConnectionHeartBit) => {
+        // create proxy connection only once
+        if (
+          !this.processedConnections.has(connectionDescriptor.connectionId) &&
+          connectionDescriptor.connectionId !== this.hostConnectionGuid
+        ) {
+          this.log.debug(
+            `Detected new connection, app id ${connectionDescriptor.applicationId} [${connectionDescriptor.connectionId}]`
+          );
+          this.processedConnections.add(connectionDescriptor.connectionId);
+          const appConnectionDescriptor: ApplicationConnectionDescriptor = {
+            applicationId: connectionDescriptor.applicationId,
+            instanceId: connectionDescriptor.instanceId,
+            connectionId: UniqueId.fromString(connectionDescriptor.connectionId),
+          };
+          this.connectionsObserver.next(
+            new PeerProxyConnection(
+              connectionDescriptor.connectionId,
+              appConnectionDescriptor,
+              this.remoteBrokerService
+            )
+          );
+        }
+      },
+    });
+  }
 }

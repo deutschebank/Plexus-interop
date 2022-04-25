@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,99 +14,100 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Option } from './Option';
 import * as path from 'path';
 
+import { Option } from './Option';
+
 export function targetBaseDir(): Option {
-    return {
-        shortName: 'tb',
-        longName: 'targetBaseDir',
-        exampleValue: 'target/folder',
-        description: 'target metadata base directory',
-        isRequired: true,        
-        defaultValue: process.cwd()
-    };
+  return {
+    shortName: 'tb',
+    longName: 'targetBaseDir',
+    exampleValue: 'target/folder',
+    description: 'target metadata base directory',
+    isRequired: true,
+    defaultValue: process.cwd(),
+  };
 }
 
 export function baseDir(): Option {
-    return {
-        shortName: 'b',
-        longName: 'baseDir',
-        exampleValue: 'metadata',
-        description: 'plexus metadata base directory',
-        isRequired: true,        
-        defaultValue: process.cwd()
-    };
+  return {
+    shortName: 'b',
+    longName: 'baseDir',
+    exampleValue: 'metadata',
+    description: 'plexus metadata base directory',
+    isRequired: true,
+    defaultValue: process.cwd(),
+  };
 }
 
 export function excludePattern(): Option {
-    return {
-        shortName: 'e',
-        longName: 'exclude',
-        exampleValue: '.*options.*',
-        description: 'exclude pattern (regexp) to filter *.proto files',
-        isRequired: false,        
-        defaultValue: ''
-    };
+  return {
+    shortName: 'e',
+    longName: 'exclude',
+    exampleValue: '.*options.*',
+    description: 'exclude pattern (regexp) to filter *.proto files',
+    isRequired: false,
+    defaultValue: '',
+  };
 }
 
 export function generalEntryPoint(): Option {
-    return {
-        shortName: 'i',
-        longName: 'input',
-        exampleValue: 'plexus_application.interop',
-        isRequired: true,        
-        description: 'entry point file'
-    };
+  return {
+    shortName: 'i',
+    longName: 'input',
+    exampleValue: 'plexus_application.interop',
+    isRequired: true,
+    description: 'entry point file',
+  };
 }
 
 export function plexusEntryPoint(): Option {
-    return {
-        shortName: 'i',
-        longName: 'input',
-        exampleValue: 'plexus_application.interop',
-        isRequired: true,        
-        description: 'file containing Plexus Component\'s entry point, e.g. rate_provider.interop'
-    };
+  return {
+    shortName: 'i',
+    longName: 'input',
+    exampleValue: 'plexus_application.interop',
+    isRequired: true,
+    description: "file containing Plexus Component's entry point, e.g. rate_provider.interop",
+  };
 }
 
 export function out(defaultValue: string = path.join(process.cwd(), 'gen')): Option {
-    return {
-        shortName: 'o',
-        longName: 'out',
-        exampleValue: 'src/gen',
-        description: 'output directory',
-        isRequired: true,
-        defaultValue
-    };
+  return {
+    shortName: 'o',
+    longName: 'out',
+    exampleValue: 'src/gen',
+    description: 'output directory',
+    isRequired: true,
+    defaultValue,
+  };
 }
 
 export function outFile(): Option {
-    return {
-        shortName: 'o',
-        longName: 'out',
-        exampleValue: 'plexus.out.log',
-        description: 'output file',
-        isRequired: false
-    };
+  return {
+    shortName: 'o',
+    longName: 'out',
+    exampleValue: 'plexus.out.log',
+    description: 'output file',
+    isRequired: false,
+  };
 }
 
 export function namespace(defaultValue: string = 'plexus'): Option {
-    return {
-        shortName: 'n',
-        longName: 'namespace',
-        exampleValue: 'plexus',
-        isRequired: true,        
-        description: 'namespace',
-        defaultValue
-    };
+  return {
+    shortName: 'n',
+    longName: 'namespace',
+    exampleValue: 'plexus',
+    isRequired: true,
+    description: 'namespace',
+    defaultValue,
+  };
 }
 
 export function verbose(): Option {
-    return {
-        shortName: 'v',
-        longName: 'verbose',
-        isFlag: true,
-        description: 'print verbose output'
-    };
+  return {
+    shortName: 'v',
+    longName: 'verbose',
+    isFlag: true,
+    description: 'print verbose output',
+  };
 }

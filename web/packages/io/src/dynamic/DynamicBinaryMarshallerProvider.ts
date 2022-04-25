@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BinaryMarshallerProvider, BinaryMarshaller } from '../api';
 import { InteropRegistry } from '@plexus-interop/metadata';
-import { DynamicProtoMarshallerFactory } from './DynamicProtoMarshallerFactory';
+
+import { BinaryMarshaller, BinaryMarshallerProvider } from '../api';
 import { DynamicBinaryProtoMarshaller } from './DynamicBinaryProtoMarshaller';
+import { DynamicProtoMarshallerFactory } from './DynamicProtoMarshallerFactory';
 
 export class DynamicBinaryMarshallerProvider implements BinaryMarshallerProvider {
+  private internalProvider: DynamicProtoMarshallerFactory;
 
-    private internalProvider: DynamicProtoMarshallerFactory;
+  public constructor(private readonly registry: InteropRegistry) {
+    this.internalProvider = new DynamicProtoMarshallerFactory(this.registry);
+  }
 
-    public constructor(private readonly registry: InteropRegistry) {
-        this.internalProvider = new DynamicProtoMarshallerFactory(registry);
-    }
-
-    public getMarshaller(messageType: any): BinaryMarshaller {
-        return new DynamicBinaryProtoMarshaller(this.internalProvider.getMarshaller(messageType));
-    }
+  public getMarshaller(messageType: any): BinaryMarshaller {
+    return new DynamicBinaryProtoMarshaller(this.internalProvider.getMarshaller(messageType));
+  }
 }

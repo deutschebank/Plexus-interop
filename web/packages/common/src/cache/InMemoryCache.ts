@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,73 +14,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Logger, LoggerFactory } from '../logger';
 import { Cache } from './Cache';
 import { CacheEntry } from './CacheEntry';
 import { CacheEntryDescriptor } from './CacheEntryDescriptor';
-import { Logger, LoggerFactory } from '../logger';
 
-let globalObj: any = typeof window !== 'undefined' ? window : global;
+const globalObj: any = typeof window !== 'undefined' ? window : global;
 
 export class InMemoryCache implements Cache {
+  private readonly log: Logger = LoggerFactory.getLogger('InMemoryCache');
 
-    private readonly log: Logger = LoggerFactory.getLogger('InMemoryCache');
+  private storage: Map<string, CacheEntryDescriptor<any>> = new Map();
 
-    private storage: Map<string, CacheEntryDescriptor<any>> = new Map();
-
-    public async set<T>(key: string, entry: CacheEntry<T>): Promise<void> {
-        const existing = this.storage.get(key);
-        if (existing) {
-            this.log.trace(`${key} already exist, cleaning up and calling dispose`);
-            clearTimeout(existing.cleanUpTimeOutId);
-            existing.entry.onEvict(existing.entry.value);
-        }
-        let cleanUpTimeout = -1;
-        if (entry.ttl > 0) {
-            cleanUpTimeout = globalObj.setTimeout(() => this.cleanEntry(key), entry.ttl);
-        }
-        this.storage.set(key, new CacheEntryDescriptor(
-            entry,
-            entry.ttl > 0 ? Date.now() + entry.ttl : -1,
-            cleanUpTimeout
-        ));
+  public async set<T>(key: string, entry: CacheEntry<T>): Promise<void> {
+    const existing = this.storage.get(key);
+    if (existing) {
+      this.log.trace(`${key} already exist, cleaning up and calling dispose`);
+      clearTimeout(existing.cleanUpTimeOutId);
+      existing.entry.onEvict(existing.entry.value);
     }
-
-    public resetTtl(key: string): boolean {
-        const descriptor = this.storage.get(key);
-        if (descriptor && descriptor.entry.ttl > 0) {
-            clearTimeout(descriptor.cleanUpTimeOutId);
-            descriptor.cleanUpTimeOutId =
-                globalObj.setTimeout(() => this.cleanEntry(key), descriptor.entry.ttl);
-        }
-        return false;
+    let cleanUpTimeout = -1;
+    if (entry.ttl > 0) {
+      cleanUpTimeout = globalObj.setTimeout(() => this.cleanEntry(key), entry.ttl);
     }
+    this.storage.set(key, new CacheEntryDescriptor(entry, entry.ttl > 0 ? Date.now() + entry.ttl : -1, cleanUpTimeout));
+  }
 
-    public has(key: string): boolean {
-        return this.storage.has(key);
+  public resetTtl(key: string): boolean {
+    const descriptor = this.storage.get(key);
+    if (descriptor && descriptor.entry.ttl > 0) {
+      clearTimeout(descriptor.cleanUpTimeOutId);
+      descriptor.cleanUpTimeOutId = globalObj.setTimeout(() => this.cleanEntry(key), descriptor.entry.ttl);
     }
+    return false;
+  }
 
-    public keys(): string[] {
-        const result: string[] = [];
-        this.storage.forEach((v, k) => result.push(k));
-        return result;
+  public has(key: string): boolean {
+    return this.storage.has(key);
+  }
+
+  public keys(): string[] {
+    const result: string[] = [];
+    this.storage.forEach((v, k) => result.push(k));
+    return result;
+  }
+
+  public get<T>(key: string): T | undefined {
+    const descriptor = this.storage.get(key);
+    if (descriptor) {
+      return descriptor.entry.value;
     }
+    return undefined;
+  }
 
-    public get<T>(key: string): T | undefined {
-        const descriptor = this.storage.get(key);
-        if (descriptor) {
-            return descriptor.entry.value;
-        } else {
-            return undefined;
-        }
+  private cleanEntry(key: string): void {
+    const descriptor = this.storage.get(key);
+    if (descriptor) {
+      this.log.trace(`[${descriptor.entry.ttl}] passed for [${key}] element, cleaning up`);
+      descriptor.entry.onEvict(descriptor.entry.value);
+      this.storage.delete(key);
     }
-
-    private cleanEntry(key: string): void {
-        const descriptor = this.storage.get(key);
-        if (descriptor) {
-            this.log.trace(`[${descriptor.entry.ttl}] passed for [${key}] element, cleaning up`);
-            descriptor.entry.onEvict(descriptor.entry.value);
-            this.storage.delete(key);
-        }
-    }
-
-} 
+  }
+}

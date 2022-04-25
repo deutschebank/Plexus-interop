@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 import { ActionType } from '../ActionType';
-import { CreateChannelResponse } from './CreateChannelResponse';
-import { SendMessageRequest } from './SendMessageRequest';
+import { ChannelRequest } from './ChannelRequest';
 import { CloseChannelRequest } from './CloseChannelRequest';
 import { CloseChannelResponse } from './CloseChannelResponse';
-import { ChannelRequest } from './ChannelRequest';
+import { CreateChannelResponse } from './CreateChannelResponse';
+import { SendMessageRequest } from './SendMessageRequest';
 
 export class RemoteActions {
+  public static readonly CREATE_CHANNEL: ActionType<{}, CreateChannelResponse> = { id: 'CREATE_CHANNEL' };
 
-    public static readonly CREATE_CHANNEL: ActionType<{}, CreateChannelResponse> = { id: 'CREATE_CHANNEL' };
+  public static readonly SEND_MESSAGE: ActionType<SendMessageRequest, {}> = { id: 'SEND_MESSAGE' };
 
-    public static readonly SEND_MESSAGE: ActionType<SendMessageRequest, {}> = { id: 'SEND_MESSAGE' };
+  public static readonly CLOSE_CHANNEL: ActionType<CloseChannelRequest, CloseChannelResponse> = { id: 'CLOSE_CHANNEL' };
 
-    public static readonly CLOSE_CHANNEL: ActionType<CloseChannelRequest, CloseChannelResponse> = { id: 'CLOSE_CHANNEL' };
-
-    public static readonly OPEN_CHANNEL: ActionType<ChannelRequest, string> = { id: 'OPEN_CHANNEL' };
-
+  public static readonly OPEN_CHANNEL: ActionType<ChannelRequest, string> = { id: 'OPEN_CHANNEL' };
 }

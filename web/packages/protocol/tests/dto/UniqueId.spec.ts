@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,20 @@
 import { UniqueId } from '../../src/dto/UniqueId';
 
 describe('UniqueId', () => {
-    it('Converts guid to string and back', () => {
-        const id = UniqueId.generateNew();
-        const strId = id.toString();
-        expect(UniqueId.fromString(strId).toString()).toBe(strId);
-    });
-    it('Converts id to 32 lengh string', () => {
-        const id = UniqueId.generateNew();
-        const strId = id.toString();
-        expect(id.toString().length).toBe(32);
-    });
-    it('fromString and toString compatible for small numbers', () => {
-        const s = "00000000000000000000000000000001";
-        const id = UniqueId.fromString(s);
-        const strId = id.toString();
-        expect(strId).toBe(s);
-    });
+  it('Converts guid to string and back', () => {
+    const id = UniqueId.generateNew();
+    const strId = id.toString();
+    expect(UniqueId.fromString(strId).toString()).toBe(strId);
+  });
+  it('Converts id to 32 lengh string', () => {
+    const id = UniqueId.generateNew();
+    const strId = id.toString();
+    expect(strId.length).toBe(32);
+  });
+  it('fromString and toString compatible for small numbers', () => {
+    const s = '00000000000000000000000000000001';
+    const id = UniqueId.fromString(s);
+    const strId = id.toString();
+    expect(strId).toBe(s);
+  });
 });

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,29 +15,27 @@
  * limitations under the License.
  */
 import { getPlexusFeatures } from '@plexus-interop/common';
-import { BinaryMarshallerProvider } from '../api/BinaryMarshallerProvider';
+
 import { BinaryMarshaller } from '../api/BinaryMarshaller';
+import { BinaryMarshallerProvider } from '../api/BinaryMarshallerProvider';
 
 /**
  * Provides Marshaller based on generated Protobuf message types
  */
 export class ProtoMarshallerProvider implements BinaryMarshallerProvider {
-
-    public getMarshaller(messageObj: any): BinaryMarshaller {
-        if (!messageObj) {
-            throw new Error('Proto message definition is not provided');
-        } else if (!messageObj.encode || !messageObj.decode) {
-            throw new Error('Encode/Decode is missed for message definition');
-        } else {
-            return {
-                encode: (obj: any): Uint8Array => {
-                    return messageObj.encode(obj).finish() as Uint8Array;
-                },
-                decode: (payload: Uint8Array): any => {
-                    const features = getPlexusFeatures();
-                    return messageObj.toObject(messageObj.decode(payload), { defaults: features.decodeUndefinedToDefault });
-                }
-            };
-        }
+  public getMarshaller(messageObj: any): BinaryMarshaller {
+    if (!messageObj) {
+      throw new Error('Proto message definition is not provided');
+    } else if (!messageObj.encode || !messageObj.decode) {
+      throw new Error('Encode/Decode is missed for message definition');
+    } else {
+      return {
+        encode: (obj: any): Uint8Array => messageObj.encode(obj).finish() as Uint8Array,
+        decode: (payload: Uint8Array): any => {
+          const features = getPlexusFeatures();
+          return messageObj.toObject(messageObj.decode(payload), { defaults: features.decodeUndefinedToDefault });
+        },
+      };
     }
+  }
 }

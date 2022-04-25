@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 import { TransportConnection } from '@plexus-interop/transport-common';
+
 import { ApplicationConnection } from './ApplicationConnection';
 import { ApplicationDescriptor } from './ApplicationDescriptor';
 
 export interface AppLifeCycleManager {
+  getOnlineConnections(): Promise<ApplicationConnection[]>;
 
-    getOnlineConnections(): Promise<ApplicationConnection[]>;
+  spawnConnection(applicationId: string): Promise<ApplicationConnection>;
 
-    spawnConnection(applicationId: string): Promise<ApplicationConnection>; 
+  getOrSpawnConnection(applicationId: string, excludedInstance?: string): Promise<ApplicationConnection>;
 
-    getOrSpawnConnection(applicationId: string, excludedInstance?: string): Promise<ApplicationConnection>;
+  getOrSpawnConnectionForOneOf(applicationIds: string[], excludedInstance?: string): Promise<ApplicationConnection>;
 
-    getOrSpawnConnectionForOneOf(applicationIds: string[], excludedInstance?: string): Promise<ApplicationConnection>;
-
-    acceptConnection(connection: TransportConnection, appDescriptor: ApplicationDescriptor, connectionDropped: (connection: ApplicationConnection) => void): Promise<ApplicationConnection>;
-
+  acceptConnection(
+    connection: TransportConnection,
+    appDescriptor: ApplicationDescriptor,
+    connectionDropped: (connection: ApplicationConnection) => void
+  ): Promise<ApplicationConnection>;
 }

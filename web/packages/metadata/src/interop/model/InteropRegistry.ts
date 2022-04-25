@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Application } from './Application';
-import { Message } from './Message';
-import { Service } from './Service';
 import { ExtendedMap } from '@plexus-interop/common';
+
 import { MessagesNamespace } from '../json/MessagesNamespace';
 import { Enum } from './Enum';
+import { Message } from './Message';
+import { Application, Service } from './ServiceTypes';
 
 export interface InteropRegistry {
+  applications: ExtendedMap<string, Application>;
 
-    applications: ExtendedMap<string, Application>;
+  messages: ExtendedMap<string, Message>;
 
-    messages: ExtendedMap<string, Message>;
+  enums?: ExtendedMap<string, Enum>;
 
-    enums?: ExtendedMap<string, Enum>;
+  services: ExtendedMap<string, Service>;
 
-    services: ExtendedMap<string, Service>;
-
-    rawMessages: MessagesNamespace;
-    
+  rawMessages: MessagesNamespace;
 }

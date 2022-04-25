@@ -10,17 +10,17 @@
     </select>
   </div>
 
-  <div class="form-group" [hidden]="transportType.value != 'native-ws'">
+  <div class="form-group" [hidden]="transportType.value !== 'native-ws'">
       <label for="wsUrl">Web Socket URL</label>    
       <input type="text" name="wsUrl" id="metadataUrl" class="form-control" [formControl]="wsUrl">
   </div>
 
-  <div class="form-group" [hidden]="transportType.value == 'native-ws'">
+  <div class="form-group" [hidden]="transportType.value === 'native-ws'">
       <label for="appsUrl">Apps Metadata URL</label>    
       <input type="text" name="appsUrl" id="metadataUrl" class="form-control" [formControl]="appsUrl">
   </div>
 
-  <div class="form-group" [hidden]="transportType.value != 'web-cross'">
+  <div class="form-group" [hidden]="transportType.value !== 'web-cross'">
       <label for="proxyHostUrl">Proxy Host URL</label>    
       <input type="text" name="proxyHostUrl" id="proxyHostUrl" class="form-control" [formControl]="proxyHostUrl">
   </div>

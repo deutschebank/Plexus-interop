@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,52 +14,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ClientError, transportProtocol as plexus } from '@plexus-interop/protocol';
+
 import { RemoteActionStatus } from './RemoteActionStatus';
-import { ClientError } from '@plexus-interop/protocol';
-import { transportProtocol as plexus } from '@plexus-interop/protocol';
 
 export interface RemoteActionResult {
+  status: RemoteActionStatus;
 
-    status: RemoteActionStatus;
+  payload?: any;
 
-    payload?: any;
+  error?: ClientError;
 
-    error?: ClientError;
-
-    completion?: plexus.ICompletion;
-
+  completion?: plexus.ICompletion;
 }
 
 export function isFailed(result: RemoteActionResult): boolean {
-    return result.status === RemoteActionStatus.FAILURE;
+  return result.status === RemoteActionStatus.FAILURE;
 }
 
 export function isSucceded(result: RemoteActionResult): boolean {
-    return result.status === RemoteActionStatus.SUCCESS;
+  return result.status === RemoteActionStatus.SUCCESS;
 }
 
 export function isCompleted(result: RemoteActionResult): boolean {
-    return result.status === RemoteActionStatus.COMPLETED;
+  return result.status === RemoteActionStatus.COMPLETED;
 }
 
 export function successResult(payload: any): RemoteActionResult {
-    return {
-        status: RemoteActionStatus.SUCCESS,
-        payload
-    };
+  return {
+    status: RemoteActionStatus.SUCCESS,
+    payload,
+  };
 }
 
-export function completedResult(completed: { payload?: any, completion?: plexus.ICompletion } = {}): RemoteActionResult {
-    return {
-        status: RemoteActionStatus.COMPLETED,
-        payload: completed.payload,
-        completion: completed.completion
-    };
+export function completedResult(
+  completed: { payload?: any; completion?: plexus.ICompletion } = {}
+): RemoteActionResult {
+  return {
+    status: RemoteActionStatus.COMPLETED,
+    payload: completed.payload,
+    completion: completed.completion,
+  };
 }
 
 export function errorResult(error?: ClientError): RemoteActionResult {
-    return {
-        error,
-        status: RemoteActionStatus.FAILURE
-    };
+  return {
+    error,
+    status: RemoteActionStatus.FAILURE,
+  };
 }

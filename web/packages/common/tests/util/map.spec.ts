@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,20 +17,16 @@
 import { pop } from '../../src/util/collections/map';
 
 describe('Map Utils', () => {
+  it('Should pop last element from Map', () => {
+    const map = new Map();
 
-    it('Should pop last element from Map', () => {
+    map.set(1, 2);
+    map.set(3, 4);
 
-        const map = new Map();
+    const [key, value] = pop(map);
 
-        map.set(1, 2);
-        map.set(3, 4);
-
-        const [key, value] = pop(map);
-
-        expect(key).toBe(3);
-        expect(value).toBe(4);
-        expect(map.get(key)).toBeUndefined();
-
-    });
-
+    expect(key).toBe(3);
+    expect(value).toBe(4);
+    expect(map.get(key)).toBeUndefined();
+  });
 });

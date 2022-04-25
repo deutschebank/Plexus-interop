@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,42 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-underscore-dangle */
+import isElectronRenderer from 'is-electron-renderer';
+
 const globalObj: any = global || window;
 
 export function readEncodedConfig(): any {
+  if (globalObj.__karma__) {
+    return globalObj.__karma__.config;
+  }
 
-    // tslint:disable-next-line:no-string-literal
-    if (globalObj['__karma__']) {
-        // tslint:disable-next-line:no-string-literal        
-        return globalObj['__karma__'].config;
-    }
-
-    let env: any;
-    if (globalObj.require('is-electron-renderer')) {
-        env = globalObj.require('electron').remote.process.env;
-    } else {
-        env = process.env;
-    }
-    return {
-        wsUrl: env.PLEXUS_BROKER_WEBSOCKET_URL,
-        hostPath: env.PLEXUS_BROKER_HOST_URL
-    }
+  let env: any;
+  if (isElectronRenderer) {
+    const remoteMain = globalObj.require('@electron/remote/main');
+    remoteMain.initialize();
+    remoteMain.enable();
+    env = remoteMain.process.env;
+    // env = globalObj.require('electron').remote.process.env;
+  } else {
+    env = process.env;
+  }
+  return {
+    wsUrl: env.PLEXUS_BROKER_WEBSOCKET_URL,
+    hostPath: env.PLEXUS_BROKER_HOST_URL,
+  };
 }
 
 export function readWsUrl(): string {
-    const wsUrl = readEncodedConfig().wsUrl;
-    if (wsUrl) {
-        return wsUrl;
-    } else {
-        throw Error('wsUrl is undefined');
-    }
+  const { wsUrl } = readEncodedConfig();
+  if (wsUrl) {
+    return wsUrl;
+  }
+  throw Error('wsUrl is undefined');
 }
 
 export function readHostUrl(): string {
-    const hostUrl = readEncodedConfig().hostPath;
-    if (hostUrl) {
-        return hostUrl;
-    } else {
-        throw Error('hostUrl is undefined');
-    }
+  const hostUrl = readEncodedConfig().hostPath;
+  if (hostUrl) {
+    return hostUrl;
+  }
+  throw Error('hostUrl is undefined');
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,15 +19,11 @@ import { baseDir, out, plexusEntryPoint, verbose } from './DefaultOptions';
 import { Option } from './Option';
 
 export class GenProtoCommand extends BaseJavaGenCommand {
-    
-    public plexusGenArgs: (opts: any) => string[] = opts => {
-        return ['--type=proto', '--descriptors', ...this.optionArgs(opts)];
-    }
+  public plexusGenArgs: (opts: any) => string[] = (opts) => ['--type=proto', '--descriptors', ...this.optionArgs(opts)];
 
-    public generalDescription = () => 'generate proto definitions for specified entry point';
+  public generalDescription = () => 'generate proto definitions for specified entry point';
 
-    public name = () => 'gen-proto';
+  public name = () => 'gen-proto';
 
-    public options: () => Option[] = () => [baseDir(), out(), plexusEntryPoint(), verbose()];
-
+  public options: () => Option[] = () => [baseDir(), out(), plexusEntryPoint(), verbose()];
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2020 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ConnectionCloseFrame, ChannelCloseFrame, MessageFrame } from '.';
-import { ConnectionOpenFrame } from '.';
-import { ChannelOpenFrame } from '.';
+import { ChannelCloseFrame } from './model/ChannelCloseFrame';
+import { ChannelOpenFrame } from './model/ChannelOpenFrame';
+import { ConnectionCloseFrame } from './model/ConnectionCloseFrame';
+import { ConnectionOpenFrame } from './model/ConnectionOpenFrame';
+import { MessageFrame } from './model/MessageFrame';
 
 export interface TransportFrameListener {
-    
-    handleConnectionCloseFrame(frame: ConnectionCloseFrame): void;
-    
-    handleConnectionOpenFrame(frame: ConnectionOpenFrame): void;
-    
-    handleChannelOpenFrame(frame: ChannelOpenFrame): void;
-    
-    handleChannelCloseFrame(frame: ChannelCloseFrame): void;
-    
-    handleMessageFrame(frame: MessageFrame): void;
+  handleConnectionCloseFrame(frame: ConnectionCloseFrame): void;
 
+  handleConnectionOpenFrame(frame: ConnectionOpenFrame): void;
+
+  handleChannelOpenFrame(frame: ChannelOpenFrame): void;
+
+  handleChannelCloseFrame(frame: ChannelCloseFrame): void;
+
+  handleMessageFrame(frame: MessageFrame): void;
 }
