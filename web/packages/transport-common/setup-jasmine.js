@@ -22,6 +22,6 @@ const reporter = new reporters.JUnitXmlReporter({
   // per test to avoid collisions.
   consolidateAll: false,
   filePrefix: 'jest-junit-result-',
-  savePath: path.resolve(__dirname, '/target/surefire-reports/'),
+  savePath: path.resolve(__dirname, 'target/surefire-reports'),
 });
 jasmine.getEnv().addReporter(reporter);

@@ -45,7 +45,9 @@ describe('SafeMessagesBuffer', () => {
 
     setTimeout(() => {
       expect(new Uint32Array(safeBuffer.getCurrentBuffer())).toEqual(new Uint32Array([1, 2, 3, 5, 6, 7]));
-      done();
+      setTimeout(() => {
+        done();
+      }, 1000);
     }, 50);
   });
 
@@ -57,7 +59,9 @@ describe('SafeMessagesBuffer', () => {
     const safeBuffer = new SafeMessageBuffer(
       (message) => {
         expect(new Uint32Array(message)).toEqual(new Uint32Array([1, 2, 3, 5, 6, 7, 8]));
-        done();
+        setTimeout(() => {
+          done();
+        }, 1000);
       },
       () => {},
       1,

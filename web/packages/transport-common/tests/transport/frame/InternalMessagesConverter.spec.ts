@@ -20,11 +20,14 @@ import { ChannelOpenFrame, InternalMessagesConverter } from '../../../src/transp
 describe('InternalMessagesConverter', () => {
   const sut = new InternalMessagesConverter();
 
-  it('Should convert header frames to and from binary format', () => {
+  it('Should convert header frames to and from binary format', (done) => {
     const before = ChannelOpenFrame.fromHeaderData({ channelId: UniqueId.generateNew() });
     const binary = sut.serialize(before);
     const after = sut.deserialize(new Uint8Array(binary));
 
     expect(before).toEqual(after);
+    setTimeout(() => {
+      done();
+    }, 1000);
   });
 });

@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 
 import { AsyncHelper } from '@plexus-interop/common';
@@ -28,8 +30,8 @@ import { TestBufferedInMemoryFramedTransport } from '../TestBufferedInMemoryFram
 import { TestUtils } from './util';
 
 describe('FramedTransportConnection', () => {
-  it('Delivers messages to different channels', async () => {
-    let mockFrameTransport = new TestBufferedInMemoryFramedTransport();
+  it.only('Delivers messages to different channels', async () => {
+    const mockFrameTransport = new TestBufferedInMemoryFramedTransport();
 
     const firstChannelId = UniqueId.generateNew();
     const secondChannelId = UniqueId.generateNew();
@@ -84,6 +86,8 @@ describe('FramedTransportConnection', () => {
     expect(secondMessage).toBeDefined();
     firstSubscription.unsubscribe();
     secondSubscription.unsubscribe();
-    await transportConnection.closeAndCleanUp();
+    transportConnection.closeAndCleanUp();
+
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 });

@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { anything, instance, mock, when } from 'ts-mockito';
 import Queue from 'typescript-collections/dist/lib/Queue';
 
-import { AsyncHelper, CancellationToken } from '@plexus-interop/common';
-import { Observer } from '@plexus-interop/common';
+import { AsyncHelper, CancellationToken, Observer } from '@plexus-interop/common';
 import { UniqueId } from '@plexus-interop/protocol';
 
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
@@ -49,7 +50,9 @@ describe('FramedTransportChannel', () => {
       next: (result) => {
         expect(result.byteLength > 0).toBeTruthy();
         cancellationToken.cancel();
-        done();
+        setTimeout(() => {
+          done();
+        }, 1000);
       },
       complete: () => {},
       error: () => {},
@@ -103,7 +106,9 @@ describe('FramedTransportChannel', () => {
       next: (result: ArrayBuffer) => {
         expect(result.byteLength > 0).toBeTruthy();
         cancellationToken.cancel();
-        done();
+        setTimeout(() => {
+          done();
+        }, 1000);
       },
       complete: () => {},
       error: () => {},

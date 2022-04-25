@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return, @typescript-eslint/no-use-before-define, no-console */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
@@ -147,7 +149,9 @@ describe('Framed Transport Connection: Client to Server communication', () => {
       serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve()))
     );
 
-    for (let payload of payloads) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const payload of payloads) {
+      // eslint-disable-next-line no-await-in-loop
       const received = await observer.pullData();
       expect(new Uint8Array(payload)).toEqual(new Uint8Array(received));
     }
