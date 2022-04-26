@@ -64,7 +64,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
 
     const payload = new ArrayBuffer(3);
 
-    await new Promise<AnonymousSubscription>((resolve, reject) =>
+    await new Promise<AnonymousSubscription>((resolve) =>
       clientChannel.open(
         new DelegateChannelObserver(new LogObserver(undefined, clientChannel.uuid()), (s) => resolve(s))
       )
@@ -73,7 +73,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     // sever channel opened
     const serverChannel = await serverChannelsObserver.pullData();
     const observer = new BufferedObserver<ArrayBuffer>();
-    await new Promise<AnonymousSubscription>((resolve, reject) =>
+    await new Promise<AnonymousSubscription>((resolve) =>
       serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve(s)))
     );
 
@@ -88,6 +88,8 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     await clientChClosed;
     await serverChClosed;
     await disconnect(client, server);
+
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   async function sendReceiveAndVerify(
@@ -145,9 +147,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     const serverChannel = await serverChannelsObserver.pullData();
 
     const observer = new BufferedObserver<ArrayBuffer>();
-    await new Promise<void>((resolve, _) =>
-      serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve()))
-    );
+    await new Promise<void>((resolve) => serverChannel.open(new DelegateChannelObserver(observer, () => resolve())));
 
     // eslint-disable-next-line no-restricted-syntax
     for (const payload of payloads) {

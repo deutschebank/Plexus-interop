@@ -30,7 +30,7 @@ import { TestBufferedInMemoryFramedTransport } from '../TestBufferedInMemoryFram
 import { TestUtils } from './util';
 
 describe('FramedTransportConnection', () => {
-  it.only('Delivers messages to different channels', async () => {
+  it('Delivers messages to different channels', async () => {
     const mockFrameTransport = new TestBufferedInMemoryFramedTransport();
 
     const firstChannelId = UniqueId.generateNew();

@@ -63,7 +63,7 @@ describe('FramedTransportChannel', () => {
     const mockFrameTransport: FramedTransport = mock(TestBufferedInMemoryFramedTransport);
 
     TestUtils.framedMessage().forEach((frame) => {
-      when(mockFrameTransport.open(anything())).thenReturn(Promise.reject(new Error('Transport error')));
+      when(mockFrameTransport.open(anything())).thenReject(new Error('Transport error'));
     });
 
     const sut = new FramedTransportChannel(
