@@ -113,5 +113,8 @@ describe('GenericClient', () => {
       fail('Response is empty');
     }
     cancellationToken.cancel('All done');
+
+    // eslint-disable-next-line no-promise-executor-return
+    return new Promise((resolve) => setTimeout(resolve, 100));
   });
 });
