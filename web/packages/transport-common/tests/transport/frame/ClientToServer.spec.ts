@@ -102,7 +102,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     console.log('Creating channel');
     const clientChannel = await clientConnection.createChannel();
     console.log('Created channel');
-    await new Promise<AnonymousSubscription>((resolve, reject) =>
+    await new Promise<AnonymousSubscription>((resolve) =>
       clientChannel.open(
         new DelegateChannelObserver(new LogObserver(undefined, clientChannel.uuid()), (s) => {
           console.log('Client channel created');
@@ -119,7 +119,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     console.log('Waiting for server chanel channel');
 
     const observer = new BufferedObserver<ArrayBuffer>();
-    serverChannel.open(new DelegateChannelObserver(observer, (s) => {}));
+    serverChannel.open(new DelegateChannelObserver(observer, () => {}));
     const received = await observer.pullData();
     expect(new Uint8Array(payload)).toEqual(new Uint8Array(received));
     const clientChClosed = clientChannel.close();
@@ -136,7 +136,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     payloads: ArrayBuffer[]
   ): Promise<void> {
     const clientChannel = await clientConnection.createChannel();
-    new Promise<AnonymousSubscription>((resolve, reject) =>
+    new Promise<AnonymousSubscription>((resolve) =>
       clientChannel.open(
         new DelegateChannelObserver(new LogObserver(undefined, clientChannel.uuid()), (s) => resolve(s))
       )

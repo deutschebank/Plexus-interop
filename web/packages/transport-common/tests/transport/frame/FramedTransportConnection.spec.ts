@@ -58,7 +58,7 @@ describe('FramedTransportConnection', () => {
     await transportConnection.connect({
       next: (ch) => channels.push(ch),
       complete: () => {},
-      error: (e) => {},
+      error: () => {},
     });
 
     await AsyncHelper.waitFor(() => channels.length === 2);
@@ -71,12 +71,12 @@ describe('FramedTransportConnection', () => {
 
     // messages delivered
     const firstObserver = new BufferedObserver<ArrayBuffer>();
-    const firstSubscription = await new Promise<AnonymousSubscription>((resolve, reject) =>
+    const firstSubscription = await new Promise<AnonymousSubscription>((resolve) =>
       first.open(new DelegateChannelObserver(firstObserver, (s) => resolve(s)))
     );
 
     const secondObserver = new BufferedObserver<ArrayBuffer>();
-    const secondSubscription = await new Promise<AnonymousSubscription>((resolve, reject) =>
+    const secondSubscription = await new Promise<AnonymousSubscription>((resolve) =>
       second.open(new DelegateChannelObserver(secondObserver, (s) => resolve(s)))
     );
 

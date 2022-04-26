@@ -62,7 +62,7 @@ describe('FramedTransportChannel', () => {
   it("Reports error to observable if can't read frame", (done) => {
     const mockFrameTransport: FramedTransport = mock(TestBufferedInMemoryFramedTransport);
 
-    TestUtils.framedMessage().forEach((frame) => {
+    TestUtils.framedMessage().forEach(() => {
       when(mockFrameTransport.open(anything())).thenReject(new Error('Transport error'));
     });
 
@@ -114,10 +114,10 @@ describe('FramedTransportChannel', () => {
       error: () => {},
     };
 
-    new Promise<AnonymousSubscription>((resolve, reject) =>
+    new Promise<AnonymousSubscription>((resolve) =>
       sut.open(new DelegateChannelObserver(observer, (s) => resolve(s)))
     ).then(() => {
-      new Promise<AnonymousSubscription>((resolve, reject) =>
+      new Promise<AnonymousSubscription>((resolve) =>
         sut.open(new DelegateChannelObserver(observer, (s) => resolve(s)))
       ).catch(() => done());
     });
@@ -136,7 +136,7 @@ describe('FramedTransportChannel', () => {
     const cancellationToken = new CancellationToken();
 
     const sut = new FramedTransportChannel(channelId, mockFrameTransport, async () => {}, cancellationToken);
-    new Promise<AnonymousSubscription>((resolve, reject) =>
+    new Promise<AnonymousSubscription>((resolve) =>
       sut.open(new DelegateChannelObserver(new LogObserver(), (s) => resolve(s)))
     ).then(() => {
       sut.sendMessage(dataToSend.buffer).then(async () => {
