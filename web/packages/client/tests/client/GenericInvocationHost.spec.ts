@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-console, @typescript-eslint/no-use-before-define */
 import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
 import { anything, instance, mock, verify, when } from 'ts-mockito';
 
@@ -34,7 +36,7 @@ import { GenericClientImpl } from '../../src/client/generic/GenericClientImpl';
 import { Invocation } from '../../src/client/generic/Invocation';
 import { createInvocationInfo } from './client-mocks';
 
-declare var process: any;
+declare let process: any;
 
 process.on('unhandledRejection', (reason: any, p: any) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -47,11 +49,11 @@ describe('GenericInvocationHost', () => {
 
     setupSimpleHostedInvocation(
       requestPayload,
-      async (completion: plexus.ICompletion) => {
+      async () => {
         done();
         return new SuccessCompletion();
       },
-      async (context: MethodInvocationContext, request: ArrayBuffer) => {
+      async () => {
         console.log('Doing important stuff ...');
         return responsePayload;
       },
@@ -73,7 +75,7 @@ describe('GenericInvocationHost', () => {
         done();
         return new SuccessCompletion();
       },
-      (context: MethodInvocationContext, request: ArrayBuffer) => Promise.reject('Execution error')
+      () => Promise.reject(new Error('Execution error'))
     );
   });
 
@@ -89,7 +91,7 @@ describe('GenericInvocationHost', () => {
         done();
         return new SuccessCompletion();
       },
-      (context: MethodInvocationContext, request: ArrayBuffer) => {
+      () => {
         throw new Error('Execution error');
       }
     );
@@ -100,7 +102,7 @@ describe('GenericInvocationHost', () => {
     const responsePayload = new Uint8Array([1, 2, 3]).buffer;
     setupHostedInvocation(
       requestPayload,
-      async (completion: plexus.ICompletion) => {
+      async () => {
         done();
         return new SuccessCompletion();
       },
@@ -115,12 +117,12 @@ describe('GenericInvocationHost', () => {
               client.complete();
             }
           },
-          error: (e) => {},
+          error: () => {},
           complete: () => {},
           streamCompleted: () => {},
         };
       },
-      (invocation) => {},
+      () => {},
       3
     );
   });
@@ -146,7 +148,7 @@ describe('GenericInvocationHost', () => {
     setupServerStreamingHostedInvocation(
       requestPayload,
 
-      (completion: plexus.ICompletion) => Promise.resolve(new SuccessCompletion()),
+      () => Promise.resolve(new SuccessCompletion()),
 
       streamingHandler,
 
@@ -198,7 +200,7 @@ function setupHostedInvocation(
   const mockInvocation = mock(AcceptedInvocation);
 
   when(mockInvocation.getMetaInfo()).thenReturn(invocationInfo);
-  when(mockInvocation.sendMessage(anything())).thenReturn(Promise.resolve());
+  when(mockInvocation.sendMessage(anything())).thenResolve();
   when(mockInvocation.close(anything())).thenCall((completion: plexus.ICompletion) => {
     if (postHandler) {
       postHandler(mockInvocation);

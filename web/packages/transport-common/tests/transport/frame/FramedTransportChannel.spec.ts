@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 import { anything, instance, mock, when } from 'ts-mockito';
 import Queue from 'typescript-collections/dist/lib/Queue';
 
-import { AsyncHelper, CancellationToken } from '@plexus-interop/common';
-import { Observer } from '@plexus-interop/common';
+import { AsyncHelper, CancellationToken, Observer } from '@plexus-interop/common';
 import { UniqueId } from '@plexus-interop/protocol';
 
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
@@ -49,7 +50,9 @@ describe('FramedTransportChannel', () => {
       next: (result) => {
         expect(result.byteLength > 0).toBeTruthy();
         cancellationToken.cancel();
-        done();
+        setTimeout(() => {
+          done();
+        }, 1000);
       },
       complete: () => {},
       error: () => {},
@@ -59,8 +62,8 @@ describe('FramedTransportChannel', () => {
   it("Reports error to observable if can't read frame", (done) => {
     const mockFrameTransport: FramedTransport = mock(TestBufferedInMemoryFramedTransport);
 
-    TestUtils.framedMessage().forEach((frame) => {
-      when(mockFrameTransport.open(anything())).thenReturn(Promise.reject(new Error('Transport error')));
+    TestUtils.framedMessage().forEach(() => {
+      when(mockFrameTransport.open(anything())).thenReject(new Error('Transport error'));
     });
 
     const sut = new FramedTransportChannel(
@@ -103,16 +106,18 @@ describe('FramedTransportChannel', () => {
       next: (result: ArrayBuffer) => {
         expect(result.byteLength > 0).toBeTruthy();
         cancellationToken.cancel();
-        done();
+        setTimeout(() => {
+          done();
+        }, 1000);
       },
       complete: () => {},
       error: () => {},
     };
 
-    new Promise<AnonymousSubscription>((resolve, reject) =>
+    new Promise<AnonymousSubscription>((resolve) =>
       sut.open(new DelegateChannelObserver(observer, (s) => resolve(s)))
     ).then(() => {
-      new Promise<AnonymousSubscription>((resolve, reject) =>
+      new Promise<AnonymousSubscription>((resolve) =>
         sut.open(new DelegateChannelObserver(observer, (s) => resolve(s)))
       ).catch(() => done());
     });
@@ -131,7 +136,7 @@ describe('FramedTransportChannel', () => {
     const cancellationToken = new CancellationToken();
 
     const sut = new FramedTransportChannel(channelId, mockFrameTransport, async () => {}, cancellationToken);
-    new Promise<AnonymousSubscription>((resolve, reject) =>
+    new Promise<AnonymousSubscription>((resolve) =>
       sut.open(new DelegateChannelObserver(new LogObserver(), (s) => resolve(s)))
     ).then(() => {
       sut.sendMessage(dataToSend.buffer).then(async () => {

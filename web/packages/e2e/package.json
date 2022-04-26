@@ -12,7 +12,7 @@
     "build:main": "tsc",
     "build:watch": "tsc -w -p tsconfig.json",
     "build:bundle": "npm run copy-assets && npm run build-host-proxy",
-    "unit": "jest --coverage",
+    "unit": "jest --coverage --detectOpenHandles",
     "test": "if-env PLEXUS_E2E_TESTS_ENABLED=true && npm run unit || echo 'E2E unit tests disabled'",
     "gen-echo-js": "pbjs --force-long -t static-module -r echo-client -w commonjs -o src/echo/gen/plexus-messages.js src/echo/metadata/messages.proto",
     "gen-echo-ts": "pbts --force-long -o src/echo/gen/plexus-messages.d.ts src/echo/gen/plexus-messages.js",

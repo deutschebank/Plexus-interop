@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return, @typescript-eslint/no-use-before-define, no-console */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 
 import { DelegateChannelObserver } from '../../../src/common/DelegateChannelObserver';
@@ -62,7 +64,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
 
     const payload = new ArrayBuffer(3);
 
-    await new Promise<AnonymousSubscription>((resolve, reject) =>
+    await new Promise<AnonymousSubscription>((resolve) =>
       clientChannel.open(
         new DelegateChannelObserver(new LogObserver(undefined, clientChannel.uuid()), (s) => resolve(s))
       )
@@ -71,7 +73,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     // sever channel opened
     const serverChannel = await serverChannelsObserver.pullData();
     const observer = new BufferedObserver<ArrayBuffer>();
-    await new Promise<AnonymousSubscription>((resolve, reject) =>
+    await new Promise<AnonymousSubscription>((resolve) =>
       serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve(s)))
     );
 
@@ -86,6 +88,8 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     await clientChClosed;
     await serverChClosed;
     await disconnect(client, server);
+
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   async function sendReceiveAndVerify(
@@ -98,7 +102,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     console.log('Creating channel');
     const clientChannel = await clientConnection.createChannel();
     console.log('Created channel');
-    await new Promise<AnonymousSubscription>((resolve, reject) =>
+    await new Promise<AnonymousSubscription>((resolve) =>
       clientChannel.open(
         new DelegateChannelObserver(new LogObserver(undefined, clientChannel.uuid()), (s) => {
           console.log('Client channel created');
@@ -115,7 +119,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     console.log('Waiting for server chanel channel');
 
     const observer = new BufferedObserver<ArrayBuffer>();
-    serverChannel.open(new DelegateChannelObserver(observer, (s) => {}));
+    serverChannel.open(new DelegateChannelObserver(observer, () => {}));
     const received = await observer.pullData();
     expect(new Uint8Array(payload)).toEqual(new Uint8Array(received));
     const clientChClosed = clientChannel.close();
@@ -132,7 +136,7 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     payloads: ArrayBuffer[]
   ): Promise<void> {
     const clientChannel = await clientConnection.createChannel();
-    new Promise<AnonymousSubscription>((resolve, reject) =>
+    new Promise<AnonymousSubscription>((resolve) =>
       clientChannel.open(
         new DelegateChannelObserver(new LogObserver(undefined, clientChannel.uuid()), (s) => resolve(s))
       )
@@ -143,11 +147,11 @@ describe('Framed Transport Connection: Client to Server communication', () => {
     const serverChannel = await serverChannelsObserver.pullData();
 
     const observer = new BufferedObserver<ArrayBuffer>();
-    await new Promise<void>((resolve, _) =>
-      serverChannel.open(new DelegateChannelObserver(observer, (s) => resolve()))
-    );
+    await new Promise<void>((resolve) => serverChannel.open(new DelegateChannelObserver(observer, () => resolve())));
 
-    for (let payload of payloads) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const payload of payloads) {
+      // eslint-disable-next-line no-await-in-loop
       const received = await observer.pullData();
       expect(new Uint8Array(payload)).toEqual(new Uint8Array(received));
     }

@@ -29,7 +29,7 @@ describe('GenericClient', () => {
     const cancellationToken = new CancellationToken();
     const mockChannel = new BufferedChannel(cancellationToken);
     const id = UniqueId.generateNew();
-    when(mockedConnection.createChannel()).thenReturn(Promise.resolve(mockChannel));
+    when(mockedConnection.createChannel()).thenResolve(mockChannel);
     when(mockedConnection.uuid()).thenReturn(id);
     const connection = instance(mockedConnection);
 
@@ -55,7 +55,7 @@ describe('GenericClient', () => {
     const mockedConnection = mock(FramedTransportConnection);
     let mockChannel = new BufferedChannel(cancellationToken);
     const id = UniqueId.generateNew();
-    when(mockedConnection.createChannel()).thenReturn(Promise.resolve(mockChannel));
+    when(mockedConnection.createChannel()).thenResolve(mockChannel);
     when(mockedConnection.uuid()).thenReturn(id);
     const connection = instance(mockedConnection);
 
@@ -73,7 +73,7 @@ describe('GenericClient', () => {
     const client = await clientPromise;
 
     mockChannel = new BufferedChannel(cancellationToken);
-    when(mockedConnection.createChannel()).thenReturn(Promise.resolve(mockChannel));
+    when(mockedConnection.createChannel()).thenResolve(mockChannel);
 
     const discoveryResultPromise = client.discoverService({
       consumedService: {
@@ -113,5 +113,8 @@ describe('GenericClient', () => {
       fail('Response is empty');
     }
     cancellationToken.cancel('All done');
+
+    // eslint-disable-next-line no-promise-executor-return
+    return new Promise((resolve) => setTimeout(resolve, 100));
   });
 });

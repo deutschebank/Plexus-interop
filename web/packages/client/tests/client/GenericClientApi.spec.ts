@@ -18,8 +18,7 @@ import { Unsubscribable as AnonymousSubscription, Subscription } from 'rxjs';
 import { anything, capture, instance, mock, verify, when } from 'ts-mockito';
 
 import { MethodInvocationContext } from '@plexus-interop/client-api';
-import { Observer } from '@plexus-interop/common';
-import { Arrays } from '@plexus-interop/common';
+import { Arrays, Observer } from '@plexus-interop/common';
 import { Completion, clientProtocol as plexus, SuccessCompletion } from '@plexus-interop/protocol';
 import { ChannelObserver } from '@plexus-interop/transport-common';
 
@@ -41,11 +40,11 @@ describe('GenericClientApi', () => {
       observer.complete();
     });
 
-    when(mockInvocation.sendMessage(anything())).thenReturn(Promise.resolve());
-    when(mockInvocation.close(anything())).thenReturn(Promise.resolve(new SuccessCompletion()));
+    when(mockInvocation.sendMessage(anything())).thenResolve();
+    when(mockInvocation.close(anything())).thenResolve(new SuccessCompletion());
 
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.resolve(instance(mockInvocation)));
+    when(mockGenericClient.requestInvocation(anything())).thenResolve(instance(mockInvocation));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
@@ -70,18 +69,18 @@ describe('GenericClientApi', () => {
       observer.complete();
     });
 
-    when(mockInvocation.sendMessage(anything())).thenReturn(Promise.resolve());
-    when(mockInvocation.close(anything())).thenReturn(Promise.resolve(new SuccessCompletion()));
+    when(mockInvocation.sendMessage(anything())).thenResolve();
+    when(mockInvocation.close(anything())).thenResolve(new SuccessCompletion());
 
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.resolve(instance(mockInvocation)));
+    when(mockGenericClient.requestInvocation(anything())).thenResolve(instance(mockInvocation));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
     const clientApi = new GenericClientApiImpl(instance(mockGenericClient), mockMarshaller, registry);
 
     clientApi.sendRawUnaryRequest(createRemoteInvocationInfo(), requestPayload, {
-      value: (v) => {},
+      value: () => {},
       error: () => done(),
     });
   });
@@ -96,17 +95,17 @@ describe('GenericClientApi', () => {
       observer.complete();
     });
 
-    when(mockInvocation.sendMessage(anything())).thenReturn(Promise.reject('Error'));
+    when(mockInvocation.sendMessage(anything())).thenReject(new Error('Error'));
 
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.resolve(instance(mockInvocation)));
+    when(mockGenericClient.requestInvocation(anything())).thenResolve(instance(mockInvocation));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
     const clientApi = new GenericClientApiImpl(instance(mockGenericClient), mockMarshaller, registry);
     clientApi
       .sendRawUnaryRequest(createRemoteInvocationInfo(), requestPayload, {
-        value: (v) => {},
+        value: () => {},
         error: () => {},
       })
       .catch(() => done());
@@ -114,7 +113,7 @@ describe('GenericClientApi', () => {
 
   it('Fails Point to Point invocation if request invocation failed', (done) => {
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.reject('Error'));
+    when(mockGenericClient.requestInvocation(anything())).thenReject(new Error('Error'));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
@@ -123,7 +122,7 @@ describe('GenericClientApi', () => {
 
     clientApi
       .sendRawUnaryRequest(createRemoteInvocationInfo(), requestPayload, {
-        value: (v) => {},
+        value: () => {},
         error: () => {},
       })
       .catch(() => done());
@@ -136,17 +135,17 @@ describe('GenericClientApi', () => {
 
     when(mockInvocation.open(anything())).thenCall((observer) => observer.started(new Subscription()));
 
-    when(mockInvocation.sendMessage(anything())).thenReturn(Promise.resolve());
-    when(mockInvocation.close(anything())).thenReturn(Promise.resolve(new SuccessCompletion()));
+    when(mockInvocation.sendMessage(anything())).thenResolve();
+    when(mockInvocation.close(anything())).thenResolve(new SuccessCompletion());
 
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.resolve(instance(mockInvocation)));
+    when(mockGenericClient.requestInvocation(anything())).thenResolve(instance(mockInvocation));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
     const clientApi = new GenericClientApiImpl(instance(mockGenericClient), mockMarshaller, registry);
     const invocationClient = await clientApi.sendRawUnaryRequest(createRemoteInvocationInfo(), requestPayload, {
-      value: (v) => {
+      value: () => {
         fail('Not expected');
       },
       error: () => {
@@ -168,12 +167,12 @@ describe('GenericClientApi', () => {
 
     when(mockInvocation.open(anything())).thenCall((observer) => observer.started(new Subscription()));
 
-    when(mockInvocation.sendMessage(anything())).thenReturn(Promise.resolve());
-    when(mockInvocation.sendMessage(anything())).thenReturn(Promise.resolve());
-    when(mockInvocation.close(anything())).thenReturn(Promise.resolve(new SuccessCompletion()));
+    when(mockInvocation.sendMessage(anything())).thenResolve();
+    when(mockInvocation.sendMessage(anything())).thenResolve();
+    when(mockInvocation.close(anything())).thenResolve(new SuccessCompletion());
 
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.resolve(instance(mockInvocation)));
+    when(mockGenericClient.requestInvocation(anything())).thenResolve(instance(mockInvocation));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
@@ -181,7 +180,7 @@ describe('GenericClientApi', () => {
     const streamingInvocationClient = await clientApi.sendRawBidirectionalStreamingRequest(
       createRemoteInvocationInfo(),
       {
-        next: (v) => {
+        next: () => {
           fail('Not expected');
         },
         complete: () => {},
@@ -280,10 +279,10 @@ describe('GenericClientApi', () => {
       }, 0);
     });
 
-    when(mockInvocation.close(anything())).thenReturn(Promise.resolve(new SuccessCompletion()));
+    when(mockInvocation.close(anything())).thenResolve(new SuccessCompletion());
 
     const mockGenericClient = mock(GenericClientImpl);
-    when(mockGenericClient.requestInvocation(anything())).thenReturn(Promise.resolve(instance(mockInvocation)));
+    when(mockGenericClient.requestInvocation(anything())).thenResolve(instance(mockInvocation));
 
     const mockMarshaller = new MockMarshallerProvider();
     const registry = new InvocationHandlersRegistry(mockMarshaller);
@@ -303,7 +302,7 @@ describe('GenericClientApi', () => {
               verify(mockInvocation.close(anything())).once();
               done();
             },
-            (e) => {
+            () => {
               fail('Error not expected');
             }
           );
@@ -311,6 +310,8 @@ describe('GenericClientApi', () => {
         error: () => fail('Not expected'),
         streamCompleted: () => {},
       })
-      .then((x) => (streamingInvocationClient = x));
+      .then((x) => {
+        streamingInvocationClient = x;
+      });
   });
 });

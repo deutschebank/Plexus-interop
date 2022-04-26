@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return */
 import { Unsubscribable as AnonymousSubscription } from 'rxjs';
 
 import { AsyncHelper } from '@plexus-interop/common';
@@ -29,7 +31,7 @@ import { TestUtils } from './util';
 
 describe('FramedTransportConnection', () => {
   it('Delivers messages to different channels', async () => {
-    let mockFrameTransport = new TestBufferedInMemoryFramedTransport();
+    const mockFrameTransport = new TestBufferedInMemoryFramedTransport();
 
     const firstChannelId = UniqueId.generateNew();
     const secondChannelId = UniqueId.generateNew();
@@ -56,7 +58,7 @@ describe('FramedTransportConnection', () => {
     await transportConnection.connect({
       next: (ch) => channels.push(ch),
       complete: () => {},
-      error: (e) => {},
+      error: () => {},
     });
 
     await AsyncHelper.waitFor(() => channels.length === 2);
@@ -69,12 +71,12 @@ describe('FramedTransportConnection', () => {
 
     // messages delivered
     const firstObserver = new BufferedObserver<ArrayBuffer>();
-    const firstSubscription = await new Promise<AnonymousSubscription>((resolve, reject) =>
+    const firstSubscription = await new Promise<AnonymousSubscription>((resolve) =>
       first.open(new DelegateChannelObserver(firstObserver, (s) => resolve(s)))
     );
 
     const secondObserver = new BufferedObserver<ArrayBuffer>();
-    const secondSubscription = await new Promise<AnonymousSubscription>((resolve, reject) =>
+    const secondSubscription = await new Promise<AnonymousSubscription>((resolve) =>
       second.open(new DelegateChannelObserver(secondObserver, (s) => resolve(s)))
     );
 
@@ -84,6 +86,8 @@ describe('FramedTransportConnection', () => {
     expect(secondMessage).toBeDefined();
     firstSubscription.unsubscribe();
     secondSubscription.unsubscribe();
-    await transportConnection.closeAndCleanUp();
+    transportConnection.closeAndCleanUp();
+
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 });

@@ -20,6 +20,6 @@ const reporters = require('jasmine-reporters');
 const reporter = new reporters.JUnitXmlReporter({
   consolidateAll: false,
   filePrefix: 'jest-junit-result-',
-  savePath: path.resolve(__dirname, '/target/surefire-reports/'),
+  savePath: path.resolve(__dirname, 'target/surefire-reports'),
 });
 jasmine.getEnv().addReporter(reporter);
