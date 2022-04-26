@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import * as os from 'os';
 import * as path from 'path';
 
@@ -69,7 +71,7 @@ export function getProtocExecPath(): string {
     return process.env.PLEXUS_CLI_PROTOC_EXE_PATH as string;
   }
   const baseDir = getDownloadDir();
-  return path.join(baseDir, ...getExePath());
+  return path.join(baseDir, 'bin', getExePath());
 }
 
 export function getProtocDownloadUrl(): string {
@@ -90,7 +92,9 @@ function getDefaultDownloadUrl(platform: string): string {
     case 'win32-ia32':
     case 'win32-x32':
     case 'win32-x64':
-      return 'https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-win32.zip';
+      return 'https://github.com/protocolbuffers/protobuf/releases/download/v3.19.1/protoc-3.19.1-win32.zip';
+    case 'darwin-x64':
+      return 'https://github.com/protocolbuffers/protobuf/releases/download/v3.19.1/protoc-3.19.1-osx-x86_64.zip';
     default:
       throw new Error(`${platform} is not supported`);
   }

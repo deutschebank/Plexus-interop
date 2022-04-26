@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 /**
  * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
@@ -77,11 +79,11 @@ export async function getJavaExecPath(): Promise<string> {
     return process.env.PLEXUS_CLI_JAVA_EXE_PATH as string;
   }
   const baseDir = getJreBaseDir(getJreDownloadDir());
-  return path.join(baseDir, ...getExePath());
+  return path.join(baseDir, 'bin', getExePath());
 }
 
-function getExePath(): string[] {
-  return os.platform() === 'win32' ? ['bin', 'java.exe'] : ['bin', 'java'];
+function getExePath(): string {
+  return os.platform() === 'win32' ? 'java.exe' : 'java';
 }
 
 const getJreDownloadDir = () => path.join(getDistDir(), 'jre');
