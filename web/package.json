@@ -19,7 +19,7 @@
     "watch": "tsc -b -w packages --preserveWatchOutput",
     "prepublish-all": "run-s publish:prepare publish:commit",
     "publish:prepare": "node ./scripts/replace-auth-vars.js --publish && lerna exec -- cross-var shx cp $LERNA_ROOT_PATH/.npmrc .npmrc",
-    "publish:commit": "git commit -am 'chore: write .npmrc & version for CI publishing'",
+    "publish:commit": "git commit -am \"chore: write .npmrc & version for CI publishing\"",
     "publish-all": "lerna publish from-package --loglevel=verbose",
     "postpublish-all": "shx rm -rf .npmrc && lerna exec -- shx rm -rf .npmrc",
     "lint": "eslint \"packages/**/*.{ts,js}\" --quiet",
