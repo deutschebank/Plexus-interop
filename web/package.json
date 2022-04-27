@@ -17,7 +17,7 @@
     "build-ts:esm5": "lerna exec --parallel --scope @plexus-interop/{broker,client,client-api,common,common-api-impl,io,metadata,protocol,remote,transport-common,websocket-transport} -- tsc --outDir dist/esm5 --module esnext",
     "build-bundles": "lerna run build:bundle --stream",
     "watch": "tsc -b -w packages --preserveWatchOutput",
-    "prepublish-all": "node ./scripts/replace-auth-vars.js --publish && lerna exec -- cross-var shx cp $LERNA_ROOT_PATH/.npmrc .npmrc",
+    "prepublish-all": "node ./scripts/replace-auth-vars.js --publish && lerna exec -- cross-var shx cp $LERNA_ROOT_PATH/.npmrc .npmrc  && git commit -am 'chore: write .npmrc & version for CI publishing'",
     "publish-all": "lerna publish from-package --loglevel=verbose",
     "postpublish-all": "shx rm -rf .npmrc && lerna exec -- shx rm -rf .npmrc",
     "lint": "eslint \"packages/**/*.{ts,js}\" --quiet",
