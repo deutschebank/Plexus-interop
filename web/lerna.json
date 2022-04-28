@@ -1,7 +1,5 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "npmClient": "npm",
   "version": "0.1.0",
   "command": {
@@ -20,7 +18,8 @@
     },
     "publish": {
       "yes": true,
-      "fromPackage": true
+      "fromPackage": true,
+      "verifyAccess": false
     }
   }
 }
