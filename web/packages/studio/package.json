@@ -40,7 +40,7 @@
     "arraybuffer-slice": "^0.1.2",
     "bootstrap": "^4.6.0",
     "bootswatch": "^4.1.0",
-    "core-js": "^2.5.3",
+    "core-js": "^3.22.4",
     "font-awesome": "^4.7.0",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",

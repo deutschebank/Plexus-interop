@@ -19,9 +19,11 @@ import { ChannelOpenFrame, InternalMessagesConverter, MessageFrame, UniqueId } f
 import { WebSocketFramedTransport } from '../../src/transport/WebSocketFramedTransport';
 
 const MockSocket = require('mock-socket');
-const findPort = require('find-port');
+const getPort = require('get-port');
 
-const Server = MockSocket.Server;
+const portNumbers = getPort.makeRange;
+
+const { Server } = MockSocket;
 const MockWebSocket = MockSocket.WebSocket;
 
 describe('WebSocketFramedTransport', () => {
@@ -30,13 +32,14 @@ describe('WebSocketFramedTransport', () => {
 
   let mockServer: any = null;
 
-  beforeEach((done) => {
-    findPort('localhost', 8000, 8015, (ports: Array<number>) => {
-      connectionUrl = 'ws://localhost:' + ports[0];
-      mockServer = new Server(connectionUrl);
-      mockServer.on('connection', () => {});
-      done();
+  beforeEach(async () => {
+    const port = await getPort({
+      host: 'localhost',
+      port: portNumbers(8000, 8015),
     });
+    connectionUrl = `ws://localhost:${port}`;
+    mockServer = new Server(connectionUrl);
+    mockServer.on('connection', () => {});
   });
 
   afterEach((done) => {
@@ -48,9 +51,7 @@ describe('WebSocketFramedTransport', () => {
   const newMockSocket = () => new MockWebSocket(connectionUrl);
   const newMockedTransport = () => new WebSocketFramedTransport(newMockSocket());
 
-  it('Connects to socket after creation', () => {
-    return newMockedTransport().connectionEstablished();
-  });
+  it('Connects to socket after creation', () => newMockedTransport().connectionEstablished());
 
   it('Transmits header frames with Array Buffer view type', (done) => {
     const transport = newMockedTransport();
@@ -58,10 +59,10 @@ describe('WebSocketFramedTransport', () => {
       const frame = ChannelOpenFrame.fromHeaderData({ channelId: UniqueId.generateNew() });
       mockServer.send(new Uint8Array(messagesConverter.serialize(frame)));
       transport.open({
-        next: (frame) => {
-          const channelFrame = frame as ChannelOpenFrame;
-          expect(frame).toBeDefined();
-          expect(channelFrame).toEqual(frame);
+        next: (nextFrame) => {
+          const channelFrame = nextFrame as ChannelOpenFrame;
+          expect(nextFrame).toBeDefined();
+          expect(channelFrame).toEqual(nextFrame);
           done();
         },
         complete: () => {},
@@ -163,15 +164,15 @@ describe('WebSocketFramedTransport', () => {
 
   it('Closes connection if server closed it', (done) => {
     const transport = newMockedTransport();
-    mockServer.on('connection', (data: any) => {
+    mockServer.on('connection', () => {
       mockServer.close();
       setTimeout(() => {
         expect(transport.connected()).toEqual(false);
         transport
           .open({
-            next: (n) => {},
+            next: () => {},
             complete: () => {},
-            error: (w) => {},
+            error: () => {},
           })
           .catch(() => done());
       }, 0);
