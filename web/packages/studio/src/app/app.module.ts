@@ -22,9 +22,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EffectsModule } from '@ngrx/effects';
-import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppListComponent } from './app-list/app-list.component';
 import { AppServicesComponent } from './app-services/app-services.component';
@@ -34,7 +32,6 @@ import { ConsumedServiceComponent } from './consumed-service/consumed-service.co
 import { HeaderComponent } from './header/header.component';
 import { MetadataLoaderComponent } from './metadata-loader/metadata-loader.component';
 import { ProvidedServiceComponent } from './provided-service/provided-service.component';
-import { CustomRouterStateSerializer } from './services/AppUtils';
 import { InteropClientFactory } from './services/core/InteropClientFactory';
 import { InteropServiceFactory } from './services/core/InteropServiceFactory';
 import { TransportConnectionFactory } from './services/core/TransportConnectionFactory';
@@ -59,7 +56,13 @@ import { reducers } from './services/ui/RootReducers';
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+      },
+    }),
     EffectsModule.forRoot([Effects]),
     HttpClientModule,
   ],
