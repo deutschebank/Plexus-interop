@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as fromRouter from '@ngrx/router-store';
-import { ActionReducer, ActionReducerMap, createFeatureSelector, createSelector, MetaReducer } from '@ngrx/store';
+import { ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
 
 import { LoggerFactory } from '@plexus-interop/common';
 
-import { environment } from '../../../environments/environment';
 import * as fromPlexus from '../reducers/PlexusReducers';
 import { StudioState } from './AppModel';
 

@@ -48,7 +48,7 @@
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
     "@types/long": "^4.0.0",
     "chai": "^4.1.0",
-    "core-js": "^2.5.3",
+    "core-js": "^3.22.4",
     "is-electron-renderer": "^2.0.1",
     "long": "^4.0.0",
     "protobufjs": "6.11.2"

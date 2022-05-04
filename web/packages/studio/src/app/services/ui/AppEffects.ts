@@ -22,28 +22,16 @@ import { Action, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 
-import { DiscoveryMode } from '@plexus-interop/client-api';
 import { LoggerFactory } from '@plexus-interop/common';
-import { UrlParamsProvider } from '@plexus-interop/common';
 import { Application, ConsumedMethod } from '@plexus-interop/metadata';
-import { AppRegistryService } from '@plexus-interop/metadata';
 
 import { InteropClientFactory } from '../core/InteropClientFactory';
 import { InteropServiceFactory } from '../core/InteropServiceFactory';
 import { TransportConnectionFactory } from '../core/TransportConnectionFactory';
 import { autoConnectEffect, connectionSetupEffect } from '../effects/ConnectionEffects';
-import { StudioExtensions } from '../extensions/StudioExtensions';
 import { TypedAction } from '../reducers/TypedAction';
-import { TransportType } from '../ui/AppModel';
 import { AppActions } from './AppActions';
-import {
-  Alert,
-  AppConnectedActionParams,
-  ConnectionSetupActionParams,
-  PlexusConnectedActionParams,
-  ServicesSnapshot,
-  StudioState,
-} from './AppModel';
+import { AppConnectedActionParams, ConnectionSetupActionParams } from './AppModel';
 import { logger, State } from './RootReducers';
 
 @Injectable()
