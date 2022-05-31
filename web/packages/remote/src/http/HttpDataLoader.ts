@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import fetch from 'isomorphic-unfetch';
 import { Observable, throwError } from 'rxjs';
-import * as request from 'superagent';
 
 import { Logger, LoggerFactory } from '@plexus-interop/common';
 
@@ -24,9 +24,14 @@ export class HttpDataLoader {
 
   public async fetchData(url: string): Promise<string> {
     this.log.trace(`Fetching data from [${url}]`);
-    const response = await request.get(url).withCredentials();
+    const response = await fetch(url, {
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      throw new Error(`${response.statusText || response.status}`);
+    }
     this.log.trace(`Received response with ${response.status} status`);
-    return response.text;
+    return response.text();
   }
 
   public fetchWithInterval(url: string, interval: number): Observable<string> {

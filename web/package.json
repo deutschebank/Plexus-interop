@@ -69,7 +69,6 @@
     "@types/mocha": "^2.2.43",
     "@types/node": "^14.11.1",
     "@types/rx": "^4.1.1",
-    "@types/superagent": "^3.5.6",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "babel-register": "^6.23.0",
