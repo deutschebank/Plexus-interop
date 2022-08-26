@@ -21,7 +21,7 @@
 // TODO re-enable this
 import { MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';
@@ -36,7 +36,6 @@ export class ClientStreamingTests extends BaseEchoTest {
   }
 
   public testClientCanSendStreamToServer(): Promise<void> {
-    // TODO no-async-promise-executor
     return new Promise<void>(async (resolve, reject) => {
       const serverHandler = new ClientStreamingHandler(
         (
@@ -86,7 +85,7 @@ export class ClientStreamingTests extends BaseEchoTest {
         ) => {
           let lastRequest: plexus.plexus.interop.testing.IEchoRequest | null = null;
           return {
-            next: (clientRequest) => {
+            next: async (clientRequest) => {
               lastRequest = clientRequest;
             },
             complete: () => {},
@@ -108,7 +107,7 @@ export class ClientStreamingTests extends BaseEchoTest {
       const streamingClient = await client.getEchoServiceProxy().clientStreaming({
         next: () => {},
         error: (e) => reject(e),
-        complete: () => {
+        complete: async () => {
           serverCompleted = true;
         },
         streamCompleted: () => {

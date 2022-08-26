@@ -18,8 +18,8 @@ import { MethodInvocationContext, StreamingInvocationClient } from '@plexus-inte
 import { AsyncHelper } from '@plexus-interop/common';
 
 import { EchoClientClient } from '../../src/echo/client/EchoClientGeneratedClient';
-import * as plexus from '../../src/echo/gen/plexus-messages';
 import { EchoServerClient } from '../../src/echo/server/EchoServerGeneratedClient';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';

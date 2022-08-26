@@ -16,7 +16,7 @@
  */
 import { expect } from 'chai';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';
@@ -35,7 +35,8 @@ export class DynamicInvocationTests extends BaseEchoTest {
     const echoRequest = this.clientsSetup.createRequestDto();
     const handler = new UnaryServiceHandler(async (context, request) => request);
     const [client, server] = await this.clientsSetup.createEchoClients(this.connectionProvider, handler);
-    return new Promise<void>((resolve, reject) => {
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise<void>(async (resolve, reject) => {
       client.sendUnaryRequest(
         {
           methodId: 'Unary',

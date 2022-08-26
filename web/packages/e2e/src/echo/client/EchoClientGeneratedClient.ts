@@ -14,23 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/* eslint-disable max-classes-per-file */
 import {
   ClientApiBuilder,
-  ContainerAwareClientAPIBuilder,
+  ClientConnectRequest,
+  Completion,
   GenericClientApi,
   GenericClientApiBase,
-  GenericClientApiBuilder,
+  GenericRequest,
   InternalGenericClientApi,
   InvocationClient,
-  InvocationObserver,
   InvocationRequestInfo,
+  MethodInvocationContext,
   StreamingInvocationClient,
 } from '@plexus-interop/client';
+import {
+  GenericClientApiBuilder,
+  MethodDiscoveryRequest,
+  MethodDiscoveryResponse,
+  ProvidedMethodReference,
+  ServiceDiscoveryRequest,
+  ServiceDiscoveryResponse,
+  ValueHandler,
+} from '@plexus-interop/client';
+import {
+  ContainerAwareClientAPIBuilder,
+  InvocationObserver,
+  InvocationObserverConverter,
+} from '@plexus-interop/client';
+import { Arrays, Observer } from '@plexus-interop/common';
 import { TransportConnection, UniqueId } from '@plexus-interop/transport-common';
 
-import * as plexus from '../gen/plexus-messages';
+import * as plexus from './plexus-messages';
 
 export interface CancellableUnaryResponse<T> {
   invocation: InvocationClient;
@@ -44,7 +58,6 @@ export abstract class EchoServiceProxy {
   public abstract unary(
     request: plexus.plexus.interop.testing.IEchoRequest
   ): Promise<plexus.plexus.interop.testing.IEchoRequest>;
-
   public abstract unaryWithCancellation(
     request: plexus.plexus.interop.testing.IEchoRequest
   ): Promise<CancellableUnaryResponse<plexus.plexus.interop.testing.IEchoRequest>>;
@@ -70,6 +83,9 @@ export abstract class ServiceAliasProxy {
   public abstract unary(
     request: plexus.plexus.interop.testing.IEchoRequest
   ): Promise<plexus.plexus.interop.testing.IEchoRequest>;
+  public abstract unaryWithCancellation(
+    request: plexus.plexus.interop.testing.IEchoRequest
+  ): Promise<CancellableUnaryResponse<plexus.plexus.interop.testing.IEchoRequest>>;
 }
 
 /**
@@ -78,6 +94,26 @@ export abstract class ServiceAliasProxy {
 export class EchoServiceProxyImpl implements EchoServiceProxy {
   constructor(private readonly genericClient: GenericClientApi) {}
 
+  public unary(
+    request: plexus.plexus.interop.testing.IEchoRequest
+  ): Promise<plexus.plexus.interop.testing.IEchoRequest> {
+    const invocationInfo: InvocationRequestInfo = {
+      methodId: 'Unary',
+      serviceId: 'plexus.interop.testing.EchoService',
+    };
+    return new Promise((resolve, reject) => {
+      this.genericClient.sendUnaryRequest(
+        invocationInfo,
+        request,
+        {
+          value: (responsePayload) => resolve(responsePayload),
+          error: (e) => reject(e),
+        },
+        plexus.plexus.interop.testing.EchoRequest,
+        plexus.plexus.interop.testing.EchoRequest
+      );
+    });
+  }
   public unaryWithCancellation(
     request: plexus.plexus.interop.testing.IEchoRequest
   ): Promise<CancellableUnaryResponse<plexus.plexus.interop.testing.IEchoRequest>> {
@@ -108,27 +144,6 @@ export class EchoServiceProxyImpl implements EchoServiceProxy {
         );
       }
     );
-  }
-
-  public unary(
-    request: plexus.plexus.interop.testing.IEchoRequest
-  ): Promise<plexus.plexus.interop.testing.IEchoRequest> {
-    const invocationInfo: InvocationRequestInfo = {
-      methodId: 'Unary',
-      serviceId: 'plexus.interop.testing.EchoService',
-    };
-    return new Promise((resolve, reject) => {
-      this.genericClient.sendUnaryRequest(
-        invocationInfo,
-        request,
-        {
-          value: (responsePayload) => resolve(responsePayload),
-          error: (e) => reject(e),
-        },
-        plexus.plexus.interop.testing.EchoRequest,
-        plexus.plexus.interop.testing.EchoRequest
-      );
-    });
   }
 
   public serverStreaming(
@@ -205,6 +220,38 @@ export class ServiceAliasProxyImpl implements ServiceAliasProxy {
         plexus.plexus.interop.testing.EchoRequest
       );
     });
+  }
+  public unaryWithCancellation(
+    request: plexus.plexus.interop.testing.IEchoRequest
+  ): Promise<CancellableUnaryResponse<plexus.plexus.interop.testing.IEchoRequest>> {
+    const invocationInfo: InvocationRequestInfo = {
+      methodId: 'Unary',
+      serviceId: 'plexus.interop.testing.EchoService',
+      serviceAlias: 'ServiceAlias',
+    };
+    return new Promise<CancellableUnaryResponse<plexus.plexus.interop.testing.IEchoRequest>>(
+      (resolveInvocation, rejectInvocation) => {
+        const responsePromise = new Promise<plexus.plexus.interop.testing.IEchoRequest>(
+          (resolveResponse, rejectResponse) => {
+            this.genericClient
+              .sendUnaryRequest(
+                invocationInfo,
+                request,
+                {
+                  value: (responsePayload) => resolveResponse(responsePayload),
+                  error: (e) => rejectResponse(e),
+                },
+                plexus.plexus.interop.testing.EchoRequest,
+                plexus.plexus.interop.testing.EchoRequest
+              )
+              .then((invocationClient) =>
+                resolveInvocation({ invocation: invocationClient, response: responsePromise })
+              )
+              .catch(rejectInvocation);
+          }
+        );
+      }
+    );
   }
 }
 

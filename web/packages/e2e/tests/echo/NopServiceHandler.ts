@@ -18,8 +18,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InvocationObserver, MethodInvocationContext, StreamingInvocationClient } from '@plexus-interop/client';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
 import { EchoServiceInvocationHandler } from '../../src/echo/server/EchoServerGeneratedClient';
+import * as plexus from '../../src/echo/server/plexus-messages';
 
 export class NopServiceHandler implements EchoServiceInvocationHandler {
   public onUnary(

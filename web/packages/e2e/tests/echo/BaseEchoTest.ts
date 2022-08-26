@@ -22,7 +22,7 @@ import { MethodInvocationContext } from '@plexus-interop/client';
 import { Arrays, AsyncHelper } from '@plexus-interop/common';
 import { BinaryMarshallerProvider, ProtoMarshallerProvider } from '@plexus-interop/io';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 
 export class BaseEchoTest {

@@ -16,14 +16,9 @@
  */
 import { expect } from 'chai';
 
-import {
-  DiscoveredMethod,
-  DiscoveredService,
-  DiscoveredServiceMethod,
-  ProvidedMethodReference,
-} from '@plexus-interop/client-api';
+import { DiscoveredMethod, DiscoveredServiceMethod, ProvidedMethodReference } from '@plexus-interop/client-api';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';
@@ -47,8 +42,7 @@ export class DiscoveryTests extends BaseEchoTest {
         .discoverMethod({ inputMessageId: 'plexus.interop.testing.EchoRequest' })
         .then((discoveryResponse) => {
           if (discoveryResponse.methods) {
-            expect(discoveryResponse.methods.length).to.be.eq(5);
-            expect(discoveryResponse.methods.filter(this.methodWithAlias).length).to.be.eq(1);
+            expect(discoveryResponse.methods.length).to.be.eq(4);
             discoveryResponse.methods.forEach((method) => this.assertDiscoveredMethodValid(method));
           } else {
             throw new Error('Empty response');
@@ -57,11 +51,6 @@ export class DiscoveryTests extends BaseEchoTest {
         .then(() => this.clientsSetup.disconnect(clients[0], clients[1]));
     });
   }
-
-  public methodWithAlias = (m: DiscoveredMethod) =>
-    !!m.providedMethod && !!m.providedMethod.providedService && !!m.providedMethod.providedService.serviceAlias;
-
-  public serviceWithAlias = (s: DiscoveredService) => !!s && !!s.providedService && !!s.providedService.serviceAlias;
 
   public async testServiceDiscoveredById(): Promise<void> {
     const serviceId = 'plexus.interop.testing.EchoService';
@@ -75,8 +64,7 @@ export class DiscoveryTests extends BaseEchoTest {
       },
     });
     if (serviceDiscoveryResponse.services) {
-      expect(serviceDiscoveryResponse.services.length).to.be.eq(2);
-      expect(serviceDiscoveryResponse.services.filter(this.serviceWithAlias).length).to.be.eq(1);
+      expect(serviceDiscoveryResponse.services.length).to.be.eq(1);
       const serviceRef = serviceDiscoveryResponse.services[0];
       if (serviceRef.consumedService) {
         expect(serviceRef.consumedService.serviceId).to.eq(serviceId);
@@ -292,7 +280,7 @@ export class DiscoveryTests extends BaseEchoTest {
     );
     const discoveryResponse = await client.discoverMethod({ outputMessageId: 'plexus.interop.testing.EchoRequest' });
     if (discoveryResponse.methods) {
-      expect(discoveryResponse.methods.length).to.be.eq(5);
+      expect(discoveryResponse.methods.length).to.be.eq(4);
       discoveryResponse.methods.forEach((method) => this.assertDiscoveredMethodValid(method));
     } else {
       throw new Error('Empty response');

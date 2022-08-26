@@ -71,7 +71,7 @@ export function getProtocExecPath(): string {
     return process.env.PLEXUS_CLI_PROTOC_EXE_PATH as string;
   }
   const baseDir = getDownloadDir();
-  return path.join(baseDir, 'bin', getExePath());
+  return path.join(baseDir, 'bin', ...getExePath());
 }
 
 export function getProtocDownloadUrl(): string {

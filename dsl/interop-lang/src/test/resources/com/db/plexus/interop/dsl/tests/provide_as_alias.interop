@@ -15,17 +15,11 @@
 // limitations under the License.
 //
 
-syntax="proto3";
-
-package plexus.interop.testing;
-
-option csharp_namespace="Plexus.Interop.Testing.Generated";
-
 import "messages.proto";
+import "services.proto";
 
-service EchoService {
-	rpc Unary (EchoRequest) returns (EchoRequest);
-	rpc ServerStreaming (EchoRequest) returns (stream EchoRequest);
-	rpc ClientStreaming (stream EchoRequest) returns (EchoRequest);
-	rpc DuplexStreaming (stream EchoRequest) returns (stream EchoRequest);
+import "com/db/plexus/interop/dsl/tests/example1.proto";
+
+application App1 {
+	provides Service1 as ServiceAlias { Do; }
 }

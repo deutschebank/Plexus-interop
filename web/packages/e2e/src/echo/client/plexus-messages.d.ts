@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2022 Plexus Interop Deutsche Bank AG
+ * Copyright 2017-2021 Plexus Interop Deutsche Bank AG
  * SPDX-License-Identifier: Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,134 @@ export namespace plexus {
   namespace interop {
     /** Namespace testing. */
     namespace testing {
+      /** Represents an EchoService */
+      class EchoService extends $protobuf.rpc.Service {
+        /**
+         * Constructs a new EchoService service.
+         * @param rpcImpl RPC implementation
+         * @param [requestDelimited=false] Whether requests are length-delimited
+         * @param [responseDelimited=false] Whether responses are length-delimited
+         */
+        constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+        /**
+         * Creates new EchoService service using the specified rpc implementation.
+         * @param rpcImpl RPC implementation
+         * @param [requestDelimited=false] Whether requests are length-delimited
+         * @param [responseDelimited=false] Whether responses are length-delimited
+         * @returns RPC service. Useful where requests and/or responses are streamed.
+         */
+        public static create(
+          rpcImpl: $protobuf.RPCImpl,
+          requestDelimited?: boolean,
+          responseDelimited?: boolean
+        ): EchoService;
+
+        /**
+         * Calls Unary.
+         * @param request EchoRequest message or plain object
+         * @param callback Node-style callback called with the error, if any, and EchoRequest
+         */
+        public unary(
+          request: plexus.interop.testing.IEchoRequest,
+          callback: plexus.interop.testing.EchoService.UnaryCallback
+        ): void;
+
+        /**
+         * Calls Unary.
+         * @param request EchoRequest message or plain object
+         * @returns Promise
+         */
+        public unary(request: plexus.interop.testing.IEchoRequest): Promise<plexus.interop.testing.EchoRequest>;
+
+        /**
+         * Calls ServerStreaming.
+         * @param request EchoRequest message or plain object
+         * @param callback Node-style callback called with the error, if any, and EchoRequest
+         */
+        public serverStreaming(
+          request: plexus.interop.testing.IEchoRequest,
+          callback: plexus.interop.testing.EchoService.ServerStreamingCallback
+        ): void;
+
+        /**
+         * Calls ServerStreaming.
+         * @param request EchoRequest message or plain object
+         * @returns Promise
+         */
+        public serverStreaming(
+          request: plexus.interop.testing.IEchoRequest
+        ): Promise<plexus.interop.testing.EchoRequest>;
+
+        /**
+         * Calls ClientStreaming.
+         * @param request EchoRequest message or plain object
+         * @param callback Node-style callback called with the error, if any, and EchoRequest
+         */
+        public clientStreaming(
+          request: plexus.interop.testing.IEchoRequest,
+          callback: plexus.interop.testing.EchoService.ClientStreamingCallback
+        ): void;
+
+        /**
+         * Calls ClientStreaming.
+         * @param request EchoRequest message or plain object
+         * @returns Promise
+         */
+        public clientStreaming(
+          request: plexus.interop.testing.IEchoRequest
+        ): Promise<plexus.interop.testing.EchoRequest>;
+
+        /**
+         * Calls DuplexStreaming.
+         * @param request EchoRequest message or plain object
+         * @param callback Node-style callback called with the error, if any, and EchoRequest
+         */
+        public duplexStreaming(
+          request: plexus.interop.testing.IEchoRequest,
+          callback: plexus.interop.testing.EchoService.DuplexStreamingCallback
+        ): void;
+
+        /**
+         * Calls DuplexStreaming.
+         * @param request EchoRequest message or plain object
+         * @returns Promise
+         */
+        public duplexStreaming(
+          request: plexus.interop.testing.IEchoRequest
+        ): Promise<plexus.interop.testing.EchoRequest>;
+      }
+
+      namespace EchoService {
+        /**
+         * Callback as used by {@link plexus.interop.testing.EchoService#unary}.
+         * @param error Error, if any
+         * @param [response] EchoRequest
+         */
+        type UnaryCallback = (error: Error | null, response?: plexus.interop.testing.EchoRequest) => void;
+
+        /**
+         * Callback as used by {@link plexus.interop.testing.EchoService#serverStreaming}.
+         * @param error Error, if any
+         * @param [response] EchoRequest
+         */
+        type ServerStreamingCallback = (error: Error | null, response?: plexus.interop.testing.EchoRequest) => void;
+
+        /**
+         * Callback as used by {@link plexus.interop.testing.EchoService#clientStreaming}.
+         * @param error Error, if any
+         * @param [response] EchoRequest
+         */
+        type ClientStreamingCallback = (error: Error | null, response?: plexus.interop.testing.EchoRequest) => void;
+
+        /**
+         * Callback as used by {@link plexus.interop.testing.EchoService#duplexStreaming}.
+         * @param error Error, if any
+         * @param [response] EchoRequest
+         */
+        type DuplexStreamingCallback = (error: Error | null, response?: plexus.interop.testing.EchoRequest) => void;
+      }
+
       /** Properties of an EchoRequest. */
       interface IEchoRequest {
         /** EchoRequest stringField */
@@ -91,17 +219,6 @@ export namespace plexus {
         public static encode(message: plexus.interop.testing.IEchoRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Encodes the specified EchoRequest message, length delimited. Does not implicitly {@link plexus.interop.testing.EchoRequest.verify|verify} messages.
-         * @param message EchoRequest message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encodeDelimited(
-          message: plexus.interop.testing.IEchoRequest,
-          writer?: $protobuf.Writer
-        ): $protobuf.Writer;
-
-        /**
          * Decodes an EchoRequest message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
@@ -113,15 +230,6 @@ export namespace plexus {
           reader: $protobuf.Reader | Uint8Array,
           length?: number
         ): plexus.interop.testing.EchoRequest;
-
-        /**
-         * Decodes an EchoRequest message from the specified reader or buffer, length delimited.
-         * @param reader Reader or buffer to decode from
-         * @returns EchoRequest
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decodeDelimited(reader: $protobuf.Reader | Uint8Array): plexus.interop.testing.EchoRequest;
 
         /**
          * Verifies an EchoRequest message.
@@ -200,17 +308,6 @@ export namespace plexus {
           ): $protobuf.Writer;
 
           /**
-           * Encodes the specified SubMessage message, length delimited. Does not implicitly {@link plexus.interop.testing.EchoRequest.SubMessage.verify|verify} messages.
-           * @param message SubMessage message or plain object to encode
-           * @param [writer] Writer to encode to
-           * @returns Writer
-           */
-          public static encodeDelimited(
-            message: plexus.interop.testing.EchoRequest.ISubMessage,
-            writer?: $protobuf.Writer
-          ): $protobuf.Writer;
-
-          /**
            * Decodes a SubMessage message from the specified reader or buffer.
            * @param reader Reader or buffer to decode from
            * @param [length] Message length if known beforehand
@@ -221,17 +318,6 @@ export namespace plexus {
           public static decode(
             reader: $protobuf.Reader | Uint8Array,
             length?: number
-          ): plexus.interop.testing.EchoRequest.SubMessage;
-
-          /**
-           * Decodes a SubMessage message from the specified reader or buffer, length delimited.
-           * @param reader Reader or buffer to decode from
-           * @returns SubMessage
-           * @throws {Error} If the payload is not a reader or valid buffer
-           * @throws {$protobuf.util.ProtocolError} If required fields are missing
-           */
-          public static decodeDelimited(
-            reader: $protobuf.Reader | Uint8Array
           ): plexus.interop.testing.EchoRequest.SubMessage;
 
           /**
@@ -268,8 +354,8 @@ export namespace plexus {
 
         /** SubEnum enum. */
         enum SubEnum {
-          value_one = 0,
-          value_two = 1,
+          VALUE_ONE = 0,
+          VALUE_TWO = 1,
         }
       }
     }

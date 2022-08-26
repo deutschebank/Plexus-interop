@@ -21,14 +21,12 @@ import { TimeUtils } from '@plexus-interop/common';
 import { BinaryMarshallerProvider } from '@plexus-interop/io';
 
 import { EchoClientClient, EchoClientClientBuilder } from '../../src/echo/client/EchoClientGeneratedClient';
-import * as plexus from '../../src/echo/gen/plexus-messages';
 import {
   EchoServerClient,
   EchoServerClientBuilder,
   EchoServiceInvocationHandler,
-  ServiceAliasInvocationHandler,
 } from '../../src/echo/server/EchoServerGeneratedClient';
-import { NopServiceAliasHandler } from '../echo/NopServiceAliasHandler';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ConnectionProvider } from './ConnectionProvider';
 import { ConnectionSetup } from './ConnectionSetup';
 
@@ -40,10 +38,9 @@ export class ClientsSetup {
 
   public async createEchoClients(
     transportConnectionProvider: ConnectionProvider,
-    serviceHandler: EchoServiceInvocationHandler,
-    aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()
+    serviceHandler: EchoServiceInvocationHandler
   ): Promise<[EchoClientClient, EchoServerClient]> {
-    const server = await this.createEchoServer(transportConnectionProvider, serviceHandler, aliasServiceHandler);
+    const server = await this.createEchoServer(transportConnectionProvider, serviceHandler);
     const client = await this.createEchoClient(transportConnectionProvider);
     await TimeUtils.timeout(this.clientConnectionDelay);
     return [client, server];
@@ -61,10 +58,9 @@ export class ClientsSetup {
   public async createGenericClientAndStaticServer(
     clientMarshaller: BinaryMarshallerProvider,
     transportConnectionProvider: ConnectionProvider,
-    serviceHandler: EchoServiceInvocationHandler,
-    aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()
+    serviceHandler: EchoServiceInvocationHandler
   ): Promise<[GenericClientApi, EchoServerClient]> {
-    const server = await this.createEchoServer(transportConnectionProvider, serviceHandler, aliasServiceHandler);
+    const server = await this.createEchoServer(transportConnectionProvider, serviceHandler);
     const client = await this.createGenericEchoClient(transportConnectionProvider, clientMarshaller);
     await TimeUtils.timeout(this.clientConnectionDelay);
     return [client, server];
@@ -85,12 +81,10 @@ export class ClientsSetup {
 
   public createEchoServer(
     transportConnectionProvider: ConnectionProvider,
-    serviceHandler: EchoServiceInvocationHandler,
-    aliasServiceHandler: ServiceAliasInvocationHandler = new NopServiceAliasHandler()
+    serviceHandler: EchoServiceInvocationHandler
   ): Promise<EchoServerClient> {
     return new EchoServerClientBuilder()
       .withEchoServiceInvocationsHandler(serviceHandler)
-      .withServiceAliasInvocationsHandler(aliasServiceHandler)
       .withTransportConnectionProvider(async () => {
         this.serverConnectionSetup = await transportConnectionProvider();
         return this.serverConnectionSetup.getConnection();
@@ -112,7 +106,7 @@ export class ClientsSetup {
       int64Field: Long.fromInt(1234),
       uint32Field: 4321,
       repeatedDoubleField: [1, 2, 3],
-      enumField: plexus.plexus.interop.testing.EchoRequest.SubEnum.value_one,
+      enumField: plexus.plexus.interop.testing.EchoRequest.SubEnum.VALUE_ONE,
       subMessageField: {
         stringField: 'subString',
         bytesField: new Uint8Array([5, 6, 7]),
@@ -130,21 +124,6 @@ export class ClientsSetup {
     };
   }
 
-  private createEmptyRequest(
-    config: plexus.plexus.interop.testing.IEchoRequest
-  ): plexus.plexus.interop.testing.IEchoRequest {
-    return {
-      repeatedDoubleField: [],
-      repeatedSubMessageField: [],
-      stringField: '',
-      int64Field: Long.fromInt(0),
-      uint32Field: 0,
-      enumField: 0,
-      subMessageField: null,
-      ...config,
-    };
-  }
-
   public createRequestOfBytes(numberOfBytes: number): plexus.plexus.interop.testing.IEchoRequest {
     const bytesField = Uint8Array.from(Array<number>(numberOfBytes).fill(1));
     return {
@@ -156,9 +135,9 @@ export class ClientsSetup {
 
   public createHugeRequestDto(strLength: number): plexus.plexus.interop.testing.IEchoRequest {
     const text = new Array(strLength).join('x');
-    return this.createEmptyRequest({
+    return {
       stringField: text,
-    });
+    };
   }
 
   public createSimpleRequestDto(text: string): plexus.plexus.interop.testing.IEchoRequest {
