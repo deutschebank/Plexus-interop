@@ -4,3 +4,4 @@ dist
 gen
 .eslintrc.js
 coverage
+packages/e2e/src/echo
