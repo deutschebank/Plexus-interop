@@ -16,7 +16,7 @@
  */
 import { MethodInvocationContext } from '@plexus-interop/client';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { NopServiceHandler } from './NopServiceHandler';
 
 export class UnaryServiceHandler extends NopServiceHandler {

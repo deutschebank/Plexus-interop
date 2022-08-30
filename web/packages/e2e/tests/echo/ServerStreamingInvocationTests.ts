@@ -22,7 +22,7 @@ import { MethodInvocationContext } from '@plexus-interop/client-api';
 import { AsyncHelper } from '@plexus-interop/common';
 import { ClientError } from '@plexus-interop/protocol';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';

@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/* eslint-disable no-promise-executor-return */
 import { expect } from 'chai';
 
 import { MethodInvocationContext } from '@plexus-interop/client';
 import { AsyncHelper } from '@plexus-interop/common';
 import { ClientError } from '@plexus-interop/protocol';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { ConnectionProvider } from '../common/ConnectionProvider';
 import { BaseEchoTest } from './BaseEchoTest';
@@ -42,15 +44,9 @@ export class PointToPointInvocationTests extends BaseEchoTest {
 
   public testAliasedServiceInvoked(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const aliasServiceHandler = {
-        onUnary: async (
-          context: MethodInvocationContext,
-          request: plexus.plexus.interop.testing.IEchoRequest
-        ): Promise<plexus.plexus.interop.testing.IEchoRequest> => request,
-      };
       const echoRequest = this.clientsSetup.createRequestDto();
-      this.clientsSetup
-        .createEchoClients(this.connectionProvider, new NopServiceHandler(), aliasServiceHandler)
+      return this.clientsSetup
+        .createEchoClients(this.connectionProvider, new NopServiceHandler())
         .then((clients) =>
           clients[0]
             .getServiceAliasProxy()
@@ -123,7 +119,7 @@ export class PointToPointInvocationTests extends BaseEchoTest {
     const echoRequest = this.clientsSetup.createRequestDto();
     return new Promise<void>((resolve, reject) => {
       const handler = new UnaryServiceHandler(async (context: MethodInvocationContext, request) => request);
-      this.clientsSetup
+      return this.clientsSetup
         .createEchoClients(this.connectionProvider, handler)
         .then((clients) =>
           (async () => {
@@ -153,7 +149,7 @@ export class PointToPointInvocationTests extends BaseEchoTest {
         }
         return request;
       });
-      this.clientsSetup
+      return this.clientsSetup
         .createEchoClients(this.connectionProvider, handler)
         .then((clients) =>
           clients[0]

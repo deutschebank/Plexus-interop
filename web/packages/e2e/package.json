@@ -7,17 +7,13 @@
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
-    "prebuild": "npm run gen-echo-protocol",
     "build": "npm run build:main && npm run build:bundle",
     "build:main": "tsc",
     "build:watch": "tsc -w -p tsconfig.json",
     "build:bundle": "npm run copy-assets && npm run build-host-proxy",
     "unit": "jest --coverage --detectOpenHandles",
     "test": "if-env PLEXUS_E2E_TESTS_ENABLED=true && npm run unit || echo 'E2E unit tests disabled'",
-    "gen-echo-js": "pbjs --force-long -t static-module -r echo-client -w commonjs -o src/echo/gen/plexus-messages.js src/echo/metadata/messages.proto",
-    "gen-echo-ts": "pbts --force-long -o src/echo/gen/plexus-messages.d.ts src/echo/gen/plexus-messages.js",
-    "gen-echo-protocol": "npm run gen-echo-js && npm run gen-echo-ts",
-    "copy-assets": "copyfiles src/echo/gen/* dist/main && copyfiles src/views/* dist/main",
+    "copy-assets": "copyfiles src/echo/server/* src/echo/client/* dist/main && copyfiles src/views/* dist/main",
     "build-host-proxy": "node scripts/bundle-all.js --standalone proxyHost --inputGlob dist/main/tests/common/TestCrossDomainHost.js --outputFile ./dist/main/tests/web/CrossDomainHost.bundle.js",
     "prepare-native-e2e-debug-tests": "node scripts/bundle-all.js --inputGlob dist/main/tests/native/*Connect*spec.js --outputFile ./dist/main/tests/native/RendererProcess.bundle.js",
     "e2e-web-electron": "node scripts/web-e2e-tests-launcher.js --file ./dist/main/tests/web/RendererProcess.bundle.js",
@@ -51,7 +47,7 @@
     "core-js": "^3.22.4",
     "is-electron-renderer": "^2.0.1",
     "long": "^4.0.0",
-    "protobufjs": "6.11.2"
+    "protobufjs": "6.11.3"
   },
   "jest": {
     "preset": "ts-jest",
@@ -65,7 +61,9 @@
     ],
     "collectCoverageFrom": [
       "src/**/*.ts",
-      "!src/**/*.d.ts"
+      "!src/**/*.d.ts",
+      "!src/main/src/server/**/*.js",
+      "!src/main/src/client/**/*.js"
     ]
   }
 }

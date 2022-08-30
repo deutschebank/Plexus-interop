@@ -27,7 +27,7 @@ import {
   StreamObserver,
 } from '@plexus-interop/common-api-impl';
 
-import * as plexus from '../../src/echo/gen/plexus-messages';
+import * as plexus from '../../src/echo/server/plexus-messages';
 import { ClientsSetup } from '../common/ClientsSetup';
 import { readWsUrl } from '../common/utils';
 import { BaseEchoTest } from '../echo/BaseEchoTest';
