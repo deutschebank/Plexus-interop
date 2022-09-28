@@ -65,7 +65,7 @@ task npmVersion(type: NpmTask) {
 }
 
 task npmRunInstall(type: NpmTask, dependsOn: npmVersion) {
-    args = ['ci', '--no-package-lock']
+    args = ['ci']
 }
 
 task preNpmBuild {
