@@ -27,7 +27,7 @@
     "@plexus-interop/common": "file:../common",
     "@plexus-interop/metadata": "file:../metadata",
     "@plexus-interop/protocol": "file:../protocol",
-    "protobufjs": "6.11.3"
+    "protobufjs": "7.1.2"
   },
   "publishConfig": {
     "access": "public"

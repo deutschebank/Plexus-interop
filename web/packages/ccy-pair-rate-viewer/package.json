@@ -10,7 +10,7 @@
     "@plexus-interop/common": "file:../common",
     "@plexus-interop/transport-common": "file:../transport-common",
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
-    "protobufjs": "6.11.3"
+    "protobufjs": "7.1.2"
   },
   "scripts": {
     "compile": "tsc",

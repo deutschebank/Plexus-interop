@@ -41,7 +41,7 @@
     "@plexus-interop/websocket-transport": "file:../websocket-transport",
     "loglevel": "^1.4.1",
     "minimist": "^1.2.0",
-    "protobufjs": "6.11.3",
+    "protobufjs": "7.1.2",
     "protobufjs-cli": "1.0.2",
     "rxjs": "^7.5.4",
     "strip-bom": "^3.0.0",

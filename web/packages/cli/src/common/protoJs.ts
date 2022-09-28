@@ -16,7 +16,7 @@
  */
 import * as os from 'os';
 import * as path from 'path';
-import { pbjs, pbts } from 'protobufjs/cli';
+import { pbjs, pbts } from 'protobufjs-cli';
 
 import { getBaseDir } from './files';
 

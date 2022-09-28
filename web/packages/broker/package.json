@@ -31,13 +31,12 @@
     "@plexus-interop/protocol": "file:../protocol",
     "@plexus-interop/transport-common": "file:../transport-common",
     "long": "^4.0.0",
-    "protobufjs": "6.11.3",
+    "protobufjs": "7.1.2",
     "reflect-metadata": "^0.1.10",
     "tslib": "^2.3.1",
     "ya-js-storage": "0.1.4"
   },
   "peerDependencies": {
-    "protobufjs": "6.11.3",
     "rxjs": "^7.5.4"
   },
   "publishConfig": {

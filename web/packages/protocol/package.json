@@ -36,10 +36,7 @@
     "@plexus-interop/common": "file:../common",
     "@types/long": "^4.0.0",
     "long": "^4.0.0",
-    "protobufjs": "6.11.3"
-  },
-  "peerDependencies": {
-    "protobufjs": "6.11.3"
+    "protobufjs": "7.1.2"
   },
   "publishConfig": {
     "access": "public"
