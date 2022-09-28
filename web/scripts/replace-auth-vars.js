@@ -25,95 +25,89 @@ const fs = require('fs');
 
 const install = process.argv.indexOf('--install') !== -1;
 
-console.log(`Preparing .npmrc file for ${install ? "install" : "publish"}`);
+console.log(`Preparing .npmrc file for ${install ? 'install' : 'publish'}`);
 
-const postfix = install ? "_INSTALL" : "_PUBLISH";
+const postfix = install ? '_INSTALL' : '_PUBLISH';
 
 const buildRunner = process.env['BuildRunner'];
 
 if (!!buildRunner) {
-    
-    console.log(`Running in CI mode, build runner: ${buildRunner}`);
+  console.log(`Running in CI mode, build runner: ${buildRunner}`);
 
-    const registryVar = 'NPM_REGISTRY';
-    const authTokenVar = 'NPM_AUTH_TOKEN';
-    const authUserVar = 'NPM_AUTH_USER';
+  const registryVar = 'NPM_REGISTRY';
+  const authTokenVar = 'NPM_AUTH_TOKEN';
 
-    const authToken = process.env[`${authTokenVar}${postfix}`] || process.env[authTokenVar];
-    let registry = process.env[`${registryVar}${postfix}`] || process.env[registryVar];
-    const user = process.env[`${authUserVar}${postfix}`] || process.env[authUserVar];
-    const templateFile = install ? '.ci-npmrc-tpl' : '.ci-publish-npmrc-tpl';
+  const authToken =
+    process.env[`${authTokenVar}${postfix}`] || process.env[authTokenVar];
+  let registry =
+    process.env[`${registryVar}${postfix}`] || process.env[registryVar];
+  const templateFile = install ? '.ci-npmrc-tpl' : '.ci-publish-npmrc-tpl';
 
-    if (!!authToken) {
-        console.log(`Auth Token length ${authToken.length}`);
+  if (!!authToken) {
+    console.log(`Auth Token length ${authToken.length}`);
+  }
+
+  if (!!registry) {
+    console.log(`Registry value ${registry}`);
+  }
+
+  if (!authToken || !registry) {
+    console.log('Not all auth variables provided');
+
+    fs.writeFile(
+      '.npmrc',
+      '# Auto generated during CI build',
+      'utf8',
+      function (err) {
+        if (err) return console.log(err);
+      }
+    );
+  } else {
+    if (!install) {
+      // clear http/https for publish
+      registry = registry.replace('https:', '');
+      registry = registry.replace('http:', '');
     }
 
-    if (!!user) {
-        console.log(`Auth User length ${user.length}`);
-    }
+    const disableStrictSsl = process.env['NPM_STRICT_SSL'] === 'false';
+    const enableAlwaysAuth = process.env['NPM_ALWAYS_AUTH'] === 'true';
 
-    if (!!registry) {
-        console.log(`Registry value ${registry}`);
-    }
+    fs.readFile(templateFile, 'utf8', function (err, data) {
+      if (err) {
+        return console.log(err);
+      }
+      data = data.replace(`\${${registryVar}}`, registry);
+      data = data.replace(`\${${authTokenVar}}`, authToken);
 
-    if (!authToken || !registry || !user) {
+      if (disableStrictSsl) {
+        console.log('Updating strict ssl setting');
+        data += `\nstrict-ssl=false`;
+      }
 
-        console.log("Not all auth variables provided");
-        
-        fs.writeFile('.npmrc', "# Auto generated during CI build", 'utf8', function (err) {
-            if (err) return console.log(err);
-        });
+      if (enableAlwaysAuth) {
+        console.log('Enabling always auth');
+        data += `\nalways-auth=true`;
+      }
 
-    } else {
+      fs.writeFile('.npmrc', data, 'utf8', function (err) {
+        if (err) return console.log(err);
+      });
+    });
 
-        if (!install) {
-            // clear http/https for publish
-            registry = registry.replace("https:", "");
-            registry = registry.replace("http:", "");
+    if (disableStrictSsl) {
+      console.log('Generating .yarnrc');
+      fs.readFile('.yarnrc', 'utf8', function (err, data) {
+        if (err) {
+          return console.log(err);
         }
-
-        const disableStrictSsl = process.env['NPM_STRICT_SSL'] === 'false';
-        const enableAlwaysAuth = process.env['NPM_ALWAYS_AUTH'] === 'true';
-
-        fs.readFile(templateFile, 'utf8', function (err,data) {
-            if (err) {
-                return console.log(err);
-            }
-            data = data.replace(new RegExp(`\\\${${registryVar}}`, 'g'), registry);
-            data = data.replace(`\${${authTokenVar}}`, authToken);
-            data = data.replace(`\${${authUserVar}}`, user);
-
-            if (disableStrictSsl) {
-                console.log('Updating strict ssl setting');
-                data += `\nstrict-ssl=false`;
-            }
-
-            if (enableAlwaysAuth) {
-                console.log('Enabling always auth');
-                data += `\nalways-auth=true`;
-            }
-            
-            fs.writeFile('.npmrc', data, 'utf8', function (err) {
-                if (err) return console.log(err);
-            });
+        data = 'workspaces-experimental true';
+        data += `\nstrict-ssl false`;
+        fs.writeFile('.yarnrc', data, 'utf8', function (err) {
+          if (err) return console.log(err);
         });
-
-        if (disableStrictSsl) {
-            console.log('Generating .yarnrc');
-            fs.readFile('.yarnrc', 'utf8', function (err,data) {
-                if (err) {
-                    return console.log(err);
-                }    
-                data = 'workspaces-experimental true';
-                data += `\nstrict-ssl false`;
-                fs.writeFile('.yarnrc', data, 'utf8', function (err) {
-                    if (err) return console.log(err);
-                });
-            });
-        }
-
+      });
     }
-
+  }
 } else {
-    console.log("Dev mode, .npmrc generation skipped");
+  console.log('Dev mode, .npmrc generation skipped');
 }
