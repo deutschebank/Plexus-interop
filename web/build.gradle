@@ -9,6 +9,7 @@ def isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows()
 def e2eTestsEnabled = isWindows && System.env['BuildRunner'] != "MyGet" && System.env['PLEXUS_BUILD_SKIP_WEB_TESTS'] != 'true'
 def ciFullBuild = ciBuild && e2eTestsEnabled
 def npmPackageVersion = System.getenv("PLEXUS_BUILD_NPM_PACKAGE_VERSION") ?: (System.getenv("APPVEYOR_REPO_TAG_NAME") ?: System.getenv("PackageVersion"))
+def nodeDistBaseUrl = System.getenv("PLEXUS_BUILD_NODE_DIST_URL") ?: 'https://nodejs.org/dist'
 def npmRegistry = System.env['NPM_REGISTRY']
 def npmEmail = System.env['NPM_AUTH_USER']
 def npmAuth = System.env['NPM_AUTH_TOKEN']
@@ -19,6 +20,7 @@ node {
     npmVersion = customNpmVersion
     nodeModulesDir = projectDir
     download = true
+    distBaseUrl = nodeDistBaseUrl
 }
 
 license {
@@ -63,7 +65,7 @@ task npmVersion(type: NpmTask) {
 }
 
 task npmRunInstall(type: NpmTask, dependsOn: npmVersion) {
-    args = ['install', '--no-package-lock']
+    args = ['ci', '--no-package-lock']
 }
 
 task preNpmBuild {
