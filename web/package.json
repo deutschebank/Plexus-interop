@@ -6,7 +6,8 @@
   "description": "Plexus Web Interop root module",
   "scripts": {
     "preinstall": "node ./scripts/replace-lock-registry.js && node ./scripts/replace-auth-vars.js --install",
-    "postinstall": "(is-ci || npm run husky) && link-parent-bin && node ./scripts/replace-lock-registry.js --backward",
+    "postinstall": "(is-ci || npm run husky) && npm run link-bins && node ./scripts/replace-lock-registry.js --backward",
+    "link-bins": "lerna clean --yes && link-parent-bin",
     "husky": "cd .. && husky install web/.husky",
     "prebuild": "lerna exec -- shx rm -rf dist",
     "build": "npm run build-ts && npm run build-bundles",
@@ -64,7 +65,7 @@
     "@types/fs-extra": "5.0.1",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.2",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^27.5.1",
     "@types/jstorage": "^0.3.30",
     "@types/long": "^4.0.0",
     "@types/mocha": "^2.2.43",
