@@ -13,11 +13,9 @@ def nodeDistBaseUrl = System.getenv("PLEXUS_BUILD_NODE_DIST_URL") ?: 'https://no
 def npmRegistry = System.env['NPM_REGISTRY']
 def npmEmail = System.env['NPM_AUTH_USER']
 def npmAuth = System.env['NPM_AUTH_TOKEN']
-def customNpmVersion = '6.14.15'
 
 node {
     version = '14.20.1'
-    npmVersion = customNpmVersion
     nodeModulesDir = projectDir
     download = true
     distBaseUrl = nodeDistBaseUrl
@@ -65,7 +63,7 @@ task npmVersion(type: NpmTask) {
 }
 
 task npmRunInstall(type: NpmTask, dependsOn: npmVersion) {
-    args = ['install', '--no-package-lock']
+    args = ['ci', '--no-package-lock']
 }
 
 task preNpmBuild {
