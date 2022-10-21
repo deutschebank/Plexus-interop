@@ -14,22 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-﻿namespace Plexus.Interop.Transport.Protocol
+namespace Plexus.Interop.Transport.Protocol
 {
     using Plexus.Interop.Protocol.Common;
 
     public sealed class RemoteErrorException : ProtocolException
     {
-        public RemoteErrorException(ErrorHeader errorHeader) : this(errorHeader.Message, errorHeader.Details)
+        public string RemoteMessage { get; }
+        public string Details { get; }
+        public string RemoteExceptionName { get; }
+
+        public RemoteErrorException(ErrorHeader errorHeader)
+            : this(errorHeader.Message, errorHeader.Details, errorHeader.ExceptionName)
         {
         }
 
-        public RemoteErrorException(string remoteMessage, string details) 
+        public RemoteErrorException(string remoteMessage, string details, string remoteExceptionName)
             : base("Error message received: " + remoteMessage, new RemoteException(details))
         {
             RemoteMessage = remoteMessage;
+            Details = details;
+            RemoteExceptionName = remoteExceptionName;
         }
-
-        public string RemoteMessage { get; }
     }
 }
