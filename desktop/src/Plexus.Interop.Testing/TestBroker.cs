@@ -29,16 +29,15 @@ namespace Plexus.Interop.Testing
     {
         private static readonly TimeSpan StopTimeout = TimeoutConstants.Timeout3Sec;
 
-        private static readonly string RuntimeIdentifier =
-#if NET45
-            "win-x86";
+        private const string ArtifactsDir =
+#if CORE_ONLY
+"netcoreapp2.1-x64";
 #else
-            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "win-x86" : "osx-x64";
+"net45-AnyCPU";
 #endif
-
         private readonly string _exePath =
             Path.GetFullPath(Path.Combine(
-                Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "..", "bin", RuntimeIdentifier, "broker",
+                Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "..", "bin", ArtifactsDir, "broker",
                 "plexus"));
         
         private readonly Promise _processExited = new Promise();
