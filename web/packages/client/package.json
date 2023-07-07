@@ -26,12 +26,12 @@
     "gen-client-protocol": "npm run gen-client-js && npm run gen-client-ts"
   },
   "dependencies": {
-    "@plexus-interop/client-api": "file:../client-api",
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/io": "file:../io",
-    "@plexus-interop/protocol": "file:../protocol",
-    "@plexus-interop/transport-common": "file:../transport-common",
-    "@plexus-interop/websocket-transport": "file:../websocket-transport",
+    "@plexus-interop/client-api": "0.1.0",
+    "@plexus-interop/common": "0.1.0",
+    "@plexus-interop/io": "0.1.0",
+    "@plexus-interop/protocol": "0.1.0",
+    "@plexus-interop/transport-common": "0.1.0",
+    "@plexus-interop/websocket-transport": "0.1.0",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",

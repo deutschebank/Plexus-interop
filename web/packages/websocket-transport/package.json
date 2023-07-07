@@ -23,9 +23,9 @@
     "test": "npm run unit"
   },
   "dependencies": {
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/protocol": "file:../protocol",
-    "@plexus-interop/transport-common": "file:../transport-common",
+    "@plexus-interop/common": "0.1.0",
+    "@plexus-interop/protocol": "0.1.0",
+    "@plexus-interop/transport-common": "0.1.0",
     "long": "^4.0.0",
     "protobufjs": "6.11.3",
     "reflect-metadata": "^0.1.10",

@@ -6,7 +6,7 @@
   "description": "Plexus Web Interop root module",
   "scripts": {
     "preinstall": "node ./scripts/replace-lock-registry.js && node ./scripts/replace-auth-vars.js --install",
-    "postinstall": "(is-ci || npm run husky) && link-parent-bin && node ./scripts/replace-lock-registry.js --backward",
+    "postinstall": "(is-ci || npm run husky) && node ./scripts/replace-lock-registry.js --backward",
     "husky": "cd .. && husky install web/.husky",
     "prebuild": "lerna exec -- shx rm -rf dist",
     "build": "npm run build-ts && npm run build-bundles",
@@ -117,8 +117,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-webpack": "^5.0.0",
     "kill-port": "^1.6.1",
-    "lerna": "^5.5.2",
-    "link-parent-bin": "^2.0.0",
+    "lerna": "^5.6.2",
     "lint-staged": "^12.3.7",
     "minimist": "^1.2.6",
     "mocha": "^9.2.1",
@@ -144,26 +143,6 @@
     "typescript": "~4.4.4",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
-  },
-  "dependencies": {
-    "@plexus-interop/broker": "file:packages/broker",
-    "@plexus-interop/ccy-pair-rate-provider": "file:packages/ccy-pair-rate-provider",
-    "@plexus-interop/ccy-pair-rate-viewer": "file:packages/ccy-pair-rate-viewer",
-    "@plexus-interop/cli": "file:packages/cli",
-    "@plexus-interop/client": "file:packages/client",
-    "@plexus-interop/client-api": "file:packages/client-api",
-    "@plexus-interop/common": "file:packages/common",
-    "@plexus-interop/common-api-impl": "file:packages/common-api-impl",
-    "@plexus-interop/e2e": "file:packages/e2e",
-    "@plexus-interop/electron-app-launcher": "file:packages/electron-launcher",
-    "@plexus-interop/io": "file:packages/io",
-    "@plexus-interop/metadata": "file:packages/metadata",
-    "@plexus-interop/protocol": "file:packages/protocol",
-    "@plexus-interop/remote": "file:packages/remote",
-    "@plexus-interop/studio": "file:packages/studio",
-    "@plexus-interop/transport-common": "file:packages/transport-common",
-    "@plexus-interop/web-app-example": "file:packages/web-example",
-    "@plexus-interop/websocket-transport": "file:packages/websocket-transport"
   },
   "engines": {
     "node": ">= 12"

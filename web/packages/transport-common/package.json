@@ -23,8 +23,8 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/protocol": "file:../protocol",
+    "@plexus-interop/common": "0.1.0",
+    "@plexus-interop/protocol": "0.1.0",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",
