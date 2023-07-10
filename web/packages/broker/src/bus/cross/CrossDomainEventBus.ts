@@ -43,7 +43,6 @@ export class CrossDomainEventBus implements EventBus {
   private readonly log: Logger = LoggerFactory.getLogger('CrossDomainEventBus');
 
   private readonly singleOperationTimeOut: number = 60000;
-  private readonly pingTimeoutInMillis: number = 1000;
 
   private readonly emitters: Map<string, Observer<any>> = new Map<string, Observer<any>>();
   private readonly observables: Map<string, Observable<any>> = new Map<string, Observable<any>>();
@@ -66,7 +65,7 @@ export class CrossDomainEventBus implements EventBus {
     this.stateMaschine.throwIfNot(State.CREATED);
     this.createHostMessagesSubscription();
     this.log.info('Host iFrame created, sending ping messages');
-    return this.chainRetries(20, () => this.sendPingToHost(this.pingTimeoutInMillis)).then(() => this);
+    return this.callWithRetry(this.sendPingToHost).then(() => this);
   }
 
   public async disconnect(): Promise<void> {
@@ -153,12 +152,18 @@ export class CrossDomainEventBus implements EventBus {
     }).subscribe(observer);
   }
 
-  private chainRetries(times: number, fn: () => Promise<void>): Promise<void> {
-    let res = fn();
-    for (let index = 0; index < times; index++) {
-      res = res.catch(fn);
+  private async callWithRetry(fn: (timeout: number) => Promise<void>, depth = 0, max = 20) {
+    const timeout = 2 ** depth * 10; // 10ms, 20ms, 40ms, 80ms, 160ms etc
+
+    try {
+      return await fn(timeout);
+    } catch (e) {
+      if (depth > max) {
+        throw e;
+      }
+
+      return this.callWithRetry(fn, depth + 1, max);
     }
-    return res;
   }
 
   private sendPingToHost(timeout: number): Promise<void> {
