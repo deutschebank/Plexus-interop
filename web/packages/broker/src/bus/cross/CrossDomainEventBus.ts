@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { filter, fromEvent, map, Observable, PartialObserver, publish, refCount } from 'rxjs';
+import { filter, fromEvent, map, Observable, PartialObserver, share } from 'rxjs';
 
 import {
   GUID,
@@ -104,7 +104,7 @@ export class CrossDomainEventBus implements EventBus {
   ): Observable<T> {
     let eventsObservable = this.observables.get(key);
     if (eventsObservable === undefined) {
-      eventsObservable = Observable.create((observer: Observer<T>) => {
+      eventsObservable = new Observable((observer: Observer<T>) => {
         this.log.debug(`Creating ${key} observable`);
         this.emitters.set(key, observer);
         return () => {
@@ -112,7 +112,7 @@ export class CrossDomainEventBus implements EventBus {
           this.emitters.delete(key);
           this.observables.delete(key);
         };
-      }).pipe(publish(), refCount()) as Observable<T>;
+      }).pipe(share({ resetOnError: false, resetOnComplete: false, resetOnRefCountZero: false }));
       this.observables.set(key, eventsObservable);
       if (postInit) {
         postInit(key, eventsObservable);
