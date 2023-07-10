@@ -49,6 +49,32 @@
     "typescript-collections": "1.2.3",
     "zone.js": "~0.11.4"
   },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~13.2.3",
+    "@angular-eslint/builder": "^13.0.1",
+    "@angular-eslint/eslint-plugin": "^13.0.1",
+    "@angular-eslint/eslint-plugin-template": "^13.0.1",
+    "@angular-eslint/schematics": "^13.0.1",
+    "@angular-eslint/template-parser": "^13.0.1",
+    "@angular/cli": "^13.2.3",
+    "@angular/compiler-cli": "^13.2.2",
+    "@angular/language-service": "^13.2.2",
+    "jasmine-core": "~2.6.2",
+    "jasmine-reporters": "^2.2.0",
+    "jasmine-spec-reporter": "~4.1.0",
+    "jest-preset-angular": "^11.1.0",
+    "karma": "^6.3.17",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-cli": "~1.0.1",
+    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-webpack": "^5.0.0",
+    "protractor": "~7.0.0"
+  },
   "jest": {
     "preset": "jest-preset-angular",
     "setupFilesAfterEnv": [

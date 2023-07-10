@@ -18,7 +18,8 @@
     "gen-launcher-js": "pbjs --force-long -t static-module -r launcher -w commonjs -o src/launcher/gen/plexus-messages.js -p ../../../dsl/interop-lang/src/main/resources/interop/ app_launcher_service.proto app_launch_mode.proto unique_id.proto",
     "gen-launcher-ts": "pbts --force-long -o src/launcher/gen/plexus-messages.d.ts src/launcher/gen/plexus-messages.js",
     "gen-launcher-protocol": "npm run gen-launcher-js && npm run gen-launcher-ts",
-    "build-binary": "electron-packager . ElectronAppLauncher --prune true --overwrite true --out=../../../bin/win-x86/samples/greeting/apps && npm run rename-packages && copyfiles ElectronAppLauncher.cmd ../../../bin/win-x86/samples/greeting",
+    "build-binary": "npx electron-packager ./ ElectronAppLauncher --overwrite --out=../../../bin/win-x86/samples/greeting/apps --no-prune",
+    "postbuild-binary": "npm run rename-packages && copyfiles ElectronAppLauncher.cmd ../../../bin/win-x86/samples/greeting",
     "prestart": "npm run build",
     "start": "electron .",
     "rename-packages": "del-cli --force ../../../bin/win-x86/samples/greeting/apps/ElectronAppLauncher && renamer --find \"/ElectronAppLauncher-.*/i\" --replace ElectronAppLauncher ../../../bin/win-x86/samples/greeting/apps/*"
@@ -33,7 +34,7 @@
     "derefSymlinks": true
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
+    "@electron/remote": "^2.0.10",
     "@plexus-interop/client": "0.1.0",
     "@plexus-interop/common": "0.1.0",
     "@plexus-interop/protocol": "0.1.0",
@@ -46,6 +47,12 @@
     "rxjs": "^7.5.4",
     "strip-bom": "^3.0.0",
     "ws": "^3.2.0"
+  },
+  "devDependencies": {
+    "electron": "^17.1.2",
+    "electron-log": "^2.2.9",
+    "electron-mocha": "^11.0.2",
+    "electron-packager": "^16.0.0"
   },
   "jest": {
     "preset": "ts-jest",
