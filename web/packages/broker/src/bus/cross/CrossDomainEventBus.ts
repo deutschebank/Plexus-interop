@@ -39,6 +39,20 @@ enum State {
   CLOSED = 'CLOSED',
 }
 
+const callWithRetry = async (fn: (timeout: number) => Promise<void>, depth = 0, max = 20) => {
+  const timeout = 2 ** depth * 10; // 10ms, 20ms, 40ms, 80ms, 160ms etc
+
+  try {
+    return await fn(timeout);
+  } catch (e) {
+    if (depth > max) {
+      throw e;
+    }
+
+    return callWithRetry(fn, depth + 1, max);
+  }
+};
+
 export class CrossDomainEventBus implements EventBus {
   private readonly log: Logger = LoggerFactory.getLogger('CrossDomainEventBus');
 
@@ -65,14 +79,14 @@ export class CrossDomainEventBus implements EventBus {
     this.stateMaschine.throwIfNot(State.CREATED);
     this.createHostMessagesSubscription();
     this.log.info('Host iFrame created, sending ping messages');
-    return this.callWithRetry(this.sendPingToHost).then(() => this);
+    return callWithRetry((timeout) => this.sendPingToHost(timeout)).then(() => this);
   }
 
   public async disconnect(): Promise<void> {
     this.stateMaschine.throwIfNot(State.CONNECTED);
     this.stateMaschine.go(State.CLOSED);
     if (this.hostIframeEventsSubscription) {
-      this.log.info('Unsubsribing from Host iFrame');
+      this.log.info('Unsubscribing from Host iFrame');
       this.hostIframeEventsSubscription.unsubscribe();
     }
     this.emitters.forEach((v) => v.error('Disconnected from Host iFrame'));
@@ -150,20 +164,6 @@ export class CrossDomainEventBus implements EventBus {
         );
       }
     }).subscribe(observer);
-  }
-
-  private async callWithRetry(fn: (timeout: number) => Promise<void>, depth = 0, max = 20) {
-    const timeout = 2 ** depth * 10; // 10ms, 20ms, 40ms, 80ms, 160ms etc
-
-    try {
-      return await fn(timeout);
-    } catch (e) {
-      if (depth > max) {
-        throw e;
-      }
-
-      return this.callWithRetry(fn, depth + 1, max);
-    }
   }
 
   private sendPingToHost(timeout: number): Promise<void> {
