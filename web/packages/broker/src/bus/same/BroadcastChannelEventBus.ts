@@ -28,6 +28,8 @@ import {
 import { Event } from '../Event';
 import { EventBus } from '../EventBus';
 
+const isTest = process.env.NODE_ENV === 'test';
+
 export class BroadcastChannelEventBus implements EventBus {
   private readonly openChannelTtl: number = 300000;
 
@@ -41,7 +43,9 @@ export class BroadcastChannelEventBus implements EventBus {
 
   public subscribe(key: string, handler: (event: Event) => void): Subscription {
     this.log.trace(`Subscribing to ${key}`);
-    const channel = new BChannel(this.internalKey(key));
+    const channel = new BChannel(this.internalKey(key), {
+      type: isTest ? 'simulate' : undefined,
+    });
     channel.onmessage = (e) => {
       handler({ payload: e.data });
     };
@@ -64,7 +68,9 @@ export class BroadcastChannelEventBus implements EventBus {
   private lookupOpenChannel(key: string): BChannel {
     let channel = this.openChannels.get<BChannel>(key);
     if (!channel) {
-      channel = new BChannel(this.internalKey(key));
+      channel = new BChannel(this.internalKey(key), {
+        type: isTest ? 'simulate' : undefined,
+      });
       this.openChannels.set<BChannel>(
         key,
         new CacheEntry<BChannel>(channel, this.openChannelTtl, () => {
