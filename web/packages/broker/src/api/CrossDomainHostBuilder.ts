@@ -17,9 +17,7 @@
 import { CrossDomainHost } from '../bus/cross/host/CrossDomainHost';
 import { CrossDomainHostConfig } from '../bus/cross/host/CrossDomainHostConfig';
 import { EventBus } from '../bus/EventBus';
-import { FallbackEventBus } from '../bus/FallbackEventBus';
-import { BroadCastChannelEventBus } from '../bus/same/BroadCastChannelEventBus';
-import { JStorageEventBus } from '../bus/same/JStorageEventBus';
+import { BroadcastChannelEventBus } from '../bus/same/BroadcastChannelEventBus';
 
 export class CrossDomainHostBuilder {
   private crossDomainConfig: CrossDomainHostConfig;
@@ -41,6 +39,5 @@ export class CrossDomainHostBuilder {
     return crossDomainHost;
   }
 
-  private eventBusProvider: () => Promise<EventBus> = async () =>
-    new FallbackEventBus([new BroadCastChannelEventBus(), new JStorageEventBus()]).init();
+  private eventBusProvider: () => Promise<EventBus> = async () => new BroadcastChannelEventBus().init();
 }
