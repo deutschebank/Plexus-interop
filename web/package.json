@@ -100,6 +100,7 @@
     "optimize-plugin": "^1.1.0",
     "path": "^0.12.7",
     "prettier": "^2.5.1",
+    "protobufjs": "6.11.3",
     "protobufjs-cli": "1.0.2",
     "prr": "1.0.1",
     "renamer": "^2.0.1",
