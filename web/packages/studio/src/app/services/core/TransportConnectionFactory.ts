@@ -17,7 +17,7 @@
 import { Injectable } from '@angular/core';
 
 import {
-  BroadcastChannelEventBus,
+  BroadCastChannelEventBus,
   CrossDomainEventBus,
   CrossDomainEventBusProvider,
   EventBus,
@@ -100,7 +100,7 @@ export class TransportConnectionFactory {
     return this.createWebTransportProvider(
       connectionDetails.webConfig.appsMetadataUrl,
       connectionDetails.generalConfig.metadataUrl,
-      async () => new BroadcastChannelEventBus().init()
+      async () => new BroadCastChannelEventBus().init()
     );
   }
 

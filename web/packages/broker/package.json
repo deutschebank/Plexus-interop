@@ -33,7 +33,8 @@
     "broadcast-channel": "^5.1.0",
     "long": "^4.0.0",
     "reflect-metadata": "^0.1.10",
-    "tslib": "^2.3.1"
+    "tslib": "^2.3.1",
+    "ya-js-storage": "0.1.4"
   },
   "peerDependencies": {
     "protobufjs": "6.11.3",

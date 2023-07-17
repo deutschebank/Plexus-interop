@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { BroadcastChannel as BChannel } from 'broadcast-channel';
+
 import {
   AnonymousSubscription,
   CacheEntry,
@@ -26,11 +28,9 @@ import {
 import { Event } from '../Event';
 import { EventBus } from '../EventBus';
 
-/**
- * Event bus based on Broad Cast Channel API
- * https://html.spec.whatwg.org/multipage/web-messaging.html#broadcasting-to-other-browsing-contexts
- */
-export class BroadCastChannelEventBus implements EventBus {
+const isTest = process.env.NODE_ENV === 'test';
+
+export class BroadcastChannelEventBus implements EventBus {
   private readonly openChannelTtl: number = 300000;
 
   private readonly log: Logger;
@@ -43,7 +43,9 @@ export class BroadCastChannelEventBus implements EventBus {
 
   public subscribe(key: string, handler: (event: Event) => void): Subscription {
     this.log.trace(`Subscribing to ${key}`);
-    const channel = new BroadcastChannel(this.internalKey(key));
+    const channel = new BChannel(this.internalKey(key), {
+      type: isTest ? 'simulate' : undefined,
+    });
     channel.onmessage = (e) => {
       handler({ payload: e.data });
     };
@@ -67,15 +69,17 @@ export class BroadCastChannelEventBus implements EventBus {
     }
   }
 
-  private lookupOpenChannel(key: string): BroadcastChannel {
-    let channel = this.openChannels.get<BroadcastChannel>(key);
+  private lookupOpenChannel(key: string): BChannel {
+    let channel = this.openChannels.get<BChannel>(key);
     if (!channel) {
-      channel = new BroadcastChannel(this.internalKey(key));
-      this.openChannels.set<BroadcastChannel>(
+      channel = new BChannel(this.internalKey(key), {
+        type: isTest ? 'simulate' : undefined,
+      });
+      this.openChannels.set<BChannel>(
         key,
-        new CacheEntry<BroadcastChannel>(channel, this.openChannelTtl, () => {
+        new CacheEntry<BChannel>(channel, this.openChannelTtl, () => {
           this.log.debug(`TTL passed for ${key} channel, closing it`);
-          (channel as BroadcastChannel).close();
+          (channel as BChannel).close();
         })
       );
     } else {
