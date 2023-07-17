@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 
 import { WebSocketConnectionFactory } from '@plexus-interop/websocket-transport';
 
@@ -89,9 +89,15 @@ describe('Web Socket Client connectivity', () => {
     return connectivityTests.testInvocationClientReceiveErrorOnClientDisconnect();
   });
 
-  it('Receives error if provide wrong client id to Broker', function () {
-    return connectivityTests.testClientReceiveErrorIfProvideWrongId();
-  });
+  it('Receives error if provide wrong client id to Broker', () =>
+    connectivityTests
+      .testClientReceiveErrorIfProvideWrongId()
+      .then(() => {
+        assert.fail('Should have errored');
+      })
+      .catch((e) => {
+        expect(e.message).to.match(/doesn't exist/);
+      }));
 
   it('Server receives error if client dropped connection', function () {
     return connectivityTests.testServerReceivesErrorIfClientDroppedConnection();

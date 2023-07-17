@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 
 import { ClientsSetup } from '../common/ClientsSetup';
 import { TransportsSetup } from '../common/TransportsSetup';
@@ -49,7 +49,13 @@ describe('Web Broker: Client connectivity', () => {
       });
   });
 
-  it('Receives error if provide wrong client id to Broker', function () {
-    return connectivityTests.testClientReceiveErrorIfProvideWrongId();
-  });
+  it('Receives error if provide wrong client id to Broker', () =>
+    connectivityTests
+      .testClientReceiveErrorIfProvideWrongId()
+      .then(() => {
+        assert.fail('Should have errored');
+      })
+      .catch((e) => {
+        expect(e.message).to.match(/doesn't exist/);
+      }));
 });

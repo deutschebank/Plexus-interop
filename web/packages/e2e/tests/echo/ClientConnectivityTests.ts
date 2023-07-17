@@ -39,16 +39,11 @@ export class ClientConnectivityTests extends BaseEchoTest {
     return this.testAllInvocationClientReceiveErrorOnDisconnect(true, false);
   }
 
-  public async testClientReceiveErrorIfProvideWrongId(): Promise<void> {
+  public async testClientReceiveErrorIfProvideWrongId(): Promise<EchoClientClient> {
     const preparedBuilder = new EchoClientClientBuilder()
       .withAppId('plexus.interop.testing.DoNotExist')
       .withTransportConnectionProvider(() => this.connectionProvider().then((c) => c.getConnection()));
-    try {
-      await preparedBuilder.connect();
-    } catch (error) {
-      return Promise.resolve();
-    }
-    throw new Error('Expect to fail to receive connection');
+    return preparedBuilder.connect();
   }
 
   public async testServerReceivesErrorIfClientDroppedConnection(): Promise<void> {
