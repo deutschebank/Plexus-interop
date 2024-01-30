@@ -60,7 +60,10 @@ export class CrossDomainEventBus implements EventBus {
 
   private readonly emitters: Map<string, Observer<any>> = new Map<string, Observer<any>>();
   private readonly observables: Map<string, Observable<any>> = new Map<string, Observable<any>>();
-  private readonly rejectTimeouts: Map<string, NodeJS.Timer> = new Map<string, NodeJS.Timer>();
+  private readonly rejectTimeouts: Map<string, ReturnType<typeof setTimeout>> = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
 
   private hostIframeEventsSubscription: Subscription;
 
