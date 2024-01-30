@@ -3,9 +3,6 @@
   "npmClient": "npm",
   "version": "0.1.0",
   "command": {
-    "init": {
-      "exact": true
-    },
     "version": {
       "exact": true,
       "yes": true,
@@ -19,6 +16,5 @@
       "verifyAccess": false
     }
   },
-  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "useNx": true
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
