@@ -49,7 +49,7 @@
     "ws": "^3.2.0"
   },
   "devDependencies": {
-    "electron": "^17.1.2",
+    "electron": "17.4.0",
     "electron-log": "^2.2.9",
     "electron-mocha": "^11.0.2",
     "electron-packager": "^16.0.0"
