@@ -2,7 +2,7 @@
   "name": "@plexus-interop/websocket-transport",
   "description": "Web Socket based Transport for Plexus Web Interop",
   "license": "Apache-2.0",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "sideEffects": false,
   "main": "./dist/main/src/index.js",
   "module": "./dist/esm5/src/index.js",
@@ -23,9 +23,9 @@
     "test": "npm run unit"
   },
   "dependencies": {
-    "@plexus-interop/common": "0.1.0",
-    "@plexus-interop/protocol": "0.1.0",
-    "@plexus-interop/transport-common": "0.1.0",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
+    "@plexus-interop/transport-common": "1.0.0",
     "long": "^4.0.0",
     "reflect-metadata": "^0.1.10",
     "tslib": "^2.3.1"

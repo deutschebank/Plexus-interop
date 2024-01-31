@@ -1,6 +1,6 @@
 {
   "name": "@plexus-interop/common",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "sideEffects": true,
   "description": "Common functionality for Plexus Interop Web",
   "license": "Apache-2.0",

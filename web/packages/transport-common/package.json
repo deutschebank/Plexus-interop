@@ -1,6 +1,6 @@
 {
   "name": "@plexus-interop/transport-common",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "General Transport for Plexus Web Interop",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -23,8 +23,8 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "@plexus-interop/common": "0.1.0",
-    "@plexus-interop/protocol": "0.1.0",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",
