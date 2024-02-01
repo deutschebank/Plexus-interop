@@ -1,5 +1,6 @@
 plugins {
-    id "com.moowork.node" version "1.2.0"
+    // id "com.moowork.node" version "1.2.0"
+    id "com.github.node-gradle.node" version "2.2.0"
     id "com.github.hierynomus.license" version"0.14.0"
 }
 
@@ -10,7 +11,7 @@ def e2eTestsEnabled = isWindows && System.env['BuildRunner'] != "MyGet" && Syste
 def ciFullBuild = ciBuild && e2eTestsEnabled
 def npmPackageVersion = System.getenv("PLEXUS_BUILD_NPM_PACKAGE_VERSION") ?: (System.getenv("APPVEYOR_REPO_TAG_NAME") ?: System.getenv("PackageVersion"))
 def nodeDistBaseUrl = System.getenv("PLEXUS_BUILD_NODE_DIST_URL") ?: 'https://nodejs.org/dist'
-def npmRegistry = System.env['NPM_REGISTRY']
+def npmRegistry = System.env['NPM_REGISTRY_INSTALL']
 def npmEmail = System.env['NPM_AUTH_USER']
 def npmAuth = System.env['NPM_AUTH_TOKEN']
 def customNpmVersion = '10.2.3'
@@ -65,7 +66,7 @@ task npmVersion(type: NpmTask) {
 }
 
 task npmRunInstall(type: NpmTask, dependsOn: npmVersion) {
-    args = ['ci', '--no-package-lock']
+    args = ['ci']
 }
 
 task preNpmBuild {
