@@ -32,12 +32,12 @@
     "@plexus-interop/transport-common": "1.0.0",
     "broadcast-channel": "^5.1.0",
     "long": "^4.0.0",
+    "protobufjs": "7.1.2",
     "reflect-metadata": "^0.1.10",
     "tslib": "^2.3.1",
     "ya-js-storage": "0.1.4"
   },
   "peerDependencies": {
-    "protobufjs": "6.11.3",
     "rxjs": "^7.5.4"
   },
   "publishConfig": {

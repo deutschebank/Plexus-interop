@@ -47,7 +47,7 @@
     "core-js": "^3.22.4",
     "is-electron-renderer": "^2.0.1",
     "long": "^4.0.0",
-    "protobufjs": "6.11.3"
+    "protobufjs": "7.1.2"
   },
   "devDependencies": {
     "electron": "17.4.0"
