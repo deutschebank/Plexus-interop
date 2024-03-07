@@ -530,12 +530,6 @@ export namespace interop {
     public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
-  /** AppLaunchMode enum. */
-  enum AppLaunchMode {
-    SINGLE_INSTANCE = 0,
-    MULTI_INSTANCE = 1,
-  }
-
   /** Properties of an UniqueId. */
   interface IUniqueId {
     /** UniqueId lo */
@@ -635,6 +629,12 @@ export namespace interop {
      * @returns The default type url
      */
     public static getTypeUrl(typeUrlPrefix?: string): string;
+  }
+
+  /** AppLaunchMode enum. */
+  enum AppLaunchMode {
+    SINGLE_INSTANCE = 0,
+    MULTI_INSTANCE = 1,
   }
 }
 

@@ -1376,21 +1376,6 @@ $root.interop = (function () {
     return AppLaunchedEvent;
   })();
 
-  /**
-   * AppLaunchMode enum.
-   * @name interop.AppLaunchMode
-   * @enum {number}
-   * @property {number} SINGLE_INSTANCE=0 SINGLE_INSTANCE value
-   * @property {number} MULTI_INSTANCE=1 MULTI_INSTANCE value
-   */
-  interop.AppLaunchMode = (function () {
-    var valuesById = {},
-      values = Object.create(valuesById);
-    values[(valuesById[0] = 'SINGLE_INSTANCE')] = 0;
-    values[(valuesById[1] = 'MULTI_INSTANCE')] = 1;
-    return values;
-  })();
-
   interop.UniqueId = (function () {
     /**
      * Properties of an UniqueId.
@@ -1682,6 +1667,21 @@ $root.interop = (function () {
     };
 
     return UniqueId;
+  })();
+
+  /**
+   * AppLaunchMode enum.
+   * @name interop.AppLaunchMode
+   * @enum {number}
+   * @property {number} SINGLE_INSTANCE=0 SINGLE_INSTANCE value
+   * @property {number} MULTI_INSTANCE=1 MULTI_INSTANCE value
+   */
+  interop.AppLaunchMode = (function () {
+    var valuesById = {},
+      values = Object.create(valuesById);
+    values[(valuesById[0] = 'SINGLE_INSTANCE')] = 0;
+    values[(valuesById[1] = 'MULTI_INSTANCE')] = 1;
+    return values;
   })();
 
   return interop;
