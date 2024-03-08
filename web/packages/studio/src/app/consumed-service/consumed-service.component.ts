@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { filter, map } from 'rxjs/operators';
 
@@ -62,7 +62,7 @@ export class ConsumedServiceComponent implements OnInit, OnDestroy {
   public selectedDiscoveredMethod: DiscoveredMethod;
 
   messageContent: string;
-  messageContentControl: FormControl = new FormControl('{}');
+  messageContentControl: UntypedFormControl = new UntypedFormControl('{}');
 
   messagesToSend: number = 1;
   messagesPeriodInMillis: number = 200;

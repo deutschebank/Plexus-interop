@@ -55,7 +55,7 @@ import { reducers } from './services/ui/RootReducers';
     NgbModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot(AppRoutes, { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(AppRoutes, {}),
     StoreModule.forRoot(reducers, {
       metaReducers,
       runtimeChecks: {

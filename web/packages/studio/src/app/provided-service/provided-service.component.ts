@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { filter, map } from 'rxjs/operators';
 
@@ -39,7 +39,7 @@ export class ProvidedServiceComponent implements OnInit, OnDestroy {
   private readonly log: Logger = LoggerFactory.getLogger('ProvidedServiceComponent');
   private readonly maxPrintedContent: number = 1024;
   private providedMethod: ProvidedMethod;
-  public messageContentControl: FormControl = new FormControl('{}');
+  public messageContentControl: UntypedFormControl = new UntypedFormControl('{}');
   public messageContent: string = '{}';
 
   private interopClient: InteropClient;
