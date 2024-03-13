@@ -1,2 +1,2 @@
-.npmrc
 junit.xml
+.nx/cache

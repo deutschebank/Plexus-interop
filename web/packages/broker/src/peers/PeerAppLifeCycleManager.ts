@@ -152,7 +152,7 @@ export class PeerAppLifeCycleManager implements AppLifeCycleManager {
     return this.getOnlineConnectionsInternal();
   }
 
-  private sendHeartBitsFor(connection: ApplicationConnection): NodeJS.Timer {
+  private sendHeartBitsFor(connection: ApplicationConnection): ReturnType<typeof setTimeout> {
     const heartBit: AppConnectionHeartBit = {
       applicationId: connection.descriptor.applicationId,
       connectionId: connection.descriptor.connectionId.toString(),

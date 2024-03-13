@@ -2,7 +2,7 @@
   "name": "@plexus-interop/common-api-impl",
   "description": "Common API implementation",
   "license": "Apache-2.0",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "sideEffects": false,
   "main": "./dist/main/src/index.js",
   "module": "./dist/esm5/src/index.js",
@@ -24,15 +24,15 @@
     "test": "jest --coverage --passWithNoTests"
   },
   "dependencies": {
-    "@plexus-interop/client": "file:../client",
-    "@plexus-interop/client-api": "file:../client-api",
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/io": "file:../io",
-    "@plexus-interop/metadata": "file:../metadata",
-    "@plexus-interop/protocol": "file:../protocol",
-    "@plexus-interop/remote": "file:../remote",
-    "@plexus-interop/transport-common": "file:../transport-common",
-    "@plexus-interop/websocket-transport": "file:../websocket-transport",
+    "@plexus-interop/client": "1.0.0",
+    "@plexus-interop/client-api": "1.0.0",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/io": "1.0.0",
+    "@plexus-interop/metadata": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
+    "@plexus-interop/remote": "1.0.0",
+    "@plexus-interop/transport-common": "1.0.0",
+    "@plexus-interop/websocket-transport": "1.0.0",
     "tslib": "^2.3.1"
   },
   "peerDependencies": {

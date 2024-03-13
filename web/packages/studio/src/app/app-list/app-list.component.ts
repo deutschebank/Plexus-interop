@@ -16,7 +16,7 @@
  */
 import { OnDestroy } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -45,7 +45,7 @@ export class AppListComponent implements OnInit, OnDestroy {
 
   searchFilterValue: Observable<string>;
 
-  searchFilterControl: FormControl = new FormControl('');
+  searchFilterControl: UntypedFormControl = new UntypedFormControl('');
 
   private logger = LoggerFactory.getLogger(AppListComponent.name);
 

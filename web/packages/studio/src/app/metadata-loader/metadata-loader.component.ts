@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
@@ -31,15 +31,15 @@ import { SubscriptionsRegistry } from '../services/ui/SubscriptionsRegistry';
   providers: [SubscriptionsRegistry],
 })
 export class MetadataLoaderComponent implements OnInit, OnDestroy {
-  transportType: FormControl = new FormControl(TransportType.NATIVE_WS, [Validators.required]);
-  metadataUrl: FormControl = new FormControl('', [Validators.required, Validators.minLength(1)]);
-  appsUrl: FormControl = new FormControl('', [this.requiredWebConfig.bind(this)]);
-  proxyHostUrl: FormControl = new FormControl('', [this.requiredCrossWebConfig.bind(this)]);
-  wsUrl: FormControl = new FormControl('', [this.requiredWsConfig.bind(this)]);
+  transportType: UntypedFormControl = new UntypedFormControl(TransportType.NATIVE_WS, [Validators.required]);
+  metadataUrl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.minLength(1)]);
+  appsUrl: UntypedFormControl = new UntypedFormControl('', [this.requiredWebConfig.bind(this)]);
+  proxyHostUrl: UntypedFormControl = new UntypedFormControl('', [this.requiredCrossWebConfig.bind(this)]);
+  wsUrl: UntypedFormControl = new UntypedFormControl('', [this.requiredWsConfig.bind(this)]);
 
   transportTypes = types;
 
-  connectionFormGroup: FormGroup = this.builder.group({
+  connectionFormGroup: UntypedFormGroup = this.builder.group({
     metadataUrl: this.metadataUrl,
     appsUrl: this.appsUrl,
     proxyHostUrl: this.proxyHostUrl,
@@ -52,7 +52,7 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
     private store: Store<fromRoot.State>,
     private router: Router,
     private subscriptions: SubscriptionsRegistry,
-    private builder: FormBuilder
+    private builder: UntypedFormBuilder
   ) {}
 
   ngOnInit() {
@@ -78,19 +78,19 @@ export class MetadataLoaderComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribeAll();
   }
 
-  requiredCrossWebConfig(formControl: FormControl) {
+  requiredCrossWebConfig(formControl: UntypedFormControl) {
     const value = formControl.value as string;
     const valid = this.transportType.value !== TransportType.WEB_CROSS || (!!value && value.length > 0);
     return valid ? null : { required: true };
   }
 
-  requiredWsConfig(formControl: FormControl) {
+  requiredWsConfig(formControl: UntypedFormControl) {
     const value = formControl.value as string;
     const valid = this.transportType.value !== TransportType.NATIVE_WS || (!!value && value.length > 0);
     return valid ? null : { required: true };
   }
 
-  requiredWebConfig(formControl: FormControl) {
+  requiredWebConfig(formControl: UntypedFormControl) {
     const value = formControl.value as string;
     const valid = this.transportType.value === TransportType.NATIVE_WS || (!!value && value.length > 0);
     return valid ? null : { required: true };

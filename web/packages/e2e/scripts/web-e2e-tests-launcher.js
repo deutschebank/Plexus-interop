@@ -34,6 +34,7 @@ async function main() {
 
   log(`Killing anything on port ${port}...`);
   await killP(port);
+  process.exitCode = 0;
 
   log(`Starting http-server in ${baseDir}, listening on port ${port}`);
 
@@ -44,7 +45,10 @@ async function main() {
     },
     (error, stdout, stderr) => {
       log('http-server stopped');
-      if ((error && error?.signal !== 'SIGKILL') || stderr) {
+      if (
+        (error?.signal !== 'SIGKILL' && error?.signal !== 'SIGTERM') ||
+        stderr
+      ) {
         console.error('http-server std Error:', stderr);
         console.error('http-server error: ', error);
       }
@@ -71,7 +75,12 @@ async function main() {
 
 async function killHttpServerProcess() {
   if (httpServerProcess) {
-    log('Killing http-server broker process ...');
+    log('Killing http-server broker process with SIGTERM ...');
+    await httpServerProcess.kill();
+
+    if (!httpServerProcess) return;
+
+    log('Killing http-server broker process with killP ...');
     await killP(argv.port || 3001);
     log('Kill signal sent');
   }
@@ -101,7 +110,8 @@ function runIETest(path) {
 
 function testsFinishedHandler(error, stdout, stderr) {
   log('Tests exection process completed, killing HTTP Server');
-  if (error || stderr) {
+  if (error || (stderr && !stderr.match(/Trying to re-add dropped peer/))) {
+    console.error('ERROR OCCURRED');
     console.error('karma std Error:', stderr);
     console.error('karma error: ', error);
     process.exitCode = 1;

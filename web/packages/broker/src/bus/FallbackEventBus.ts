@@ -48,7 +48,7 @@ export class FallbackEventBus implements EventBus {
     if (this.baseEventBus) {
       this.baseEventBus.publish(key, event);
     } else {
-      throw new Error('Not initialyzed');
+      throw new Error('Not initialized');
     }
   }
 
@@ -56,6 +56,6 @@ export class FallbackEventBus implements EventBus {
     if (this.baseEventBus) {
       return this.baseEventBus.subscribe(key, handler);
     }
-    throw new Error('Not initialyzed');
+    throw new Error('Not initialized');
   }
 }

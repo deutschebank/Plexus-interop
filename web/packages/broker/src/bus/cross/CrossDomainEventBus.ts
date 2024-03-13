@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { filter, fromEvent, map, Observable, PartialObserver, publish, refCount } from 'rxjs';
+import { filter, fromEvent, map, Observable, PartialObserver, share } from 'rxjs';
 
 import {
   GUID,
@@ -39,15 +39,31 @@ enum State {
   CLOSED = 'CLOSED',
 }
 
+const callWithRetry = async (fn: (timeout: number) => Promise<void>, depth = 0, max = 20) => {
+  const timeout = 2 ** depth * 10; // 10ms, 20ms, 40ms, 80ms, 160ms etc
+
+  try {
+    return await fn(timeout);
+  } catch (e) {
+    if (depth > max) {
+      throw e;
+    }
+
+    return callWithRetry(fn, depth + 1, max);
+  }
+};
+
 export class CrossDomainEventBus implements EventBus {
   private readonly log: Logger = LoggerFactory.getLogger('CrossDomainEventBus');
 
   private readonly singleOperationTimeOut: number = 60000;
-  private readonly pingTimeoutInMillis: number = 1000;
 
   private readonly emitters: Map<string, Observer<any>> = new Map<string, Observer<any>>();
   private readonly observables: Map<string, Observable<any>> = new Map<string, Observable<any>>();
-  private readonly rejectTimeouts: Map<string, NodeJS.Timer> = new Map<string, NodeJS.Timer>();
+  private readonly rejectTimeouts: Map<string, ReturnType<typeof setTimeout>> = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
 
   private hostIframeEventsSubscription: Subscription;
 
@@ -66,14 +82,14 @@ export class CrossDomainEventBus implements EventBus {
     this.stateMaschine.throwIfNot(State.CREATED);
     this.createHostMessagesSubscription();
     this.log.info('Host iFrame created, sending ping messages');
-    return this.chainRetries(20, () => this.sendPingToHost(this.pingTimeoutInMillis)).then(() => this);
+    return callWithRetry((timeout) => this.sendPingToHost(timeout)).then(() => this);
   }
 
   public async disconnect(): Promise<void> {
     this.stateMaschine.throwIfNot(State.CONNECTED);
     this.stateMaschine.go(State.CLOSED);
     if (this.hostIframeEventsSubscription) {
-      this.log.info('Unsubsribing from Host iFrame');
+      this.log.info('Unsubscribing from Host iFrame');
       this.hostIframeEventsSubscription.unsubscribe();
     }
     this.emitters.forEach((v) => v.error('Disconnected from Host iFrame'));
@@ -105,7 +121,7 @@ export class CrossDomainEventBus implements EventBus {
   ): Observable<T> {
     let eventsObservable = this.observables.get(key);
     if (eventsObservable === undefined) {
-      eventsObservable = Observable.create((observer: Observer<T>) => {
+      eventsObservable = new Observable((observer: Observer<T>) => {
         this.log.debug(`Creating ${key} observable`);
         this.emitters.set(key, observer);
         return () => {
@@ -113,7 +129,7 @@ export class CrossDomainEventBus implements EventBus {
           this.emitters.delete(key);
           this.observables.delete(key);
         };
-      }).pipe(publish(), refCount()) as Observable<T>;
+      }).pipe(share({ resetOnError: false, resetOnComplete: false, resetOnRefCountZero: false }));
       this.observables.set(key, eventsObservable);
       if (postInit) {
         postInit(key, eventsObservable);
@@ -151,14 +167,6 @@ export class CrossDomainEventBus implements EventBus {
         );
       }
     }).subscribe(observer);
-  }
-
-  private chainRetries(times: number, fn: () => Promise<void>): Promise<void> {
-    let res = fn();
-    for (let index = 0; index < times; index++) {
-      res = res.catch(fn);
-    }
-    return res;
   }
 
   private sendPingToHost(timeout: number): Promise<void> {

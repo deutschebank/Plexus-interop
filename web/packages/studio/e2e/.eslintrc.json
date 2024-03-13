@@ -1,5 +1,5 @@
 {
-  "extends": "../.eslintrc.json",
+  "extends": "../.eslintrc.js",
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
@@ -7,7 +7,7 @@
       "parserOptions": {
         "project": [
           "e2e/tsconfig.app.json",
-          "e2e/tsconfig.spec.json",
+          "tsconfig.spec.json",
           "e2e/e2e/tsconfig.json"
         ],
         "createDefaultProgram": true

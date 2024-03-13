@@ -1,14 +1,8 @@
 {
   "packages": ["packages/*"],
   "npmClient": "npm",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "command": {
-    "init": {
-      "exact": true
-    },
-    "bootstrap": {
-      "hoist": false
-    },
     "version": {
       "exact": true,
       "yes": true,
@@ -21,5 +15,6 @@
       "fromPackage": true,
       "verifyAccess": false
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

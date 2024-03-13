@@ -326,27 +326,32 @@ $root.interop = (function () {
       while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.appId = reader.string();
             break;
-          case 2:
+          }
+          case 2: {
             message.launchParamsJson = reader.string();
             break;
-          case 3:
+          }
+          case 3: {
             message.launchMode = reader.int32();
             break;
-          case 4:
+          }
+          case 4: {
             message.suggestedAppInstanceId = $root.interop.UniqueId.decode(
               reader,
               reader.uint32()
             );
             break;
-          case 5:
+          }
+          case 5: {
             message.referrer = $root.interop.AppLaunchReferrer.decode(
               reader,
               reader.uint32()
             );
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -428,6 +433,12 @@ $root.interop = (function () {
       if (object.launchParamsJson != null)
         message.launchParamsJson = String(object.launchParamsJson);
       switch (object.launchMode) {
+        default:
+          if (typeof object.launchMode === 'number') {
+            message.launchMode = object.launchMode;
+            break;
+          }
+          break;
         case 'SINGLE_INSTANCE':
         case 0:
           message.launchMode = 0;
@@ -487,7 +498,9 @@ $root.interop = (function () {
       if (message.launchMode != null && message.hasOwnProperty('launchMode'))
         object.launchMode =
           options.enums === String
-            ? $root.interop.AppLaunchMode[message.launchMode]
+            ? $root.interop.AppLaunchMode[message.launchMode] === undefined
+              ? message.launchMode
+              : $root.interop.AppLaunchMode[message.launchMode]
             : message.launchMode;
       if (
         message.suggestedAppInstanceId != null &&
@@ -514,6 +527,21 @@ $root.interop = (function () {
      */
     AppLaunchRequest.prototype.toJSON = function toJSON() {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for AppLaunchRequest
+     * @function getTypeUrl
+     * @memberof interop.AppLaunchRequest
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    AppLaunchRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = 'type.googleapis.com';
+      }
+      return typeUrlPrefix + '/interop.AppLaunchRequest';
     };
 
     return AppLaunchRequest;
@@ -645,21 +673,24 @@ $root.interop = (function () {
       while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.appId = reader.string();
             break;
-          case 2:
+          }
+          case 2: {
             message.appInstanceId = $root.interop.UniqueId.decode(
               reader,
               reader.uint32()
             );
             break;
-          case 3:
+          }
+          case 3: {
             message.connectionId = $root.interop.UniqueId.decode(
               reader,
               reader.uint32()
             );
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -795,6 +826,21 @@ $root.interop = (function () {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
+    /**
+     * Gets the default type url for AppLaunchReferrer
+     * @function getTypeUrl
+     * @memberof interop.AppLaunchReferrer
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    AppLaunchReferrer.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = 'type.googleapis.com';
+      }
+      return typeUrlPrefix + '/interop.AppLaunchReferrer';
+    };
+
     return AppLaunchReferrer;
   })();
 
@@ -896,12 +942,13 @@ $root.interop = (function () {
       while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.appInstanceId = $root.interop.UniqueId.decode(
               reader,
               reader.uint32()
             );
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -1002,6 +1049,21 @@ $root.interop = (function () {
      */
     AppLaunchResponse.prototype.toJSON = function toJSON() {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+
+    /**
+     * Gets the default type url for AppLaunchResponse
+     * @function getTypeUrl
+     * @memberof interop.AppLaunchResponse
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    AppLaunchResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = 'type.googleapis.com';
+      }
+      return typeUrlPrefix + '/interop.AppLaunchResponse';
     };
 
     return AppLaunchResponse;
@@ -1135,22 +1197,25 @@ $root.interop = (function () {
       while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.appInstanceId = $root.interop.UniqueId.decode(
               reader,
               reader.uint32()
             );
             break;
-          case 2:
+          }
+          case 2: {
             if (!(message.appIds && message.appIds.length)) message.appIds = [];
             message.appIds.push(reader.string());
             break;
-          case 3:
+          }
+          case 3: {
             message.referrer = $root.interop.AppLaunchReferrer.decode(
               reader,
               reader.uint32()
             );
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -1293,22 +1358,22 @@ $root.interop = (function () {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
-    return AppLaunchedEvent;
-  })();
+    /**
+     * Gets the default type url for AppLaunchedEvent
+     * @function getTypeUrl
+     * @memberof interop.AppLaunchedEvent
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    AppLaunchedEvent.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = 'type.googleapis.com';
+      }
+      return typeUrlPrefix + '/interop.AppLaunchedEvent';
+    };
 
-  /**
-   * AppLaunchMode enum.
-   * @name interop.AppLaunchMode
-   * @enum {number}
-   * @property {number} SINGLE_INSTANCE=0 SINGLE_INSTANCE value
-   * @property {number} MULTI_INSTANCE=1 MULTI_INSTANCE value
-   */
-  interop.AppLaunchMode = (function () {
-    var valuesById = {},
-      values = Object.create(valuesById);
-    values[(valuesById[0] = 'SINGLE_INSTANCE')] = 0;
-    values[(valuesById[1] = 'MULTI_INSTANCE')] = 1;
-    return values;
+    return AppLaunchedEvent;
   })();
 
   interop.UniqueId = (function () {
@@ -1411,12 +1476,14 @@ $root.interop = (function () {
       while (reader.pos < end) {
         var tag = reader.uint32();
         switch (tag >>> 3) {
-          case 1:
+          case 1: {
             message.lo = reader.fixed64();
             break;
-          case 2:
+          }
+          case 2: {
             message.hi = reader.fixed64();
             break;
+          }
           default:
             reader.skipType(tag & 7);
             break;
@@ -1584,7 +1651,37 @@ $root.interop = (function () {
       return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
+    /**
+     * Gets the default type url for UniqueId
+     * @function getTypeUrl
+     * @memberof interop.UniqueId
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    UniqueId.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+      if (typeUrlPrefix === undefined) {
+        typeUrlPrefix = 'type.googleapis.com';
+      }
+      return typeUrlPrefix + '/interop.UniqueId';
+    };
+
     return UniqueId;
+  })();
+
+  /**
+   * AppLaunchMode enum.
+   * @name interop.AppLaunchMode
+   * @enum {number}
+   * @property {number} SINGLE_INSTANCE=0 SINGLE_INSTANCE value
+   * @property {number} MULTI_INSTANCE=1 MULTI_INSTANCE value
+   */
+  interop.AppLaunchMode = (function () {
+    var valuesById = {},
+      values = Object.create(valuesById);
+    values[(valuesById[0] = 'SINGLE_INSTANCE')] = 0;
+    values[(valuesById[1] = 'MULTI_INSTANCE')] = 1;
+    return values;
   })();
 
   return interop;
@@ -1757,6 +1854,21 @@ $root.google = (function () {
        */
       Empty.prototype.toJSON = function toJSON() {
         return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+      };
+
+      /**
+       * Gets the default type url for Empty
+       * @function getTypeUrl
+       * @memberof google.protobuf.Empty
+       * @static
+       * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+       * @returns {string} The default type url
+       */
+      Empty.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+          typeUrlPrefix = 'type.googleapis.com';
+        }
+        return typeUrlPrefix + '/google.protobuf.Empty';
       };
 
       return Empty;

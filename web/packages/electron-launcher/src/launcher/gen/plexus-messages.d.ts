@@ -16,6 +16,7 @@
  */
 import * as $protobuf from 'protobufjs';
 
+import Long = require('long');
 /** Namespace interop. */
 export namespace interop {
   /** Represents an AppLauncherService */
@@ -202,6 +203,13 @@ export namespace interop {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for AppLaunchRequest
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of an AppLaunchReferrer. */
@@ -305,6 +313,13 @@ export namespace interop {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for AppLaunchReferrer
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of an AppLaunchResponse. */
@@ -396,6 +411,13 @@ export namespace interop {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for AppLaunchResponse
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of an AppLaunchedEvent. */
@@ -499,12 +521,13 @@ export namespace interop {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
-  }
 
-  /** AppLaunchMode enum. */
-  enum AppLaunchMode {
-    SINGLE_INSTANCE = 0,
-    MULTI_INSTANCE = 1,
+    /**
+     * Gets the default type url for AppLaunchedEvent
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
   }
 
   /** Properties of an UniqueId. */
@@ -599,6 +622,19 @@ export namespace interop {
      * @returns JSON object
      */
     public toJSON(): { [k: string]: any };
+
+    /**
+     * Gets the default type url for UniqueId
+     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns The default type url
+     */
+    public static getTypeUrl(typeUrlPrefix?: string): string;
+  }
+
+  /** AppLaunchMode enum. */
+  enum AppLaunchMode {
+    SINGLE_INSTANCE = 0,
+    MULTI_INSTANCE = 1,
   }
 }
 
@@ -689,6 +725,13 @@ export namespace google {
        * @returns JSON object
        */
       public toJSON(): { [k: string]: any };
+
+      /**
+       * Gets the default type url for Empty
+       * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+       * @returns The default type url
+       */
+      public static getTypeUrl(typeUrlPrefix?: string): string;
     }
   }
 }

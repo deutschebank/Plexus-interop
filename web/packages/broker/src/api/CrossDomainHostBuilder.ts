@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FallbackEventBus, JStorageEventBus } from '../bus';
 import { CrossDomainHost } from '../bus/cross/host/CrossDomainHost';
 import { CrossDomainHostConfig } from '../bus/cross/host/CrossDomainHostConfig';
 import { EventBus } from '../bus/EventBus';
-import { FallbackEventBus } from '../bus/FallbackEventBus';
 import { BroadCastChannelEventBus } from '../bus/same/BroadCastChannelEventBus';
-import { JStorageEventBus } from '../bus/same/JStorageEventBus';
 
 export class CrossDomainHostBuilder {
   private crossDomainConfig: CrossDomainHostConfig;

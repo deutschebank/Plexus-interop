@@ -1,6 +1,6 @@
 {
   "name": "@plexus-interop/client-api",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Client contracts, shared between client and broker",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -21,9 +21,9 @@
     "build:main": "tsc"
   },
   "dependencies": {
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/protocol": "file:../protocol",
-    "@plexus-interop/transport-common": "file:../transport-common",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
+    "@plexus-interop/transport-common": "1.0.0",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",

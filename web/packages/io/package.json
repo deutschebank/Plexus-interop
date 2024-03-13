@@ -2,7 +2,7 @@
   "name": "@plexus-interop/io",
   "description": "Plexus Interop serialization/deserialization services",
   "license": "Apache-2.0",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "sideEffects": false,
   "main": "./dist/main/src/index.js",
   "module": "./dist/esm5/src/index.js",
@@ -24,10 +24,10 @@
     "test": "npm run unit"
   },
   "dependencies": {
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/metadata": "file:../metadata",
-    "@plexus-interop/protocol": "file:../protocol",
-    "protobufjs": "6.11.3"
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/metadata": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
+    "protobufjs": "^7.2.6"
   },
   "publishConfig": {
     "access": "public"

@@ -1,6 +1,6 @@
 {
   "name": "@plexus-interop/web-app-example",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Simple Web App examples",
   "main": "index.js",
   "private": true,
@@ -24,10 +24,10 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@plexus-interop/client": "file:../client",
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/transport-common": "file:../transport-common",
-    "@plexus-interop/websocket-transport": "file:../websocket-transport",
-    "protobufjs": "6.11.3"
+    "@plexus-interop/client": "1.0.0",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/transport-common": "1.0.0",
+    "@plexus-interop/websocket-transport": "1.0.0",
+    "protobufjs": "^7.2.6"
   }
 }

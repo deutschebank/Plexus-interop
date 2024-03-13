@@ -1,6 +1,6 @@
 {
   "name": "@plexus-interop/e2e",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "types": "dist/main/src/index.d.ts",
   "main": "dist/main/src/index.js",
   "description": "Integration tests for Plexus Web Interop",
@@ -31,23 +31,26 @@
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",
-    "@plexus-interop/broker": "file:../broker",
-    "@plexus-interop/client": "file:../client",
-    "@plexus-interop/client-api": "file:../client-api",
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/common-api-impl": "file:../common-api-impl",
-    "@plexus-interop/io": "file:../io",
-    "@plexus-interop/metadata": "file:../metadata",
-    "@plexus-interop/protocol": "file:../protocol",
-    "@plexus-interop/remote": "file:../remote",
-    "@plexus-interop/transport-common": "file:../transport-common",
-    "@plexus-interop/websocket-transport": "file:../websocket-transport",
+    "@plexus-interop/broker": "1.0.0",
+    "@plexus-interop/client": "1.0.0",
+    "@plexus-interop/client-api": "1.0.0",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/common-api-impl": "1.0.0",
+    "@plexus-interop/io": "1.0.0",
+    "@plexus-interop/metadata": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
+    "@plexus-interop/remote": "1.0.0",
+    "@plexus-interop/transport-common": "1.0.0",
+    "@plexus-interop/websocket-transport": "1.0.0",
     "@types/long": "^4.0.0",
     "chai": "^4.1.0",
     "core-js": "^3.22.4",
     "is-electron-renderer": "^2.0.1",
     "long": "^4.0.0",
-    "protobufjs": "6.11.3"
+    "protobufjs": "^7.2.6"
+  },
+  "devDependencies": {
+    "electron": "17.4.0"
   },
   "jest": {
     "preset": "ts-jest",

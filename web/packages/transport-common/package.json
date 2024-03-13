@@ -1,6 +1,6 @@
 {
   "name": "@plexus-interop/transport-common",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "General Transport for Plexus Web Interop",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -23,18 +23,17 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "@plexus-interop/common": "file:../common",
-    "@plexus-interop/protocol": "file:../protocol",
+    "@plexus-interop/common": "1.0.0",
+    "@plexus-interop/protocol": "1.0.0",
     "@types/long": "^4.0.0",
     "loglevel": "^1.4.1",
     "long": "^4.0.0",
-    "protobufjs": "6.11.3",
+    "protobufjs": "^7.2.6",
     "reflect-metadata": "^0.1.10",
     "tslib": "^2.3.1",
     "typescript-collections": "1.2.3"
   },
   "peerDependencies": {
-    "protobufjs": "6.11.3",
     "rxjs": "^7.5.4"
   },
   "publishConfig": {

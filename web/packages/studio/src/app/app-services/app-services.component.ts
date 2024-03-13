@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, of as observableOf } from 'rxjs';
@@ -54,7 +54,7 @@ export class AppServicesComponent implements OnInit {
   consumedServices: Observable<ConsumedService[]> = observableOf([]);
   providedServices: Observable<ProvidedService[]> = observableOf([]);
   searchFilterValue: Observable<string>;
-  searchFilterControl: FormControl = new FormControl('');
+  searchFilterControl: UntypedFormControl = new UntypedFormControl('');
 
   subscriptions: SubscriptionsRegistry;
   registryService: InteropRegistryService;
